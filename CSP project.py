@@ -19,12 +19,12 @@ class Player(pygame.sprite.Sprite):
     def input(self):
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_UP]:
-            self.direction.y = -1
-        elif keys[pygame.K_DOWN]:
-            self.direction.y = 1
-        else:
-            self.direction.y = 0
+        #if keys[pygame.K_UP]:
+        #    self.direction.y = -1
+        #elif keys[pygame.K_DOWN]:
+        #    self.direction.y = 1
+        #else:
+        #    self.direction.y = 0
 
         if keys[pygame.K_RIGHT]:
             self.direction.x = 1
@@ -41,21 +41,40 @@ class CameraGroup(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
         self.display_surface = pygame.display.get_surface()
-    
-    #camera offset
-        self.offset = pygame.math.Vector2
+        
+        #camera offset
+        self.offset = pygame.math.Vector2()
+        self.half_w = self.display_surface.get_size()[0] // 2
+        self.half_h = self.display_surface.get_size()[1] // 2
 
-    def custom_draw(self):
-        for sprite in sorted(self.sprites(),key = lambda sprite: sprite.rect.centery): #.sprites is where all our imported sprites are stored in pygame
-            self.display_surface.blit(sprite.image,sprite.rect)
+        #ground
+        self.ground_surf = pygame.image.load('Projects/Python game/GUI 1.png').convert_alpha()
+        self.ground_rect = self.ground_surf.get_rect(topleft = (0,0))
+
+    def center_target_camera(self,target):
+        self.offset.x = target.rect.centerx - self.half_w
+        self.offset.y = target.rect.centery - self.half_h
+
+    def custom_draw(self,player):
+
+        self.center_target_camera(player)
+
+        #ground
+        ground_offset = self.ground_rect.topleft - self.offset
+        self.display_surface.blit(self.ground_surf,ground_offset)
+
+        #active elements
+        for sprite in sorted(self.sprites(),key = lambda sprite: sprite.rect.center): #.sprites is where all our imported sprites are stored in pygame
+            offset_pos = sprite.rect.topleft - self.offset
+            self.display_surface.blit(sprite.image,offset_pos)
  
     #box camera 
-        self.camera_borders = {'left':200, 'right':200, 'top':100, 'bottom':100}
-        l = self.camera_borders['left']
-        t = self.camera_borders['top']
-        w = self.display_surface.get_size()[0] - (self.camera_borders['left'] + self.camera_borders['right'])
-        h = self.display_surface.get_size()[1] - (self.camera_borders['top'] + self.camera_borders['bottom'])
-        self.camera_rect = pygame.Rect(l,t,w,h)
+        #self.camera_borders = {'left':200, 'right':200, 'top':100, 'bottom':100}
+        #l = self.camera_borders['left']
+        #t = self.camera_borders['top']
+        #w = self.display_surface.get_size()[0] - (self.camera_borders['left'] + self.camera_borders['right'])
+        #h = self.display_surface.get_size()[1] - (self.camera_borders['top'] + self.camera_borders['bottom'])
+        #self.camera_rect = pygame.Rect(l,t,w,h)
     
     
 
@@ -68,7 +87,7 @@ clock = pygame.time.Clock() #limit game frame rate
 #set up
 #sprite group?
 camera_group = CameraGroup() #missing the bracket gives me AbstractGroup.add_internal() missing 1 required positional argument: 'sprite' error... maybe because I didn't actually called it?
-Player((640, 360), camera_group)
+player = Player((640, 360), camera_group)
 
 for i in range(20):
     random_x = randint(0, 1000)
@@ -86,7 +105,7 @@ while True:
     screen.fill('#71ddee')
 
     camera_group.update()
-    camera_group.custom_draw()
+    camera_group.custom_draw(player)
 
     pygame.display.update()
     clock.tick(60)
