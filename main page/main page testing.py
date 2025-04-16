@@ -17,9 +17,9 @@ bg_img = pygame.transform.scale(bg_img, (screen_width, screen_height))
 
 #button image
 start_img = pygame.image.load('start.png').convert_alpha() #alpha is use to keep transparent background
-#load_img = pygame.image.load('   ').convert_alpha()
-#settings_img = pygame.image.load('   ').convert_alpha()
-#exit_img = pygame.image.load('    ').convert_alpha()
+#load_img = pygame.image.load('load.png').convert_alpha()
+#settings_img = pygame.image.load('settings.png').convert_alpha()
+exit_img = pygame.image.load('exit.png').convert_alpha()
 
 #button class
 class Button():
@@ -35,6 +35,9 @@ class Button():
 
 #instance
 start_button = Button(100,50,start_img,0.4)
+#load_button = Button(200,100,load_img,0.4)
+#settings_button = Button(300,200,settings_img,0.4)
+exit_button = Button(100,400,exit_img,0.4)
 
 #game loop
 run = True
@@ -42,6 +45,9 @@ while run: #keep window running
 
     screen.blit(bg_img, (0, 0)) #draw backgound from (0,0)
     start_button.draw()
+    #load_button.draw()
+    #settings_button.draw()
+    exit_button.draw()
 
     for event in pygame.event.get(): #handle event like mouse click, keyboard press
         if event.type == pygame.QUIT: #if press x on right above will quit
