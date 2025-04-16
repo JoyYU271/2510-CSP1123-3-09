@@ -7,7 +7,7 @@ screen = pygame.display.set_mode((800,400))
 #To show on white bar above, we'll be in fullscreen so may not be needed
 #   pygame.display.set_caption('Game_name or what have you')
 clock = pygame.time.Clock() #limit game frame rate
-
+font_handwriting = pygame.font.Font('Projects/Python game/Morning Bright.otf')
 
 fire_surface = pygame.image.load('Projects/Python game/pfp.png').convert_alpha()
 ruins_surface = pygame.image.load('Projects/Python game/Ruins.png').convert()
