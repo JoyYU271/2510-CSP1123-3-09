@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys,ctypes
 from random import randint
 
 #create class for obstacle sprite, and player sprite
@@ -90,7 +90,16 @@ class CameraGroup(pygame.sprite.Group):
             
 
 pygame.init()
-screen = pygame.display.set_mode((1280,720))
+
+#to get real resolution
+ctypes.windll.user32.SetProcessDPIAware() #make sure the Python program gets the actual screen resolution, not scaled one
+screen_width = ctypes.windll.user32.GetSystemMetrics(0) #ask the real screen width in pixels
+screen_height = ctypes.windll.user32.GetSystemMetrics(1) #ask the real screen height in pixels
+
+
+screen = pygame.display.set_mode((1280, 720), pygame.RESIZABLE) #Right here! :D
+
+
 #To show on white bar above, we'll be in fullscreen so may not be needed
 #   pygame.display.set_caption('Game_name or what have you')
 clock = pygame.time.Clock() #limit game frame rate
