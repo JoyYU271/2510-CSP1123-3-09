@@ -5,13 +5,13 @@ from random import randint
 class Fire(pygame.sprite.Sprite):
     def __init__(self, pos, group):
         super().__init__(group)
-        self.image = pygame.image.load('Projects/Python game/pfp.png').convert_alpha()
+        self.image = pygame.image.load('pfp.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
 
 class Player(pygame.sprite.Sprite):
     def __init__(self,pos,group):
         super().__init__(group)
-        self.image = pygame.image.load('Projects/Python game/sonic.png').convert_alpha()
+        self.image = pygame.image.load('sonic.png').convert_alpha()
         self.rect = self.image.get_rect(center = pos)
         self.direction = pygame.math.Vector2()
         self.speed = 5
@@ -56,7 +56,7 @@ class CameraGroup(pygame.sprite.Group):
         self.camera_rect = pygame.Rect(l,t,w,h)
 
         #ground
-        self.ground_surf = pygame.image.load('Projects/Python game/GUI 1.png').convert_alpha()
+        self.ground_surf = pygame.image.load('GUI 1.png').convert_alpha()
         self.ground_rect = self.ground_surf.get_rect(topleft = (0,0))
 
     def center_target_camera(self,target):
