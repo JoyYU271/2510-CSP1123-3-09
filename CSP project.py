@@ -1,4 +1,4 @@
-import pygame, sys,ctypes
+import pygame, sys
 from random import randint
 #Help on built-in function set_mode in module pygame.display:
 
@@ -42,24 +42,6 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.input()
         self.rect.center += self.direction * self.speed
-
-    def move(self,moving_left,moving_right):
-     #reset movement variables
-       dx = 0
-
-     #assign movement variables (left or right)
-       if moving_left:
-            dx = -self.speed
-            self.flip = True
-            self.direction = -1
-       if moving_right:
-            dx = self.speed
-            self.flip = False
-            self.direction = 1
-    #update position
-       self.rect.x += dx 
-
-    def draw(self):
         screen.blit (pygame.transform.flip(self.image,self.flip,False),self.rect)
 
 
@@ -108,7 +90,7 @@ class CameraGroup(pygame.sprite.Group):
         ground_offset = self.ground_rect.topleft - self.offset
         self.display_surface.blit(self.ground_surf,ground_offset)
 
-        #active elements
+        #active elements (I think you're part of the bug)
         for sprite in sorted(self.sprites(),key = lambda sprite: sprite.rect.center): #.sprites is where all our imported sprites are stored in pygame
             #note to study more about 'sorted'
             offset_pos = sprite.rect.topleft - self.offset
@@ -156,7 +138,6 @@ while True:
 
     camera_group.update()
     camera_group.custom_draw(player)
-    
 
     pygame.display.update()
     clock.tick(60)
