@@ -1,5 +1,8 @@
 import pygame, sys,ctypes
 from random import randint
+#Help on built-in function set_mode in module pygame.display:
+
+
 
 #create class for obstacle sprite, and player sprite
 class Fire(pygame.sprite.Sprite):
@@ -15,6 +18,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = pos)
         self.direction = pygame.math.Vector2()
         self.speed = 5
+        self.flip = False
     
     def input(self):
         keys = pygame.key.get_pressed()
@@ -28,14 +32,36 @@ class Player(pygame.sprite.Sprite):
 
         if keys[pygame.K_RIGHT]:
             self.direction.x = 1
+            self.flip = False
         elif keys[pygame.K_LEFT]:
             self.direction.x = -1
+            self.flip = True
         else:
             self.direction.x = 0
 
     def update(self):
         self.input()
         self.rect.center += self.direction * self.speed
+
+    def move(self,moving_left,moving_right):
+     #reset movement variables
+       dx = 0
+
+     #assign movement variables (left or right)
+       if moving_left:
+            dx = -self.speed
+            self.flip = True
+            self.direction = -1
+       if moving_right:
+            dx = self.speed
+            self.flip = False
+            self.direction = 1
+    #update position
+       self.rect.x += dx 
+
+    def draw(self):
+        screen.blit (pygame.transform.flip(self.image,self.flip,False),self.rect)
+
 
 class CameraGroup(pygame.sprite.Group):
     def __init__(self):
@@ -92,9 +118,9 @@ class CameraGroup(pygame.sprite.Group):
 pygame.init()
 
 #to get real resolution
-ctypes.windll.user32.SetProcessDPIAware() #make sure the Python program gets the actual screen resolution, not scaled one
-screen_width = ctypes.windll.user32.GetSystemMetrics(0) #ask the real screen width in pixels
-screen_height = ctypes.windll.user32.GetSystemMetrics(1) #ask the real screen height in pixels
+#ctypes.windll.user32.SetProcessDPIAware() #make sure the Python program gets the actual screen resolution, not scaled one
+#screen_width = ctypes.windll.user32.GetSystemMetrics(0) #ask the real screen width in pixels
+#screen_height = ctypes.windll.user32.GetSystemMetrics(1) #ask the real screen height in pixels
 
 
 screen = pygame.display.set_mode((1280, 720), pygame.RESIZABLE) #Right here! :D
@@ -121,11 +147,16 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-    
+
+        if event.type == pygame.VIDEORESIZE:
+                # There's some code to add back window content here.
+                surface = pygame.display.set_mode((event.w, event.h),pygame.RESIZABLE)
+        
     screen.fill('#71ddee')
 
     camera_group.update()
     camera_group.custom_draw(player)
+    
 
     pygame.display.update()
     clock.tick(60)
