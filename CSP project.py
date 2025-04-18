@@ -138,6 +138,7 @@ while True:
 
     camera_group.update()
     camera_group.custom_draw(player)
+    
 
     pygame.display.update()
     clock.tick(60)
