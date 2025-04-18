@@ -5,8 +5,8 @@ from pygame.locals import *
 pygame.init()
 
 
-screen_width = 1535
-screen_height = 775
+screen_width = 1280
+screen_height = 720
 
 screen = pygame.display.set_mode((screen_width,screen_height))
 #set framerate帧率
@@ -40,12 +40,12 @@ class doctor(pygame.sprite.Sprite):
      #assign movement variables (left or right)
        if moving_left:
             dx = -self.speed
-            self.flip = True
-            self.direction = -1
-       if moving_right:
-            dx = self.speed
             self.flip = False
             self.direction = 1
+       if moving_right:
+            dx = self.speed
+            self.flip = True
+            self.direction = -1
     #update position
        self.rect.x += dx 
 
