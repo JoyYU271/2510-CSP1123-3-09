@@ -7,10 +7,10 @@ screen = pygame.display.set_mode((800,400))
 #To show on white bar above, we'll be in fullscreen so may not be needed
 #   pygame.display.set_caption('Game_name or what have you')
 clock = pygame.time.Clock() #limit game frame rate
-font_handwriting = pygame.font.Font('Projects/Python game/Morning Bright.otf')
+font_handwriting = pygame.font.Font('Morning Bright.otf')
 
-fire_surface = pygame.image.load('Projects/Python game/pfp.png').convert_alpha()
-ruins_surface = pygame.image.load('Projects/Python game/Ruins.png').convert()
+fire_surface = pygame.image.load('pfp.png').convert_alpha()
+ruins_surface = pygame.image.load('Ruins.png').convert()
 
 surface_text = font_handwriting.render('My Game', True, 'Black')
 text_rect = surface_text.get_rect(center = (160, 200))
@@ -25,6 +25,8 @@ collision_rectg = collision_surface.get_rect(topleft = (130,110))
 
 fire_gravity = 0
 
+game_active = True
+
 #Game loop begins
 while True:
     # to End game loop
@@ -33,38 +35,49 @@ while True:
             pygame.quit()
             exit()
 
-        if event.type == pygame.KEYDOWN: 
-            if event.key == pygame.K_SPACE and fire_rectg.bottom >= 342:  #event.type and event.key are NOT the same
-                    fire_gravity = -20
+        if game_active:
+            if event.type == pygame.KEYDOWN: 
+                if event.key == pygame.K_SPACE and fire_rectg.bottom >= 342:  #event.type and event.key are NOT the same
+                        fire_gravity = -20
 
-        #if event.type == pygame.KEYUP:
-            #print('key up')
-    
-    #blit means putting a surface on top of another surface
-    screen.blit(ruins_surface,(0,0)) #origin is always at top left of display screen
+            #if event.type == pygame.KEYUP:
+                #print('key up')
+        #else:
+             #if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                #game_active = True
+                #? why do I need to check these events? would they not work if I input?
 
-   # fire_y_post -= 1
-    #if fire_y_post < 110: fire_y_post = 250 #I didn't know 'if' statements can just be 1 line
-    #fire_rectg.bottom -= 1  #so weird, .bottom works, but .midbottom gets a tuple, int error??
-    fire_gravity += 1
-    fire_rectg.y += fire_gravity
-    if fire_rectg.bottom >= 342: fire_rectg.bottom = 342
-    screen.blit(fire_surface,fire_rectg)
+    if game_active:    
+        #blit means putting a surface on top of another surface
+        screen.blit(ruins_surface,(0,0)) #origin is always at top left of display screen
 
-   # print(ruins_rectg.midbottom)
+    # fire_y_post -= 1
+        #if fire_y_post < 110: fire_y_post = 250 #I didn't know 'if' statements can just be 1 line
+        #fire_rectg.bottom -= 1  #so weird, .bottom works, but .midbottom gets a tuple, int error??
+        fire_gravity += 1
+        fire_rectg.y += fire_gravity
+        if fire_rectg.bottom >= 342: fire_rectg.bottom = 342
+        screen.blit(fire_surface,fire_rectg)
 
-    pygame.draw.rect(screen, 'Purple', text_rect,8) #draw part of pygame literally draws the rect, not stamp it or anything
-    #hmm, to settle the probelm of the empty middle, it's either print twice, or increase the width until the space get's blocked out
+    # print(ruins_rectg.midbottom)
+
+        pygame.draw.rect(screen, 'Purple', text_rect,8) #draw part of pygame literally draws the rect, not stamp it or anything
+        #hmm, to settle the probelm of the empty middle, it's either print twice, or increase the width until the space get's blocked out
 
 
-    screen.blit(surface_text,text_rect)
-    
-    #if fire_rectg.colliderect(collision_rectg): #I think because it calls it here, I don't have to worry about the code not being in the game loop
-        #print('collision')
+        screen.blit(surface_text,text_rect)
+        
+        #if fire_rectg.colliderect(collision_rectg): #I think because it calls it here, I don't have to worry about the code not being in the game loop
+            #print('collision')
 
-    # was thinking if I should skip trying out collision since I don't have another image for this... until I remembered I can make rectangles
-    # create rectangle but don't display, see if collision will still detect
-    # It works :))
+        # was thinking if I should skip trying out collision since I don't have another image for this... until I remembered I can make rectangles
+        # create rectangle but don't display, see if collision will still detect
+        # It works :))
+
+        #need code here to trigger the 'else' part, but for now this is alright
+
+    else:
+         screen.fill('Gold')
 
     pygame.display.update()
     clock.tick(60)
