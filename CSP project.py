@@ -22,7 +22,8 @@ fire_y_post = 250
 
 fire_rectg = fire_surface.get_rect(bottomleft = (130, 342))
 collision_rectg = collision_surface.get_rect(topleft = (130,110))
-    
+
+fire_gravity = 0
 
 #Game loop begins
 while True:
@@ -31,14 +32,27 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
+
+        if event.type == pygame.KEYDOWN: 
+            if event.key == pygame.K_SPACE and fire_rectg.bottom >= 342:  #event.type and event.key are NOT the same
+                    fire_gravity = -20
+
+        #if event.type == pygame.KEYUP:
+            #print('key up')
     
     #blit means putting a surface on top of another surface
     screen.blit(ruins_surface,(0,0)) #origin is always at top left of display screen
+
    # fire_y_post -= 1
-    if fire_y_post < 110: fire_y_post = 250 #I didn't know 'if' statements can just be 1 line
-    fire_rectg.bottom -= 1  #so weird, .bottom works, but .midbottom gets a tuple, int error??
+    #if fire_y_post < 110: fire_y_post = 250 #I didn't know 'if' statements can just be 1 line
+    #fire_rectg.bottom -= 1  #so weird, .bottom works, but .midbottom gets a tuple, int error??
+    fire_gravity += 1
+    fire_rectg.y += fire_gravity
+    if fire_rectg.bottom >= 342: fire_rectg.bottom = 342
     screen.blit(fire_surface,fire_rectg)
+
    # print(ruins_rectg.midbottom)
+
     pygame.draw.rect(screen, 'Purple', text_rect,8) #draw part of pygame literally draws the rect, not stamp it or anything
     #hmm, to settle the probelm of the empty middle, it's either print twice, or increase the width until the space get's blocked out
 
