@@ -1,6 +1,9 @@
 import pygame
 #from pygame.locals import *
 
+def display_score():
+    current_time = pygame.time.get_ticks()
+    print(current_time)
 
 pygame.init()
 screen = pygame.display.set_mode((800,400))
@@ -12,8 +15,8 @@ font_handwriting = pygame.font.Font('Morning Bright.otf')
 fire_surface = pygame.image.load('pfp.png').convert_alpha()
 ruins_surface = pygame.image.load('Ruins.png').convert()
 
-surface_text = font_handwriting.render('My Game', True, 'Black')
-text_rect = surface_text.get_rect(center = (160, 200))
+#surface_text = font_handwriting.render('My Game', True, 'Black')
+#text_rect = surface_text.get_rect(center = (160, 200))
 
 collision_surface = pygame.Surface((50,25))
 collision_surface.fill('Purple')
