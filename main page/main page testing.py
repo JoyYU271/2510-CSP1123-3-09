@@ -12,14 +12,17 @@ screen_height = ctypes.windll.user32.GetSystemMetrics(1) #ask the real screen he
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
 pygame.display.set_caption("main page test")
 
-bg_img = pygame.image.load("background.png").convert() #converts is for optimize image faster blitting on screen
+bg_img = pygame.image.load("background1.png").convert() #converts is for optimize image faster blitting on screen
 bg_img = pygame.transform.scale(bg_img, (screen_width, screen_height))
 
 #button image
 start_img = pygame.image.load('start.png').convert_alpha() #alpha is use to keep transparent background
 load_img = pygame.image.load('load.png').convert_alpha()
+collections_img = pygame.image.load('collections.png').convert_alpha()
 settings_img = pygame.image.load('settings.png').convert_alpha()
 exit_img = pygame.image.load('exit.png').convert_alpha()
+back_img = pygame.image.load('back.png').convert_alpha()
+
 
 #button class
 class Button():
@@ -48,30 +51,64 @@ class Button():
 
         return action  
 
-start_button = Button(100,10,start_img,0.35)
-load_button = Button(100,200,load_img,0.35)
-#collections_button = Button(100,360,collections_button,0.35)
-settings_button = Button(100,560,settings_img,0.35)
-exit_button = Button(100,750,exit_img,0.35)
+def main_menu():
+    start_button = Button(100,10,start_img,0.35)
+    load_button = Button(100,200,load_img,0.35)
+    collections_button = Button(100,375,collections_img,0.35)
+    settings_button = Button(100,560,settings_img,0.35)
+    exit_button = Button(100,750,exit_img,0.35)
+    
+    while True: #keep window running
 
-#game loop
-run = True
-while run: #keep window running
-
-    screen.blit(bg_img, (0, 0)) #draw backgound from (0,0)
+        screen.blit(bg_img, (0, 0)) #draw backgound from (0,0)
    
-    start_button.draw()
-        
-    load_button.draw()
-    #collections_button.draw()
-    settings_button.draw()
-    if exit_button.draw():
-        run = False
+        if start_button.draw():
+            play()
+        if load_button.draw():
+            load_screen()
+        if collections_button.draw():
+            collections_screen()
+        if settings_button.draw():
+            settings_screen()
+        if exit_button.draw():
+           pygame.quit()
 
-    for event in pygame.event.get(): #handle event like mouse click, keyboard press
-        if event.type == pygame.QUIT: #if press x on right above will quit
-            run = False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
 
-    pygame.display.flip() #to display image blit
+        pygame.display.flip()
 
-pygame.quit()
+def play():
+    return_screen("This is the PLAY screen")
+
+def load_screen():
+    return_screen("This is the LOAD screen")
+
+def collections_screen():
+    return_screen("This is the COLLECTIONS screen")
+
+def settings_screen():
+    return_screen("This is the SETTINGS screen")
+
+
+def return_screen(title_text):
+    font = pygame.font.SysFont(None, 70)
+    back_button = Button(100, 100, back_img, 0.2)
+
+
+    while True:
+        screen.fill((30, 30, 30))
+        text = font.render(title_text, True, (255, 255, 255))
+        screen.blit(text, (300, 300))
+
+        if back_button.draw():
+            return
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
+        pygame.display.flip()
+
+main_menu()
