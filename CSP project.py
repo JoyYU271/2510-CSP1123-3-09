@@ -4,14 +4,64 @@ import sys
 # Init
 pygame.init()
 clock = pygame.time.Clock()
-screen_width = 800
-screen_height = 600
+screen_width = 1280
+screen_height = 720
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Doctor Test")
 
-# Doctor class (insert the full class here)
-# Use the class I gave earlier ↑↑↑
+#Camera class
+class CameraGroup(pygame.sprite.Group):
+    def __init__(self):
+        super().__init__()
+        self.display_surface = pygame.display.get_surface()
+        
+        #camera offset
+        self.offset = pygame.math.Vector2()
+        self.half_w = self.display_surface.get_size()[0] // 2
+        self.half_h = self.display_surface.get_size()[1] // 2
 
+        #box camera 
+        self.camera_borders = {'left':200, 'right':200, 'top':100, 'bottom':100}
+        l = self.camera_borders['left']
+        t = self.camera_borders['top']
+        w = self.display_surface.get_size()[0] - (self.camera_borders['left'] + self.camera_borders['right'])
+        h = self.display_surface.get_size()[1] - (self.camera_borders['top'] + self.camera_borders['bottom'])
+        self.camera_rect = pygame.Rect(l,t,w,h)
+
+        #ground
+        self.ground_surf = pygame.image.load('GUI 1.png').convert_alpha()
+        self.ground_rect = self.ground_surf.get_rect(topleft = (0,0))
+
+    def center_target_camera(self,target):
+        self.offset.x = target.rect.centerx - self.half_w
+        self.offset.y = target.rect.centery - self.half_h
+
+    def box_target_camera(self,target):
+
+        if target.rect.left < self.camera_rect.left:
+           self.camera_rect.left = target.rect.left
+        if target.rect.right > self.camera_rect.right:
+           self.camera_rect.right = target.rect.right 
+
+        self.offset.x = self.camera_rect.left - self.camera_borders['left']
+        self.offset.y = self.camera_rect.top - self.camera_borders['top']
+
+    def custom_draw(self,player):
+
+        #self.center_target_camera(player)
+        self.box_target_camera(player)
+
+        #ground
+        ground_offset = self.ground_rect.topleft - self.offset
+        self.display_surface.blit(self.ground_surf,ground_offset)
+
+        #player?
+        for sprite in self.sprites():
+            offset_pos = sprite.rect.topleft - self.offset
+            flipped_image = pygame.transform.flip(sprite.image, sprite.flip, False)
+            self.display_surface.blit(flipped_image, offset_pos)
+
+# Doctor class
 class Doctor(pygame.sprite.Sprite):
     def __init__(self, x, y, speed):
         super().__init__()
@@ -48,10 +98,11 @@ class Doctor(pygame.sprite.Sprite):
 
         self.rect.x += dx
 
-        if self.rect.left < 0:
-            self.rect.left = 0
-        if self.rect.right > screen_width:
-            self.rect.right = screen_width
+        #world_width = 2000
+        #if self.rect.left < 0:
+        #    self.rect.left = 0
+        #if self.rect.right > world_width:
+        #    self.rect.right = world_width
 
         return moving
 
@@ -74,8 +125,12 @@ class Doctor(pygame.sprite.Sprite):
     def draw(self, screen):
         screen.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
 
-# Create the doctor instance
-player = Doctor(x=400, y=300, speed=4.5)
+# Init camera group
+camera_group = CameraGroup()
+
+# Create player and add to camera group
+player = Doctor(x=400, y=500, speed=4.5)
+camera_group.add(player)
 
 # Game loop
 run = True
@@ -93,8 +148,8 @@ while run:
     # Update player
     player.update()
 
-    # Draw player
-    player.draw(screen)
+    # Camera draw handles background + all sprites
+    camera_group.custom_draw(player)
 
     # Update display
     pygame.display.update()
