@@ -110,10 +110,7 @@ clock = pygame.time.Clock() #limit game frame rate
 camera_group = CameraGroup() #missing the bracket gives me AbstractGroup.add_internal() missing 1 required positional argument: 'sprite' error... maybe because I didn't actually called it?
 player = doctor((400, 500), camera_group)
 
-for i in range(20):
-    random_x = randint(0, 1000)
-    random_y = randint(0,1000)
-    Fire((random_x,random_y), camera_group)
+
 
 #Game loop begins
 while True:

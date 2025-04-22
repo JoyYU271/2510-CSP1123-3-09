@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+#<<<<<<< HEAD
 import pygame
 import sys
 from pygame.locals import *
@@ -108,7 +108,7 @@ while run :
            
          
 pygame.quit()
-=======
+#=======
 import pygame
 import sys
 from pygame.locals import *
@@ -218,5 +218,5 @@ while run :
            
          
 pygame.quit()
->>>>>>> Camera_sys_1
+#>>>>>>> Camera_sys_1
 sys.exit()
