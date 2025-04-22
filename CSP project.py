@@ -4,13 +4,13 @@ from random import randint
 
 
 class doctor(pygame.sprite.Sprite):  
-    def __init__(self,x,y,speed):
-        super().__init__()   #auto find the sprite（pygame.sprite.Sprite）
+    def __init__(self,x,y,group):
+        super().__init__(group)   #auto find the sprite（pygame.sprite.Sprite）
         self.stand_img = pygame.image.load('picture/Character QQ/Doctor idle.png').convert_alpha()
         self.image =  self.stand_img
         self.rect = self.image.get_rect() #get the rectangle area of image to locate the character
         self.rect.center = (x,y) #set player on screen on origin location
-        self.speed = speed
+        self.speed = 4.5
         self.direction = 1
         self.flip = False
         self.animation_list = []
@@ -25,13 +25,13 @@ class doctor(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_RIGHT and pygame.K_d]:
-            self.direction.x = 1
+            self.direction = 1
             self.flip = False
         elif keys[pygame.K_LEFT and pygame.K_a]:
-            self.direction.x = -1
+            self.direction = -1
             self.flip = True
         else:
-            self.direction.x = 0
+            self.direction = 0
 
     def update(self):
         self.input()
@@ -108,9 +108,7 @@ clock = pygame.time.Clock() #limit game frame rate
 #set up
 #sprite group?
 camera_group = CameraGroup() #missing the bracket gives me AbstractGroup.add_internal() missing 1 required positional argument: 'sprite' error... maybe because I didn't actually called it?
-player = doctor((400, 500), camera_group)
-
-
+player = doctor(400, 500, camera_group)
 
 #Game loop begins
 while True:
