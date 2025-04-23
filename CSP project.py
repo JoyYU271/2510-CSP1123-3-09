@@ -1,44 +1,17 @@
-import pygame, sys
-from random import randint
-#Help on built-in function set_mode in module pygame.display:
+import pygame
+import sys
 
+# Init
+pygame.init()
+clock = pygame.time.Clock()
+screen_width = 1280
+screen_height = 720
+screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
+world_width = 2488
+world_height = 720
+pygame.display.set_caption("Doctor Test")
 
-class doctor(pygame.sprite.Sprite):  
-    def __init__(self,x,y,group):
-        super().__init__(group)   #auto find the sprite（pygame.sprite.Sprite）
-        self.stand_img = pygame.image.load('picture/Character QQ/Doctor idle.png').convert_alpha()
-        self.image =  self.stand_img
-        self.rect = self.image.get_rect() #get the rectangle area of image to locate the character
-        self.rect.center = (x,y) #set player on screen on origin location
-        self.speed = 4.5
-        self.direction = 1
-        self.flip = False
-        self.animation_list = []
-        self.frame_index = 0
-        self.update_time = pygame.time.get_ticks()
-
-        for i in range(1,5):
-            doctorwalk = pygame.image.load(f'picture/Doctor Walking/walk {i}.png').convert_alpha()
-            self.animation_list.append(doctorwalk)
-
-    def input(self):
-        keys = pygame.key.get_pressed()
-
-        if keys[pygame.K_RIGHT and pygame.K_d]:
-            self.direction = 1
-            self.flip = False
-        elif keys[pygame.K_LEFT and pygame.K_a]:
-            self.direction = -1
-            self.flip = True
-        else:
-            self.direction = 0
-
-    def update(self):
-        self.input()
-        self.rect.center += self.direction * self.speed
-        screen.blit (pygame.transform.flip(self.image,self.flip,False),self.rect)
-
-
+#Camera class
 class CameraGroup(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
@@ -57,8 +30,8 @@ class CameraGroup(pygame.sprite.Group):
         h = self.display_surface.get_size()[1] - (self.camera_borders['top'] + self.camera_borders['bottom'])
         self.camera_rect = pygame.Rect(l,t,w,h)
 
-        #ground
-        self.ground_surf = pygame.image.load('GUI 1.png').convert_alpha()
+        #background
+        self.ground_surf = pygame.image.load('Entrance halllway sketch.png').convert_alpha()
         self.ground_rect = self.ground_surf.get_rect(topleft = (0,0))
 
     def center_target_camera(self,target):
@@ -75,6 +48,10 @@ class CameraGroup(pygame.sprite.Group):
         self.offset.x = self.camera_rect.left - self.camera_borders['left']
         self.offset.y = self.camera_rect.top - self.camera_borders['top']
 
+         # Clamp offset to world bounds
+        self.offset.x = max(0, min(self.offset.x, world_width - self.display_surface.get_width()))
+        self.offset.y = max(0, min(self.offset.y, world_height - self.display_surface.get_height()))
+
     def custom_draw(self,player):
 
         #self.center_target_camera(player)
@@ -85,52 +62,127 @@ class CameraGroup(pygame.sprite.Group):
         self.display_surface.blit(self.ground_surf,ground_offset)
 
         #player?
-        for sprite in self.sprites:
+        for sprite in self.sprites():
             offset_pos = sprite.rect.topleft - self.offset
-            self.display_surface.blit(sprite.image,offset_pos)
-        
+            flipped_image = pygame.transform.flip(sprite.image, sprite.flip, False)
+            self.display_surface.blit(flipped_image, offset_pos)
 
-pygame.init()
+# Doctor class
+class Doctor(pygame.sprite.Sprite):
+    def __init__(self, x, y, speed):
+        super().__init__()
+        self.stand_img = pygame.image.load('picture/Character QQ/Doctor idle.png').convert_alpha()
+        self.image = self.stand_img
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        self.speed = speed
+        self.flip = False
+        self.direction = 1
+        self.animation_list = []
+        self.frame_index = 0
+        self.update_time = pygame.time.get_ticks()
 
-#to get real resolution
-#ctypes.windll.user32.SetProcessDPIAware() #make sure the Python program gets the actual screen resolution, not scaled one
-#screen_width = ctypes.windll.user32.GetSystemMetrics(0) #ask the real screen width in pixels
-#screen_height = ctypes.windll.user32.GetSystemMetrics(1) #ask the real screen height in pixels
+        for i in range(1, 5):
+            walk_img = pygame.image.load(f'picture/Doctor Walking/walk {i}.png').convert_alpha()
+            self.animation_list.append(walk_img)
+
+    def move(self):
+        keys = pygame.key.get_pressed()
+        dx = 0
+        moving = False
+
+        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+            dx = -self.speed
+            self.flip = True
+            self.direction = -1
+            moving = True
+        elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+            dx = self.speed
+            self.flip = False
+            self.direction = 1
+            moving = True
+
+        self.rect.x += dx
+
+        if self.rect.left < 0:
+            self.rect.left = 0
+        if self.rect.right > world_width:
+            self.rect.right = world_width
+
+        return moving
+
+    def update_animation(self, moving):
+        if moving:
+            ANIMATION_COOLDOWN = 150
+            if pygame.time.get_ticks() - self.update_time > ANIMATION_COOLDOWN:
+                self.update_time = pygame.time.get_ticks()
+                self.frame_index += 1
+                if self.frame_index >= len(self.animation_list):
+                    self.frame_index = 0
+            self.image = self.animation_list[self.frame_index]
+        else:
+            self.image = self.stand_img
+
+    def update(self):
+        is_moving = self.move()
+        self.update_animation(is_moving)
+
+    def draw(self, screen):
+        screen.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
+
+#class UIElement:
+    #def __init__(self, image_path, base_pos):
+    #    self.original_image = pygame.image.load(image_path).convert_alpha()
+    #    self.base_pos = base_pos  # Position in original 800x600
+    #    self.scaled_image = self.original_image
+    #    self.pos = base_pos
+
+    #def update(self, scale_x, scale_y):
+     #   w = int(self.original_image.get_width() * scale_x)
+     #   h = int(self.original_image.get_height() * scale_y)
+     #   self.scaled_image = pygame.transform.scale(self.original_image, (w, h))
+     #   self.pos = (int(self.base_pos[0] * scale_x), int(self.base_pos[1] * scale_y))
+
+    #def draw(self, surface):
+     #   surface.blit(self.scaled_image, self.pos)
 
 
-screen = pygame.display.set_mode((1280, 720), pygame.RESIZABLE) #Right here! :D
 
+# Init camera group
+camera_group = CameraGroup()
 
-#To show on white bar above, we'll be in fullscreen so may not be needed
-#   pygame.display.set_caption('Game_name or what have you')
-clock = pygame.time.Clock() #limit game frame rate
+# Create player and add to camera group
+player = Doctor(x=400, y=500, speed=4.5)
+camera_group.add(player)
 
-#set up
-#sprite group?
-camera_group = CameraGroup() #missing the bracket gives me AbstractGroup.add_internal() missing 1 required positional argument: 'sprite' error... maybe because I didn't actually called it?
-player = doctor(400, 500, camera_group)
+# Game loop
+run = True
+while run:
+    screen.fill((100, 100, 255))  # sky blue background
 
-#Game loop begins
-while True:
-    # to End game loop
+    # Event check (for ESC / quit)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+            run = False
+        elif event.type == pygame.VIDEORESIZE:
+            screen_width, screen_height = event.w, event.h
+            # Optional: tell the camera group about the new size
+            camera_group.display_surface = screen
+            camera_group.half_w = screen_width // 2
+            camera_group.half_h = screen_height // 2 
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                run = False
 
-        if event.type == pygame.VIDEORESIZE:
-                # There's some code to add back window content here.
-                surface = pygame.display.set_mode((event.w, event.h),pygame.RESIZABLE)
-        
-    screen.fill('#71ddee')
+    # Update player
+    player.update()
 
-    camera_group.update()
+    # Camera draw handles background + all sprites
     camera_group.custom_draw(player)
-    
 
+    # Update display
     pygame.display.update()
     clock.tick(60)
 
-
-
-
+pygame.quit()
+sys.exit()
