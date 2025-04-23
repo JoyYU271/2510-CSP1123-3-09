@@ -6,7 +6,9 @@ pygame.init()
 clock = pygame.time.Clock()
 screen_width = 1280
 screen_height = 720
-screen = pygame.display.set_mode((screen_width, screen_height))
+screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
+world_width = 2488
+world_height = 720
 pygame.display.set_caption("Doctor Test")
 
 #Camera class
@@ -28,8 +30,8 @@ class CameraGroup(pygame.sprite.Group):
         h = self.display_surface.get_size()[1] - (self.camera_borders['top'] + self.camera_borders['bottom'])
         self.camera_rect = pygame.Rect(l,t,w,h)
 
-        #ground
-        self.ground_surf = pygame.image.load('GUI 1.png').convert_alpha()
+        #background
+        self.ground_surf = pygame.image.load('Entrance halllway sketch.png').convert_alpha()
         self.ground_rect = self.ground_surf.get_rect(topleft = (0,0))
 
     def center_target_camera(self,target):
@@ -45,6 +47,10 @@ class CameraGroup(pygame.sprite.Group):
 
         self.offset.x = self.camera_rect.left - self.camera_borders['left']
         self.offset.y = self.camera_rect.top - self.camera_borders['top']
+
+         # Clamp offset to world bounds
+        self.offset.x = max(0, min(self.offset.x, world_width - self.display_surface.get_width()))
+        self.offset.y = max(0, min(self.offset.y, world_height - self.display_surface.get_height()))
 
     def custom_draw(self,player):
 
@@ -85,12 +91,12 @@ class Doctor(pygame.sprite.Sprite):
         dx = 0
         moving = False
 
-        if keys[pygame.K_a]:
+        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             dx = -self.speed
             self.flip = True
             self.direction = -1
             moving = True
-        elif keys[pygame.K_d]:
+        elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             dx = self.speed
             self.flip = False
             self.direction = 1
@@ -98,11 +104,10 @@ class Doctor(pygame.sprite.Sprite):
 
         self.rect.x += dx
 
-        #world_width = 2000
-        #if self.rect.left < 0:
-        #    self.rect.left = 0
-        #if self.rect.right > world_width:
-        #    self.rect.right = world_width
+        if self.rect.left < 0:
+            self.rect.left = 0
+        if self.rect.right > world_width:
+            self.rect.right = world_width
 
         return moving
 
@@ -141,7 +146,13 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-        if event.type == pygame.KEYDOWN:
+        elif event.type == pygame.VIDEORESIZE:
+            screen_width, screen_height = event.w, event.h
+            # Optional: tell the camera group about the new size
+            camera_group.display_surface = screen
+            camera_group.half_w = screen_width // 2
+            camera_group.half_h = screen_height // 2 
+        elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 run = False
 
