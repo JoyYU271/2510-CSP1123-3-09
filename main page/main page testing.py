@@ -4,6 +4,7 @@ import sys
 #here maybe can add import sys to use sy.exit() but still figuring out how to use it
 
 pygame.init() #initialize all import pygame modules
+pygame.mixer.init()
 
 #to get real resolution
 #ctypes.windll.user32.SetProcessDPIAware() #make sure the Python program gets the actual screen resolution, not scaled one
@@ -13,9 +14,10 @@ pygame.init() #initialize all import pygame modules
 screen_width = 1280
 screen_height = 720
 
-screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
+screen = pygame.display.set_mode((screen_width, screen_height))#pygame.FULLSCREEN)
 pygame.display.set_caption("main page test")
 
+#background image
 bg_img = pygame.image.load("background1.png").convert() #converts is for optimize image faster blitting on screen
 bg_img = pygame.transform.scale(bg_img, (screen_width, screen_height))
 
@@ -25,6 +27,9 @@ load_img = pygame.image.load('load.png').convert_alpha()
 collections_img = pygame.image.load('collections.png').convert_alpha()
 settings_img = pygame.image.load('settings.png').convert_alpha()
 exit_img = pygame.image.load('exit.png').convert_alpha()
+
+#button click sound
+click_sound = pygame.mixer.Sound("click1.wav") 
 
 #get a font
 def get_font(size):
@@ -51,14 +56,16 @@ class Button():
         if self.image is None:
             self.image = self.text
 
-        self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
-        self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos))
+        self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos)) #detect clicks
+        self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos)) 
 
+    #update image and text on screen
     def update(self, screen):
         if self.image is not None:
             screen.blit(self.image, self.rect)
         screen.blit(self.text, self.text_rect)
 
+    #determine is mouse on button area or not
     def checkForInput(self, position):
         return self.rect.collidepoint(position)
 
@@ -67,7 +74,7 @@ class Button():
             self.text = self.font.render(self.text_input, True, self.hovering_color)
         else:
             self.text = self.font.render(self.text_input, True, self.base_color)
-
+    
     def draw(self, screen):
         self.update(screen)
         mouse_pos = pygame.mouse.get_pos()
@@ -100,12 +107,16 @@ def main_menu():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if start_button.checkForInput(mouse_pos):
+                    click_sound.play()
                     play()
                 elif load_button.checkForInput(mouse_pos):
+                    click_sound.play()
                     load_screen()
                 elif collections_button.checkForInput(mouse_pos):
+                    click_sound.play()
                     collections_screen()
                 elif settings_button.checkForInput(mouse_pos):
+                    click_sound.play()
                     settings_screen()
                 elif exit_button.checkForInput(mouse_pos):
                     pygame.quit()
@@ -134,6 +145,7 @@ def play():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button.checkForInput(mouse_pos):
+                    click_sound.play()
                     return
 
         pygame.display.update()
@@ -159,6 +171,7 @@ def load_screen():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button.checkForInput(mouse_pos):
+                    click_sound.play()
                     return
 
         pygame.display.update()
@@ -184,6 +197,7 @@ def collections_screen():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button.checkForInput(mouse_pos):
+                    click_sound.play()
                     return
 
         pygame.display.update()
@@ -209,6 +223,7 @@ def settings_screen():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button.checkForInput(mouse_pos):
+                    click_sound.play()
                     return
 
         pygame.display.update()
