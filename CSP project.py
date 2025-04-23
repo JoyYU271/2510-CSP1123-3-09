@@ -130,6 +130,24 @@ class Doctor(pygame.sprite.Sprite):
     def draw(self, screen):
         screen.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
 
+#class UIElement:
+    #def __init__(self, image_path, base_pos):
+    #    self.original_image = pygame.image.load(image_path).convert_alpha()
+    #    self.base_pos = base_pos  # Position in original 800x600
+    #    self.scaled_image = self.original_image
+    #    self.pos = base_pos
+
+    #def update(self, scale_x, scale_y):
+     #   w = int(self.original_image.get_width() * scale_x)
+     #   h = int(self.original_image.get_height() * scale_y)
+     #   self.scaled_image = pygame.transform.scale(self.original_image, (w, h))
+     #   self.pos = (int(self.base_pos[0] * scale_x), int(self.base_pos[1] * scale_y))
+
+    #def draw(self, surface):
+     #   surface.blit(self.scaled_image, self.pos)
+
+
+
 # Init camera group
 camera_group = CameraGroup()
 
