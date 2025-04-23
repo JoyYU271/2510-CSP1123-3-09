@@ -1,41 +1,43 @@
-import pygame, sys,ctypes
+import pygame, sys
 from random import randint
+#Help on built-in function set_mode in module pygame.display:
 
-#create class for obstacle sprite, and player sprite
-class Fire(pygame.sprite.Sprite):
-    def __init__(self, pos, group):
-        super().__init__(group)
-        self.image = pygame.image.load('pfp.png').convert_alpha()
-        self.rect = self.image.get_rect(topleft = pos)
 
-class Player(pygame.sprite.Sprite):
-    def __init__(self,pos,group):
-        super().__init__(group)
-        self.image = pygame.image.load('sonic.png').convert_alpha()
-        self.rect = self.image.get_rect(center = pos)
-        self.direction = pygame.math.Vector2()
-        self.speed = 5
-    
+class doctor(pygame.sprite.Sprite):  
+    def __init__(self,x,y,group):
+        super().__init__(group)   #auto find the sprite（pygame.sprite.Sprite）
+        self.stand_img = pygame.image.load('picture/Character QQ/Doctor idle.png').convert_alpha()
+        self.image =  self.stand_img
+        self.rect = self.image.get_rect() #get the rectangle area of image to locate the character
+        self.rect.center = (x,y) #set player on screen on origin location
+        self.speed = 4.5
+        self.direction = 1
+        self.flip = False
+        self.animation_list = []
+        self.frame_index = 0
+        self.update_time = pygame.time.get_ticks()
+
+        for i in range(1,5):
+            doctorwalk = pygame.image.load(f'picture/Doctor Walking/walk {i}.png').convert_alpha()
+            self.animation_list.append(doctorwalk)
+
     def input(self):
         keys = pygame.key.get_pressed()
 
-        #if keys[pygame.K_UP]:
-        #    self.direction.y = -1
-        #elif keys[pygame.K_DOWN]:
-        #    self.direction.y = 1
-        #else:
-        #    self.direction.y = 0
-
-        if keys[pygame.K_RIGHT]:
-            self.direction.x = 1
-        elif keys[pygame.K_LEFT]:
-            self.direction.x = -1
+        if keys[pygame.K_RIGHT and pygame.K_d]:
+            self.direction = 1
+            self.flip = False
+        elif keys[pygame.K_LEFT and pygame.K_a]:
+            self.direction = -1
+            self.flip = True
         else:
-            self.direction.x = 0
+            self.direction = 0
 
     def update(self):
         self.input()
         self.rect.center += self.direction * self.speed
+        screen.blit (pygame.transform.flip(self.image,self.flip,False),self.rect)
+
 
 class CameraGroup(pygame.sprite.Group):
     def __init__(self):
@@ -82,19 +84,18 @@ class CameraGroup(pygame.sprite.Group):
         ground_offset = self.ground_rect.topleft - self.offset
         self.display_surface.blit(self.ground_surf,ground_offset)
 
-        #active elements
-        for sprite in sorted(self.sprites(),key = lambda sprite: sprite.rect.center): #.sprites is where all our imported sprites are stored in pygame
-            #note to study more about 'sorted'
+        #player?
+        for sprite in self.sprites:
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image,offset_pos)
-            
+        
 
 pygame.init()
 
 #to get real resolution
-ctypes.windll.user32.SetProcessDPIAware() #make sure the Python program gets the actual screen resolution, not scaled one
-screen_width = ctypes.windll.user32.GetSystemMetrics(0) #ask the real screen width in pixels
-screen_height = ctypes.windll.user32.GetSystemMetrics(1) #ask the real screen height in pixels
+#ctypes.windll.user32.SetProcessDPIAware() #make sure the Python program gets the actual screen resolution, not scaled one
+#screen_width = ctypes.windll.user32.GetSystemMetrics(0) #ask the real screen width in pixels
+#screen_height = ctypes.windll.user32.GetSystemMetrics(1) #ask the real screen height in pixels
 
 
 screen = pygame.display.set_mode((1280, 720), pygame.RESIZABLE) #Right here! :D
@@ -107,12 +108,7 @@ clock = pygame.time.Clock() #limit game frame rate
 #set up
 #sprite group?
 camera_group = CameraGroup() #missing the bracket gives me AbstractGroup.add_internal() missing 1 required positional argument: 'sprite' error... maybe because I didn't actually called it?
-player = Player((640, 360), camera_group)
-
-for i in range(20):
-    random_x = randint(0, 1000)
-    random_y = randint(0,1000)
-    Fire((random_x,random_y), camera_group)
+player = doctor(400, 500, camera_group)
 
 #Game loop begins
 while True:
@@ -121,11 +117,16 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-    
+
+        if event.type == pygame.VIDEORESIZE:
+                # There's some code to add back window content here.
+                surface = pygame.display.set_mode((event.w, event.h),pygame.RESIZABLE)
+        
     screen.fill('#71ddee')
 
     camera_group.update()
     camera_group.custom_draw(player)
+    
 
     pygame.display.update()
     clock.tick(60)
