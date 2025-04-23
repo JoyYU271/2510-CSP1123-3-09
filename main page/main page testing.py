@@ -31,6 +31,11 @@ exit_img = pygame.image.load('exit.png').convert_alpha()
 #button click sound
 click_sound = pygame.mixer.Sound("click1.wav") 
 
+# Global variables to store settings
+bgm_vol = 0.5
+sfx_vol = 0.5
+resolution = (1280, 720)
+
 #get a font
 def get_font(size):
     return pygame.font.Font(None, size) #None is use system default font
@@ -203,29 +208,71 @@ def collections_screen():
         pygame.display.update()
 
 def settings_screen():
+    global bgm_vol, sfx_vol, resolution #modify the global variables bgm_vol, sfx_vol, and resolution
+
     while True:
         screen.fill("black")
         mouse_pos = pygame.mouse.get_pos()
 
-        text = get_font(45).render("This is the SETTINGS screen.", True, "White")
-        rect = text.get_rect(center=(640, 260))
-        screen.blit(text, rect)
+        #volume control buttons
+        bgm_plus = Button(None, (800, 250), text_input="+", font=get_font(45), base_color="White", hovering_color="Green")
+        bgm_minus = Button(None, (480, 250), text_input="-", font=get_font(45), base_color="White", hovering_color="Green")
+        
+        sfx_plus = Button(None, (800, 350), text_input="+", font=get_font(45), base_color="White", hovering_color="Green")
+        sfx_minus = Button(None, (480, 350), text_input="-", font=get_font(45), base_color="White", hovering_color="Green")
+        
+        #resolution settings
+        resolution_button = Button(image=None, pos=(640, 450), text_input=f"Resolution: {resolution[0]}x{resolution[1]}",
+                                    font=get_font(45), base_color="White", hovering_color="Green")
+        
+        back_button = Button(image=None, pos=(640, 600), text_input="BACK",
+                             font=get_font(60), base_color="White", hovering_color="Green")
 
-        back_button = Button(image=None, pos=(640, 460), text_input="BACK",
-                             font=get_font(75), base_color="White", hovering_color="Green")
+        #draw all buttons
+        for btn in [bgm_plus, bgm_minus, sfx_plus, sfx_minus, resolution_button, back_button]:
+            btn.changeColor(mouse_pos)
+            btn.update(screen)
 
-        back_button.changeColor(mouse_pos)
-        back_button.update(screen)
+        #display BGM volume
+        bgm_text = get_font(35).render(f"BGM Volume: {int(bgm_vol * 100)}%", True, "White")
+        screen.blit(bgm_text, (530, 210))
+
+        #display SFX volume
+        sfx_text = get_font(35).render(f"SFX Volume: {int(sfx_vol * 100)}%", True, "White")
+        screen.blit(sfx_text, (530, 310))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button.checkForInput(mouse_pos):
                     click_sound.play()
-                    return
+                    return #back to menu
+                
+                if bgm_plus.checkForInput(mouse_pos) and bgm_vol < 1.0:
+                    bgm_vol = round(min(bgm_vol + 0.1, 1.0), 1) #to not exceed 1.0
+                    pygame.mixer.music.set_volume(bgm_vol)
+                if bgm_minus.checkForInput(mouse_pos) and bgm_vol > 0.0:
+                    bgm_vol = round(max(bgm_vol - 0.1, 0.0), 1) #to not lower than 0.0
+                    pygame.mixer.music.set_volume(bgm_vol)
 
+                if sfx_plus.checkForInput(mouse_pos) and sfx_vol < 1.0:
+                    sfx_vol = round(min(sfx_vol + 0.1, 1.0), 1)
+                    click_sound.set_volume(sfx_vol)
+                if sfx_minus.checkForInput(mouse_pos) and sfx_vol > 0.0:
+                    sfx_vol = round(max(sfx_vol - 0.1, 0.0), 1)
+                    click_sound.set_volume(sfx_vol)
+
+                if resolution_button.checkForInput(mouse_pos):
+                    if resolution == (1280, 720):
+                        resolution = (1920, 1080)
+                    else:
+                        resolution = (1280, 720)
+                    pygame.display.set_mode(resolution)
+                    resolution_button.text = get_font(45).render(f"Resolution: {resolution[0]}x{resolution[1]}", True, "White")
+                    
         pygame.display.update()
 
 main_menu()
