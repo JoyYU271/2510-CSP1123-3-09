@@ -1,4 +1,40 @@
-
 {
-    
+ "Nuva":{
+    "chapter_1":[
+        {"speaker":"npc","text":"Hello! Are you the new psychologist?","shown ": false},
+        {"choice":[
+            {"option":"I am not","next":"not_a_doctor"},
+            {"option":"I am","next":"a_doctor"}
+        ]
+        }
+    ],
+
+    "not_a_doctor" :[
+
+        {"speaker" :"player","text":"I am not.","shown ": false},
+        {"speaker":"npc","text":"Eh~ I thought such a handsome guy would be our new doctor!","shown ": false},
+        {"speaker":"npc","text":"Are you here to see the Dean? He just left for a meeting.","shown ": false},
+        {"speaker" :"player","text":".....Sorry, I was joking. Seems my sense of humor needs work. ","shown ": false},
+        {"speaker" :"narrator","text":"(You see her pause, and then chuckle.) ","shown ": false},
+        {"speaker" :"npc","text":" Ha Ha, you are a quite interesting person.","shown ": false},
+        {"next":"chapter_1_common","shown ": false}
+    ],
+
+    "a_doctor":[
+        {"speaker" :"player","text":"I am. Hello.","shown ": false},
+        {"speaker" :"narrator","text":"(You see her smile widen.)","shown ": false},
+        {"speaker" :"npc","text":"The Dean mentioned that we had a new psychologist starting today, but I didn’t expect him to be so handsome!","shown ": false},
+        {"speaker" :"narrator","text":"(Her compliments make your ears turn red.)","shown ": false},
+        {"speaker" :"player","text":"......Thanks","shown ": false},
+        {"next":"chapter_1_common"}
+    ],
+
+    "chapter_1_common":[
+        {"speaker" :"npc","text":"I’m Nuva, the receptionist nurse. If you have any questions, feel free to ask me—your senior!"},
+        {"speaker" :"player","text":"Got it."},
+        {"speaker" :"npc","text":"Oh, by the way, already have a patient booked a session with you for today. She is waiting in your office, you can head over when you are ready"}
+
+
+    ]
+ }
 }
