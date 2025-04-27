@@ -208,10 +208,18 @@ def collections_screen():
         pygame.display.update()
 
 def settings_screen():
-    global bgm_vol, sfx_vol, resolution #modify the global variables bgm_vol, sfx_vol, and resolution
+    global bgm_vol, sfx_vol #modify the global variables 
+
+    #set backgound
+    settings_bg_img = pygame.image.load("common background.png").convert()
+    settings_bg_img = pygame.transform.scale(settings_bg_img, (screen_width, screen_height))
+
+    #default settings
+    default_bgm_vol = 0.5
+    default_sfx_vol = 0.5
 
     while True:
-        screen.fill("black")
+        screen.blit(settings_bg_img, (0, 0))
         mouse_pos = pygame.mouse.get_pos()
 
         #volume control buttons
@@ -221,15 +229,14 @@ def settings_screen():
         sfx_plus = Button(None, (800, 350), text_input="+", font=get_font(45), base_color="White", hovering_color="Green")
         sfx_minus = Button(None, (480, 350), text_input="-", font=get_font(45), base_color="White", hovering_color="Green")
         
-        #resolution settings
-        resolution_button = Button(image=None, pos=(640, 450), text_input=f"Resolution: {resolution[0]}x{resolution[1]}",
-                                    font=get_font(45), base_color="White", hovering_color="Green")
-        
         back_button = Button(image=None, pos=(640, 600), text_input="BACK",
                              font=get_font(60), base_color="White", hovering_color="Green")
 
+        default_button = Button(image=None, pos=(640, 500), text_input="Reset to Default",
+                             font=get_font(50), base_color="White", hovering_color="Green")
+
         #draw all buttons
-        for btn in [bgm_plus, bgm_minus, sfx_plus, sfx_minus, resolution_button, back_button]:
+        for btn in [bgm_plus, bgm_minus, sfx_plus, sfx_minus, back_button,default_button]:
             btn.changeColor(mouse_pos)
             btn.update(screen)
 
@@ -254,25 +261,29 @@ def settings_screen():
                 if bgm_plus.checkForInput(mouse_pos) and bgm_vol < 1.0:
                     bgm_vol = round(min(bgm_vol + 0.1, 1.0), 1) #to not exceed 1.0
                     pygame.mixer.music.set_volume(bgm_vol)
+                    click_sound.play()
                 if bgm_minus.checkForInput(mouse_pos) and bgm_vol > 0.0:
                     bgm_vol = round(max(bgm_vol - 0.1, 0.0), 1) #to not lower than 0.0
                     pygame.mixer.music.set_volume(bgm_vol)
+                    click_sound.play()
 
                 if sfx_plus.checkForInput(mouse_pos) and sfx_vol < 1.0:
                     sfx_vol = round(min(sfx_vol + 0.1, 1.0), 1)
                     click_sound.set_volume(sfx_vol)
+                    click_sound.play()
                 if sfx_minus.checkForInput(mouse_pos) and sfx_vol > 0.0:
                     sfx_vol = round(max(sfx_vol - 0.1, 0.0), 1)
                     click_sound.set_volume(sfx_vol)
+                    click_sound.play()
 
-                if resolution_button.checkForInput(mouse_pos):
-                    if resolution == (1280, 720):
-                        resolution = (1920, 1080)
-                    else:
-                        resolution = (1280, 720)
-                    pygame.display.set_mode(resolution)
-                    resolution_button.text = get_font(45).render(f"Resolution: {resolution[0]}x{resolution[1]}", True, "White")
-                    
+                if default_button.checkForInput(mouse_pos):
+                    bgm_vol = default_bgm_vol
+                    sfx_vol = default_sfx_vol
+                    pygame.mixer.music.set_volume(bgm_vol)
+                    click_sound.set_volume(sfx_vol)
+                    click_sound.play()
+
+
         pygame.display.update()
 
 main_menu()
