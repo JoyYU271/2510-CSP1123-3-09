@@ -34,7 +34,7 @@ click_sound = pygame.mixer.Sound("click1.wav")
 # Global variables to store settings
 bgm_vol = 0.5
 sfx_vol = 0.5
-resolution = (1280, 720)
+text_size = "Medium"
 
 #get a font
 def get_font(size):
@@ -208,7 +208,7 @@ def collections_screen():
         pygame.display.update()
 
 def settings_screen():
-    global bgm_vol, sfx_vol #modify the global variables 
+    global screen,bgm_vol, sfx_vol, text_size #modify the global variables 
 
     #set backgound
     settings_bg_img = pygame.image.load("common background.png").convert()
@@ -217,36 +217,45 @@ def settings_screen():
     #default settings
     default_bgm_vol = 0.5
     default_sfx_vol = 0.5
+    default_text_size = "Medium"
 
     while True:
         screen.blit(settings_bg_img, (0, 0))
         mouse_pos = pygame.mouse.get_pos()
 
-        #volume control buttons
-        bgm_plus = Button(None, (800, 250), text_input="+", font=get_font(45), base_color="White", hovering_color="Green")
-        bgm_minus = Button(None, (480, 250), text_input="-", font=get_font(45), base_color="White", hovering_color="Green")
-        
-        sfx_plus = Button(None, (800, 350), text_input="+", font=get_font(45), base_color="White", hovering_color="Green")
-        sfx_minus = Button(None, (480, 350), text_input="-", font=get_font(45), base_color="White", hovering_color="Green")
-        
-        back_button = Button(image=None, pos=(640, 600), text_input="BACK",
-                             font=get_font(60), base_color="White", hovering_color="Green")
+        # BGM Volume buttons
+        bgm_text = get_font(40).render(f"BGM Volume: {int(bgm_vol * 100)}%", True, "White")
+        screen.blit(bgm_text, (screen_width // 2 - bgm_text.get_width() // 2, 150))
 
-        default_button = Button(image=None, pos=(640, 500), text_input="Reset to Default",
-                             font=get_font(50), base_color="White", hovering_color="Green")
+        bgm_minus = Button(None, (screen_width//2 - 100, 200), text_input="-", font=get_font(50), base_color="White", hovering_color="Green")
+        bgm_plus = Button(None, (screen_width//2 + 100, 200), text_input="+", font=get_font(50), base_color="White", hovering_color="Green")
 
-        #draw all buttons
-        for btn in [bgm_plus, bgm_minus, sfx_plus, sfx_minus, back_button,default_button]:
+        # SFX Volume buttons
+        sfx_text = get_font(40).render(f"SFX Volume: {int(sfx_vol * 100)}%", True, "White")
+        screen.blit(sfx_text, (screen_width // 2 - sfx_text.get_width() // 2, 280))
+
+        sfx_minus = Button(None, (screen_width//2 - 100, 330), text_input="-", font=get_font(50), base_color="White", hovering_color="Green")
+        sfx_plus = Button(None, (screen_width//2 + 100, 330), text_input="+", font=get_font(50), base_color="White", hovering_color="Green")
+
+        # Text Size buttons
+        text_size_text = get_font(40).render(f"Text Size: {text_size}", True, "White")
+        screen.blit(text_size_text, (screen_width // 2 - text_size_text.get_width() // 2, 410))
+
+        small_button = Button(None, (screen_width//2 - 150, 460), text_input="Small", font=get_font(40), base_color="White", hovering_color="Green")
+        medium_button = Button(None, (screen_width//2, 460), text_input="Medium", font=get_font(40), base_color="White", hovering_color="Green")
+        large_button = Button(None, (screen_width//2 + 150, 460), text_input="Large", font=get_font(40), base_color="White", hovering_color="Green")
+
+        # Reset and Back buttons
+        default_button = Button(None, (screen_width//2, 550), text_input="Reset to Default", font=get_font(45), base_color="White", hovering_color="Green")
+        back_button = Button(None, (screen_width//2, 630), text_input="BACK", font=get_font(50), base_color="White", hovering_color="Green")
+
+        buttons = [bgm_plus, bgm_minus, sfx_plus, sfx_minus,
+                   small_button, medium_button, large_button,
+                   default_button, back_button]
+
+        for btn in buttons:
             btn.changeColor(mouse_pos)
             btn.update(screen)
-
-        #display BGM volume
-        bgm_text = get_font(35).render(f"BGM Volume: {int(bgm_vol * 100)}%", True, "White")
-        screen.blit(bgm_text, (530, 210))
-
-        #display SFX volume
-        sfx_text = get_font(35).render(f"SFX Volume: {int(sfx_vol * 100)}%", True, "White")
-        screen.blit(sfx_text, (530, 310))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -276,13 +285,23 @@ def settings_screen():
                     click_sound.set_volume(sfx_vol)
                     click_sound.play()
 
+                if small_button.checkForInput(mouse_pos):
+                    text_size = "Small"
+                    click_sound.play()
+                if medium_button.checkForInput(mouse_pos):
+                    text_size = "Medium"
+                    click_sound.play()
+                if large_button.checkForInput(mouse_pos):
+                    text_size = "Large"
+                    click_sound.play()
+
                 if default_button.checkForInput(mouse_pos):
                     bgm_vol = default_bgm_vol
                     sfx_vol = default_sfx_vol
+                    text_size = default_text_size
                     pygame.mixer.music.set_volume(bgm_vol)
                     click_sound.set_volume(sfx_vol)
                     click_sound.play()
-
 
         pygame.display.update()
 
