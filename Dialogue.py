@@ -36,9 +36,12 @@ npc_list =["Nuva"]
 class dialog:
     def __init__(self,npc,player):
         super().__init__()
+
+        #load dialog box img n set transparency
         self.dialog_box_img = pygame.image.load("picture/Character Dialogue/dialog boxxx.png").convert_alpha()
         self.dialog_box_img.set_alpha(200)
 
+        # character portrait selection based on NPC name
         if npc.name == "Nuva":
              self.portrait = pygame.image.load("picture/Character Dialogue/Nurse.png").convert_alpha()
         elif npc.name == "Dean":
@@ -52,51 +55,54 @@ class dialog:
         elif npc.name == "Police":
             self.portrait = pygame.image.load("picture/Character Dialogue/Police.png").convert_alpha()
 
+        # always load player portrait
         self.player_portrait = pygame.image.load("picture/Character Dialogue/Doctor.png").convert_alpha()
 
         self.player = player
         self.npc_name = npc.name
         self.npc = npc
+
+        #get NPC's dialogue data from Json
         self.npc_data = all_dialogues.get(self.npc_name)
 
-     #dialogue setting
+         #dialogue state variacbles
         self.current_story = "chapter_1" #default chapter
         self.story_data = self.npc_data.get(self.current_story,[])
         self.step = 0 # present current sentence
-        self.shown_dialogues = {}
+        self.shown_dialogues = {} #track dialogues that have been shown
         
         
 
-        # for present sentences effect
+        # sentences typing effect
         self.displayed_text = "" #display current word
-        self.letter_index = 0  #display current which words
-        self.last_time = pygame.time.get_ticks()
+        self.letter_index = 0  #current letter position in text
+        self.last_time = pygame.time.get_ticks() #time tracking for typing speed
         self.letter_delay = 45
 
-        self.options = []
-        self.option_selected = 0
+        self.options = [] #dialogue options when choices present
+        self.option_selected = 0 #current selected option index
         self.talking = False # is it talking
 
         self.key_w_released = True
         self.key_s_released = True
         self.key_e_released = True
 
-        self.shown_dialogues = {}
 
-
-      # update dialog status
+#================ Update ============
     def update(self): 
+        #only update if in dialogue n not at the end
         if self.talking and self.step < len(self.story_data):
-             entry = self.story_data[self.step]
+             entry = self.story_data[self.step] # current dialogue entry
 
-             text = entry.get("text","")
-
+             text = entry.get("text","") #get text
+             
+             #check if this is a choice entry
              if "choice" in entry :
               self.options = entry.get("choice",[])
              else:
                  self.options = []
 
-             # words come out one by one effect
+             # text typing effect
              current_time = pygame.time.get_ticks()
              if self.letter_index < len(text):
                 if current_time - self.last_time > self.letter_delay:
@@ -105,59 +111,60 @@ class dialog:
                      self.last_time = current_time
 
     def reset_typing(self):
+         #reset text displayed for a new line 
          self.displayed_text = ""
          self.letter_index = 0
          self.last_time = pygame.time.get_ticks()
 
 
- # =========draw for dialog box ,text ,character, word effect ======   
+ # ================ Draw ======================
     def draw(self,screen):
         
-        #only draw when in talking mode
+        #only draw when in talking mode n not finished talk
         if self.talking and self.step < len(self.story_data):
            entry = self.story_data[self.step]
 
            text = entry.get("text","")
-           speaker = entry.get("speaker","npc")
+           speaker = entry.get("speaker","npc") # default speaker is NPc
                 
-
-            #let the dialog box on the center and put below
+           #let the dialog box on the center and put below
            dialog_x = screen.get_width()//2 - self.dialog_box_img.get_width() // 2
            dialog_y = screen.get_height() - self.dialog_box_img.get_height() - 20
 
-
-           #calculate max midth for text inside
-           #adjust values based on dialog box size
+           #calculate text width with limit for wrapping
            text_max_width = self.dialog_box_img.get_width() - 300 #pixel padding each side
 
+           # choose portrait n position based on speaker
            if speaker == "npc":
                 portrait = self.portrait
                 name_to_display = self.npc.name
-                portrait_pos =(dialog_x + 800,dialog_y - 400)
+                portrait_pos =(dialog_x + 800,dialog_y - 400) #right side
            else:
                 portrait = self.player_portrait
                 name_to_display = "You"
-                portrait_pos = (dialog_x +20,dialog_y - 400)
+                portrait_pos = (dialog_x +20,dialog_y - 400) #left side
 
-            #draw Character portraits
+            #draw Character portraits n dialog box
            screen.blit(portrait,portrait_pos)
-
            screen.blit(self.dialog_box_img, (dialog_x, dialog_y))
 
-              #draw Npc name above the small dialog box
+           #draw speaker name
            name_to_display = self.npc.name if speaker == "npc" else self.player.name
            draw_text(screen,name_to_display,40,(0,0,0),dialog_x + 200, dialog_y + 10)
 
+           #draw choice options if present
            if "choice" in entry:
-             max_options_display = 3
+             max_options_display = 3 #display at most 3 options
 
              dialog_center_x = dialog_x + self.dialog_box_img.get_width()// 2
 
              for i , option in enumerate(entry["choice"][:max_options_display]):
+                     # red for selected option, black for others
                      color = (255,0,0) if i == self.option_selected else (0,0,0)
                      option_y =  dialog_y+ 60 + i * 60
-                     if option_y < screen.get_height() - 40:
-                      draw_text(screen, option["option"],30,color,dialog_center_x,option_y,center= True)
+
+                     if option_y < screen.get_height() - 40: #ensure option is on screen
+                        draw_text(screen, option["option"],30,color,dialog_center_x,option_y,center= True)
 
           
            # words come out one by one effect
@@ -168,29 +175,36 @@ class dialog:
                      self.letter_index += 1
                      self.last_time = current_time
           
-
+           # draw dialogue text 
            draw_text(screen,self.displayed_text,30,(0,0,0),dialog_x + self.dialog_box_img.get_width()//2  ,dialog_y + self.dialog_box_img.get_height()//2 - 15 ,center = True,max_width=text_max_width)
 
 
     def handle_option_selection(self,keys):
+
+        # only handle if in dialogue with options n text is full displayed
         if (self.talking and self.options and self.step <len(self.story_data) and self.letter_index >= len(self.story_data[self.step].get("text",""))):
-                   option_key_pressed = False
+                  
+
+                   # move up in options list with W key
                    if keys[pygame.K_w] and self.key_w_released:
                       self.option_selected = (self.option_selected - 1) % len(self.options)
                       self.key_w_released = False
                    if not keys[pygame.K_w]:
                        self.key_w_released = True
                     
+                    #Move down in options list with S key
                    if keys[pygame.K_s] and self.key_s_released:
                       self.option_selected = (self.option_selected + 1) % len(self.options)
                       self.key_s_released = False
                    if not keys[pygame.K_s]:
                        self.key_s_released = True
                        
+                    # comfirm selection with E Key
                    if keys[pygame.K_e] and self.key_e_released:
                       selected_option = self.options[self.option_selected]
                       next_target = selected_option["next"]
 
+                      #handle value jumps n chapter change
                       if isinstance(next_target,int):
                          self.step = next_target
                       else:
@@ -204,40 +218,43 @@ class dialog:
                        
 
     def handle_space(self,keys):
+         
+         #start dialogue if not talked
          if not self.talking:
               self.talking = True
-            
               self.load_dialogue(self.npc_name,self.current_story)
               return
          
+         #process current dialogue step
          if self.step <len(self.story_data):
               entry = self.story_data[self.step]
               text = entry.get("text","")
+
+              #mark dialogue as shown if needed
               if "shown" in entry and entry["shown"] == False:
                   dialogue_id = f"{self.npc_name}_{self.current_story}_{self.step}"
                   self.shown_dialogues[dialogue_id] = True
 
-           
-
+              # if test is typing, complete it immdiately
               if self.letter_index <len (text):
                    self.letter_index = len(text)
                    self.displayed_text = text
-
-                   
               else:
+                   
+                   #if have options ,nothing to do( option selection is at other part of code)
                    if self.options:
                      pass
                   
-           
                    else:
                     if "next" in entry:
                       next_target = entry["next"]
 
                       if isinstance(next_target,int):
                           
+                          #if next_target = integer, jump to that step within same chapter
                           self.step = next_target
                       else:
-                         
+                         #if next_target = string,it's the name of new chapter to load
                           self.current_story = next_target
                           self.story_data = self.npc_data.get(next_target,[])
                           self.step = 0
@@ -245,19 +262,24 @@ class dialog:
                           self.reset_typing()
 
                     else:
+                        #if there is no "next",proceed to the next dialogue step
                         self.step += 1
                         if self.step >= len(self.story_data):
+                            #end the dialogue if reached the end
                             self.talking = False
                             self.step = 0
                         else:
+                           #reset typing effect for the next dialogue entry
                            self.reset_typing()
 
     def load_dialogue(self,npc_name,chapter):
+        #update NPC detials
         self.npc_name = npc_name
         self.npc_data = all_dialogues.get(self.npc_name,{})
         self.current_story = chapter
         self.story_data = self.npc_data.get(self.current_story,[])
 
+        # filter out already shown dialogues marked with "shown":false ( in json)
         filtered_story_data = []
         for i,entry in enumerate(self.story_data):
             dialogue_id = f"{self.npc_name}_{self.current_story}_{i}"
@@ -265,6 +287,7 @@ class dialog:
             if "shown" not in entry or entry["shown"] != False or dialogue_id not in self.shown_dialogues:
                 filtered_story_data.append(entry)
 
+        # set filtered dialogue n reset state
         self.story_data = filtered_story_data
         self.step = 0
         self.reset_typing()
