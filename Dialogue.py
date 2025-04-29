@@ -65,7 +65,7 @@ def run_dialogue():
             keys = pygame.key.get_pressed()
             if nearest_npc or (current_dialogue and current_dialogue.talking):
                 if nearest_npc and (current_dialogue is None or current_dialogue.npc != nearest_npc):
-                    current_dialogue = dialog(nearest_npc,player)
+                    current_dialogue = dialog(nearest_npc, player, all_dialogues)
                 
                 if keys[pygame.K_SPACE] and space_released:
                     space_released = False
@@ -116,7 +116,9 @@ class dialog:
         self.player = player
         self.npc_name = npc.name
         self.npc = npc
-        self.npc_data = all_dialogues.get(self.npc_name)
+
+        self.all_dialogues = all_dialogues
+        self.npc_data = self.all_dialogues.get(self.npc_name)
 
      #dialogue setting
         self.current_story = "chapter_1" #default chapter
@@ -313,7 +315,7 @@ class dialog:
 
     def load_dialogue(self,npc_name,chapter):
         self.npc_name = npc_name
-        self.npc_data = all_dialogues.get(self.npc_name,{})
+        self.npc_data = self.all_dialogues.get(self.npc_name, {})
         self.current_story = chapter
         self.story_data = self.npc_data.get(self.current_story,[])
 
