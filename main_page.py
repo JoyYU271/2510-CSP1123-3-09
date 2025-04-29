@@ -238,7 +238,7 @@ def settings_screen():
         sfx_plus = Button(None, (screen_width//2 + 100, 330), text_input="+", font=get_font(50), base_color="White", hovering_color="Green")
 
         # Text Size buttons
-        text_size_text = get_font(40).render(f"Text Size (Dialogue): {text_size}", True, "White")
+        text_size_text = get_font(40).render(f"Text Size: {text_size}", True, "White")
         screen.blit(text_size_text, (screen_width // 2 - text_size_text.get_width() // 2, 410))
 
         small_button = Button(None, (screen_width//2 - 150, 460), text_input="Small", font=get_font(40), base_color="White", hovering_color="Green")
