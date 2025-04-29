@@ -5,36 +5,95 @@ from character_movement import *
 import json
 
 
+def run_dialogue():
+    pygame.init()
 
-pygame.init()
+    screen_width = 1280
+    screen_height = 720
 
-screen_width = 1280
-screen_height = 720
+    screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
+    clock = pygame.time.Clock()
+    FPS = 60
 
-screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
-clock = pygame.time.Clock()
-FPS = 60
-
-player = doctor(400,500,4.5) 
-player.name = "You" # remember to put in class doctor
-moving_left = False
-moving_right = False
+    player = doctor(400,500,4.5) 
+    player.name = "You" # remember to put in class doctor
+    moving_left = False
+    moving_right = False
 
 
-font = pygame.font.SysFont('Comic Sans MS',40)
-space_released = True # control the dialog will not happen continuously when press key space
+    font = pygame.font.SysFont('Comic Sans MS',40)
+    space_released = True # control the dialog will not happen continuously when press key space
 
-with open('NPC_dialog/NPC.json','r',encoding = 'utf-8') as f:
-     all_dialogues = json.load(f)
+    with open('NPC_dialog/NPC.json','r',encoding = 'utf-8') as f:
+        all_dialogues = json.load(f)
 
-current_chapter = "chapter_1"
+    current_chapter = "chapter_1"
 
-npc_list =["Nuva"]
+    npc_list =["Nuva"]
+
+    npc_manager = NPCManager()
+
+    nuva = NPC(600,500,"Nuva")
+    dean = NPC(800,500,"Dean")
+
+    current_dialogue = None
+
+    npc_manager.add_npc(nuva)
+    npc_manager.add_npc(dean)
+
+    current_dialogue = None
+
+
+    run = True
+    while run:
+            
+            draw_bg(screen)
+            is_moving = player.move(moving_left,moving_right)
+            player.update_animation(is_moving)
+            
+            for npc in npc_manager.npcs:
+                screen.blit(npc.image,npc.rect)
+
+            player.draw(screen)
+            
+            moving_left,moving_right,run =  keyboard_input(moving_left, moving_right, run)
+
+
+            nearest_npc = npc_manager.get_nearest_npc(player)
+
+            #=====space======
+            keys = pygame.key.get_pressed()
+            if nearest_npc or (current_dialogue and current_dialogue.talking):
+                if nearest_npc and (current_dialogue is None or current_dialogue.npc != nearest_npc):
+                    current_dialogue = dialog(nearest_npc,player)
+                
+                if keys[pygame.K_SPACE] and space_released:
+                    space_released = False
+                    if current_dialogue:
+                        current_dialogue.handle_space(keys)
+
+                if current_dialogue:
+                    current_dialogue.handle_option_selection(keys)
+            
+
+                if not keys[pygame.K_SPACE]:
+                    space_released = True
+            elif current_dialogue:
+                current_dialogue.talking = False
+                current_dialogue.options = []
+
+                
+            if current_dialogue and current_dialogue.talking:
+                current_dialogue.update()
+                current_dialogue.draw(screen)
+            
+            pygame.display.update()
+            clock.tick(FPS)  
 
 
 #============dialog box =============
 class dialog:
-    def __init__(self,npc,player):
+    def __init__(self,npc,player,all_dialogues):
         super().__init__()
         self.dialog_box_img = pygame.image.load("picture/Character Dialogue/dialog boxxx.png").convert_alpha()
         self.dialog_box_img.set_alpha(200)
@@ -377,67 +436,5 @@ class NPCManager:
                     min_distance = distance
                     nearest_npc = npc
         return nearest_npc
+  
 
-
-npc_manager = NPCManager()
-
-nuva = NPC(600,500,"Nuva")
-dean = NPC(800,500,"Dean")
-
-current_dialogue = None
-
-npc_manager.add_npc(nuva)
-npc_manager.add_npc(dean)
-
-current_dialogue = None
-
-
-run = True
-while run:
-          
-          draw_bg(screen)
-          is_moving = player.move(moving_left,moving_right)
-          player.update_animation(is_moving)
-          
-          for npc in npc_manager.npcs:
-              screen.blit(npc.image,npc.rect)
-
-          player.draw(screen)
-          
-          moving_left,moving_right,run =  keyboard_input(moving_left, moving_right, run)
-
-
-          nearest_npc = npc_manager.get_nearest_npc(player)
-
-          #=====space======
-          keys = pygame.key.get_pressed()
-          if nearest_npc or (current_dialogue and current_dialogue.talking):
-              if nearest_npc and (current_dialogue is None or current_dialogue.npc != nearest_npc):
-                  current_dialogue = dialog(nearest_npc,player)
-            
-              if keys[pygame.K_SPACE] and space_released:
-                  space_released = False
-                  if current_dialogue:
-                     current_dialogue.handle_space(keys)
-
-              if current_dialogue:
-                 current_dialogue.handle_option_selection(keys)
-          
-
-              if not keys[pygame.K_SPACE]:
-                  space_released = True
-          elif current_dialogue:
-               current_dialogue.talking = False
-               current_dialogue.options = []
-
-            
-          if current_dialogue and current_dialogue.talking:
-              current_dialogue.update()
-              current_dialogue.draw(screen)
-          
-          pygame.display.update()
-          clock.tick(FPS)    
-          
-
-pygame.quit()
-sys.exit()
