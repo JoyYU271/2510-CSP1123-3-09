@@ -93,6 +93,9 @@ def main_menu():
     settings_button = Button(image=settings_img, pos=(300, 500), scale=0.24)
     exit_button = Button(image=exit_img, pos=(300, 640), scale=0.24)
     
+    global text_size
+    current_font_size = 40 
+
     while True: #keep window running
 
         screen.blit(bg_img, (0, 0)) #draw backgound from (0,0)
@@ -113,7 +116,7 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if start_button.checkForInput(mouse_pos):
                     click_sound.play()
-                    run_dialogue()
+                    run_dialogue(current_font_size)
                 elif load_button.checkForInput(mouse_pos):
                     click_sound.play()
                     load_screen()
@@ -123,6 +126,9 @@ def main_menu():
                 elif settings_button.checkForInput(mouse_pos):
                     click_sound.play()
                     settings_screen()
+                    new_font_size = settings_screen()
+                    if new_font_size is not None:
+                        current_font_size = new_font_size
                 elif exit_button.checkForInput(mouse_pos):
                     pygame.quit()
                     sys.exit()
@@ -288,12 +294,15 @@ def settings_screen():
                 if small_button.checkForInput(mouse_pos):
                     text_size = "Small"
                     click_sound.play()
+                    return 30
                 if medium_button.checkForInput(mouse_pos):
                     text_size = "Medium"
                     click_sound.play()
+                    return 40
                 if large_button.checkForInput(mouse_pos):
                     text_size = "Large"
                     click_sound.play()
+                    return 50
 
                 if default_button.checkForInput(mouse_pos):
                     bgm_vol = default_bgm_vol

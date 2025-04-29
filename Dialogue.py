@@ -4,8 +4,9 @@ from pygame.locals import *
 from character_movement import *
 import json
 
+current_text_size = 40
 
-def run_dialogue():
+def run_dialogue(text_size=None):
     pygame.init()
 
     screen_width = 1280
@@ -23,6 +24,11 @@ def run_dialogue():
 
     font = pygame.font.SysFont('Comic Sans MS',40)
     space_released = True # control the dialog will not happen continuously when press key space
+
+    global current_text_size
+    if text_size is not None:
+        current_text_size = text_size
+
 
     with open('NPC_dialog/NPC.json','r',encoding = 'utf-8') as f:
         all_dialogues = json.load(f)
@@ -207,7 +213,7 @@ class dialog:
 
               #draw Npc name above the small dialog box
            name_to_display = self.npc.name if speaker == "npc" else self.player.name
-           draw_text(screen,name_to_display,40,(0,0,0),dialog_x + 200, dialog_y + 10)
+           draw_text(screen, name_to_display, None, (0,0,0), dialog_x + 200, dialog_y + 10)
 
            if "choice" in entry:
              max_options_display = 3
@@ -218,7 +224,7 @@ class dialog:
                      color = (255,0,0) if i == self.option_selected else (0,0,0)
                      option_y =  dialog_y+ 60 + i * 60
                      if option_y < screen.get_height() - 40:
-                      draw_text(screen, option["option"],30,color,dialog_center_x,option_y,center= True)
+                      draw_text(screen, option["option"], None, color, dialog_center_x, option_y, center=True)
 
           
            # words come out one by one effect
@@ -230,7 +236,7 @@ class dialog:
                      self.last_time = current_time
           
 
-           draw_text(screen,self.displayed_text,30,(0,0,0),dialog_x + self.dialog_box_img.get_width()//2  ,dialog_y + self.dialog_box_img.get_height()//2 - 15 ,center = True,max_width=text_max_width)
+           draw_text(screen, self.displayed_text, None, (0,0,0), dialog_x + self.dialog_box_img.get_width()//2, dialog_y + self.dialog_box_img.get_height()//2 - 15, center=True, max_width=text_max_width)
 
 
     def handle_option_selection(self,keys):
@@ -329,14 +335,19 @@ class dialog:
         self.story_data = filtered_story_data
         self.step = 0
         self.reset_typing()
-                
+
+    def update_font_size(self, new_size):
+        global current_font_size
+        current_font_size = new_size            
 
          
 
 # =============text setting================
-def draw_text(surface,text,size,color,x,y,center = False,max_width = None):
-    font = pygame.font.SysFont('Comic Sans MS', size)
-    text_surface = font.render(text, True, color)
+def draw_text(surface, text, size=None, color=(0,0,0), x=0, y=0, center=False, max_width=None):
+    global current_text_size
+    font_size = size if size is not None else current_text_size
+    font = pygame.font.SysFont('Comic Sans MS', font_size)
+
 
     # If no max width is specified or text is short, render it normally
     if max_width is None or font.size(text)[0] <= max_width:
