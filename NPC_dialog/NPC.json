@@ -30,11 +30,92 @@
     ],
 
     "chapter_1_common":[
-        {"speaker" :"npc","text":"I’m Nuva, the receptionist nurse. If you have any questions, feel free to ask me—your senior!"},
-        {"speaker" :"player","text":"Got it."},
-        {"speaker" :"npc","text":"Oh, by the way, already have a patient booked a session with you for today. She is waiting in your office, you can head over when you are ready"}
+        {"speaker" :"npc","text":"I’m Nuva, the receptionist nurse. If you have any questions, feel free to ask me—your senior!","shown": false},
+        {"speaker" :"player","text":"Got it.","shown": false},
+        {"speaker" :"npc","text":"Oh, by the way, already have a patient booked a session with you for today."},
+        {"speaker" :"npc","text":"She is waiting in your office, you can head over when you are ready"}
+
 
 
     ]
- }
+ },
+  "Dean":{
+    "chapter_1":[
+        {"speaker" :"player","text":"(So this is the clinic…...)","shown": false},
+        {"speaker" :"npc","text":"It is 8:10 a.m. You're 50 minutes early.","shown": false},
+        {"speaker" :"player","text":"I just wanted to familiarize myself with the environment…...Father.","shown": false},
+        {"speaker" :"narrator","text":"(When you called him 'Father' you notice his brow furrow slightly.)","shown": false},
+        {"speaker" :"npc","text":"In the clinic, we are considered superior and subordinate. Try not to call me ‘Father’ here.","shown": false},
+        {"speaker" :"npc","text":"I should go now, I have a meeting to attend. Feel free to look around your own.","shown": false},
+        {"speaker" :"narrator","text":"(He exits the clinic.)","shown": false},
+        {"speaker" :"player","text":"(Before exploring, I should send a message to mom.)","shown": false},
+        {"speaker" :"player","text":"(You take out your phone and open the chat with your mother.)","shown": false},
+        {"speaker" :"narrator","text":"(However,the chat is filled with your own messages.She doesn't read or reply to them.) ","shown": false},
+        {"speaker" :"narrator","text":"(You have had been in the habit of updating her ever since your father said she left home.)","shown": false},
+        {"speaker" :"narrator","text":"(From what you ate for lunch, to the friends you've made or your choice of major—every little story is in this chat.)","shown": false},
+        {"speaker" :"narrator","text":"(What you truly hope for, is her response, and maybe an explanation, nothing more.)","shown": false},
+        {"speaker" :"narrator","text":"(You type in the chat box:)","shown": false},
+        {"speaker" :"player","text":"Today is my first day at work.","shown": false},
+        {"speaker" :"player","text":"Finally, I've become a doctor, like Father.","shown": false},
+        {"speaker" :"player","text":"Would you be proud of me, Mom?","shown": false},
+        {"speaker" :"narrator","text":"(......)","shown": false},
+        {"speaker" :"narrator","text":"(You stare at the unanswered chat for a few seconds then put your phone back to pocket.)","shown": false},
+        {"speaker" :"player","text":"Maybe I should walk around clinic first.","shown": false}
+
+    ]
+  },
+  "Zheng":{
+    "chapter_1":[
+        {"speaker" :"player","text":"Sorry for the wait. I’m your scheduled psychologist. You’re Ms. Zheng, right?","shown": false},
+        {"speaker" :"narrator","text":"(You see she sitting upright and nod.)","shown": false},
+        {"speaker" :"npc","text":"Yes, hello.","shown": false},
+        {"speaker" :"player","text":"Alright, Ms. Zheng. First, we will start with getting to know you and understanding your situation.","shown": false},
+        {"speaker" :"player","text":"Feel free to talk about whatever has brought you here—there’s no need to hold back. Where would you like to start?","shown": false},
+        {"speaker" :"narrator","text":"(She sighs, a mixture of resignation and relief.)","shown": false},
+        {"speaker" :"npc","text":"......I've always felt like I have to do everything perfectly.","shown": false},
+        {"speaker" :"npc","text":" So at work, I strive for perfection, but instead of improving outcomes, it just.....slows me down.","shown": false},
+        {"speaker" :"player","text":"You mentioned that 'striving for perfection has impacted your efficiency'. Can you describe a recent example?","shown": false},
+        {"speaker" :"npc","text":"Last week, while working on a proposal, I spent nearly four hours tweaking minor details. ","shown": false},
+        {"speaker" :"npc","text":"It was already finished, but I kept trying to make it more polished and professional","shown": false},
+        {"speaker" :"npc","text":" I ended up staying up until early morning, which affected my performance at the meeting the next day.","shown": false},
+        {"speaker" :"player","text":"During that process, how do you feel on your body and emotions react?","shown": false},
+        {"speaker" :"npc","text":"......When during that time, my heart was racing, hands trembled uncontrollably, and I felt overwhelming tension.","shown": false},
+        {"speaker" :"player","text":"Did any specific thoughts cross your mind? Like, 'If I don’t make this perfect, then…'?","shown": false},
+        {"speaker" :"narrator","text":"(She closes her eyes, brows slightly furrowed, as if resisting an admission. But after a pause, she nods.)","shown": false},
+        {"speaker" :"npc","text":"...…Yes. I thought, “If this proposal isn’t perfect and something goes wrong, it could stain my entire career.”","shown": false},
+        {"speaker" :"npc","text":" Just thinking about that will made me feel awful","shown": false},
+        {"speaker" :"player","text":"(Perfectionism-induced anxiety. CBT (Cognitive Behavioral Therapy) might be an appropriate and effective approach here.)","shown": false},
+        {"speaker" :"narrator","text":"(Cognitive behavioral therapy (CBT) is a form of psychological treatment that has been demonstrated to be effective for a range of problems","shown": false},
+        {"speaker" :"narrator","text":" including depression, anxiety disorders, alcohol and drug use problems, marital problems, eating disorders, and severe mental illness. )","shown": false},
+        {"speaker" :"narrator","text":"(CBT treatment usually involves efforts to change thinking patterns. )","shown": false},
+        {"speaker" :"npc","text":"I heard that this clinic have some kind of machine here which can treat psychological problems. Can that fix mine directly?","shown": false},
+        {"speaker" :"player","text":"(Wait a minute—this isn’t where I expected the session to go. But…...I did forget about machine.)","shown": false},
+        {"speaker" :"player","text":"Yes, that 'helmet' on my desk is the machine. It can access to a person's subconscious and view past memories.","shown": false},
+        {"speaker" :"npc","text":"All memories?","shown": false},
+        {"speaker" :"player","text":"No, only those relevant to your anxiety.","shown": false},
+        {"speaker" :"npc","text":"How does viewing memories relate to treatment?","shown": false},
+        {"speaker" :"player","text":"(Her tone makes me feel like I’m being interrogated by a superior......) ","shown": false},
+        {"speaker" :"player","text":"The memories help identify the root cause. The actual treatment involves 'activities' within the subconscious.","shown": false},
+        {"speaker" :"player","text":"It’s a process of memory restructuring. By preserving or destroying emotional anchors, we can rapidly relieve symptoms.","shown": false},
+        {"speaker" :"player","text":"But also there is a chance of failure","shown": false},
+        {"speaker" :"player","text":"It’s not a conventional therapy method. Are you sure about this approach? I believe a gentler method might be more suitable.....","shown": false},
+        {"speaker" :"npc","text":"No, I choose this one. I need a quick way to completely solve the problem.","shown": false},
+        {"speaker" :"player","text":"......","shown": false},
+        {"speaker" :"player","text":"I understand your desire to recover quickly. But please read this consent form carefully before making a final decision","shown": false},
+        {"speaker" :"narrator","text":"(You hand her the consent form about machine.)","shown": false},
+        {"speaker" :"narrator","text":"(She takes it, adjusts her glasses, and reads it intently.)","shown": false},
+        {"speaker" :"narrator","text":"(After a moment, she looks up.)","shown": false},
+        {"speaker" :"npc","text":"I’ve read it. I’m willing to accept the risks. Just need to sign here, right?","shown": false},
+        {"speaker" :"player","text":"Right. Once you sign, I’ll prepare the treatment.","shown": false},
+        {"speaker" :"narrator","text":"(She signs without hesitation and returns the form to you.)","shown": false},
+        {"speaker" :"player","text":"(Alright, let’s begin.)","shown": false},
+        {"next":"chapter_1_common"}
+
+    ],
+
+    "chapter_1_common":[
+        {"speaker" :"player","text":"(I’ve finished speaking with the patient. Time to begin treatment using the machine.)"}
+    ]
+  }
+
 }
