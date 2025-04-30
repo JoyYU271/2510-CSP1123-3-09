@@ -1,12 +1,11 @@
 import pygame
 import sys
-from dialogue import run_dialogue
+from Dialogue import run_dialogue
 #import ctypes #ctypes is built-in python library that allows calling functions written in C (it allows Python to interact directly with the operating system’s native API)
 #here maybe can add import sys to use sy.exit() but still figuring out how to use it
 
 pygame.init() #initialize all import pygame modules
 pygame.mixer.init()
-
 #to get real resolution
 #ctypes.windll.user32.SetProcessDPIAware() #make sure the Python program gets the actual screen resolution, not scaled one
 #screen_width = ctypes.windll.user32.GetSystemMetrics(0) #ask the real screen width in pixels
@@ -19,18 +18,18 @@ screen = pygame.display.set_mode((screen_width, screen_height))#pygame.FULLSCREE
 pygame.display.set_caption("main page test")
 
 #background image
-bg_img = pygame.image.load("background1.png").convert() #converts is for optimize image faster blitting on screen
+bg_img = pygame.image.load("main page/background1.png").convert() #converts is for optimize image faster blitting on screen
 bg_img = pygame.transform.scale(bg_img, (screen_width, screen_height))
 
 #button image
-start_img = pygame.image.load('start.png').convert_alpha() #alpha is use to keep transparent background
-load_img = pygame.image.load('load.png').convert_alpha()
-collections_img = pygame.image.load('collections.png').convert_alpha()
-settings_img = pygame.image.load('settings.png').convert_alpha()
-exit_img = pygame.image.load('exit.png').convert_alpha()
+start_img = pygame.image.load('main page/start.png').convert_alpha() #alpha is use to keep transparent background
+load_img = pygame.image.load('main page/load.png').convert_alpha()
+collections_img = pygame.image.load('main page/collections.png').convert_alpha()
+settings_img = pygame.image.load('main page/settings.png').convert_alpha()
+exit_img = pygame.image.load('main page/exit.png').convert_alpha()
 
 #button click sound
-click_sound = pygame.mixer.Sound("click1.wav") 
+click_sound = pygame.mixer.Sound("main page/click1.wav") 
 
 # Global variables to store settings
 bgm_vol = 0.5
@@ -212,7 +211,7 @@ def settings_screen():
     global screen,bgm_vol, sfx_vol, text_size #modify the global variables 
 
     #set backgound
-    settings_bg_img = pygame.image.load("common background.png").convert()
+    settings_bg_img = pygame.image.load("main page/common background.png").convert()
     settings_bg_img = pygame.transform.scale(settings_bg_img, (screen_width, screen_height))
 
     #default settings
@@ -239,7 +238,7 @@ def settings_screen():
         sfx_plus = Button(None, (screen_width//2 + 100, 330), text_input="+", font=get_font(50), base_color="White", hovering_color="Green")
 
         # Text Size buttons
-        text_size_text = get_font(40).render(f"Text Size: {text_size}", True, "White")
+        text_size_text = get_font(40).render(f"Text Size (Dialogue): {text_size}", True, "White")
         screen.blit(text_size_text, (screen_width // 2 - text_size_text.get_width() // 2, 410))
 
         small_button = Button(None, (screen_width//2 - 150, 460), text_input="Small", font=get_font(40), base_color="White", hovering_color="Green")

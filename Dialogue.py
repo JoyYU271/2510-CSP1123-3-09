@@ -4,37 +4,102 @@ from pygame.locals import *
 from character_movement import *
 import json
 
+current_text_size = 30
+
+def run_dialogue(text_size=None):
+    pygame.init()
+
+    screen_width = 1280
+    screen_height = 720
+
+    screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
+    clock = pygame.time.Clock()
+    FPS = 60
+
+    player = doctor(400,500,4.5) 
+    player.name = "You" # remember to put in class doctor
+    moving_left = False
+    moving_right = False
 
 
-pygame.init()
+    font = pygame.font.SysFont('Comic Sans MS',30)
+    space_released = True # control the dialog will not happen continuously when press key space
 
-screen_width = 1280
-screen_height = 720
-
-screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
-clock = pygame.time.Clock()
-FPS = 60
-
-player = doctor(400,500,4.5) 
-player.name = "You" # remember to put in class doctor
-moving_left = False
-moving_right = False
+    global current_text_size
+    if text_size is not None:
+        current_text_size = text_size
 
 
-font = pygame.font.SysFont('Comic Sans MS',40)
-space_released = True # control the dialog will not happen continuously when press key space
+    with open('NPC_dialog/NPC.json','r',encoding = 'utf-8') as f:
+        all_dialogues = json.load(f)
 
-with open('NPC_dialog/NPC.json','r',encoding = 'utf-8') as f:
-     all_dialogues = json.load(f)
+    current_chapter = "chapter_1"
 
-current_chapter = "chapter_1"
+    npc_list =["Nuva"]
 
-npc_list =["Nuva"]
+    npc_manager = NPCManager()
+
+    nuva = NPC(600,500,"Nuva")
+    dean = NPC(800,500,"Dean")
+
+    current_dialogue = None
+
+    npc_manager.add_npc(nuva)
+    npc_manager.add_npc(dean)
+
+    current_dialogue = None
+
+
+    run = True
+    while run:
+            
+            draw_bg(screen)
+            is_moving = player.move(moving_left,moving_right)
+            player.update_animation(is_moving)
+            
+            for npc in npc_manager.npcs:
+                screen.blit(npc.image,npc.rect)
+
+            player.draw(screen)
+            
+            moving_left,moving_right,run =  keyboard_input(moving_left, moving_right, run)
+
+
+            nearest_npc = npc_manager.get_nearest_npc(player)
+
+            #=====space======
+            keys = pygame.key.get_pressed()
+            if nearest_npc or (current_dialogue and current_dialogue.talking):
+                if nearest_npc and (current_dialogue is None or current_dialogue.npc != nearest_npc):
+                    current_dialogue = dialog(nearest_npc, player, all_dialogues)
+                
+                if keys[pygame.K_SPACE] and space_released:
+                    space_released = False
+                    if current_dialogue:
+                        current_dialogue.handle_space(keys)
+
+                if current_dialogue:
+                    current_dialogue.handle_option_selection(keys)
+            
+
+                if not keys[pygame.K_SPACE]:
+                    space_released = True
+            elif current_dialogue:
+                current_dialogue.talking = False
+                current_dialogue.options = []
+
+                
+            if current_dialogue and current_dialogue.talking:
+                current_dialogue.update()
+                current_dialogue.draw(screen)
+            
+            pygame.display.update()
+            clock.tick(FPS)  
 
 
 #============dialog box =============
 class dialog:
-    def __init__(self,npc,player):
+    def __init__(self,npc,player,all_dialogues):
         super().__init__()
 
         #load dialog box img n set transparency
@@ -63,7 +128,8 @@ class dialog:
         self.npc = npc
 
         #get NPC's dialogue data from Json
-        self.npc_data = all_dialogues.get(self.npc_name)
+        self.all_dialogues = all_dialogues
+        self.npc_data = self.all_dialogues.get(self.npc_name)
 
          #dialogue state variacbles
         self.current_story = "chapter_1" #default chapter
@@ -150,7 +216,7 @@ class dialog:
 
            #draw speaker name
            name_to_display = self.npc.name if speaker == "npc" else self.player.name
-           draw_text(screen,name_to_display,40,(0,0,0),dialog_x + 200, dialog_y + 10)
+           draw_text(screen, name_to_display, None, (0,0,0), dialog_x + 200, dialog_y + 10)
 
            #draw choice options if present
            if "choice" in entry:
@@ -162,9 +228,8 @@ class dialog:
                      # red for selected option, black for others
                      color = (255,0,0) if i == self.option_selected else (0,0,0)
                      option_y =  dialog_y+ 60 + i * 60
-
-                     if option_y < screen.get_height() - 40: #ensure option is on screen
-                        draw_text(screen, option["option"],30,color,dialog_center_x,option_y,center= True)
+                     if option_y < screen.get_height() - 40:
+                      draw_text(screen, option["option"], None, color, dialog_center_x, option_y, center=True)
 
           
            # words come out one by one effect
@@ -175,8 +240,9 @@ class dialog:
                      self.letter_index += 1
                      self.last_time = current_time
           
-           # draw dialogue text 
-           draw_text(screen,self.displayed_text,30,(0,0,0),dialog_x + self.dialog_box_img.get_width()//2  ,dialog_y + self.dialog_box_img.get_height()//2 - 15 ,center = True,max_width=text_max_width)
+
+
+           draw_text(screen, self.displayed_text, None, (0,0,0), dialog_x + self.dialog_box_img.get_width()//2, dialog_y + self.dialog_box_img.get_height()//2 - 15, center=True, max_width=text_max_width)
 
 
     def handle_option_selection(self,keys):
@@ -275,7 +341,7 @@ class dialog:
     def load_dialogue(self,npc_name,chapter):
         #update NPC detials
         self.npc_name = npc_name
-        self.npc_data = all_dialogues.get(self.npc_name,{})
+        self.npc_data = self.all_dialogues.get(self.npc_name, {})
         self.current_story = chapter
         self.story_data = self.npc_data.get(self.current_story,[])
 
@@ -291,14 +357,19 @@ class dialog:
         self.story_data = filtered_story_data
         self.step = 0
         self.reset_typing()
-                
+
+    def update_font_size(self, new_size):
+        global current_font_size
+        current_font_size = new_size            
 
          
 
 # =============text setting================
-def draw_text(surface,text,size,color,x,y,center = False,max_width = None):
-    font = pygame.font.SysFont('Comic Sans MS', size)
-    text_surface = font.render(text, True, color)
+def draw_text(surface, text, size=None, color=(0,0,0), x=0, y=0, center=False, max_width=None):
+    global current_text_size
+    font_size = size if size is not None else current_text_size
+    font = pygame.font.SysFont('Comic Sans MS', font_size)
+
 
     # If no max width is specified or text is short, render it normally
     if max_width is None or font.size(text)[0] <= max_width:
@@ -400,67 +471,5 @@ class NPCManager:
                     min_distance = distance
                     nearest_npc = npc
         return nearest_npc
+  
 
-
-npc_manager = NPCManager()
-
-nuva = NPC(600,500,"Nuva")
-dean = NPC(800,500,"Dean")
-
-current_dialogue = None
-
-npc_manager.add_npc(nuva)
-npc_manager.add_npc(dean)
-
-current_dialogue = None
-
-
-run = True
-while run:
-          
-          draw_bg(screen)
-          is_moving = player.move(moving_left,moving_right)
-          player.update_animation(is_moving)
-          
-          for npc in npc_manager.npcs:
-              screen.blit(npc.image,npc.rect)
-
-          player.draw(screen)
-          
-          moving_left,moving_right,run =  keyboard_input(moving_left, moving_right, run)
-
-
-          nearest_npc = npc_manager.get_nearest_npc(player)
-
-          #=====space======
-          keys = pygame.key.get_pressed()
-          if nearest_npc or (current_dialogue and current_dialogue.talking):
-              if nearest_npc and (current_dialogue is None or current_dialogue.npc != nearest_npc):
-                  current_dialogue = dialog(nearest_npc,player)
-            
-              if keys[pygame.K_SPACE] and space_released:
-                  space_released = False
-                  if current_dialogue:
-                     current_dialogue.handle_space(keys)
-
-              if current_dialogue:
-                 current_dialogue.handle_option_selection(keys)
-          
-
-              if not keys[pygame.K_SPACE]:
-                  space_released = True
-          elif current_dialogue:
-               current_dialogue.talking = False
-               current_dialogue.options = []
-
-            
-          if current_dialogue and current_dialogue.talking:
-              current_dialogue.update()
-              current_dialogue.draw(screen)
-          
-          pygame.display.update()
-          clock.tick(FPS)    
-          
-
-pygame.quit()
-sys.exit()

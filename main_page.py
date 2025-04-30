@@ -1,12 +1,11 @@
 import pygame
 import sys
-from dialogue import run_dialogue
+from Dialogue import run_dialogue
 #import ctypes #ctypes is built-in python library that allows calling functions written in C (it allows Python to interact directly with the operating system’s native API)
 #here maybe can add import sys to use sy.exit() but still figuring out how to use it
 
 pygame.init() #initialize all import pygame modules
 pygame.mixer.init()
-
 #to get real resolution
 #ctypes.windll.user32.SetProcessDPIAware() #make sure the Python program gets the actual screen resolution, not scaled one
 #screen_width = ctypes.windll.user32.GetSystemMetrics(0) #ask the real screen width in pixels
@@ -19,23 +18,24 @@ screen = pygame.display.set_mode((screen_width, screen_height))#pygame.FULLSCREE
 pygame.display.set_caption("main page test")
 
 #background image
-bg_img = pygame.image.load("background1.png").convert() #converts is for optimize image faster blitting on screen
+bg_img = pygame.image.load("main page/background1.png").convert() #converts is for optimize image faster blitting on screen
 bg_img = pygame.transform.scale(bg_img, (screen_width, screen_height))
 
 #button image
-start_img = pygame.image.load('start.png').convert_alpha() #alpha is use to keep transparent background
-load_img = pygame.image.load('load.png').convert_alpha()
-collections_img = pygame.image.load('collections.png').convert_alpha()
-settings_img = pygame.image.load('settings.png').convert_alpha()
-exit_img = pygame.image.load('exit.png').convert_alpha()
+start_img = pygame.image.load('main page/start.png').convert_alpha() #alpha is use to keep transparent background
+load_img = pygame.image.load('main page/load.png').convert_alpha()
+collections_img = pygame.image.load('main page/collections.png').convert_alpha()
+settings_img = pygame.image.load('main page/settings.png').convert_alpha()
+exit_img = pygame.image.load('main page/exit.png').convert_alpha()
 
 #button click sound
-click_sound = pygame.mixer.Sound("click1.wav") 
+click_sound = pygame.mixer.Sound("main page/click1.wav") 
 
 # Global variables to store settings
 bgm_vol = 0.5
 sfx_vol = 0.5
 text_size = "Medium"
+current_font_size = 30
 
 #get a font
 def get_font(size):
@@ -88,12 +88,14 @@ class Button():
         return self.checkForInput(mouse_pos)
 
 def main_menu():
+    global current_font_size
+
     start_button = Button(image=start_img, pos=(300, 80), scale=0.24)
     load_button = Button(image=load_img, pos=(300, 220), scale=0.24)
     collections_button = Button(image=collections_img, pos=(300, 360), scale=0.24)
     settings_button = Button(image=settings_img, pos=(300, 500), scale=0.24)
     exit_button = Button(image=exit_img, pos=(300, 640), scale=0.24)
-    
+
     while True: #keep window running
 
         screen.blit(bg_img, (0, 0)) #draw backgound from (0,0)
@@ -114,7 +116,7 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if start_button.checkForInput(mouse_pos):
                     click_sound.play()
-                    run_dialogue()
+                    run_dialogue(current_font_size)
                 elif load_button.checkForInput(mouse_pos):
                     click_sound.play()
                     load_screen()
@@ -209,10 +211,10 @@ def collections_screen():
         pygame.display.update()
 
 def settings_screen():
-    global screen,bgm_vol, sfx_vol, text_size #modify the global variables 
+    global screen,bgm_vol, sfx_vol, text_size,current_font_size #modify the global variables 
 
     #set backgound
-    settings_bg_img = pygame.image.load("common background.png").convert()
+    settings_bg_img = pygame.image.load("main page/common background.png").convert()
     settings_bg_img = pygame.transform.scale(settings_bg_img, (screen_width, screen_height))
 
     #default settings
@@ -288,18 +290,23 @@ def settings_screen():
 
                 if small_button.checkForInput(mouse_pos):
                     text_size = "Small"
+                    current_font_size = 25
                     click_sound.play()
                 if medium_button.checkForInput(mouse_pos):
                     text_size = "Medium"
+                    current_font_size = 30
                     click_sound.play()
                 if large_button.checkForInput(mouse_pos):
                     text_size = "Large"
+                    current_font_size = 35
                     click_sound.play()
+                    
 
                 if default_button.checkForInput(mouse_pos):
                     bgm_vol = default_bgm_vol
                     sfx_vol = default_sfx_vol
                     text_size = default_text_size
+                    current_font_size = 30
                     pygame.mixer.music.set_volume(bgm_vol)
                     click_sound.set_volume(sfx_vol)
                     click_sound.play()
