@@ -31,7 +31,7 @@ class CameraGroup(pygame.sprite.Group):
         self.camera_rect = pygame.Rect(l,t,w,h)
 
         #background
-        self.ground_surf = pygame.image.load('Entrance halllway sketch.png').convert_alpha()
+        self.ground_surf = pygame.image.load('picture/Maps/Map clinic.png').convert_alpha()
         self.ground_rect = self.ground_surf.get_rect(topleft = (0,0))
 
     def center_target_camera(self,target):
@@ -130,6 +130,18 @@ class Doctor(pygame.sprite.Sprite):
     def draw(self, screen):
         screen.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
 
+
+class Item(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+       super().__init__()
+       self.image = pygame.image.load('table.png').convert_alpha()
+       self.rect = self.image.get_rect()
+       self.rect.topleft = (x, y) #set position here
+       self.flip = False #so CameraGroup won't flip items with player
+
+    def draw(self, screen):
+       screen.blit(self.image,self.rect)
+
 #class UIElement:
     #def __init__(self, image_path, base_pos):
     #    self.original_image = pygame.image.load(image_path).convert_alpha()
@@ -151,8 +163,12 @@ class Doctor(pygame.sprite.Sprite):
 # Init camera group
 camera_group = CameraGroup()
 
+#Init objects?
+object_interaction = Item(813, 397)
+camera_group.add(object_interaction)
+
 # Create player and add to camera group
-player = Doctor(x=400, y=500, speed=4.5)
+player = Doctor(x=400, y=550, speed=4.5)
 camera_group.add(player)
 
 # Game loop
@@ -179,6 +195,9 @@ while run:
 
     # Camera draw handles background + all sprites
     camera_group.custom_draw(player)
+
+    # Update item/object?
+    #object_interaction.draw(screen)
 
     # Update display
     pygame.display.update()
