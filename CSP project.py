@@ -1,5 +1,10 @@
 import pygame
 import sys
+import json
+
+# Load object data
+with open("objects.json", "r") as f:
+    object_data = json.load(f)
 
 # Init
 pygame.init()
@@ -142,6 +147,14 @@ class Item(pygame.sprite.Sprite):
     def draw(self, screen):
        screen.blit(self.image,self.rect)
 
+class InteractableObject:
+    def __init__(self, name, rect, dialogue_id, start_node, active=True):
+        self.name = name
+        self.rect = rect
+        self.dialogue_id = dialogue_id
+        self.start_node = start_node
+        self.active = active
+
 #class UIElement:
     #def __init__(self, image_path, base_pos):
     #    self.original_image = pygame.image.load(image_path).convert_alpha()
@@ -171,6 +184,23 @@ camera_group.add(object_interaction)
 player = Doctor(x=400, y=550, speed=4.5)
 camera_group.add(player)
 
+interactable_objects = []
+
+for obj_id, obj_info in object_data.items():
+    pos = obj_info["position"]
+    size = obj_info["size"]
+    rect = pygame.Rect(pos[0], pos[1], size[0], size[1])
+    
+    obj = InteractableObject(
+        name=obj_info["name"],
+        rect=rect,
+        dialogue_id=obj_info["dialogue_id"],
+        start_node=obj_info["start_node"],
+        active=obj_info.get("active", True)
+    )
+    
+    interactable_objects.append(obj)
+
 # Game loop
 run = True
 while run:
@@ -189,6 +219,15 @@ while run:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 run = False
+        
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = pygame.mouse.get_pos()
+            for obj in interactable_objects:
+                if obj.rect.collidepoint(mouse_pos) and obj.active:
+                    current_dialogue = dialogue_data[obj.dialogue_id][obj.start_node]
+                    dialogue_index = 0
+                    show_dialogue = True
+                    break
 
     # Update player
     player.update()
