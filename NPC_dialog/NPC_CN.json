@@ -1,0 +1,121 @@
+{
+ "Nuva":{
+    "chapter_1":[
+        {"speaker":"npc","text":"哈咯！你就是新来的心理医生吗？","shown": false},
+        {"choice":[
+            {"option":"我不是","next":"not_a_doctor"},
+            {"option":"我是","next":"a_doctor"}
+        ]
+        }
+    ],
+
+    "not_a_doctor" :[
+
+        {"speaker" :"player","text":"我不是。","shown": false},
+        {"speaker":"npc","text":"诶～～～我还以为这么好看的帅哥会是我们新来的医生。","shown": false},
+        {"speaker":"npc","text":"你是来找院长的吗？他刚刚离开去参加会议了哦。","shown": false},
+        {"speaker" :"player","text":"……抱歉，我开玩笑的。看来我的幽默还有待进步。 ","shown": false},
+        {"speaker" :"narrator","text":"( 你见她愣了愣，接着不小心笑出了两声。) ","shown": false},
+        {"speaker" :"npc","text":"哈哈，你真有趣啊！","shown": false},
+        {"next":"chapter_1_common","shown": false}
+    ],
+
+    "a_doctor":[
+        {"speaker" :"player","text":"我是，你好。","shown": false},
+        {"speaker" :"narrator","text":"(你见她笑意更明显了。)","shown": false},
+        {"speaker" :"npc","text":"院长跟我提及过今天会有个新来的心理医生，没想到还是个帅哥！","shown": false},
+        {"speaker" :"narrator","text":"( 直白的话语让你耳尖泛红）","shown": false},
+        {"speaker" :"player","text":"……谢谢。","shown": false},
+        {"next":"chapter_1_common"}
+    ],
+
+    "chapter_1_common":[
+        {"speaker" :"npc","text":"我叫Nuva，是负责前台的护士，如果你有什么问题都可以来问我这个前辈哦~","shown": false},
+        {"speaker" :"player","text":"好，我知道了。","shown": false},
+        {"speaker" :"npc","text":"对了，昨天已经有一位患者预约了你今天的治疗。"},
+        {"speaker" :"npc","text":"她已经在你的办公室等候了，你准备好后可以随时过去。"}
+
+
+
+    ]
+ },
+  "Dean":{
+    "chapter_1":[
+        {"speaker" :"player","text":"(这里就是诊所了……)","shown": false},
+        {"speaker" :"npc","text":"八点十分，你早到了五十分钟","shown": false},
+        {"speaker" :"player","text":"我想提前了解这里的环境……父亲。","shown": false},
+        {"speaker" :"narrator","text":"(在你喊出父亲的瞬间，你看见他的眉头轻皱。)","shown": false},
+        {"speaker" :"npc","text":"在诊所我们只是上下关系，不要叫我父亲。","shown": false},
+        {"speaker" :"npc","text":"我先走了，你自行探索，我还有会议。","shown": false},
+        {"speaker" :"narrator","text":"(他走出了诊所。)","shown": false},
+        {"speaker" :"player","text":"(在探索前先跟母亲报备吧。)","shown": false},
+        {"speaker" :"player","text":"(你拿起了手机，打开了母亲的聊天栏。)","shown": false},
+        {"speaker" :"narrator","text":"(但是聊天栏里只有你的自言自语，对方始终没有已读，没有回应。) ","shown": false},
+        {"speaker" :"narrator","text":"(自从父亲说她离家出走后，你始终保持着向她发消息报备的习惯。)","shown": false},
+        {"speaker" :"narrator","text":"(从中午吃了什么，到交了哪些朋友，选了什么科系，所有大小事都在这个聊天栏里。)","shown": false},
+        {"speaker" :"narrator","text":"(你所希望的，只是她的回应和解释，仅此而已。)","shown": false},
+        {"speaker" :"narrator","text":"(你在聊天栏里打道)","shown": false},
+        {"speaker" :"player","text":"今天是我正式上班的第一天","shown": false},
+        {"speaker" :"player","text":"我终于成为了像父亲一样的人","shown": false},
+        {"speaker" :"player","text":"W你会为我感到骄傲吗，母亲？","shown": false},
+        {"speaker" :"narrator","text":"(......)","shown": false},
+        {"speaker" :"narrator","text":"(你望着不会有回应的聊天看了几秒后收起手机。)","shown": false},
+        {"speaker" :"player","text":"先走走吧。","shown": false}
+
+    ]
+  },
+  "Zheng":{
+    "chapter_1":[
+        {"speaker" :"player","text":"久等了，我是你预约的心理医生。你就是郑小姐吗？","shown": false},
+        {"speaker" :"narrator","text":"(你见她坐姿端正地点了点头。)","shown": false},
+        {"speaker" :"npc","text":"是的，你好。","shown": false},
+        {"speaker" :"player","text":"好的，郑小姐。我们的会谈主要是了解你的情况。","shown": false},
+        {"speaker" :"player","text":"你可以自由地谈谈最近让你想来咨询的事情，不需要有任何负担。你想从哪里说起呢？","shown": false},
+        {"speaker" :"narrator","text":"(她叹了口气，似是无奈又似是如释重负。)","shown": false},
+        {"speaker" :"npc","text":"……一直以来，我都觉得无论是事情都要做到最好。","shown": false},
+        {"speaker" :"npc","text":" 以在工作上我也追求事事完美，但是这似乎没让工作结果变好，反而影响了效率。","shown": false},
+        {"speaker" :"player","text":"你提到‘想要完美而影响了工作效率’，能具体描述一个最近发生的例子吗？","shown": false},
+        {"speaker" :"npc","text":"上周做方案时，我花了将近四个小时反复调整细微的变动。 ","shown": false},
+        {"speaker" :"npc","text":"明明方案早就已经完成了，但我想要使其更好更专业。","shown": false},
+        {"speaker" :"npc","text":"最后搞到了凌晨才睡下，影响了第二天的会议。","shown": false},
+        {"speaker" :"player","text":"在这过程中，你身体和情绪上有什么反应表现？","shown": false},
+        {"speaker" :"npc","text":"我想想……我那时感觉心跳很快，手会不受控制的发抖还有无法克制的感到很紧张。","shown": false},
+        {"speaker" :"player","text":"当时你的心里是否闪过某些特定的念头？比如‘如果我做得不够完美会……’？","shown": false},
+        {"speaker" :"narrator","text":"(她闭上了眼，微微皱眉，似乎是不想承认什么。但片刻后她表情恢复成原本模样，点了点头。)","shown": false},
+        {"speaker" :"npc","text":" ……有，我当时在想，‘如果我没把这个方案做到最好，出了什么差错，会不会成为我职业生涯的一个污点。‘","shown": false},
+        {"speaker" :"npc","text":"单是想到这点，就让我很不舒服。","shown": false},
+        {"speaker" :"player","text":"(因完美主义而导致的焦虑心理。CBT(Cognitive Behavioural Therapy)会是个适合她且有效的治疗方式。)","shown": false},
+        {"speaker" :"narrator","text":"(Cognitive behavioral therapy (CBT) is a form of psychological treatment that has been demonstrated to be effective for a range of problems","shown": false},
+        {"speaker" :"narrator","text":" including depression, anxiety disorders, alcohol and drug use problems, marital problems, eating disorders, and severe mental illness. )","shown": false},
+        {"speaker" :"narrator","text":"(CBT treatment usually involves efforts to change thinking patterns. )","shown": false},
+        {"speaker" :"npc","text":"我听说你们这里有能治疗各种心理问题的仪器？这能直接解决我的问题吗？","shown": false},
+        {"speaker" :"player","text":"(等等，这跟我想的发展不一样。嗯，但我确实忽略了这里有那个仪器能使用。)","shown": false},
+        {"speaker" :"player","text":"的，我桌上的这个“头盔”就是这个仪器的本体。它能进入人的潜意识，查看关于过去的记忆。","shown": false},
+        {"speaker" :"npc","text":"所有记忆？","shown": false},
+        {"speaker" :"player","text":"不，只是些会跟你的焦虑问题有关的记忆片段。","shown": false},
+        {"speaker" :"npc","text":"查看记忆跟治疗有什么关系？","shown": false},
+        {"speaker" :"player","text":"(她的气质让我看有种被上司问话的即视感……) ","shown": false},
+        {"speaker" :"player","text":"查看记忆只是能更直接的了解情况，真正的治疗是在潜意识内的“活动”。","shown": false},
+        {"speaker" :"player","text":"它是一种记忆修正，能通过保留或销毁情感链接之物来快速消除症状。","shown": false},
+        {"speaker" :"player","text":"但这也有失败的可能。","shown": false},
+        {"speaker" :"player","text":"并非传统治疗手段，你确定使用这方案吗？我认为你更适合一些更缓和的方案.....","shown": false},
+        {"speaker" :"npc","text":"不，就要这个了，我需要彻底解决问题的方法。","shown": false},
+        {"speaker" :"player","text":"......","shown": false},
+        {"speaker" :"player","text":"我理解你想要早点恢复正常状态的心情，但你可以先仔细阅读这个合同后再做决定。","shown": false},
+        {"speaker" :"narrator","text":"(你把关于仪器使用的合同递给了她。)","shown": false},
+        {"speaker" :"narrator","text":"(你把关于仪器使用的合同递给了她)","shown": false},
+        {"speaker" :"narrator","text":"(After a moment, she looks up.)","shown": false},
+        {"speaker" :"npc","text":"I’ve read it. I’m willing to accept the risks. Just need to sign here, right?","shown": false},
+        {"speaker" :"player","text":"Right. Once you sign, I’ll prepare the treatment.","shown": false},
+        {"speaker" :"narrator","text":"(She signs without hesitation and returns the form to you.)","shown": false},
+        {"speaker" :"player","text":"(Alright, let’s begin.)","shown": false},
+        {"next":"chapter_1_common"}
+
+    ],
+
+    "chapter_1_common":[
+        {"speaker" :"player","text":"(I’ve finished speaking with the patient. Time to begin treatment using the machine.)"}
+    ]
+  }
+
+}

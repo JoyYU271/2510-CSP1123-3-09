@@ -6,8 +6,12 @@ import json
 
 current_text_size = 30
 
-def run_dialogue(text_size=None):
+def run_dialogue(text_size=None,language="EN"):
     pygame.init()
+
+    global current_text_size
+    if text_size is not None:
+        current_text_size = text_size
 
     screen_width = 1280
     screen_height = 720
@@ -25,12 +29,13 @@ def run_dialogue(text_size=None):
     font = pygame.font.SysFont('Comic Sans MS',30)
     space_released = True # control the dialog will not happen continuously when press key space
 
-    global current_text_size
-    if text_size is not None:
-        current_text_size = text_size
 
+    if language == "CN":
+        dialogue_file = 'NPC_dialog/NPC_CN.json'
+    else:
+        dialogue_file = 'NPC_dialog/NPC.json'
 
-    with open('NPC_dialog/NPC.json','r',encoding = 'utf-8') as f:
+    with open(dialogue_file, 'r', encoding='utf-8') as f:
         all_dialogues = json.load(f)
 
     current_chapter = "chapter_1"
@@ -368,7 +373,7 @@ class dialog:
 def draw_text(surface, text, size=None, color=(0,0,0), x=0, y=0, center=False, max_width=None):
     global current_text_size
     font_size = size if size is not None else current_text_size
-    font = pygame.font.SysFont('Comic Sans MS', font_size)
+    font = pygame.font.Font('fonts/NotoSansSC-Regular.ttf', font_size)
 
 
     # If no max width is specified or text is short, render it normally
