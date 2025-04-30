@@ -4,7 +4,7 @@ from pygame.locals import *
 from character_movement import *
 import json
 
-current_text_size = 40
+current_text_size = 30
 
 def run_dialogue(text_size=None):
     pygame.init()
@@ -22,7 +22,7 @@ def run_dialogue(text_size=None):
     moving_right = False
 
 
-    font = pygame.font.SysFont('Comic Sans MS',40)
+    font = pygame.font.SysFont('Comic Sans MS',30)
     space_released = True # control the dialog will not happen continuously when press key space
 
     global current_text_size

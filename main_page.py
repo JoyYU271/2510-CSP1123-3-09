@@ -35,6 +35,7 @@ click_sound = pygame.mixer.Sound("main page/click1.wav")
 bgm_vol = 0.5
 sfx_vol = 0.5
 text_size = "Medium"
+current_font_size = 30
 
 #get a font
 def get_font(size):
@@ -87,14 +88,13 @@ class Button():
         return self.checkForInput(mouse_pos)
 
 def main_menu():
+    global current_font_size
+
     start_button = Button(image=start_img, pos=(300, 80), scale=0.24)
     load_button = Button(image=load_img, pos=(300, 220), scale=0.24)
     collections_button = Button(image=collections_img, pos=(300, 360), scale=0.24)
     settings_button = Button(image=settings_img, pos=(300, 500), scale=0.24)
     exit_button = Button(image=exit_img, pos=(300, 640), scale=0.24)
-    
-    global text_size
-    current_font_size = 40 
 
     while True: #keep window running
 
@@ -126,9 +126,6 @@ def main_menu():
                 elif settings_button.checkForInput(mouse_pos):
                     click_sound.play()
                     settings_screen()
-                    new_font_size = settings_screen()
-                    if new_font_size is not None:
-                        current_font_size = new_font_size
                 elif exit_button.checkForInput(mouse_pos):
                     pygame.quit()
                     sys.exit()
@@ -214,7 +211,7 @@ def collections_screen():
         pygame.display.update()
 
 def settings_screen():
-    global screen,bgm_vol, sfx_vol, text_size #modify the global variables 
+    global screen,bgm_vol, sfx_vol, text_size,current_font_size #modify the global variables 
 
     #set backgound
     settings_bg_img = pygame.image.load("main page/common background.png").convert()
@@ -293,21 +290,23 @@ def settings_screen():
 
                 if small_button.checkForInput(mouse_pos):
                     text_size = "Small"
+                    current_font_size = 25
                     click_sound.play()
-                    return 30
                 if medium_button.checkForInput(mouse_pos):
                     text_size = "Medium"
+                    current_font_size = 30
                     click_sound.play()
-                    return 40
                 if large_button.checkForInput(mouse_pos):
                     text_size = "Large"
+                    current_font_size = 35
                     click_sound.play()
-                    return 50
+                    
 
                 if default_button.checkForInput(mouse_pos):
                     bgm_vol = default_bgm_vol
                     sfx_vol = default_sfx_vol
                     text_size = default_text_size
+                    current_font_size = 30
                     pygame.mixer.music.set_volume(bgm_vol)
                     click_sound.set_volume(sfx_vol)
                     click_sound.play()
