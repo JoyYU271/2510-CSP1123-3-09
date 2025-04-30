@@ -14,9 +14,9 @@
         {"speaker" :"player","text":"I am not.","shown": false},
         {"speaker":"npc","text":"Eh~ I thought such a handsome guy would be our new doctor!","shown": false},
         {"speaker":"npc","text":"Are you here to see the Dean? He just left for a meeting.","shown": false},
-        {"speaker" :"player","text":".....Sorry, I was joking. Seems my sense of humor needs work. ","shown": false},
+        {"speaker" :"player","text":".....Sorry, I was joking. Seems like my sense of humor needs work. ","shown": false},
         {"speaker" :"narrator","text":"(You see her pause, and then chuckle.) ","shown": false},
-        {"speaker" :"npc","text":" Ha Ha, you are a quite interesting person.","shown": false},
+        {"speaker" :"npc","text":" Ha Ha, you are quite an interesting person.","shown": false},
         {"next":"chapter_1_common","shown": false}
     ],
 
@@ -24,7 +24,7 @@
         {"speaker" :"player","text":"I am. Hello.","shown": false},
         {"speaker" :"narrator","text":"(You see her smile widen.)","shown": false},
         {"speaker" :"npc","text":"The Dean mentioned that we had a new psychologist starting today, but I didn’t expect him to be so handsome!","shown": false},
-        {"speaker" :"narrator","text":"(Her compliments make your ears turn red.)","shown": false},
+        {"speaker" :"narrator","text":"(Her compliment makes your ears turn red.)","shown": false},
         {"speaker" :"player","text":"......Thanks","shown": false},
         {"next":"chapter_1_common"}
     ],
@@ -32,8 +32,8 @@
     "chapter_1_common":[
         {"speaker" :"npc","text":"I’m Nuva, the receptionist nurse. If you have any questions, feel free to ask me—your senior!","shown": false},
         {"speaker" :"player","text":"Got it.","shown": false},
-        {"speaker" :"npc","text":"Oh, by the way, already have a patient booked a session with you for today."},
-        {"speaker" :"npc","text":"She is waiting in your office, you can head over when you are ready"}
+        {"speaker" :"npc","text":"Oh, by the way, a patient has booked a session with you for today."},
+        {"speaker" :"npc","text":"She is waiting in your office. You can head over when you are ready"}
 
 
 
@@ -43,7 +43,7 @@
     "chapter_1":[
         {"speaker" :"player","text":"(So this is the clinic…...)","shown": false},
         {"speaker" :"npc","text":"It is 8:10 a.m. You're 50 minutes early.","shown": false},
-        {"speaker" :"player","text":"I just wanted to familiarize myself with the environment…...Father.","shown": false},
+        {"speaker" :"player","text":"I just wanted to familiarize myself with the environment...Father.","shown": false},
         {"speaker" :"narrator","text":"(When you called him 'Father' you notice his brow furrow slightly.)","shown": false},
         {"speaker" :"npc","text":"In the clinic, we are considered superior and subordinate. Try not to call me ‘Father’ here.","shown": false},
         {"speaker" :"npc","text":"I should go now, I have a meeting to attend. Feel free to look around your own.","shown": false},
@@ -74,12 +74,12 @@
         {"speaker" :"narrator","text":"(She sighs, a mixture of resignation and relief.)","shown": false},
         {"speaker" :"npc","text":"......I've always felt like I have to do everything perfectly.","shown": false},
         {"speaker" :"npc","text":" So at work, I strive for perfection, but instead of improving outcomes, it just.....slows me down.","shown": false},
-        {"speaker" :"player","text":"You mentioned that 'striving for perfection has impacted your efficiency'. Can you describe a recent example?","shown": false},
+        {"speaker" :"player","text":"You think your perfection has impacted your efficiency? Can you describe a recent example?","shown": false},
         {"speaker" :"npc","text":"Last week, while working on a proposal, I spent nearly four hours tweaking minor details. ","shown": false},
         {"speaker" :"npc","text":"It was already finished, but I kept trying to make it more polished and professional","shown": false},
         {"speaker" :"npc","text":" I ended up staying up until early morning, which affected my performance at the meeting the next day.","shown": false},
-        {"speaker" :"player","text":"During that process, how do you feel on your body and emotions react?","shown": false},
-        {"speaker" :"npc","text":"......When during that time, my heart was racing, hands trembled uncontrollably, and I felt overwhelming tension.","shown": false},
+        {"speaker" :"player","text":"Hmm. During that process, how do you feel? Was there any concerning reaction?","shown": false},
+        {"speaker" :"npc","text":"......When during that time, my heart was racing, and my hands trembled uncontrollably. I felt an overwhelming tension.","shown": false},
         {"speaker" :"player","text":"Did any specific thoughts cross your mind? Like, 'If I don’t make this perfect, then…'?","shown": false},
         {"speaker" :"narrator","text":"(She closes her eyes, brows slightly furrowed, as if resisting an admission. But after a pause, she nods.)","shown": false},
         {"speaker" :"npc","text":"...…Yes. I thought, “If this proposal isn’t perfect and something goes wrong, it could stain my entire career.”","shown": false},
