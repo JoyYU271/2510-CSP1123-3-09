@@ -3,8 +3,8 @@ import sys
 import json
 
 # Load object data
-with open("objects.json", "r") as f:
-    object_data = json.load(f)
+#with open("objects.json", "r") as f:
+#    object_data = json.load(f)
 
 # Init
 pygame.init()
@@ -184,22 +184,22 @@ camera_group.add(object_interaction)
 player = Doctor(x=400, y=550, speed=4.5)
 camera_group.add(player)
 
-interactable_objects = []
+#interactable_objects = []
 
-for obj_id, obj_info in object_data.items():
-    pos = obj_info["position"]
-    size = obj_info["size"]
-    rect = pygame.Rect(pos[0], pos[1], size[0], size[1])
+#for obj_id, obj_info in object_data.items():
+#    pos = obj_info["position"]
+#    size = obj_info["size"]
+#    rect = pygame.Rect(pos[0], pos[1], size[0], size[1])
     
-    obj = InteractableObject(
-        name=obj_info["name"],
-        rect=rect,
-        dialogue_id=obj_info["dialogue_id"],
-        start_node=obj_info["start_node"],
-        active=obj_info.get("active", True)
-    )
+#    obj = InteractableObject(
+#        name=obj_info["name"],
+#        rect=rect,
+#        dialogue_id=obj_info["dialogue_id"],
+#        start_node=obj_info["start_node"],
+#        active=obj_info.get("active", True)
+#    )
     
-    interactable_objects.append(obj)
+#    interactable_objects.append(obj)
 
 # Game loop
 run = True
@@ -220,14 +220,15 @@ while run:
             if event.key == pygame.K_ESCAPE:
                 run = False
         
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_pos = pygame.mouse.get_pos()
-            for obj in interactable_objects:
-                if obj.rect.collidepoint(mouse_pos) and obj.active:
-                    current_dialogue = dialogue_data[obj.dialogue_id][obj.start_node]
-                    dialogue_index = 0
-                    show_dialogue = True
-                    break
+    #    if event.type == pygame.MOUSEBUTTONDOWN:
+    #        mouse_pos = pygame.mouse.get_pos()
+    #        for obj in interactable_objects:
+    #            if obj.rect.collidepoint(mouse_pos) and obj.active:
+    #                current_dialogue = dialogue_data[obj.dialogue_id][obj.start_node]
+    #                dialogue_index = 0
+    #                show_dialogue = True
+    #                break
+###########################
 
     # Update player
     player.update()
@@ -236,7 +237,7 @@ while run:
     camera_group.custom_draw(player)
 
     # Update item/object?
-    #object_interaction.draw(screen)
+    object_interaction.draw(screen)
 
     # Update display
     pygame.display.update()
