@@ -1,37 +1,24 @@
 import pygame
 import sys
-from pygame.locals import *
-from character_movement import *
 import json
+
 
 pygame.init()
 
+# Set up display
 screen_width = 1280
 screen_height = 720
-
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
+pygame.display.set_caption("Chapter Intro Test")
 clock = pygame.time.Clock()
 FPS = 60
+# Load JSON data
 
-player = doctor(400,500,4.5) 
-player.name = "You" # remember to put in class doctor
-moving_left = False
-moving_right = False
+with open('NPC_dialog/NPC.json', 'r', encoding='utf-8') as f:
+        all_dialogues = json.load(f)
 
+dialog_box_img = pygame.image.load("picture/Character Dialogue/dialog boxxx.png").convert_alpha()
 
-font = pygame.font.SysFont('Comic Sans MS',40)
-space_released = True # control the dialog will not happen continuously when press key space
-
-with open('NPC_dialog/NPC.json','r',encoding = 'utf-8') as f:
-     all_dialogues = json.load(f)
-
-
-
-npc_list =["Nuva"]
-shown_dialogues = {}
-selected_options = {}
-
-#============ Dialogue System =============
 class dialog:
     def __init__(self,npc,player):
         super().__init__()
@@ -68,8 +55,7 @@ class dialog:
         self.current_story = "chapter_1" #default chapter
         self.story_data = self.npc_data.get(self.current_story,[])
         self.step = 0 # present current sentence
-        global shown_dialogues
-        self.shown_dialogues = shown_dialogues #track dialogues that have been shown
+        self.shown_dialogues = {} #track dialogues that have been shown
         
         
 
@@ -200,10 +186,6 @@ class dialog:
                    if keys[pygame.K_e] and self.key_e_released:
                       selected_option = self.options[self.option_selected]
                       next_target = selected_option["next"]
-                      
-                      global selected_options
-                      option_id = f"{self.npc_name}_{self.current_story}_{self.step}"
-                      selected_options[option_id] = self.option_selected
 
                       #handle value jumps n chapter change
                       if isinstance(next_target,int):
@@ -234,7 +216,6 @@ class dialog:
               #mark dialogue as shown if needed
               if "shown" in entry and entry["shown"] == False:
                   dialogue_id = f"{self.npc_name}_{self.current_story}_{self.step}"
-                  global shown_dialogues
                   self.shown_dialogues[dialogue_id] = True
 
               if "chapter_ending" in entry:
@@ -307,15 +288,12 @@ class dialog:
         self.story_data = self.npc_data.get(self.current_story,[])
 
         # filter out already shown dialogues marked with "shown":false ( in json)
-        global shown_dialogues,selected_options
         filtered_story_data = []
         for i,entry in enumerate(self.story_data):
             dialogue_id = f"{self.npc_name}_{self.current_story}_{i}"
 
             if "shown" not in entry or entry["shown"] != False or dialogue_id not in self.shown_dialogues:
                 filtered_story_data.append(entry)
-            
-            
 
         # set filtered dialogue n reset state
         self.story_data = filtered_story_data
@@ -374,122 +352,204 @@ def draw_text(surface,text,size,color,x,y,center = False,max_width = None):
     return line_y + line_height#return the y position after all text
     
 
-#===========NPCs==============
-class NPC(pygame.sprite.Sprite):
-    def __init__(self,x,y,name,image_path = None):
-        super().__init__()
-
-        if image_path is None:
-            if name == "Nuva":
-                image_path = 'picture/Character QQ/Nurse idle.png'
-            elif name == "Dean":
-                image_path = 'picture/Character QQ/Dean idle.png'
-            elif name == "Zheng":
-                image_path = 'picture/Character QQ/Zheng idle.png'
-            elif name =="Emma":
-                image_path = 'picture/Character QQ/Emma idle.png'
-            elif name == "John":
-                image_path = 'picture/Character QQ/John idle.png'
-            elif name =="Police":
-                image_path = 'picture/Character QQ/Police idle.png'
-        
-        
-        self.image = pygame.image.load(image_path).convert_alpha()
-        self.world_pos = pygame.Vector2(x,y) #for world coordinate
-        self.rect = self.image.get_rect()
-        self.rect.center = (x,y)
-        self.name = name
-
-# to manage multiples NPCs
-class NPCManager:
+class SimpleChapterIntro:
     def __init__(self):
-        self.npcs = []
-
-    def add_npc(self,npc):
-        self.npcs.append(npc)
+        self.active = False
+        self.background = None
+        self.dialogue = []
+        self.step = 0
+        self.last_time = 0
+        self.delay = 3000  # 3 seconds between lines
+        self.typing_index = 0
+        self.displayed_text = ""
+        self.typing_delay = 45
+        self.typing_last_time = 0
+        self.fade_alpha = 0
+        self.fade_speed = 5
+        self.fading_in = True
+        self.fading_out = False
+        self.completed_callback = None
+        self.space_released = True
     
-    def get_nearest_npc(self,player):
-        nearest_npc = None
-        min_distance = float('inf')
-
-        for npc in self.npcs:
-
-            if npc.rect.colliderect(player.rect):
-
-                dx = npc.rect.centerx - player.rect.centerx
-                dy = npc.rect.centery - player.rect.centery
-                distance = (dx**2 + dy**2)**0.5
-
-                if distance< min_distance:
-                    min_distance = distance
-                    nearest_npc = npc
-        return nearest_npc
-
-
-
-npc_manager = NPCManager()
-
-nuva = NPC(600,500,"Nuva")
-dean = NPC(800,500,"Dean")
-patient1 = NPC(1000,500,"Zheng")
-patient2 = NPC(400,500,"Emma")
-
-current_dialogue = None
-
-npc_manager.add_npc(nuva)
-npc_manager.add_npc(dean)
-npc_manager.add_npc(patient1)
-npc_manager.add_npc(patient2)
-
-current_dialogue = None
-
-
-run = True
-while run:
-          
-          draw_bg(screen)
-          is_moving = player.move(moving_left,moving_right)
-          player.update_animation(is_moving)
-          
-          for npc in npc_manager.npcs:
-              screen.blit(npc.image,npc.rect)
-
-          player.draw(screen)
-          
-          moving_left,moving_right,run =  keyboard_input(moving_left, moving_right, run)
-
-
-          nearest_npc = npc_manager.get_nearest_npc(player)
-
-          #=====space======
-          keys = pygame.key.get_pressed()
-          if nearest_npc or (current_dialogue and current_dialogue.talking):
-              if nearest_npc and (current_dialogue is None or current_dialogue.npc != nearest_npc):
-                  current_dialogue = dialog(nearest_npc,player)
+    def start(self, chapter):
+        print(f"Starting intro for chapter: {chapter}")
+        self.active = True
+        
+        # Load background
+        try:
+            self.background = pygame.image.load("picture/Map Art/outside.png").convert()
+            print("Background loaded successfully")
+        except Exception as e:
+            print(f"Error loading background: {e}")
             
-              if keys[pygame.K_SPACE] and space_released:
-                  space_released = False
-                  if current_dialogue:
-                     current_dialogue.handle_space(keys)
-
-              if current_dialogue:
-                 current_dialogue.handle_option_selection(keys)
-          
-
-              if not keys[pygame.K_SPACE]:
-                  space_released = True
-          elif current_dialogue:
-               current_dialogue.talking = False
-               current_dialogue.options = []
-
+        
+        # Get dialogue from JSON
+        self.dialogue = all_dialogues.get("intro", {}).get(chapter, [])
+        if not self.dialogue:
+            self.dialogue = [{"speaker": "narrator", "text": f"Chapter {chapter} begins..."}]
+       
+        
+        # Reset state
+        self.step = 0
+        self.last_time = pygame.time.get_ticks()
+        self.typing_index = 0
+        self.displayed_text = ""
+        self.typing_last_time = pygame.time.get_ticks()
+        self.fade_alpha = 0
+        self.fading_in = True
+        self.fading_out = False
+    
+    def update(self, keys):
+        if not self.active:
+            return False
+        
+        # Handle fading in
+        if self.fading_in:
+            self.fade_alpha += self.fade_speed
+            if self.fade_alpha >= 255:
+                self.fade_alpha = 255
+                self.fading_in = False
+            return True
+        
+        # Handle fading out
+        if self.fading_out:
+            self.fade_alpha -= self.fade_speed
+            if self.fade_alpha <= 0:
+                self.active = False
+                if self.completed_callback:
+                    self.completed_callback()
+                return False
+            return True
+        
+        # Check if intro is complete
+        if self.step >= len(self.dialogue):
+            self.fading_out = True
+            return True
+        
+        # Handle space key
+        if keys[pygame.K_SPACE] and self.space_released:
+            self.space_released = False
             
-          if current_dialogue and current_dialogue.talking:
-              current_dialogue.update()
-              current_dialogue.draw(screen)
-          
-          pygame.display.update()
-          clock.tick(FPS)    
-          
+            # If still typing, complete the text immediately
+            if self.typing_index < len(self.dialogue[self.step].get("text", "")):
+                self.typing_index = len(self.dialogue[self.step].get("text", ""))
+                self.displayed_text = self.dialogue[self.step].get("text", "")
+            else:
+                # Move to next dialogue line
+                self.step += 1
+                self.typing_index = 0
+                self.displayed_text = ""
+                self.last_time = pygame.time.get_ticks()
+        
+        if not keys[pygame.K_SPACE]:
+            self.space_released = True
+        
+        # Process current dialogue
+        if self.step < len(self.dialogue):
+            entry = self.dialogue[self.step]
+            current_text = entry.get("text", "")
+            
+            # Auto-advance after delay
+            current_time = pygame.time.get_ticks()
+            if (self.typing_index >= len(current_text) and 
+                current_time - self.last_time > self.delay):
+                self.step += 1
+                self.typing_index = 0
+                self.displayed_text = ""
+                self.last_time = current_time
+            
+            # Typing effect
+            if self.typing_index < len(current_text):
+                if current_time - self.typing_last_time > self.typing_delay:
+                    self.displayed_text += current_text[self.typing_index]
+                    self.typing_index += 1
+                    self.typing_last_time = current_time
+        
+        return True
+    
+    def draw(self, screen):
+        if not self.active:
+            return
+        
+        # Draw background with fade
+        screen_rect = screen.get_rect()
+        bg_rect = self.background.get_rect(center=screen_rect.center)
+        
+        # Fill with black first
+        screen.fill((0, 0, 0))
+        
+        # Create copy with adjusted alpha
+        temp_bg = self.background.copy()
+        temp_bg.set_alpha(self.fade_alpha)
+        screen.blit(temp_bg, bg_rect)
+        
+        # Don't draw text during transitions
+        if self.fading_in or self.fading_out:
+            return
+        
+        # Draw text box if we have dialogue
+        if self.step < len(self.dialogue):
+            # Create semitransparent text box
+           global dialog_box_img
 
+           dialog_x = screen.get_width()//2 - dialog_box_img.get_width()//2
+           dialog_y = screen.get_height() - dialog_box_img.get_height() - 20
+           
+           screen.blit(dialog_box_img,(dialog_x,dialog_y))
+           text_max_width = dialog_box_img.get_width() - 80
+
+           draw_text(screen,self.displayed_text,30,
+                (0, 0, 0),  # Black text
+                dialog_x + dialog_box_img.get_width()//2,
+                dialog_y + dialog_box_img.get_height()//2,
+                center=True,
+                max_width=text_max_width
+            )
+                        # Draw hint
+           hint_font = pygame.font.SysFont('Comic Sans MS', 20)
+           hint_text = hint_font.render("Press SPACE to continue", True, (0,0,0))
+           hint_rect = hint_text.get_rect(bottomright=(dialog_x + dialog_box_img.get_width() - 90,  dialog_y + dialog_box_img.get_height() - 20))
+
+           screen.blit(hint_text, hint_rect)
+     
+            
+            
+
+
+# Create intro object
+showing_intro = True
+chapter_intro = SimpleChapterIntro()
+chapter_intro.start("chapter_1")
+
+
+# Main loop
+running = True
+while running:
+    # Handle events
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                running = False
+            elif event.key == pygame.K_r:
+                # Restart intro
+                chapter_intro.start("chapter_1")
+    
+    # Get keys
+    keys = pygame.key.get_pressed()
+    
+    # Update and draw intro
+    if chapter_intro.active:
+        if chapter_intro.update(keys):
+            chapter_intro.draw(screen)
+        else:
+            # If intro is no longer active, restart it
+            print("Chapter intro finished, restarting...")
+            chapter_intro.start("chapter_1")
+    
+    # Update display
+    pygame.display.flip()
+    clock.tick(FPS)
 pygame.quit()
 sys.exit()
