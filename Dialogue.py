@@ -3,18 +3,28 @@ import sys
 from pygame.locals import *
 from character_movement import *
 import json
+from ui_components import Button, get_font
 
 current_text_size = 30
+click_sound = pygame.mixer.Sound("main page/click1.wav") 
 
-def run_dialogue(text_size=None,language="EN"):
+def run_dialogue(text_size=None,language="EN",bgm_vol=0.5):
     pygame.init()
+
+    screen_width = 1280
+    screen_height = 720
+
+    pygame.mixer.music.set_volume(bgm_vol)
+    pygame.mixer.music.load("bgm/test.mp3")
+    pygame.mixer.music.set_volume(bgm_vol)
+    pygame.mixer.music.play(-1)
+
+    backmain_img = pygame.image.load("backmain.png").convert_alpha()
+    backmain_button = Button(backmain_img, (1100, 80), scale=0.2)
 
     global current_text_size
     if text_size is not None:
         current_text_size = text_size
-
-    screen_width = 1280
-    screen_height = 720
 
     screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
     clock = pygame.time.Clock()
@@ -57,11 +67,23 @@ def run_dialogue(text_size=None,language="EN"):
 
     run = True
     while run:
-            
+
             draw_bg(screen)
+            backmain_button.draw(screen)          
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                   pygame.quit()
+                   sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if backmain_button.checkForInput(pygame.mouse.get_pos()):
+                       click_sound.play()
+                       pygame.mixer.music.stop()
+                       return
+
             is_moving = player.move(moving_left,moving_right)
             player.update_animation(is_moving)
-            
+        
             for npc in npc_manager.npcs:
                 screen.blit(npc.image,npc.rect)
 
@@ -99,7 +121,10 @@ def run_dialogue(text_size=None,language="EN"):
                 current_dialogue.draw(screen)
             
             pygame.display.update()
-            clock.tick(FPS)  
+            clock.tick(FPS)
+
+
+
 
 
 #============dialog box =============
