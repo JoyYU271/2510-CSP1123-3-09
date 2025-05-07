@@ -1,15 +1,10 @@
 import pygame
 import sys
 from Dialogue import run_dialogue
-#import ctypes #ctypes is built-in python library that allows calling functions written in C (it allows Python to interact directly with the operating system’s native API)
-#here maybe can add import sys to use sy.exit() but still figuring out how to use it
+from ui_components import Button, get_font
 
 pygame.init() #initialize all import pygame modules
 pygame.mixer.init()
-#to get real resolution
-#ctypes.windll.user32.SetProcessDPIAware() #make sure the Python program gets the actual screen resolution, not scaled one
-#screen_width = ctypes.windll.user32.GetSystemMetrics(0) #ask the real screen width in pixels
-#screen_height = ctypes.windll.user32.GetSystemMetrics(1) #ask the real screen height in pixels
 
 screen_width = 1280
 screen_height = 720
@@ -37,65 +32,23 @@ sfx_vol = 0.5
 text_size = "Medium"
 current_font_size = 30
 current_language = "EN"
+main_menu_bgm_played = False
 
-#get a font
-def get_font(size):
-    return pygame.font.Font(None, size) #None is use system default font
-
-#button class
-class Button():
-    def __init__(self, image, pos, text_input="", font=None, base_color=(0, 0, 0), hovering_color=(0, 0, 0), scale=1.0):
-        self.original_image = image
-        if image is not None and scale != 1.0:
-            width = int(image.get_width() * scale)
-            height = int(image.get_height() * scale)
-            self.image = pygame.transform.scale(image, (width, height))
-        else:
-            self.image = image
-
-        self.x_pos = pos[0]
-        self.y_pos = pos[1]
-        self.font = font or get_font(30)
-        self.base_color, self.hovering_color = base_color, hovering_color
-        self.text_input = text_input
-        self.text = self.font.render(self.text_input, True, self.base_color)
-
-        if self.image is None:
-            self.image = self.text
-
-        self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos)) #detect clicks
-        self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos)) 
-
-    #update image and text on screen
-    def update(self, screen):
-        if self.image is not None:
-            screen.blit(self.image, self.rect)
-        screen.blit(self.text, self.text_rect)
-
-    #determine is mouse on button area or not
-    def checkForInput(self, position):
-        return self.rect.collidepoint(position)
-
-    def changeColor(self, position):
-        if self.checkForInput(position):
-            self.text = self.font.render(self.text_input, True, self.hovering_color)
-        else:
-            self.text = self.font.render(self.text_input, True, self.base_color)
-    
-    def draw(self, screen):
-        self.update(screen)
-        mouse_pos = pygame.mouse.get_pos()
-        self.changeColor(mouse_pos)
-        return self.checkForInput(mouse_pos)
 
 def main_menu():
-    global current_font_size
+    global current_font_size,bgm_vol, main_menu_bgm_played
 
-    start_button = Button(image=start_img, pos=(300, 80), scale=0.24)
-    load_button = Button(image=load_img, pos=(300, 220), scale=0.24)
-    collections_button = Button(image=collections_img, pos=(300, 360), scale=0.24)
-    settings_button = Button(image=settings_img, pos=(300, 500), scale=0.24)
-    exit_button = Button(image=exit_img, pos=(300, 640), scale=0.24)
+    if not main_menu_bgm_played:
+        pygame.mixer.music.load("bgm/main page.mp3")
+        pygame.mixer.music.set_volume(bgm_vol)
+        pygame.mixer.music.play(-1)
+        main_menu_bgm_played = True
+
+    start_button = Button(image=start_img, pos=(300, 120), scale=0.24)
+    load_button = Button(image=load_img, pos=(300, 280), scale=0.24)
+    collections_button = Button(image=collections_img, pos=(300, 440), scale=0.24)
+    settings_button = Button(image=settings_img, pos=(300, 600), scale=0.24)
+    #exit_button = Button(image=exit_img, pos=(300, 640), scale=0.24)
 
     while True: #keep window running
 
@@ -105,7 +58,7 @@ def main_menu():
         load_button.draw(screen)
         collections_button.draw(screen)
         settings_button.draw(screen)
-        exit_button.draw(screen)
+        #exit_button.draw(screen)
 
         mouse_pos = pygame.mouse.get_pos()
 
@@ -117,7 +70,13 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if start_button.checkForInput(mouse_pos):
                     click_sound.play()
-                    run_dialogue(current_font_size,current_language)
+                    pygame.mixer.music.stop()
+                    run_dialogue(current_font_size, current_language, bgm_vol)
+
+                    pygame.mixer.music.load("bgm/main page.mp3")
+                    pygame.mixer.music.set_volume(bgm_vol)
+                    pygame.mixer.music.play(-1)
+                    
                 elif load_button.checkForInput(mouse_pos):
                     click_sound.play()
                     load_screen()
@@ -127,37 +86,12 @@ def main_menu():
                 elif settings_button.checkForInput(mouse_pos):
                     click_sound.play()
                     settings_screen()
-                elif exit_button.checkForInput(mouse_pos):
-                    pygame.quit()
-                    sys.exit()
+                #elif exit_button.checkForInput(mouse_pos):
+                    #pygame.quit()
+                    #sys.exit()
 
         pygame.display.flip()
 
-def play():
-    while True:
-        screen.fill("black")
-        mouse_pos = pygame.mouse.get_pos()
-
-        text = get_font(45).render("This is the PLAY screen.", True, "White")
-        rect = text.get_rect(center=(640, 260))
-        screen.blit(text, rect)
-
-        back_button = Button(image=None, pos=(640, 460), text_input="BACK",
-                             font=get_font(75), base_color="White", hovering_color="Green")
-
-        back_button.changeColor(mouse_pos)
-        back_button.update(screen)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if back_button.checkForInput(mouse_pos):
-                    click_sound.play()
-                    return
-
-        pygame.display.update()
 
 def load_screen():
     while True:
