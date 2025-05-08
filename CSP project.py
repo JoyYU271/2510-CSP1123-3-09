@@ -11,13 +11,15 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Drag and Drop')
 
 class DraggableObjects:
-    def __init__(self, image_path, pos):
+    def __init__(self, image_path, start_pos, target_pos):
         self.image = pygame.image.load(image_path).convert_alpha()
-        self.rect = self.image.get_rect(topleft=pos)
+        self.rect = self.image.get_rect(topleft=start_pos)
         self.mask = pygame.mask.from_surface(self.image)
-        self.mask_surf = self.mask
+        self.original_pos = start_pos
 
-        self.target_position = (100, 100)  # the fixed "hole" position
+        self.target_position = target_pos  # the fixed "hole" position
+        self.mask_surf = self.mask
+        self.placed = False     #true if snappped into hole
         
         #how to assign different target pos to each object, maybe list?
 
@@ -34,26 +36,36 @@ class DraggableObjects:
                 if self.mask_surf.get_at((x, y))[0] != 0:
                     self.mask_surf.set_at((x, y), pygame.Color("gray18"))
 
-    def handle_event(self, event):
+    def handle_event(self, event, active_obj_ref):
+        if self.placed:
+            return
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 if self.rect.collidepoint(event.pos):
                     self.dragging = True
+                    active_obj_ref[0] = self
                     self.mouse_offset = (event.pos[0] - self.rect.x, event.pos[1] - self.rect.y)
 
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
                 self.dragging = False
+                active_obj_ref[0] = None
 
                 offset_x = self.rect.x - self.target_position[0]
                 offset_y = self.rect.y - self.target_position[1]
-                overlap = self.mask.overlap(self.mask, (offset_x, offset_y))
-                if overlap:
+                if self.mask.overlap(self.mask, (offset_x, offset_y)):
                     self.rect.topleft = self.target_position  # snap it to perfect alignment
+                    self.placed = True
 
         elif event.type == pygame.MOUSEMOTION:
                 if self.dragging:
                     self.rect.topleft = (event.pos[0] - self.mouse_offset[0], event.pos[1] - self.mouse_offset[1])
+
+    def reset(self):
+        self.rect.topleft = self.original_pos
+        self.dragging = False
+        self.placed = False
 
     def draw_target_slot(self, screen, offset=3):
         screen.blit(self.mask_surf, self.target_position)
@@ -86,9 +98,10 @@ class DraggableObjects:
 #         if mask_image.get_at((x,y))[0] != 0:
 #             mask_image.set_at((x,y), 'gray18')
 
-binderClip = DraggableObjects("minigame 1/binder_clip(small).png", (200, 100))
-BinderClip = DraggableObjects("minigame 1/binder_clip(tall).png", (300,300))
+objects = [DraggableObjects("minigame 1/binder_clip(small).png", (100, 100), (200, 100)), 
+           DraggableObjects("minigame 1/binder_clip(tall).png", (300,290), (600, 250))]
 
+active_object = [None]
 
 run = True
 while run:
@@ -117,10 +130,20 @@ while run:
     # for box in boxes:
     #    pygame.draw.rect(screen, 'purple', box) 
 
+    #Let only on e object respond to drag at a time
     for event in pygame.event.get():
-        binderClip.handle_event(event)
-        BinderClip.handle_event(event)
+        #binderClip.handle_event(event)
+        #BinderClip.handle_event(event)
+        for obj in reversed(objects):   #top-most drawn gets priority
+            obj.handle_event(event, active_object)
+            if active_object[0] is obj:
+                break   #stop checking others if this one is active
 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                for obj in objects:
+                    obj.reset()
+                active_object[0] = None
     #     if event.type == pygame.MOUSEBUTTONDOWN:
     #         if event.button == 1:   # 1 = left most button on mouse...?
     # #            for num, box in enumerate(boxes):  
@@ -156,11 +179,19 @@ while run:
     
     screen.fill('turquoise1')
 
-    binderClip.draw_target_slot(screen)
-    binderClip.draw(screen)
+    #draw all target holes first
+    for obj in objects:
+        obj.draw_target_slot(screen)
 
-    BinderClip.draw_target_slot(screen)
-    BinderClip.draw(screen)
+    #draw draggable objects
+    for obj in objects:
+        obj.draw(screen)
+
+    #binderClip.draw_target_slot(screen)
+    #binderClip.draw(screen)
+
+    #BinderClip.draw_target_slot(screen)
+    #BinderClip.draw(screen)
     pygame.display.update()
 
 pygame.quit()
