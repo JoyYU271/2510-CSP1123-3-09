@@ -13,6 +13,8 @@ pygame.display.set_caption('Drag and Drop')
 class DraggableObjects:
     def __init__(self, image_path, start_pos, target_pos):
         self.image = pygame.image.load(image_path).convert_alpha()
+        self.original_image = self.image.copy()  #keep original
+        self.dark_image = self.create_darkened_image(self.image)
         self.rect = self.image.get_rect(topleft=start_pos)
         self.mask = pygame.mask.from_surface(self.image)
         self.original_pos = start_pos
@@ -21,9 +23,6 @@ class DraggableObjects:
         self.mask_surf = self.mask
         self.placed = False     #true if snappped into hole
         
-        #how to assign different target pos to each object, maybe list?
-
-
         #for dragging
         self.dragging = False   #basically my acitve_object but made relevant to the class
         self.mouse_offset = (0,0)
@@ -36,31 +35,9 @@ class DraggableObjects:
                 if self.mask_surf.get_at((x, y))[0] != 0:
                     self.mask_surf.set_at((x, y), pygame.Color("gray18"))
 
-    def handle_event(self, event, active_obj_ref):
+    def handle_event(self):     #, event, active_obj_ref
         if self.placed:
             return
-
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
-                if self.rect.collidepoint(event.pos):
-                    self.dragging = True
-                    active_obj_ref[0] = self
-                    self.mouse_offset = (event.pos[0] - self.rect.x, event.pos[1] - self.rect.y)
-
-        elif event.type == pygame.MOUSEBUTTONUP:
-            if event.button == 1:
-                self.dragging = False
-                active_obj_ref[0] = None
-
-                offset_x = self.rect.x - self.target_position[0]
-                offset_y = self.rect.y - self.target_position[1]
-                if self.mask.overlap(self.mask, (offset_x, offset_y)):
-                    self.rect.topleft = self.target_position  # snap it to perfect alignment
-                    self.placed = True
-
-        elif event.type == pygame.MOUSEMOTION:
-                if self.dragging:
-                    self.rect.topleft = (event.pos[0] - self.mouse_offset[0], event.pos[1] - self.mouse_offset[1])
 
     def reset(self):
         self.rect.topleft = self.original_pos
@@ -76,107 +53,63 @@ class DraggableObjects:
                     screen.blit(self.mask_surf, (self.target_position[0] + dx, self.target_position[1] + dy))
 
 
-    def draw(self, screen):
-        screen.blit(self.image,self.rect)
+    def draw(self, screen, is_selected=False):
+        if is_selected:
+            pygame.draw.rect(screen, 'gold', self.rect.inflate(4, 4), 2)
+        if self.placed:
+            screen.blit(self.dark_image, self.rect)
+        else:
+            screen.blit(self.image,self.rect)
 
-# #create object
-# binder1 = pygame.image.load("minigame 1/binder_clip(small).png").convert_alpha()
-# binder1_rect = binder1.get_rect(topleft=(200, 100))
-# # binder1_pos
-# binder1_mask = pygame.mask.from_surface(binder1)
-
-# active_object = None
-
-# #mask -> surface
-# mask_image = binder1_mask.to_surface()
-# mask_image.set_colorkey((0,0,0))    #to hide black pixels
-
-# #fill surface with color (screen.fill would fill hidden pixels as well)
-# surf_w,surf_h = mask_image.get_size()
-# for x in range(surf_w):
-#     for y in range(surf_h):
-#         if mask_image.get_at((x,y))[0] != 0:
-#             mask_image.set_at((x,y), 'gray18')
+    def create_darkened_image(self, surface):
+        darkened = surface.copy()
+        darkened.fill((0,0,0,100), special_flags=pygame.BLEND_RGBA_SUB)
+        return darkened
 
 objects = [DraggableObjects("minigame 1/binder_clip(small).png", (100, 100), (200, 100)), 
            DraggableObjects("minigame 1/binder_clip(tall).png", (300,290), (600, 250))]
 
-active_object = [None]
+selected_object_index = 0
 
 run = True
 while run:
-    #complex way for outline (but what if without the main image covering it?)
-    # offset = 3
-    # screen.blit(mask_image,(binder1_rect[0] + offset, binder1_rect[1])) #right
-    # screen.blit(mask_image,(binder1_rect[0] - offset, binder1_rect[1])) #left
-    # screen.blit(mask_image,(binder1_rect[0], binder1_rect[1] + offset)) #bottom
-    # screen.blit(mask_image,(binder1_rect[0], binder1_rect[1] - offset)) #top
-    # screen.blit(mask_image,(binder1_rect[0] + offset, binder1_rect[1] - offset)) #topright
-    # screen.blit(mask_image,(binder1_rect[0] + offset, binder1_rect[1] + offset)) #bottomright
-    # screen.blit(mask_image,(binder1_rect[0] - offset, binder1_rect[1] + offset)) #topleft
-    # screen.blit(mask_image,(binder1_rect[0] - offset, binder1_rect[1] - offset)) #bottomleft
-
-    # target_position = (100, 100)  # the fixed "hole" position
-    # for dx in [-offset, 0, offset]:
-    #     for dy in [-offset, 0, offset]:
-    #         if dx != 0 or dy != 0:
-    #             screen.blit(mask_image, (target_position[0] + dx, target_position[1] + dy))
-
-    # #draw object image
-    # screen.blit(binder1, binder1_rect)
-    # pygame.draw.rect(screen, 'turqoise1',binder1)
-
-    #update and draw boxes
-    # for box in boxes:
-    #    pygame.draw.rect(screen, 'purple', box) 
-
-    #Let only on e object respond to drag at a time
     for event in pygame.event.get():
-        #binderClip.handle_event(event)
-        #BinderClip.handle_event(event)
-        for obj in reversed(objects):   #top-most drawn gets priority
-            obj.handle_event(event, active_object)
-            if active_object[0] is obj:
-                break   #stop checking others if this one is active
-
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+            #to reset the game
+            if event.key == pygame.K_z:
                 for obj in objects:
                     obj.reset()
-                active_object[0] = None
-    #     if event.type == pygame.MOUSEBUTTONDOWN:
-    #         if event.button == 1:   # 1 = left most button on mouse...?
-    # #            for num, box in enumerate(boxes):  
-    #             if binder1_rect.collidepoint(event.pos):     #binder1 no attribute to collidepoint XP
-    #                 active_object = binder1_rect   # ?
-    #                 mouse_offset = (event.pos[0] - binder1_rect.x, event.pos[1] - binder1_rect.y) #so the object doesn't move its top left of mouse pointer
-    # #                 if box.collidepoint(event.pos):  #checking for each box if collide with mouse pointer
-    # #                     active_box = num             #event.pos is mouse position, but need variable to check which box mouse is over
+                selected_object_index = 0
+    
+            if event.key == pygame.K_TAB:
+                selected_object_index = (selected_object_index + 1) % len(objects)
 
-    #     if event.type == pygame.MOUSEBUTTONUP:
-    #         if event.button == 1:
-    #     #         active_box = None
-    #             active_object = None
-    #         #if binder1_rect.colliderect(pygame.Rect(target_position, binder1.get_size())):
-    #                 #print("Object is over the hole!")
-    #         offset_x = binder1_rect.x - target_position[0]
-    #         offset_y = binder1_rect.y - target_position[1]
-    #         overlap = binder1_mask.overlap(binder1_mask, (offset_x, offset_y))
-    #         if overlap:
-    #             binder1_rect.topleft = target_position  # snap it to perfect alignment
-
-                    
-    # maybe snap into place or check mask overlap
-
-        # if event.type == pygame.MOUSEMOTION:
-        # #     if active_box != None:   #check box is being clicked on
-        # #         boxes[active_box].move_ip(event.rel)    #event.rel comes from pygame.MOUSEMOTION and shows the exact position of mouse pointer
-        #     if active_object != None:
-        #         binder1_rect.topleft = (event.pos[0] - mouse_offset[0], event.pos[1] - mouse_offset[1])
+            #Try to 'drop' with SPACE
+            if event.key == pygame.K_SPACE:
+                obj = objects[selected_object_index]
+                offset_x = obj.rect.x - obj.target_position[0]
+                offset_y = obj.rect.y - obj.target_position[1]
+                if obj.mask.overlap(obj.mask, (offset_x, offset_y)):
+                    obj.rect.topleft = obj.target_position
+                    obj.placed = True
 
         if event.type == pygame.QUIT:
             run = False
-    
+
+    keys = pygame.key.get_pressed()
+    obj = objects[selected_object_index]
+
+    #Movement keys (WASD or Arrows)
+    if not obj.placed:
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+            obj.rect.x -= 4
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            obj.rect.x += 4
+        if keys[pygame.K_UP] or keys[pygame.K_w]:
+            obj.rect.y -= 4
+        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+            obj.rect.y += 4    
+
     screen.fill('turquoise1')
 
     #draw all target holes first
@@ -187,11 +120,9 @@ while run:
     for obj in objects:
         obj.draw(screen)
 
-    #binderClip.draw_target_slot(screen)
-    #binderClip.draw(screen)
+    for i, obj in enumerate(objects):
+        obj.draw(screen, is_selected=(i == selected_object_index))
 
-    #BinderClip.draw_target_slot(screen)
-    #BinderClip.draw(screen)
     pygame.display.update()
 
 pygame.quit()
