@@ -1,5 +1,6 @@
 import pygame
 import sys
+import Dialogue
 from Dialogue import run_dialogue
 from ui_components import Button, get_font
 
@@ -225,10 +226,16 @@ def settings_screen():
                 if sfx_plus.checkForInput(mouse_pos) and sfx_vol < 1.0:
                     sfx_vol = round(min(sfx_vol + 0.1, 1.0), 1)
                     click_sound.set_volume(sfx_vol)
+                    if hasattr(Dialogue.dialog, 'sounds'):
+                        for sound in Dialogue.dialog.sounds.values():
+                            sound.set_volume(sfx_vol)
                     click_sound.play()
                 if sfx_minus.checkForInput(mouse_pos) and sfx_vol > 0.0:
                     sfx_vol = round(max(sfx_vol - 0.1, 0.0), 1)
                     click_sound.set_volume(sfx_vol)
+                    if hasattr(Dialogue.dialog, 'sounds'):
+                        for sound in Dialogue.dialog.sounds.values():
+                            sound.set_volume(sfx_vol)
                     click_sound.play()
 
                 if small_button.checkForInput(mouse_pos):
@@ -263,3 +270,5 @@ def settings_screen():
         pygame.display.update()
 
 main_menu()
+
+
