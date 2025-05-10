@@ -55,10 +55,10 @@
         {"speaker" :"narrator","text":"(From what you ate for lunch, to the friends you've made or your choice of major—every little story is in this chat.)","shown": false},
         {"speaker" :"narrator","text":"(What you truly hope for, is her response, and maybe an explanation, nothing more.)","shown": false},
         {"speaker" :"narrator","text":"(You type in the chat box:)","shown": false},
-        {"speaker" :"player","text":"Today is my first day at work.","shown": false},
+        {"speaker" :"player","text":"Today is my first day at work.","sound": "phone_typing","shown": false},
         {"speaker" :"player","text":"Finally, I've become a doctor, like Father.","shown": false},
         {"speaker" :"player","text":"Would you be proud of me, Mom?","shown": false},
-        {"speaker" :"narrator","text":"(......)","shown": false},
+        {"speaker" :"narrator","text":"(......)","sound_stop": true,"shown": false},
         {"speaker" :"narrator","text":"(You stare at the unanswered chat for a few seconds then put your phone back to pocket.)","shown": false},
         {"speaker" :"player","text":"Maybe I should walk around clinic first.","shown": false}
 

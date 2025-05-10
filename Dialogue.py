@@ -132,6 +132,12 @@ class dialog:
     def __init__(self,npc,player,all_dialogues):
         super().__init__()
 
+        # initialize sfx dictionary
+        self.sounds = {
+            "phone_typing": pygame.mixer.Sound("sfx/phone_typing.wav")
+        }
+
+
         #load dialog box img n set transparency
         self.dialog_box_img = pygame.image.load("picture/Character Dialogue/dialog boxxx.png").convert_alpha()
         self.dialog_box_img.set_alpha(200)
@@ -183,6 +189,14 @@ class dialog:
         self.key_s_released = True
         self.key_e_released = True
 
+        self.sound_played_for_current_step = False
+        self.currently_playing_sfx = None
+
+    def stop_all_sfx(self):
+        for sound in self.sounds.values():
+            sound.stop()
+        self.currently_playing_sfx = None 
+
 
 #================ Update ============
     def update(self): 
@@ -191,7 +205,28 @@ class dialog:
              entry = self.story_data[self.step] # current dialogue entry
 
              text = entry.get("text","") #get text
+
+
+             if entry.get("sound_stop"):
+                self.stop_all_sfx()
+        
+        
+             if "sound" in entry and not self.sound_played_for_current_step:
+                 sound_name = entry["sound"]
+                 if sound_name in self.sounds:
+                   self.sounds[sound_name].play()
+                   self.currently_playing_sfx = sound_name
+                 self.sound_played_for_current_step = True
              
+
+             #check sfx when starting to display text
+             if not self.sound_played_for_current_step and "sound" in entry:
+                sound_name = entry["sound"]
+                if sound_name in self.sounds:
+                   self.sounds[sound_name].play()
+                self.sound_played_for_current_step = True
+
+
              #check if this is a choice entry
              if "choice" in entry :
               self.options = entry.get("choice",[])
@@ -212,6 +247,7 @@ class dialog:
          self.letter_index = 0
          self.last_time = pygame.time.get_ticks()
 
+         self.sound_played_for_current_step = False 
 
  # ================ Draw ======================
     def draw(self,screen):
@@ -325,7 +361,7 @@ class dialog:
          if self.step <len(self.story_data):
               entry = self.story_data[self.step]
               text = entry.get("text","")
-
+          
               #mark dialogue as shown if needed
               if "shown" in entry and entry["shown"] == False:
                   dialogue_id = f"{self.npc_name}_{self.current_story}_{self.step}"
@@ -387,6 +423,8 @@ class dialog:
         self.story_data = filtered_story_data
         self.step = 0
         self.reset_typing()
+
+        self.sound_played_for_current_step = False 
 
     def update_font_size(self, new_size):
         global current_font_size
