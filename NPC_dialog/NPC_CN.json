@@ -46,7 +46,7 @@
         {"speaker" :"player","text":"我想提前了解这里的环境……父亲。","shown": false},
         {"speaker" :"narrator","text":"(在你喊出父亲的瞬间，你看见他的眉头轻皱。)","shown": false},
         {"speaker" :"npc","text":"在诊所我们只是上下关系，不要叫我父亲。","shown": false},
-        {"speaker" :"npc","text":"我先走了，你自行探索，我还有会议。","shown": false},
+        {"speaker" :"npc","text":"我先走了，你自行探索，我还有会议。","sound": "footsteps","shown": false},
         {"speaker" :"narrator","text":"(他走出了诊所。)","shown": false},
         {"speaker" :"player","text":"(在探索前先跟母亲报备吧。)","shown": false},
         {"speaker" :"player","text":"(你拿起了手机，打开了母亲的聊天栏。)","shown": false},
@@ -55,10 +55,10 @@
         {"speaker" :"narrator","text":"(从中午吃了什么，到交了哪些朋友，选了什么科系，所有大小事都在这个聊天栏里。)","shown": false},
         {"speaker" :"narrator","text":"(你所希望的，只是她的回应和解释，仅此而已。)","shown": false},
         {"speaker" :"narrator","text":"(你在聊天栏里打道)","shown": false},
-        {"speaker" :"player","text":"今天是我正式上班的第一天","shown": false},
+        {"speaker" :"player","text":"今天是我正式上班的第一天","sound": "phone_typing","shown": false},
         {"speaker" :"player","text":"我终于成为了像父亲一样的人","shown": false},
-        {"speaker" :"player","text":"W你会为我感到骄傲吗，母亲？","shown": false},
-        {"speaker" :"narrator","text":"(......)","shown": false},
+        {"speaker" :"player","text":"你会为我感到骄傲吗，母亲？","shown": false},
+        {"speaker" :"narrator","text":"(......)","sound_stop": true,"shown": false},
         {"speaker" :"narrator","text":"(你望着不会有回应的聊天看了几秒后收起手机。)","shown": false},
         {"speaker" :"player","text":"先走走吧。","shown": false}
 
