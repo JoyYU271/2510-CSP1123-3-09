@@ -4,8 +4,6 @@ from pygame.locals import *
 from character_movement import *
 import json
 
-
-
 pygame.init()
 
 screen_width = 1280
@@ -27,12 +25,13 @@ space_released = True # control the dialog will not happen continuously when pre
 with open('NPC_dialog/NPC.json','r',encoding = 'utf-8') as f:
      all_dialogues = json.load(f)
 
-current_chapter = "chapter_1"
+
 
 npc_list =["Nuva"]
+shown_dialogues = {}
+selected_options = {}
 
-
-#============dialog box =============
+#============ Dialogue System =============
 class dialog:
     def __init__(self,npc,player):
         super().__init__()
@@ -50,10 +49,6 @@ class dialog:
             self.portrait = pygame.image.load("picture/Character Dialogue/Patient1.png").convert_alpha()
         elif npc.name == "Emma":
             self.portrait = pygame.image.load("picture/Character Dialogue/Patient2.png").convert_alpha()
-        elif npc.name == "John":
-            self.portrait = pygame.image.load("picture/Character Dialogue/Patient3.png").convert_alpha()
-        elif npc.name == "Police":
-            self.portrait = pygame.image.load("picture/Character Dialogue/Police.png").convert_alpha()
 
         # always load player portrait
         self.player_portrait = pygame.image.load("picture/Character Dialogue/Doctor.png").convert_alpha()
@@ -66,12 +61,11 @@ class dialog:
         self.npc_data = all_dialogues.get(self.npc_name)
 
          #dialogue state variacbles
-        self.current_story = "chapter_1" #default chapter
+        self.current_story = "chapter_2" #default chapter
         self.story_data = self.npc_data.get(self.current_story,[])
         self.step = 0 # present current sentence
-        self.shown_dialogues = {} #track dialogues that have been shown
-        
-        
+        global shown_dialogues
+        self.shown_dialogues = shown_dialogues #track dialogues that have been shown
 
         # sentences typing effect
         self.displayed_text = "" #display current word
@@ -82,13 +76,13 @@ class dialog:
         self.options = [] #dialogue options when choices present
         self.option_selected = 0 #current selected option index
         self.talking = False # is it talking
+        self.first_time_done  = False
 
         self.key_w_released = True
         self.key_s_released = True
         self.key_e_released = True
 
 
-#================ Update ============
     def update(self): 
         #only update if in dialogue n not at the end
         if self.talking and self.step < len(self.story_data):
@@ -117,7 +111,6 @@ class dialog:
          self.last_time = pygame.time.get_ticks()
 
 
- # ================ Draw ======================
     def draw(self,screen):
         
         #only draw when in talking mode n not finished talk
@@ -150,10 +143,10 @@ class dialog:
 
            #draw speaker name
            name_to_display = self.npc.name if speaker == "npc" else self.player.name
-           draw_text(screen,name_to_display,40,(0,0,0),dialog_x + 200, dialog_y + 10)
+           draw_text(screen,name_to_display,40,(0,0,0),dialog_x + 150, dialog_y + 5)
 
            #draw choice options if present
-           if "choice" in entry:
+           if self.options:
              max_options_display = 3 #display at most 3 options
 
              dialog_center_x = dialog_x + self.dialog_box_img.get_width()// 2
@@ -167,24 +160,16 @@ class dialog:
                         draw_text(screen, option["option"],30,color,dialog_center_x,option_y,center= True)
 
           
-           # words come out one by one effect
-           current_time = pygame.time.get_ticks()
-           if self.letter_index < len(text):
-                if current_time - self.last_time > self.letter_delay:
-                     self.displayed_text += text[self.letter_index]
-                     self.letter_index += 1
-                     self.last_time = current_time
-          
            # draw dialogue text 
-           draw_text(screen,self.displayed_text,30,(0,0,0),dialog_x + self.dialog_box_img.get_width()//2  ,dialog_y + self.dialog_box_img.get_height()//2 - 15 ,center = True,max_width=text_max_width)
+           draw_text(screen,self.displayed_text,30,(0,0,0),dialog_x + self.dialog_box_img.get_width()//2  ,dialog_y + self.dialog_box_img.get_height()//2 - 25,center = True,max_width=text_max_width)
 
 
     def handle_option_selection(self,keys):
 
+
         # only handle if in dialogue with options n text is full displayed
         if (self.talking and self.options and self.step <len(self.story_data) and self.letter_index >= len(self.story_data[self.step].get("text",""))):
                   
-
                    # move up in options list with W key
                    if keys[pygame.K_w] and self.key_w_released:
                       self.option_selected = (self.option_selected - 1) % len(self.options)
@@ -204,17 +189,30 @@ class dialog:
                       selected_option = self.options[self.option_selected]
                       next_target = selected_option["next"]
 
-                      #handle value jumps n chapter change
-                      if isinstance(next_target,int):
-                         self.step = next_target
+                      if next_target == "back_reality":
+                          self.load_back_reality()
+                      elif next_target == "check_sub_end":
+                          self.check_sub_end_conditions()
+                      elif next_target.startswith("sub_end_"):
+                          self.load_sub_ending(next_target) #display sub ending
+                      elif next_target.startswith("end_"):
+                          self.load_ending(next_target) #display main ending
                       else:
-                         self.load_dialogue(self.npc_name, next_target)
+                          self.load_dialogue(self.npc_name,next_target)
 
                       self.options =[]
                       self.reset_typing()
                       self.key_e_released = False
                    if not keys[pygame.K_e]:
                        self.key_e_released = True
+
+    def load_back_reality(self):
+        self.displayed_text()
+        self.check_sub_end_conditions()
+        pygame.display.update()
+
+ 
+
                        
 
     def handle_space(self,keys):
@@ -235,6 +233,27 @@ class dialog:
                   dialogue_id = f"{self.npc_name}_{self.current_story}_{self.step}"
                   self.shown_dialogues[dialogue_id] = True
 
+              if "chapter_ending" in entry:
+             #save which ending was chosen
+                  global player_choices, showing_chapter_ending, ending_start_time, ending_complete_callback
+                  player_choices["chapter_1_ending"] = entry["chapter_ending"]
+                  
+             #set up the ending screen
+                  showing_chapter_ending = True
+                  ending_start_time = pygame.time.get_ticks()
+
+             #set next chapter after ending
+                  next_chapter = entry["next_chapter"]
+
+             #run when ending screen done
+                  def ending_complete():
+                      global start_chapter 
+                      start_chapter(next_chapter, True)
+
+                  ending_complete_callback = ending_complete
+                  self.talking = False
+                  return
+
               # if test is typing, complete it immdiately
               if self.letter_index <len (text):
                    self.letter_index = len(text)
@@ -243,7 +262,7 @@ class dialog:
                    
                    #if have options ,nothing to do( option selection is at other part of code)
                    if self.options:
-                     pass
+                     self.option = []
                   
                    else:
                     if "next" in entry:
@@ -259,7 +278,7 @@ class dialog:
                           self.story_data = self.npc_data.get(next_target,[])
                           self.step = 0
                           self.load_dialogue(self.npc_name, next_target)
-                          self.reset_typing()
+                          
 
                     else:
                         #if there is no "next",proceed to the next dialogue step
@@ -271,29 +290,38 @@ class dialog:
                         else:
                            #reset typing effect for the next dialogue entry
                            self.reset_typing()
+    
 
     def load_dialogue(self,npc_name,chapter):
+
+        self.option = []
         #update NPC detials
         self.npc_name = npc_name
         self.npc_data = all_dialogues.get(self.npc_name,{})
         self.current_story = chapter
         self.story_data = self.npc_data.get(self.current_story,[])
+        filtered_story_data = []
 
         # filter out already shown dialogues marked with "shown":false ( in json)
-        filtered_story_data = []
+        
         for i,entry in enumerate(self.story_data):
             dialogue_id = f"{self.npc_name}_{self.current_story}_{i}"
 
-            if "shown" not in entry or entry["shown"] != False or dialogue_id not in self.shown_dialogues:
+            if ("shown" not in entry or entry["shown"] != False) or (dialogue_id not in self.shown_dialogues):
                 filtered_story_data.append(entry)
+
+            elif self.npc_name == "Nuva" and self.current_story == "chapter_1_common" and entry.get("text") == "She is waiting in your office,you can head over when you are ready":
+                if dialogue_id not in self.shown_dialogues:
+                    filtered_story_data.append(entry)
+                    
+            
+            
 
         # set filtered dialogue n reset state
         self.story_data = filtered_story_data
         self.step = 0
         self.reset_typing()
                 
-
-         
 
 # =============text setting================
 def draw_text(surface,text,size,color,x,y,center = False,max_width = None):
@@ -345,12 +373,8 @@ def draw_text(surface,text,size,color,x,y,center = False,max_width = None):
 
     return line_y + line_height#return the y position after all text
     
-   
 
-
-      
 #===========NPCs==============
-
 class NPC(pygame.sprite.Sprite):
     def __init__(self,x,y,name,image_path = None):
         super().__init__()
@@ -402,15 +426,20 @@ class NPCManager:
         return nearest_npc
 
 
+
 npc_manager = NPCManager()
 
 nuva = NPC(600,500,"Nuva")
 dean = NPC(800,500,"Dean")
+patient1 = NPC(1000,500,"Zheng")
+patient2 = NPC(400,500,"Emma")
 
 current_dialogue = None
 
 npc_manager.add_npc(nuva)
 npc_manager.add_npc(dean)
+npc_manager.add_npc(patient1)
+npc_manager.add_npc(patient2)
 
 current_dialogue = None
 
