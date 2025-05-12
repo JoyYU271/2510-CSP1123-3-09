@@ -75,7 +75,7 @@ def main_menu():
                 if start_button.checkForInput(mouse_pos):
                     click_sound.play()
                     pygame.mixer.music.stop()
-                    run_dialogue(current_font_size, current_language, bgm_vol)
+                    run_dialogue(current_font_size, current_language, bgm_vol, sfx_vol)
 
                     pygame.mixer.music.load("bgm/main page.mp3")
                     pygame.mixer.music.set_volume(bgm_vol)
@@ -229,14 +229,14 @@ def settings_screen():
                 if sfx_plus.checkForInput(mouse_pos) and sfx_vol < 1.0:
                     sfx_vol = round(min(sfx_vol + 0.1, 1.0), 1)
                     click_sound.set_volume(sfx_vol)
-                    from Dialogue import sound_manager 
-                    sound_manager.set_volume(sfx_vol)
+                    if hasattr(Dialogue, 'current_dialogue_instance') and Dialogue.current_dialogue_instance:
+                       Dialogue.current_dialogue_instance.update_sfx_volume(sfx_vol)
                     click_sound.play()
                 if sfx_minus.checkForInput(mouse_pos) and sfx_vol > 0.0:
                     sfx_vol = round(max(sfx_vol - 0.1, 0.0), 1)
                     click_sound.set_volume(sfx_vol)
-                    from Dialogue import sound_manager  
-                    sound_manager.set_volume(sfx_vol)
+                    if hasattr(Dialogue, 'current_dialogue_instance') and Dialogue.current_dialogue_instance:
+                       Dialogue.current_dialogue_instance.update_sfx_volume(sfx_vol)
                     click_sound.play()
 
                 if small_button.checkForInput(mouse_pos):

@@ -8,47 +8,10 @@ from ui_components import Button, get_font
 current_text_size = 30
 click_sound = pygame.mixer.Sound("main page/click1.wav") 
 
-class SoundManager:
-    _instance = None
-    
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-            cls._instance._sounds = {}
-            cls._instance._volume = 0.5
-        return cls._instance
-    
-    def add_sound(self, name, path):
-        """添加或更新音效"""
-        if name in self._sounds:
-            self._sounds[name].stop()  # 停止旧音效
-        sound = pygame.mixer.Sound(path)
-        sound.set_volume(self._volume)
-        self._sounds[name] = sound
-    
-    def get_sound(self, name):
-        """获取音效并确保音量正确"""
-        if name not in self._sounds:
-            raise ValueError(f"Sound {name} not registered")
-        self._sounds[name].set_volume(self._volume)  # 确保音量最新
-        return self._sounds[name]
-    
-    def set_volume(self, volume):
-        """设置全局音量并立即生效"""
-        self._volume = max(0.0, min(1.0, volume))  # 确保在0-1范围内
-        for sound in self._sounds.values():
-            sound.set_volume(self._volume)
-    
-    def stop_all(self):
-        """停止所有音效"""
-        for sound in self._sounds.values():
-            sound.stop()
-
-sound_manager = SoundManager()
+current_dialogue_instance = None
 
 def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
-    from Dialogue import sound_manager
-    sound_manager.set_volume(sfx_vol)
+    global current_dialogue_instance
 
     pygame.init()
 
@@ -139,7 +102,8 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
             keys = pygame.key.get_pressed()
             if nearest_npc or (current_dialogue and current_dialogue.talking):
                 if nearest_npc and (current_dialogue is None or current_dialogue.npc != nearest_npc):
-                    current_dialogue = dialog(nearest_npc, player, all_dialogues,sfx_vol)
+                    current_dialogue = dialog(nearest_npc, player, all_dialogues, sfx_vol)
+                    current_dialogue_instance = current_dialogue
                 
                 if keys[pygame.K_SPACE] and space_released:
                     space_released = False
@@ -161,6 +125,7 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
                 current_dialogue.update()
                 current_dialogue.draw(screen)
             
+
             pygame.display.update()
             clock.tick(FPS)
 
@@ -173,13 +138,17 @@ class dialog:
     def __init__(self,npc,player,all_dialogues,sfx_vol=0.5):
         super().__init__()
 
-        sound_manager.set_volume(sfx_vol)
 
+        self.sounds = {
+            "phone_typing": pygame.mixer.Sound("sfx/phone_typing.wav"),
+            "footsteps": pygame.mixer.Sound("sfx/footsteps.wav"),
+        }
 
-        sound_manager.add_sound("phone_typing", "sfx/phone_typing.wav")
-        sound_manager.add_sound("footsteps", "sfx/footsteps.wav")
+        self.sfx_vol = sfx_vol
 
-        self.sound_played_for_current_step = False
+        for sound in self.sounds.values():
+            sound.set_volume(sfx_vol)
+
 
         #load dialog box img n set transparency
         self.dialog_box_img = pygame.image.load("picture/Character Dialogue/dialog boxxx.png").convert_alpha()
@@ -231,11 +200,22 @@ class dialog:
         self.key_w_released = True
         self.key_s_released = True
         self.key_e_released = True
-
-        self.sound_played_for_current_step = False
+        
         self.currently_playing_sfx = None
+        self.sound_played_for_current_step = False
 
-
+    
+    def update_sfx_volume(self, new_volume):
+        self.sfx_vol = new_volume
+        for sound in self.sounds.values():
+            sound.set_volume(self.sfx_vol)
+            
+  
+    def stop_all_sfx(self):
+        for sound in self.sounds.values():
+            sound.stop()
+        self.currently_playing_sfx = None
+    
 
 
 #================ Update ============
@@ -246,19 +226,15 @@ class dialog:
 
              text = entry.get("text","") #get text
 
-
              if entry.get("sound_stop"):
-                sound_manager.stop_all()
-        
+                self.stop_all_sfx()
+
              if "sound" in entry and not self.sound_played_for_current_step:
-                 sound_name = entry["sound"]  # 确保这行执行
-                 try:
-                    sound = sound_manager.get_sound(sound_name)
-                    sound.play()
-                    self.sound_played_for_current_step = True
-                    print(f"Playing sound: {sound_name}")  # 调试输出
-                 except ValueError as e:
-                    print(f"Error playing sound: {e}")
+                sound_name = entry["sound"]
+                if sound_name in self.sounds:
+                    self.sounds[sound_name].play()
+                    self.currently_playing_sfx = sound_name
+                self.sound_played_for_current_step = True
              
 
 
@@ -397,7 +373,7 @@ class dialog:
          if self.step <len(self.story_data):
               entry = self.story_data[self.step]
               text = entry.get("text","")
-          
+
               #mark dialogue as shown if needed
               if "shown" in entry and entry["shown"] == False:
                   dialogue_id = f"{self.npc_name}_{self.current_story}_{self.step}"
