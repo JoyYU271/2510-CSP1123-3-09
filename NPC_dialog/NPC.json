@@ -55,11 +55,11 @@
         {"speaker" :"narrator","text":"(You see her pause, and then chuckle.) ","shown": false},
     
         {"speaker" :"npc","text":" Ha Ha, you are quite an interesting person.","shown": false},
-        {"next":"chapter_1_common","shown": false}
+        {"next":"chapter_1_common","shown": false},
 
         {"speaker" :"npc","text":" Ha Ha, you are a quite interesting person.","shown": false},
         {"next":"chapter_1_common"}
->>>>>>> ae99ffc7185a2cc36006c2f25d9750f406555b62
+
     ],
     "a_doctor":[
         {"speaker" :"player","text":"I am. Hello.","shown": false},
@@ -73,13 +73,8 @@
     "chapter_1_common":[
         {"speaker" :"npc","text":"I’m Nuva, the receptionist nurse. If you have any questions, feel free to ask me—your senior!","shown": false},
         {"speaker" :"player","text":"Got it.","shown": false},
-<<<<<<< HEAD
-        {"speaker" :"npc","text":"Oh, by the way, a patient has booked a session with you for today."},
-        {"speaker" :"npc","text":"She is waiting in your office. You can head over when you are ready"}
-=======
         {"speaker" :"npc","text":"Oh, by the way, already have a patient booked a session with you for today.","shown":false},
         {"speaker" :"npc","text":"She is waiting in your office, you can head over when you are ready","shown":true}
->>>>>>> ae99ffc7185a2cc36006c2f25d9750f406555b62
 
     ],
     "repeat_only":[
@@ -124,7 +119,7 @@
         {"speaker" :"narrator","text":"(When you called him 'Father' you notice his brow furrow slightly.)","shown": false},
         {"speaker" :"npc","text":"In the clinic, we are considered superior and subordinate. Try not to call me ‘Father’ here.","shown": false},
         {"speaker" :"npc","text":"I should go now, I have a meeting to attend. Feel free to look around your own.","shown": false},
-        {"speaker" :"narrator","text":"(He exits the clinic.)","shown": false},
+        {"speaker" :"narrator","text":"(He exits the clinic.)", "event": "dean_exit_cutscene", "shown": false},
         {"speaker" :"player","text":"(Before exploring, I should send a message to mom.)","shown": false},
         {"speaker" :"player","text":"(You take out your phone and open the chat with your mother.)","shown": false},
         {"speaker" :"narrator","text":"(However,the chat is filled with your own messages.She doesn't read or reply to them.) ","shown": false},

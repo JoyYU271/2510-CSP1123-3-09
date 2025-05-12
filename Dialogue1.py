@@ -31,6 +31,9 @@ npc_list =["Nuva"]
 shown_dialogues = {}
 selected_options = {}
 
+cutscene_active = False
+cutscene_speed = 3 #pixel per frame
+
 #============ Dialogue System =============
 class dialog:
     def __init__(self,npc,player):
@@ -61,7 +64,7 @@ class dialog:
         self.npc_data = all_dialogues.get(self.npc_name)
 
          #dialogue state variacbles
-        self.current_story = "chapter_2" #default chapter
+        self.current_story = "chapter_1" #default chapter 
         self.story_data = self.npc_data.get(self.current_story,[])
         self.step = 0 # present current sentence
         global shown_dialogues
@@ -83,6 +86,7 @@ class dialog:
         self.key_e_released = True
 
 
+     
     def update(self): 
         #only update if in dialogue n not at the end
         if self.talking and self.step < len(self.story_data):
@@ -95,6 +99,12 @@ class dialog:
               self.options = entry.get("choice",[])
              else:
                  self.options = []
+
+             #if this works???
+             if "event" in entry:
+                 if entry["event"] == "dean_exit_cutscene":
+                    nearest_npc.rect.x -= cutscene_speed
+                    return
 
              # text typing effect
              current_time = pygame.time.get_ticks()
@@ -109,7 +119,6 @@ class dialog:
          self.displayed_text = ""
          self.letter_index = 0
          self.last_time = pygame.time.get_ticks()
-
 
     def draw(self,screen):
         
@@ -443,10 +452,8 @@ npc_manager.add_npc(patient2)
 
 current_dialogue = None
 
-
 run = True
 while run:
-          
           draw_bg(screen)
           is_moving = player.move(moving_left,moving_right)
           player.update_animation(is_moving)
@@ -486,6 +493,16 @@ while run:
           if current_dialogue and current_dialogue.talking:
               current_dialogue.update()
               current_dialogue.draw(screen)
+
+         # --- Trigger cutscene --- 
+          if nearest_npc and nearest_npc.name == "Dean": 
+            if not current_dialogue.talking and not cutscene_active:
+                 print("Cutscene start!")
+                 cutscene_active = True
+            if nearest_npc and nearest_npc.name == "Dean":
+                if nearest_npc.rect.x < -1320:
+                    print("Dean has exited the screen.")
+
           
           pygame.display.update()
           clock.tick(FPS)    
