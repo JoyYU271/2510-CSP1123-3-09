@@ -53,10 +53,10 @@
         {"speaker":"npc","text":"Are you here to see the Dean? He just left for a meeting.","shown": false},
         {"speaker" :"player","text":".....Sorry, I was joking. Seems like my sense of humor needs work. ","shown": false},
         {"speaker" :"narrator","text":"(You see her pause, and then chuckle.) ","shown": false},
-<<<<<<< HEAD
+    
         {"speaker" :"npc","text":" Ha Ha, you are quite an interesting person.","shown": false},
         {"next":"chapter_1_common","shown": false}
-=======
+
         {"speaker" :"npc","text":" Ha Ha, you are a quite interesting person.","shown": false},
         {"next":"chapter_1_common"}
 >>>>>>> ae99ffc7185a2cc36006c2f25d9750f406555b62
