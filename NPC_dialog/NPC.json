@@ -41,7 +41,7 @@
  },
   "Dean":{
     "chapter_1":[
-        {"speaker" :"player","text":"(So this is the clinic…...)","shown": false},
+        {"speaker" :"player","text":"(So this is the clinic…...)","bgm": "bgm/talk_with_dean.mp3","shown": false},
         {"speaker" :"npc","text":"It is 8:10 a.m. You're 50 minutes early.","shown": false},
         {"speaker" :"player","text":"I just wanted to familiarize myself with the environment…...Father.","shown": false},
         {"speaker" :"narrator","text":"(When you called him 'Father' you notice his brow furrow slightly.)","shown": false},
@@ -60,7 +60,7 @@
         {"speaker" :"player","text":"Would you be proud of me, Mom?","shown": false},
         {"speaker" :"narrator","text":"(......)","sound_stop": true,"shown": false},
         {"speaker" :"narrator","text":"(You stare at the unanswered chat for a few seconds then put your phone back to pocket.)","shown": false},
-        {"speaker" :"player","text":"Maybe I should walk around clinic first.","shown": false}
+        {"speaker" :"player","text":"Maybe I should walk around clinic first.","bgm": "bgm/intro.mp3","shown": false}
 
     ]
   },

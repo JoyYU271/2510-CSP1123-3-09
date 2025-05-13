@@ -220,10 +220,14 @@ def settings_screen():
                 if bgm_plus.checkForInput(mouse_pos) and bgm_vol < 1.0:
                     bgm_vol = round(min(bgm_vol + 0.1, 1.0), 1) #to not exceed 1.0
                     pygame.mixer.music.set_volume(bgm_vol)
+                    if hasattr(Dialogue, 'current_dialogue_instance') and Dialogue.current_dialogue_instance:
+                       Dialogue.current_dialogue_instance.update_bgm_volume(bgm_vol)
                     click_sound.play()
                 if bgm_minus.checkForInput(mouse_pos) and bgm_vol > 0.0:
                     bgm_vol = round(max(bgm_vol - 0.1, 0.0), 1) #to not lower than 0.0
                     pygame.mixer.music.set_volume(bgm_vol)
+                    if hasattr(Dialogue, 'current_dialogue_instance') and Dialogue.current_dialogue_instance:
+                       Dialogue.current_dialogue_instance.update_bgm_volume(bgm_vol)
                     click_sound.play()
 
                 if sfx_plus.checkForInput(mouse_pos) and sfx_vol < 1.0:

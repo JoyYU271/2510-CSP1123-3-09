@@ -19,8 +19,8 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
     screen_height = 720
 
     pygame.mixer.music.set_volume(bgm_vol)
-    pygame.mixer.music.load("bgm/intro.mp3")
-    pygame.mixer.music.set_volume(bgm_vol)
+    current_bgm = "bgm/intro.mp3"
+    pygame.mixer.music.load(current_bgm)
     pygame.mixer.music.play(-1)
 
     backmain_img = pygame.image.load("backmain.png").convert_alpha()
@@ -102,7 +102,7 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
             keys = pygame.key.get_pressed()
             if nearest_npc or (current_dialogue and current_dialogue.talking):
                 if nearest_npc and (current_dialogue is None or current_dialogue.npc != nearest_npc):
-                    current_dialogue = dialog(nearest_npc, player, all_dialogues, sfx_vol)
+                    current_dialogue = dialog(nearest_npc, player, all_dialogues, bgm_vol, sfx_vol)
                     current_dialogue_instance = current_dialogue
                 
                 if keys[pygame.K_SPACE] and space_released:
@@ -135,9 +135,8 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
 
 #============dialog box =============
 class dialog:
-    def __init__(self,npc,player,all_dialogues,sfx_vol=0.5):
+    def __init__(self,npc,player,all_dialogues,bgm_vol=0.5,sfx_vol=0.5):
         super().__init__()
-
 
         self.sounds = {
             "phone_typing": pygame.mixer.Sound("sfx/phone_typing.wav"),
@@ -204,7 +203,22 @@ class dialog:
         self.currently_playing_sfx = None
         self.sound_played_for_current_step = False
 
+        self.current_bgm = None
+        self.bgm_volume = bgm_vol
     
+
+    def change_bgm(self, bgm_path):
+        if bgm_path != self.current_bgm:
+            self.current_bgm = bgm_path
+            pygame.mixer.music.load(bgm_path)
+            pygame.mixer.music.set_volume(self.bgm_volume)
+            pygame.mixer.music.play(-1)
+    
+    def update_bgm_volume(self, new_volume):
+        self.bgm_volume = new_volume
+        pygame.mixer.music.set_volume(new_volume)
+    
+
     def update_sfx_volume(self, new_volume):
         self.sfx_vol = new_volume
         for sound in self.sounds.values():
@@ -236,6 +250,11 @@ class dialog:
                     self.currently_playing_sfx = sound_name
                 self.sound_played_for_current_step = True
              
+             if "bgm" in entry:
+                 self.change_bgm(entry["bgm"])
+             elif "bgm_stop" in entry:
+                   pygame.mixer.music.stop()
+                   self.current_bgm = None
 
 
 
