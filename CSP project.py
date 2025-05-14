@@ -102,13 +102,13 @@ while run:
     #Movement keys (WASD or Arrows)
     if not obj.placed:
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            obj.rect.x -= 4
+            obj.rect.x -= 2
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            obj.rect.x += 4
+            obj.rect.x += 2
         if keys[pygame.K_UP] or keys[pygame.K_w]:
-            obj.rect.y -= 4
+            obj.rect.y -= 2
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            obj.rect.y += 4    
+            obj.rect.y += 2    
 
     screen.fill('turquoise1')
 
