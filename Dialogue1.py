@@ -13,11 +13,12 @@ screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE
 clock = pygame.time.Clock()
 FPS = 60
 
-player = doctor(400,500,4.5) 
+player = doctor(100,520,4.5) 
 player.name = "You" # remember to put in class doctor
 moving_left = False
 moving_right = False
 
+background = pygame.image.load("picture/Map Art/Map clinic.png").convert_alpha()
 
 font = pygame.font.SysFont('Comic Sans MS',40)
 space_released = True # control the dialog will not happen continuously when press key space
@@ -103,7 +104,7 @@ class dialog:
              #if this works???
              if "event" in entry:
                  if entry["event"] == "dean_exit_cutscene":
-                    nearest_npc.rect.x -= cutscene_speed
+                    dean.rect.x -= cutscene_speed
                     return
 
              # text typing effect
@@ -438,23 +439,25 @@ class NPCManager:
 
 npc_manager = NPCManager()
 
-nuva = NPC(600,500,"Nuva")
-dean = NPC(800,500,"Dean")
-patient1 = NPC(1000,500,"Zheng")
-patient2 = NPC(400,500,"Emma")
+nuva = NPC(1090,540,"Nuva")
+dean = NPC(400,520,"Dean")
+#patient1 = NPC(1000,500,"Zheng")
+#patient2 = NPC(400,500,"Emma")
 
 current_dialogue = None
 
 npc_manager.add_npc(nuva)
 npc_manager.add_npc(dean)
-npc_manager.add_npc(patient1)
-npc_manager.add_npc(patient2)
+#npc_manager.add_npc(patient1)
+#npc_manager.add_npc(patient2)
+
+dean_interacted = False
 
 current_dialogue = None
 
 run = True
 while run:
-          draw_bg(screen)
+          screen.blit(background, (0,0))
           is_moving = player.move(moving_left,moving_right)
           player.update_animation(is_moving)
           
@@ -494,14 +497,17 @@ while run:
               current_dialogue.update()
               current_dialogue.draw(screen)
 
-         # --- Trigger cutscene --- 
+
+          # --- Trigger cutscene --- 
           if nearest_npc and nearest_npc.name == "Dean": 
             if not current_dialogue.talking and not cutscene_active:
-                 print("Cutscene start!")
-                 cutscene_active = True
+                print("Cutscene start!")
+                cutscene_active = True
             if nearest_npc and nearest_npc.name == "Dean":
-                if nearest_npc.rect.x < -1320:
+                if cutscene_active and dean.rect.x < 0:
+                    cutscene_active = False
                     print("Dean has exited the screen.")
+                    
 
           
           pygame.display.update()
