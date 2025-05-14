@@ -282,64 +282,64 @@
         {"speaker" :"narrator","text":"(第一个报告，第二个报告，第三个报告……)","shown": false},
                 {"speaker" :"narrator","text":"(尽管各个实验体对实验的反应结果不同，但都无一例外指向了一个结果......)","shown": false},
         {"speaker" :"narrator","text":"(失败)","shown": false},
-        {"speaker" :"narrator","text":"(A sense of unease—and inexplicable familiarity—washes over you.)","shown": false},
-        {"speaker" :"narrator","text":"(As the memory fades, you find something in your hand)","shown": false},
-        {"speaker" :"narrator","text":"(A notebook. But no tidy lines, no neat notes, no highlights—just blank pages.)","shown": false},
-        {"speaker" :"narrator","text":"(Perhaps emptiness, too, is a form of perfection.)","shown": false},
-        {"speaker" :"narrator","text":"(But who defines perfection? Who enforces it?)","shown": false},
-        {"speaker" :"narrator","text":"You’re no philosopher. No need to dwell on that.","shown": false},
-        {"speaker" :"player","text":"(This is Ms. Zheng’s emotional anchor......)","shown": false},
-        {"speaker" :"player","text":"(Destroy it, and her symptoms vanish—but so do parts of her memory. Keep it, and the cure may be incomplete. What should I choose?)","shown": false},
+        {"speaker" :"narrator","text":"(这令你无来由的感到不安，以及莫名其妙的熟悉。)","shown": false},
+        {"speaker" :"narrator","text":"(回忆消散后，你手上多了个物品。)","shown": false},
+        {"speaker" :"narrator","text":"(是个笔记本，不过没有那些“完美”的线条，笔记，高亮。只是空白。)","shown": false},
+        {"speaker" :"narrator","text":"(或许哪怕空空如也，也是一种完美。)","shown": false},
+        {"speaker" :"narrator","text":"(但是完美究竟由谁来定义？由谁来实行？)","shown": false},
+        {"speaker" :"narrator","text":"(不是哲学家的你不需要思考这个。)","shown": false},
+        {"speaker" :"player","text":"(这就是郑小姐的情感链接之物了……)","shown": false},
+        {"speaker" :"player","text":"(如果摧毁，她的病情会马上好了，但会失去某些记忆。保留的话又可能无法完全治好，该如何选择呢?)","shown": false},
         {"choice":[
-            {"option":"Destroy","next":"back_reality"},
-            {"option":"Keep","next":"back_reality"}
+            {"option":"摧毁","next":"back_reality"},
+            {"option":"保留","next":"back_reality"}
         ]
         }
     ],
     "back_reality":[
-        {"speaker" :"narrator","text":"(You remove the device from her head.)","shown": false},
-        {"speaker" :"narrator","text":"Treatment is complete. How do you feel? Any discomfort?","shown": false},
-        {"speaker" :"narrator","text":"......I’m fine.","shown": false},
-        {"speaker" :"narrator","text":"Great. Based on your subconscious, I made a treatment decision. You will recover soon.","shown": false},
-        {"speaker" :"narrator","text":"But please remember—don’t push yourself too hard. You’ve done very well, whether as a top student, an employee, or simply as yourself.","shown": false},
-        {"speaker" :"narrator","text":"......Thank you.","shown": false,"next":"check_sub_end"}
+        {"speaker" :"narrator","text":"(你摘下她头上的仪器。)","shown": false},
+        {"speaker" :"narrator","text":"疗程结束了，你现在感觉如何？有没有出现不舒服的感觉？","shown": false},
+        {"speaker" :"narrator","text":"不……我没事。","shown": false},
+        {"speaker" :"narrator","text":"那就好，我已经通过了解你潜意识内的记忆做出了治疗选择，之后你就能恢复正常生活了。","shown": false},
+        {"speaker" :"narrator","text":"但请同样记得不要给自己造成太大压力，你已经做得很好了，无论是作为优等生、白领还是你自己。","shown": false},
+        {"speaker" :"narrator","text":"……我知道了，谢谢。","shown": false,"next":"check_sub_end"}
     ],
 
     "check_sub_end":[
-        {"speaker" :"player","text":"(Destroy it, and her symptoms vanish—but so do parts of her memory. Keep it, and the cure may be incomplete. What should I choose?)","shown": false},
+        {"speaker" :"player","text":"(如果摧毁，她的病情会马上好了，但会失去某些记忆。保留的话又可能无法完全治好，该如何选择呢?)","shown": false},
         {"choice":[
-            {"option":"Destroy","next":"Destroy_memory1"},
-            {"option":"Keep","next":"Keep_memory1"}
+            {"option":"摧毁","next":"Destroy_memory1"},
+            {"option":"保留","next":"Keep_memory1"}
         ]
         }
     ],
 
      "Destroy_memory1":[
-        {"speaker" :"narrator","text":"(You remove the device from her head.)","shown": false},
-        {"speaker" :"player","text":" Treatment is complete. How do you feel? Any discomfort?","shown": false},
-        {"speaker" :"npc","text":"......I’m fine","shown": false},
-        {"speaker" :"player","text":"Great. Based on your subconscious, I made a treatment decision. You will recover soon.","shown": false},
-        {"speaker" :"player","text":"But please remember—don’t push yourself too hard. You’ve done very well, whether as a top student, an employee, or simply as yourself","shown": false},
-        {"speaker" :"npc","text":".....Thank you.","shown": false,"next":"sub_end_1"}
+        {"speaker" :"narrator","text":"(你摘下她头上的仪器)","shown": false},
+        {"speaker" :"player","text":"郑小姐，疗程结束了，你现在感觉如何？有没有出现不舒服的感觉？","shown": false},
+        {"speaker" :"npc","text":"不……我没事。","shown": false},
+        {"speaker" :"player","text":"就好，我已经通过了解你潜意识内的记忆做出了治疗选择，之后你就能恢复正常生活了。","shown": false},
+        {"speaker" :"player","text":"但请同样记得不要给自己造成太大压力，你已经做得很好了郑小姐，无论是作为优等生、白领还是你自己。","shown": false},
+        {"speaker" :"npc","text":"……我知道了，谢谢。","shown": false,"next":"sub_end_1"}
      ],
      "sub_end_1":[
-        {"speaker" :"npc","text":"(That doctor’s treatment really worked. I don’t get anxious over little things anymore.)","shown": false},
-        {"speaker" :"npc","text":"(My boss even said I seem refreshed. Efficiency has improved.)","shown": false},
-        {"speaker" :"npc","text":"(This stable routine is all I need...)","shown": false},
+        {"speaker" :"npc","text":"(那位医生的治疗真是有效，这段时间我已经不会再为一些小事而焦躁了。)","shown": false},
+        {"speaker" :"npc","text":"(老板也说我最近精神了许多，工作效率可见的变好。)","shown": false},
+        {"speaker" :"npc","text":"(就这样继续在职场打拼吧，稳定的生活就是我的理想……)","shown": false},
         {"speaker" :"npc","text":" (...)","shown": false},
-        {"speaker" :"npc","text":"(Is it, though?)","shown": false},
-        {"speaker" :"npc","text":"???: Zheng! Are you coming to the celebration party tonight? Boss is treating us for the successful proposal!","shown": false},
-        {"speaker" :"npc","text":"Yeah, I’ll be there.","shown": false},
-        {"speaker" :"npc","text":"(......Well. Maybe this is enough.)","shown": false}
+        {"speaker" :"npc","text":"(我的理想真的是这个吗？)","shown": false},
+        {"speaker" :"npc","text":"???: Zheng, 晚上的庆功宴你来不来, 老板说是奖励我们这次策划做得非常好，要请客哦！","shown": false},
+        {"speaker" :"npc","text":"嗯，我会去的。","shown": false},
+        {"speaker" :"npc","text":"(算了, 这样也好不是吗？)","shown": false}
      ],
 
      "Keep_memory1":[
-         {"speaker" :"narrator","text":"(You remove the device from her head.)","shown": false},
-        {"speaker" :"player","text":" Treatment is complete. How do you feel? Any discomfort?","shown": false},
-        {"speaker" :"npc","text":"......I’m fine","shown": false},
-        {"speaker" :"player","text":"Great. Based on your subconscious, I made a treatment decision. You will recover soon.","shown": false},
-        {"speaker" :"player","text":"But please remember—don’t push yourself too hard. You’ve done very well, whether as a top student, an employee, or simply as yourself","shown": false},
-        {"speaker" :"npc","text":".....Thank you.","shown": false,"next":"sub_end_2"}
+         {"speaker" :"narrator","text":"(你摘下她头上的仪器)","shown": false},
+        {"speaker" :"player","text":"郑小姐，疗程结束了，你现在感觉如何？有没有出现不舒服的感觉？","shown": false},
+        {"speaker" :"npc","text":"不……我没事。","shown": false},
+        {"speaker" :"player","text":"就好，我已经通过了解你潜意识内的记忆做出了治疗选择，之后你就能恢复正常生活了。","shown": false},
+        {"speaker" :"player","text":"但请同样记得不要给自己造成太大压力，你已经做得很好了郑小姐，无论是作为优等生、白领还是你自己。","shown": false},
+        {"speaker" :"npc","text":"……我知道了，谢谢。","shown": false,"next":"sub_end_1"}
      ],
      "sub_end_2":[
         {"speaker" :"npc","text":" (That doctor’s treatment really worked. I don’t get anxious over small things anymore.)","shown": false},
