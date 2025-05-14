@@ -421,13 +421,10 @@ class dialog:
 
             if "cg" in first_entry:
                 paths = first_entry["cg"] if isinstance(first_entry["cg"], list) else [first_entry["cg"]]
-                try:
-                    self.cg_images = [pygame.image.load(path) for path in paths]
-                    self.cg_index = 0
-                    self.showing_cg = True
-                except Exception as e:
-                    print(f"[ERROR] Failed to load CG: {e}")
-                
+                self.cg_images = [pygame.image.load(path) for path in paths]
+                self.cg_index = 0
+                self.showing_cg = True
+             
 
 # =============text setting================
 def draw_text(surface,text,size,color,x,y,center = False,max_width = None):
