@@ -13,11 +13,12 @@ screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE
 clock = pygame.time.Clock()
 FPS = 60
 
-player = doctor(400,500,4.5) 
+player = doctor(100,520,4.5) 
 player.name = "You" # remember to put in class doctor
 moving_left = False
 moving_right = False
 
+background = pygame.image.load("picture/Map Art/Map clinic.png").convert_alpha()
 
 font = pygame.font.SysFont('Comic Sans MS',40)
 space_released = True # control the dialog will not happen continuously when press key space
@@ -438,8 +439,8 @@ class NPCManager:
 
 npc_manager = NPCManager()
 
-nuva = NPC(800,500,"Nuva")
-dean = NPC(600,500,"Dean")
+nuva = NPC(1090,540,"Nuva")
+dean = NPC(400,520,"Dean")
 #patient1 = NPC(1000,500,"Zheng")
 #patient2 = NPC(400,500,"Emma")
 
@@ -456,7 +457,7 @@ current_dialogue = None
 
 run = True
 while run:
-          draw_bg(screen)
+          screen.blit(background, (0,0))
           is_moving = player.move(moving_left,moving_right)
           player.update_animation(is_moving)
           
@@ -508,7 +509,7 @@ while run:
                     print("Dean has exited the screen.")
                     
 
-    
+          
           pygame.display.update()
           clock.tick(FPS)    
           
