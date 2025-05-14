@@ -352,6 +352,12 @@ def draw_text(surface,text,size,color,x,y,center = False,max_width = None):
     return line_y + line_height#return the y position after all text
     
 
+
+
+
+
+
+
 class SimpleChapterIntro:
     def __init__(self):
         self.active = False
@@ -370,10 +376,12 @@ class SimpleChapterIntro:
         self.fading_out = False
         self.completed_callback = None
         self.space_released = True
+        self.finished = False
     
-    def start(self, chapter):
+    def start(self, chapter,completed_callback=None):
         print(f"Starting intro for chapter: {chapter}")
         self.active = True
+        self.completed_callback = completed_callback
         
         # Load background
         try:
@@ -424,6 +432,7 @@ class SimpleChapterIntro:
         # Check if intro is complete
         if self.step >= len(self.dialogue):
             self.fading_out = True
+            self.finished = True
             return True
         
         # Handle space key
@@ -466,6 +475,11 @@ class SimpleChapterIntro:
                     self.typing_last_time = current_time
         
         return True
+    
+    def next(self):
+        if self.finished :
+            return self.next_chapter
+        return None
     
     def draw(self, screen):
         if not self.active:
@@ -512,14 +526,29 @@ class SimpleChapterIntro:
 
            screen.blit(hint_text, hint_rect)
      
-            
-            
+class Chapter:
+    def __init__(self,chapter_num):
+        self.chapter_num = chapter_num   
+        self.setup_chapter()
 
+    def setup_chapter (self):
+        if self.chapter_num == 1:
+            print("chapter 1 setup completed")
+
+    def setup_chapter(self):
+        if self.chapter_num == 1:
+            self.map = pygame.image.load("picture/Map Art/Map clinic.png")
+
+            
+def start_chapter_1():
+    print("start chapter 1 ......")
+    chapter = Chapter(1)
+    chapter.setup_chapter()
 
 # Create intro object
 showing_intro = True
 chapter_intro = SimpleChapterIntro()
-chapter_intro.start("chapter_1")
+chapter_intro.start("chapter_1",completed_callback=start_chapter_1)
 
 
 # Main loop

@@ -56,12 +56,13 @@ class dialog:
         self.player = player
         self.npc_name = npc.name
         self.npc = npc
+        self.dialogue_trigger_distance = 50
 
         #get NPC's dialogue data from Json
         self.npc_data = all_dialogues.get(self.npc_name)
 
          #dialogue state variacbles
-        self.current_story = "chapter_2" #default chapter
+        self.current_story = "chapter_3" #default chapter
         self.story_data = self.npc_data.get(self.current_story,[])
         self.step = 0 # present current sentence
         global shown_dialogues
@@ -82,19 +83,50 @@ class dialog:
         self.key_s_released = True
         self.key_e_released = True
 
+        self.cg_images = []
+        self.cg_index = 0
+        self.showing_cg = False
 
-    def update(self): 
+        self.entry = None
+        self.chapter_end = False
+        self.cg_shown = False
+
+    def update(self,event_list): 
+
+        if self.showing_cg:
+             for event in event_list:
+                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                     self.fade(screen,fade_in=False,cg_list=self.cg_images)
+
+                     self.cg_index += 1
+
+                     if self.cg_index >= len(self.cg_images):
+                         self.showing_cg = False
+                         self.end = True
+                     else:
+                         self.fade(screen,fade_in=True,cg_list=self.cg_images)
+
         #only update if in dialogue n not at the end
         if self.talking and self.step < len(self.story_data):
-             entry = self.story_data[self.step] # current dialogue entry
+             self.entry = self.story_data[self.step] # current dialogue entry
 
-             text = entry.get("text","") #get text
+             if isinstance(self.entry,dict) and "cg" in self.entry:
+                 self.cg_images = [pygame.image.load(path).convert() for path in self.entry["cg"]]
+                 self.cg_index = 0
+                 self.showing_cg = True
+                 self.fade(screen,fade_in = True,cg_list=self.cg_images)
+                 self.step += 1
+                 return
+
+             text = self.entry.get("text","") #get text
              
              #check if this is a choice entry
-             if "choice" in entry :
-              self.options = entry.get("choice",[])
+
+             if "choice" in self.entry :
+              self.options = self.entry.get("choice",[])
              else:
                  self.options = []
+                 
 
              # text typing effect
              current_time = pygame.time.get_ticks()
@@ -104,6 +136,10 @@ class dialog:
                      self.letter_index += 1
                      self.last_time = current_time
 
+        
+        if isinstance(self.entry,dict) and self.entry.get("type") == "ending":
+            self.chapter_end = True    
+
     def reset_typing(self):
          #reset text displayed for a new line 
          self.displayed_text = ""
@@ -112,6 +148,22 @@ class dialog:
 
 
     def draw(self,screen):
+
+        # calculate the distance between player n NPC
+        player_pos = pygame.Vector2(self.player.rect.center)
+        npc_pos = pygame.Vector2(self.npc.rect.center)
+        distance = player_pos.distance_to(npc_pos)
+
+        if distance < 50 and  not self.talking and self.step >= len(self.story_data):
+            key_hint_font = pygame.font.SysFont('Comic Sans MS',20)
+            key_hint_text = key_hint_font.render("Press Space to talk", True,(0,0,0))
+            key_hint_rect = key_hint_text.get_rect(center=(self.npc.rect.centerx,self.npc.rect.top - 30))
+            screen.blit(key_hint_text,key_hint_rect)
+
+        if self.showing_cg:
+               if self.cg_index < len(self.cg_images):
+                   screen.blit(self.cg_images[self.cg_index],(0,0))
+ 
         
         #only draw when in talking mode n not finished talk
         if self.talking and self.step < len(self.story_data):
@@ -154,15 +206,60 @@ class dialog:
              for i , option in enumerate(entry["choice"][:max_options_display]):
                      # red for selected option, black for others
                      color = (255,0,0) if i == self.option_selected else (0,0,0)
-                     option_y =  dialog_y+ 60 + i * 60
+                     option_y =  dialog_y+ 60 + i * 45
 
-                     if option_y < screen.get_height() - 40: #ensure option is on screen
+                     if option_y < screen.get_height() - 10: #ensure option is on screen
                         draw_text(screen, option["option"],30,color,dialog_center_x,option_y,center= True)
 
+             key_hint_font = pygame.font.SysFont('Comic Sans MS', 20)
+             key_hint_text1 = key_hint_font.render("Press W/S to select,",True,(0,0,0))
+             key_hint_rect1 = key_hint_text1.get_rect(bottomright=(dialog_x + self.dialog_box_img.get_width() - 90,  dialog_y + self.dialog_box_img.get_height() - 40))
+             key_hint_text2 = key_hint_font.render("  E to comfirm",True,(0,0,0))
+             key_hint_rect2 = key_hint_text2.get_rect(bottomright=(dialog_x + self.dialog_box_img.get_width() - 90,  dialog_y + self.dialog_box_img.get_height() - 20))
+
+             screen.blit(key_hint_text1,key_hint_rect1)
+             screen.blit(key_hint_text2,key_hint_rect2)
           
            # draw dialogue text 
            draw_text(screen,self.displayed_text,30,(0,0,0),dialog_x + self.dialog_box_img.get_width()//2  ,dialog_y + self.dialog_box_img.get_height()//2 - 25,center = True,max_width=text_max_width)
 
+           #only show space hint if no options are present 
+           if not self.options:
+               hint_font = pygame.font.SysFont('Comic Sans MS', 20)
+               hint_text = hint_font.render("Press SPACE to continue", True, (0,0,0))
+               hint_rect = hint_text.get_rect(bottomright=(dialog_x + self.dialog_box_img.get_width() - 90,  dialog_y + self.dialog_box_img.get_height() - 20))
+               screen.blit(hint_text, hint_rect)
+    
+
+    def fade (self,screen,cg_list,fade_in =True):
+        
+        for original_image in cg_list:
+         
+            cg_image = pygame.transform.scale(original_image ,(screen.get_width(),screen.get_height()))
+
+            if fade_in:       #fade in
+             for alpha in range (0,255,10):
+                screen.fill((0,0,0))
+                cg_image.set_alpha(alpha)
+                screen.blit(cg_image,(0,0))
+                pygame.display.update()
+                pygame.time.delay(30)
+
+          
+            else:#fade out 
+             for alpha in range(255,0,-10):
+                screen.fill((0,0,0))
+                cg_image.set_alpha(alpha)
+                screen.blit(cg_image,(0,0))
+                pygame.display.update()
+                pygame.time.delay(30)
+
+    def get_current_cg(self):
+        path = self.cg_images[self.cg_index]
+        image = pygame.image.load(path).convert()
+        return pygame.transform.scale(image,(screen.get_width(),screen.get_height(  )))
+
+        
 
     def handle_option_selection(self,keys):
 
@@ -206,14 +303,14 @@ class dialog:
                    if not keys[pygame.K_e]:
                        self.key_e_released = True
 
+
     def load_back_reality(self):
-        self.displayed_text()
+        self.displayed_text = ""
+        self.letter_index = 0
         self.check_sub_end_conditions()
         pygame.display.update()
 
- 
-
-                       
+      
 
     def handle_space(self,keys):
          
@@ -262,7 +359,7 @@ class dialog:
                    
                    #if have options ,nothing to do( option selection is at other part of code)
                    if self.options:
-                     self.option = []
+                     self.options = []
                   
                    else:
                     if "next" in entry:
@@ -294,7 +391,7 @@ class dialog:
 
     def load_dialogue(self,npc_name,chapter):
 
-        self.option = []
+        self.options = []
         #update NPC detials
         self.npc_name = npc_name
         self.npc_data = all_dialogues.get(self.npc_name,{})
@@ -313,14 +410,23 @@ class dialog:
             elif self.npc_name == "Nuva" and self.current_story == "chapter_1_common" and entry.get("text") == "She is waiting in your office,you can head over when you are ready":
                 if dialogue_id not in self.shown_dialogues:
                     filtered_story_data.append(entry)
-                    
-            
-            
-
+   
         # set filtered dialogue n reset state
         self.story_data = filtered_story_data
         self.step = 0
         self.reset_typing()
+
+        if filtered_story_data:
+            first_entry = filtered_story_data[0]
+
+            if "cg" in first_entry:
+                paths = first_entry["cg"] if isinstance(first_entry["cg"], list) else [first_entry["cg"]]
+                try:
+                    self.cg_images = [pygame.image.load(path) for path in paths]
+                    self.cg_index = 0
+                    self.showing_cg = True
+                except Exception as e:
+                    print(f"[ERROR] Failed to load CG: {e}")
                 
 
 # =============text setting================
@@ -399,6 +505,7 @@ class NPC(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (x,y)
         self.name = name
+        self.dialog = None
 
 # to manage multiples NPCs
 class NPCManager:
@@ -442,22 +549,39 @@ npc_manager.add_npc(patient1)
 npc_manager.add_npc(patient2)
 
 current_dialogue = None
-
+show_cg = False
+cg_image = None
+cg_loaded = False
 
 run = True
 while run:
           
           draw_bg(screen)
-          is_moving = player.move(moving_left,moving_right)
-          player.update_animation(is_moving)
+
+          if not current_dialogue or not current_dialogue.talking:
+               is_moving = player.move(moving_left,moving_right)
+               player.update_animation(is_moving)
+          else:
+              is_moving = False
+              player.update_animation(is_moving)
           
           for npc in npc_manager.npcs:
               screen.blit(npc.image,npc.rect)
+              player_pos = pygame.Vector2(player.rect.center)
+              npc_pos = pygame.Vector2(npc.rect.center)
+              if player_pos.distance_to(npc_pos) < 100 :
+                    font = pygame.font.SysFont('Comic Sans MS', 20)
+                    hint_text = font.render("Press SPACE to talk", True, (0, 0, 0))
+                    hint_rect = hint_text.get_rect(center=(npc.rect.centerx, npc.rect.top - 20))
+                    screen.blit(hint_text, hint_rect)
+
+
+              if npc.dialog:
+                  npc.dialog.draw(screen)
 
           player.draw(screen)
           
           moving_left,moving_right,run =  keyboard_input(moving_left, moving_right, run)
-
 
           nearest_npc = npc_manager.get_nearest_npc(player)
 
@@ -478,15 +602,26 @@ while run:
 
               if not keys[pygame.K_SPACE]:
                   space_released = True
+
           elif current_dialogue:
                current_dialogue.talking = False
                current_dialogue.options = []
 
             
           if current_dialogue and current_dialogue.talking:
-              current_dialogue.update()
+              current_dialogue.update(pygame.event.get())
               current_dialogue.draw(screen)
-          
+
+          if current_dialogue and current_dialogue.chapter_end and not cg_loaded :
+              if "cg" in current_dialogue.entry:
+                  cg_image = pygame.image.load(current_dialogue.entry["cg"])
+                  show_cg = True
+                  cg_loaded = True
+
+
+          if show_cg and cg_image:
+              screen.blit(cg_image,(0,0))
+   
           pygame.display.update()
           clock.tick(FPS)    
           
