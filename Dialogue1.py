@@ -3,42 +3,188 @@ import sys
 from pygame.locals import *
 from character_movement import *
 import json
+from ui_components import Button
 
-pygame.init()
+current_text_size = 30
+click_sound = pygame.mixer.Sound("main page/click1.wav") 
 
-screen_width = 1280
-screen_height = 720
-
-screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
-clock = pygame.time.Clock()
-FPS = 60
-
-player = doctor(100,520,4.5) 
-player.name = "You" # remember to put in class doctor
-moving_left = False
-moving_right = False
-
-background = pygame.image.load("picture/Map Art/Map clinic.png").convert_alpha()
-
-font = pygame.font.SysFont('Comic Sans MS',40)
-space_released = True # control the dialog will not happen continuously when press key space
-
-with open('NPC_dialog/NPC.json','r',encoding = 'utf-8') as f:
-     all_dialogues = json.load(f)
+current_dialogue_instance = None
 
 
+def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
+    global current_dialogue_instance
 
-npc_list =["Nuva"]
-shown_dialogues = {}
-selected_options = {}
+    pygame.init()
+    pygame.mixer.init()
 
-cutscene_active = False
-cutscene_speed = 3 #pixel per frame
+    screen_width = 1280
+    screen_height = 720
+
+    shown_dialogues = {}
+
+
+    pygame.mixer.music.set_volume(bgm_vol)
+    current_bgm = "bgm/intro.mp3"
+    pygame.mixer.music.load(current_bgm)
+    pygame.mixer.music.play(-1)
+
+    backmain_img = pygame.image.load("backmain.png").convert_alpha()
+    backmain_button = Button(backmain_img, (1100, 80), scale=0.2)
+
+    global current_text_size
+    if text_size is not None:
+        current_text_size = text_size
+
+    screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
+    clock = pygame.time.Clock()
+    FPS = 60
+
+    player = doctor(100,520,4.5) 
+    player.name = "You" # remember to put in class doctor
+    moving_left = False
+    moving_right = False
+
+    background = pygame.image.load("picture/Map Art/Map clinic.png").convert_alpha()
+
+    font = pygame.font.SysFont('Comic Sans MS',40)
+    space_released = True # control the dialog will not happen continuously when press key space
+
+    if language == "CN":
+        dialogue_file = 'NPC_dialog/NPC_CN.json'
+    else:
+        dialogue_file = 'NPC_dialog/NPC.json'
+
+    with open(dialogue_file, 'r', encoding='utf-8') as f:
+        all_dialogues = json.load(f)
+
+
+    npc_list =["Nuva"]
+    shown_dialogues = {}
+    selected_options = {}
+
+    cutscene_active = False
+    cutscene_speed = 3 #pixel per frame
+
+    npc_manager = NPCManager()
+
+    nuva = NPC(1090,540,"Nuva")
+    dean = NPC(400,520,"Dean")
+    #patient1 = NPC(1000,500,"Zheng")
+    #patient2 = NPC(400,500,"Emma")
+
+    current_dialogue = None
+
+    npc_manager.add_npc(nuva)
+    npc_manager.add_npc(dean)
+    #npc_manager.add_npc(patient1)
+    #npc_manager.add_npc(patient2)
+
+    dean_interacted = False
+
+    current_dialogue = None
+
+    run = True
+    while run:
+            screen.blit(background, (0,0))
+
+            backmain_button.draw(screen)
+
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                   pygame.quit()
+                   sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if backmain_button.checkForInput(pygame.mouse.get_pos()):
+                       click_sound.play()
+                       pygame.mixer.music.stop()
+                       return
+
+
+            is_moving = player.move(moving_left,moving_right)
+            player.update_animation(is_moving)
+            
+            for npc in npc_manager.npcs:
+                screen.blit(npc.image,npc.rect)
+
+            player.draw(screen)
+            
+            moving_left,moving_right,run =  keyboard_input(moving_left, moving_right, run)
+
+
+            nearest_npc = npc_manager.get_nearest_npc(player)
+
+            #=====space======
+            keys = pygame.key.get_pressed()
+            if nearest_npc or (current_dialogue and current_dialogue.talking):
+                if nearest_npc and (current_dialogue is None or current_dialogue.npc != nearest_npc):
+                    current_dialogue = dialog(nearest_npc,player, all_dialogues, bgm_vol, sfx_vol, cutscene_speed=3, npc_manager=npc_manager)
+                
+                if keys[pygame.K_SPACE] and space_released:
+                    space_released = False
+                    if current_dialogue:
+                        current_dialogue.handle_space(keys)
+
+                if current_dialogue:
+                    current_dialogue.handle_option_selection(keys)
+            
+
+                if not keys[pygame.K_SPACE]:
+                    space_released = True
+            elif current_dialogue:
+                current_dialogue.talking = False
+                current_dialogue.options = []
+
+                
+            if current_dialogue and current_dialogue.talking:
+                current_dialogue.update()
+                current_dialogue.draw(screen)
+
+
+            # --- Trigger cutscene --- 
+            if nearest_npc and nearest_npc.name == "Dean": 
+                if not current_dialogue.talking and not cutscene_active:
+                    print("Cutscene start!")
+                    cutscene_active = True
+                if nearest_npc and nearest_npc.name == "Dean":
+                    if cutscene_active and dean.rect.x < 0:
+                        cutscene_active = False
+                        print("Dean has exited the screen.")
+                        
+
+            if nearest_npc and (current_dialogue is None or current_dialogue.npc != nearest_npc):
+                current_dialogue = dialog(
+                    nearest_npc,
+                    player, 
+                    all_dialogues, 
+                    bgm_vol, 
+                    sfx_vol, 
+                    cutscene_speed=3, 
+                    npc_manager=npc_manager,
+                    shown_dialogues=shown_dialogues  # 确保传递这个参数
+                )
+            
+            pygame.display.update()
+            clock.tick(FPS)  
+
+
+
+
 
 #============ Dialogue System =============
 class dialog:
-    def __init__(self,npc,player):
+    def __init__(self,npc,player,all_dialogues,bgm_vol=0.5, sfx_vol=0.5,cutscene_speed=3, npc_manager=None, shown_dialogues=None):
         super().__init__()
+
+        self.sounds = {
+        "phone_typing": pygame.mixer.Sound("sfx/phone_typing.wav"),
+        "footsteps": pygame.mixer.Sound("sfx/footsteps.wav"),
+    }
+
+        self.sfx_vol = sfx_vol
+        for sound in self.sounds.values():
+            sound.set_volume(sfx_vol)
+
 
         #load dialog box img n set transparency
         self.dialog_box_img = pygame.image.load("picture/Character Dialogue/dialog boxxx.png").convert_alpha()
@@ -62,14 +208,15 @@ class dialog:
         self.npc = npc
 
         #get NPC's dialogue data from Json
-        self.npc_data = all_dialogues.get(self.npc_name)
+        self.all_dialogues = all_dialogues
+        self.npc_data = self.all_dialogues.get(self.npc_name)
 
          #dialogue state variacbles
         self.current_story = "chapter_1" #default chapter 
         self.story_data = self.npc_data.get(self.current_story,[])
         self.step = 0 # present current sentence
-        global shown_dialogues
-        self.shown_dialogues = shown_dialogues #track dialogues that have been shown
+        
+        self.shown_dialogues = shown_dialogues if shown_dialogues is not None else {} #track dialogues that have been shown
 
         # sentences typing effect
         self.displayed_text = "" #display current word
@@ -86,6 +233,35 @@ class dialog:
         self.key_s_released = True
         self.key_e_released = True
 
+        self.currently_playing_sfx = None
+        self.sound_played_for_current_step = False
+        self.current_bgm = None
+        self.bgm_volume = bgm_vol
+
+        self.cutscene_speed = cutscene_speed
+        self.npc_manager = npc_manager
+
+
+    def change_bgm(self, bgm_path):
+        if bgm_path != self.current_bgm:
+            self.current_bgm = bgm_path
+            pygame.mixer.music.load(bgm_path)
+            pygame.mixer.music.set_volume(self.bgm_volume)
+            pygame.mixer.music.play(-1)
+
+    def update_bgm_volume(self, new_volume):
+        self.bgm_volume = new_volume
+        pygame.mixer.music.set_volume(new_volume)
+
+    def update_sfx_volume(self, new_volume):
+        self.sfx_vol = new_volume
+        for sound in self.sounds.values():
+            sound.set_volume(self.sfx_vol)
+
+    def stop_all_sfx(self):
+        for sound in self.sounds.values():
+            sound.stop()
+        self.currently_playing_sfx = None
 
      
     def update(self): 
@@ -95,17 +271,37 @@ class dialog:
 
              text = entry.get("text","") #get text
              
+             if entry.get("sound_stop"):
+                self.stop_all_sfx()
+
+             if "sound" in entry and not self.sound_played_for_current_step:
+                sound_name = entry["sound"]
+                if sound_name in self.sounds:
+                    self.sounds[sound_name].play()
+                    self.currently_playing_sfx = sound_name
+                self.sound_played_for_current_step = True
+            
+             if "bgm" in entry:
+                self.change_bgm(entry["bgm"])
+             elif "bgm_stop" in entry:
+                pygame.mixer.music.stop()
+                self.current_bgm = None
+
+
+
              #check if this is a choice entry
              if "choice" in entry :
               self.options = entry.get("choice",[])
              else:
                  self.options = []
 
-             #if this works???
              if "event" in entry:
-                 if entry["event"] == "dean_exit_cutscene":
-                    dean.rect.x -= cutscene_speed
-                    return
+                if entry["event"] == "dean_exit_cutscene":
+                   if self.npc_manager:
+                    for npc in self.npc_manager.npcs:
+                        if npc.name == "Dean":
+                           npc.rect.x -= self.cutscene_speed
+                           break
 
              # text typing effect
              current_time = pygame.time.get_ticks()
@@ -120,6 +316,8 @@ class dialog:
          self.displayed_text = ""
          self.letter_index = 0
          self.last_time = pygame.time.get_ticks()
+
+         self.sound_played_for_current_step = False
 
     def draw(self,screen):
         
@@ -217,7 +415,7 @@ class dialog:
                        self.key_e_released = True
 
     def load_back_reality(self):
-        self.displayed_text()
+        self.displayed_text = ""
         self.check_sub_end_conditions()
         pygame.display.update()
 
@@ -307,7 +505,7 @@ class dialog:
         self.option = []
         #update NPC detials
         self.npc_name = npc_name
-        self.npc_data = all_dialogues.get(self.npc_name,{})
+        self.npc_data = self.all_dialogues.get(self.npc_name,{})
         self.current_story = chapter
         self.story_data = self.npc_data.get(self.current_story,[])
         filtered_story_data = []
@@ -334,9 +532,10 @@ class dialog:
                 
 
 # =============text setting================
-def draw_text(surface,text,size,color,x,y,center = False,max_width = None):
-    font = pygame.font.SysFont('Comic Sans MS', size)
-    text_surface = font.render(text, True, color)
+def draw_text(surface, text, size=None, color=(0,0,0), x=0, y=0, center=False, max_width=None):
+    global current_text_size
+    font_size = size if size is not None else current_text_size
+    font = pygame.font.Font('fonts/NotoSansSC-Regular.ttf', font_size)
 
     # If no max width is specified or text is short, render it normally
     if max_width is None or font.size(text)[0] <= max_width:
@@ -437,82 +636,4 @@ class NPCManager:
 
 
 
-npc_manager = NPCManager()
-
-nuva = NPC(1090,540,"Nuva")
-dean = NPC(400,520,"Dean")
-#patient1 = NPC(1000,500,"Zheng")
-#patient2 = NPC(400,500,"Emma")
-
-current_dialogue = None
-
-npc_manager.add_npc(nuva)
-npc_manager.add_npc(dean)
-#npc_manager.add_npc(patient1)
-#npc_manager.add_npc(patient2)
-
-dean_interacted = False
-
-current_dialogue = None
-
-run = True
-while run:
-          screen.blit(background, (0,0))
-          is_moving = player.move(moving_left,moving_right)
-          player.update_animation(is_moving)
           
-          for npc in npc_manager.npcs:
-              screen.blit(npc.image,npc.rect)
-
-          player.draw(screen)
-          
-          moving_left,moving_right,run =  keyboard_input(moving_left, moving_right, run)
-
-
-          nearest_npc = npc_manager.get_nearest_npc(player)
-
-          #=====space======
-          keys = pygame.key.get_pressed()
-          if nearest_npc or (current_dialogue and current_dialogue.talking):
-              if nearest_npc and (current_dialogue is None or current_dialogue.npc != nearest_npc):
-                  current_dialogue = dialog(nearest_npc,player)
-            
-              if keys[pygame.K_SPACE] and space_released:
-                  space_released = False
-                  if current_dialogue:
-                     current_dialogue.handle_space(keys)
-
-              if current_dialogue:
-                 current_dialogue.handle_option_selection(keys)
-          
-
-              if not keys[pygame.K_SPACE]:
-                  space_released = True
-          elif current_dialogue:
-               current_dialogue.talking = False
-               current_dialogue.options = []
-
-            
-          if current_dialogue and current_dialogue.talking:
-              current_dialogue.update()
-              current_dialogue.draw(screen)
-
-
-          # --- Trigger cutscene --- 
-          if nearest_npc and nearest_npc.name == "Dean": 
-            if not current_dialogue.talking and not cutscene_active:
-                print("Cutscene start!")
-                cutscene_active = True
-            if nearest_npc and nearest_npc.name == "Dean":
-                if cutscene_active and dean.rect.x < 0:
-                    cutscene_active = False
-                    print("Dean has exited the screen.")
-                    
-
-          
-          pygame.display.update()
-          clock.tick(FPS)    
-          
-
-pygame.quit()
-sys.exit()

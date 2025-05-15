@@ -1,7 +1,7 @@
 import pygame
 import sys
-import Dialogue
-from Dialogue import run_dialogue
+import Dialogue1
+from Dialogue1 import run_dialogue
 from ui_components import Button, get_font
 
 pygame.init() #initialize all import pygame modules
@@ -220,27 +220,27 @@ def settings_screen():
                 if bgm_plus.checkForInput(mouse_pos) and bgm_vol < 1.0:
                     bgm_vol = round(min(bgm_vol + 0.1, 1.0), 1) #to not exceed 1.0
                     pygame.mixer.music.set_volume(bgm_vol)
-                    if hasattr(Dialogue, 'current_dialogue_instance') and Dialogue.current_dialogue_instance:
-                       Dialogue.current_dialogue_instance.update_bgm_volume(bgm_vol)
+                    if hasattr(Dialogue1, 'current_dialogue_instance') and Dialogue1.current_dialogue_instance:
+                       Dialogue1.current_dialogue_instance.update_bgm_volume(bgm_vol)
                     click_sound.play()
                 if bgm_minus.checkForInput(mouse_pos) and bgm_vol > 0.0:
                     bgm_vol = round(max(bgm_vol - 0.1, 0.0), 1) #to not lower than 0.0
                     pygame.mixer.music.set_volume(bgm_vol)
-                    if hasattr(Dialogue, 'current_dialogue_instance') and Dialogue.current_dialogue_instance:
-                       Dialogue.current_dialogue_instance.update_bgm_volume(bgm_vol)
+                    if hasattr(Dialogue1, 'current_dialogue_instance') and Dialogue1.current_dialogue_instance:
+                       Dialogue1.current_dialogue_instance.update_bgm_volume(bgm_vol)
                     click_sound.play()
 
                 if sfx_plus.checkForInput(mouse_pos) and sfx_vol < 1.0:
                     sfx_vol = round(min(sfx_vol + 0.1, 1.0), 1)
                     click_sound.set_volume(sfx_vol)
-                    if hasattr(Dialogue, 'current_dialogue_instance') and Dialogue.current_dialogue_instance:
-                       Dialogue.current_dialogue_instance.update_sfx_volume(sfx_vol)
+                    if hasattr(Dialogue1, 'current_dialogue_instance') and Dialogue1.current_dialogue_instance:
+                       Dialogue1.current_dialogue_instance.update_sfx_volume(sfx_vol)
                     click_sound.play()
                 if sfx_minus.checkForInput(mouse_pos) and sfx_vol > 0.0:
                     sfx_vol = round(max(sfx_vol - 0.1, 0.0), 1)
                     click_sound.set_volume(sfx_vol)
-                    if hasattr(Dialogue, 'current_dialogue_instance') and Dialogue.current_dialogue_instance:
-                       Dialogue.current_dialogue_instance.update_sfx_volume(sfx_vol)
+                    if hasattr(Dialogue1, 'current_dialogue_instance') and Dialogue1.current_dialogue_instance:
+                       Dialogue1.current_dialogue_instance.update_sfx_volume(sfx_vol)
                     click_sound.play()
 
                 if small_button.checkForInput(mouse_pos):
