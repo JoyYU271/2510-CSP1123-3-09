@@ -37,13 +37,16 @@
   },
   
 
+
  "Nuva":{
     "chapter_1":[
         {"speaker":"npc","text":"哈咯！你就是新来的心理医生吗？","shown": false},
         {"choice":[
             {"option":"我不是","next":"not_a_doctor"},
             {"option":"我是","next":"a_doctor"}
+
         ],"shown":false
+
         }
     ],
 
@@ -72,6 +75,7 @@
         {"speaker" :"player","text":"好，我知道了。","shown": false},
         {"speaker" :"npc","text":"对了，昨天已经有一位患者预约了你今天的治疗。"},
         {"speaker" :"npc","text":"她已经在你的办公室等候了，你准备好后可以随时过去。"}
+
 
 
 
@@ -112,6 +116,7 @@
  },
 
 
+
   "Dean":{
     "chapter_1":[
         {"speaker" :"player","text":"(这里就是诊所了……)","shown": false},
@@ -134,6 +139,7 @@
         {"speaker" :"narrator","text":"(......)","sound_stop": true,"shown": false},
         {"speaker" :"narrator","text":"(你望着不会有回应的聊天看了几秒后收起手机。)","shown": false},
         {"speaker" :"player","text":"先走走吧。","shown": false}
+
 
     ],
 
@@ -222,6 +228,7 @@
 
 
     
+
   },
   "Zheng":{
     "chapter_1":[
@@ -247,6 +254,10 @@
         {"speaker" :"narrator","text":"(认知行为疗法 (CBT) 是一种心理治疗形式，已被证明可有效解决一系列问题。","shown": false},
         {"speaker" :"narrator","text":"包括抑郁症、焦虑症、酒精和药物使用问题、婚姻问题、饮食失调和严重的精神疾病。)","shown": false},
         {"speaker" :"narrator","text":"(CBT治疗通常涉及改变思维模式的努力。)","shown": false},
+        {"speaker" :"player","text":"(因完美主义而导致的焦虑心理。CBT(Cognitive Behavioural Therapy)会是个适合她且有效的治疗方式。)","shown": false},
+        {"speaker" :"narrator","text":"(Cognitive behavioral therapy (CBT) is a form of psychological treatment that has been demonstrated to be effective for a range of problems","shown": false},
+        {"speaker" :"narrator","text":" including depression, anxiety disorders, alcohol and drug use problems, marital problems, eating disorders, and severe mental illness. )","shown": false},
+        {"speaker" :"narrator","text":"(CBT treatment usually involves efforts to change thinking patterns. )","shown": false},
         {"speaker" :"npc","text":"我听说你们这里有能治疗各种心理问题的仪器？这能直接解决我的问题吗？","shown": false},
         {"speaker" :"player","text":"(等等，这跟我想的发展不一样。嗯，但我确实忽略了这里有那个仪器能使用。)","shown": false},
         {"speaker" :"player","text":"的，我桌上的这个“头盔”就是这个仪器的本体。它能进入人的潜意识，查看关于过去的记忆。","shown": false},
@@ -267,6 +278,12 @@
         {"speaker" :"player","text":"嗯，签字后我就会开始准备用仪器为你治疗。","shown": false},
         {"speaker" :"narrator","text":"(她毫不犹豫的签下，然后把合同递回给你)","shown": false},
         {"speaker" :"player","text":"(好了，那现在开始吧。)","shown": false},
+        {"speaker" :"narrator","text":"(你把关于仪器使用的合同递给了她)","shown": false},
+        {"speaker" :"narrator","text":"(After a moment, she looks up.)","shown": false},
+        {"speaker" :"npc","text":"I’ve read it. I’m willing to accept the risks. Just need to sign here, right?","shown": false},
+        {"speaker" :"player","text":"Right. Once you sign, I’ll prepare the treatment.","shown": false},
+        {"speaker" :"narrator","text":"(She signs without hesitation and returns the form to you.)","shown": false},
+        {"speaker" :"player","text":"(Alright, let’s begin.)","shown": false},
         {"next":"chapter_1_common"}
 
     ],
@@ -412,8 +429,8 @@
         {"speaker" :"narrator","text":"嗯，那好。我已经为你选好了治疗选择，之后你想必就不会再做噩梦了。","shown": false},
         {"speaker" :"narrator","text":"好，真是谢谢你了，医生。","shown": false},
         {"speaker" :"narrator","text":".......","shown": false},
-        {"speaker" :"narrator","text":".......","shown": false}
-
+        {"speaker" :"narrator","text":".......","shown": false},
+        {"speaker" :"player","text":"(I’ve finished speaking with the patient. Time to begin treatment using the machine.)"}
 
     ]
   }
