@@ -11,7 +11,7 @@
 
     "not_a_doctor" :[
 
-        {"speaker" :"player","text":"I am not.","shown": false},
+        {"speaker" :"player","text":"I am not.","bgm": "bgm/selection_no.mp3","shown": false},
         {"speaker":"npc","text":"Eh~ I thought such a handsome guy would be our new doctor!","shown": false},
         {"speaker":"npc","text":"Are you here to see the Dean? He just left for a meeting.","shown": false},
         {"speaker" :"player","text":".....Sorry, I was joking. Seems my sense of humor needs work. ","shown": false},
@@ -30,7 +30,7 @@
     ],
 
     "chapter_1_common":[
-        {"speaker" :"npc","text":"I’m Nuva, the receptionist nurse. If you have any questions, feel free to ask me—your senior!","shown": false},
+        {"speaker" :"npc","text":"I'm Nuva, the receptionist nurse. If you have any questions, feel free to ask me—your senior!","bgm": "bgm/intro.mp3","shown": false},
         {"speaker" :"player","text":"Got it.","shown": false},
         {"speaker" :"npc","text":"Oh, by the way, already have a patient booked a session with you for today."},
         {"speaker" :"npc","text":"She is waiting in your office, you can head over when you are ready"}
