@@ -3,7 +3,7 @@ import sys
 from pygame.locals import *
 from character_movement import *
 import json
-from ui_components import Button
+from ui_components import Button,get_font
 
 current_text_size = 30
 click_sound = pygame.mixer.Sound("main page/click1.wav") 
@@ -11,7 +11,7 @@ click_sound = pygame.mixer.Sound("main page/click1.wav")
 current_dialogue_instance = None
 
 
-def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
+def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,initial_state=None):
     global current_dialogue_instance
 
     pygame.init()
@@ -30,6 +30,10 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
 
     backmain_img = pygame.image.load("backmain.png").convert_alpha()
     backmain_button = Button(backmain_img, (1100, 80), scale=0.2)
+
+    save_img = pygame.image.load("Save.png").convert_alpha()
+    save_button = Button(save_img, (900, 80), scale=0.7)
+
 
     global current_text_size
     if text_size is not None:
@@ -59,8 +63,6 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
 
 
     npc_list =["Nuva"]
-    shown_dialogues = {}
-    selected_options = {}
 
     cutscene_active = False
     cutscene_speed = 3 #pixel per frame
@@ -72,8 +74,6 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
     #patient1 = NPC(1000,500,"Zheng")
     #patient2 = NPC(400,500,"Emma")
 
-    current_dialogue = None
-
     npc_manager.add_npc(nuva)
     npc_manager.add_npc(dean)
     #npc_manager.add_npc(patient1)
@@ -83,12 +83,57 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
 
     current_dialogue = None
 
+    dialogue_active = False
+    dialogue_just_ended = False
+    
+
+    game_state = {
+        "current_chapter": "chapter_1",
+        "player_position": (100, 520),
+        "shown_dialogues": {},
+        "player_choices": {},
+        "settings": {
+            "bgm_vol": bgm_vol,
+            "sfx_vol": sfx_vol,
+            "text_size": text_size if text_size else "Medium",
+            "language": language
+        }
+    }
+    
+    if initial_state:
+        game_state.update(initial_state)
+        # Ensure all required keys exist
+        game_state.setdefault("shown_dialogues", {})
+        game_state.setdefault("player_choices", {})
+        game_state.setdefault("settings", {
+            "bgm_vol": bgm_vol,
+            "sfx_vol": sfx_vol,
+            "text_size": text_size if text_size else "Medium",
+            "language": language
+        })
+        
+        if "player_position" in initial_state:
+            player.rect.x, player.rect.y = initial_state["player_position"]
+
+
+    shown_dialogues = game_state.get("shown_dialogues", {})
+    selected_options = game_state.get("player_choices", {})
+        
+
     run = True
     while run:
             screen.blit(background, (0,0))
+            
+            if current_dialogue and current_dialogue.talking:
+                dialogue_active = True
+                dialogue_just_ended = False
+            elif dialogue_active and not (current_dialogue and current_dialogue.talking):
+                dialogue_active = False
+                dialogue_just_ended = True
 
-            backmain_button.draw(screen)
-
+            if not dialogue_active:
+               backmain_button.draw(screen)
+               save_button.draw(screen)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -99,6 +144,84 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
                        click_sound.play()
                        pygame.mixer.music.stop()
                        return
+                    if save_button.checkForInput(pygame.mouse.get_pos()):
+                        click_sound.play()
+                        from save_load import SaveManager
+                        save_manager = SaveManager()
+
+                        current_chapter = current_dialogue.current_story if current_dialogue else "chapter_1"
+                        shown_dialogues = current_dialogue.shown_dialogues if current_dialogue else {}
+                    
+                        save_state = {
+                            "current_chapter": current_chapter,
+                            "player_position": (player.rect.x, player.rect.y),
+                            "shown_dialogues": current_dialogue.shown_dialogues if current_dialogue else {},
+                            "player_choices": current_dialogue.selected_options if current_dialogue else {},
+                            "settings": {
+                                "bgm_vol": bgm_vol,
+                                "sfx_vol": sfx_vol,
+                                "text_size": "Small" if current_text_size == 25 else "Medium" if current_text_size == 30 else "Large",
+                                "language": language
+                            }
+                        }
+                        
+                        available_slot = None
+                        for i in range(3):
+                            if not save_manager.load_game(i):
+                                available_slot = i
+                                break
+                        
+                        if available_slot is not None:
+                            # 有空槽，直接保存
+                            save_manager.save_game(save_state, available_slot)
+                            # 显示保存成功消息...
+                        else:
+                            # 没有空槽，显示覆盖选择界面
+                            showing_overwrite = True
+                            selected_slot = 0
+                            
+                            while showing_overwrite:
+                                screen.blit(background, (0,0))
+                                
+                                # 绘制覆盖提示
+                                prompt_text = get_font(40).render("All slots full. Overwrite which save?", True, (255,255,255))
+                                screen.blit(prompt_text, (screen_width//2 - prompt_text.get_width()//2, 100))
+                                
+                                # 绘制存档槽选项
+                                for i in range(3):
+                                    color = (255,0,0) if i == selected_slot else (255,255,255)
+                                    slot_text = get_font(30).render(f"Slot {i+1}", True, color)
+                                    screen.blit(slot_text, (screen_width//2 - 50, 200 + i*50))
+                                    
+                                    # 显示存档信息
+                                    save_data = save_manager.load_game(i)
+                                    info_text = get_font(20).render(
+                                        f"{save_data['timestamp']} - {save_data['current_chapter']}", 
+                                        True, (200,200,200))
+                                    screen.blit(info_text, (screen_width//2 + 50, 200 + i*50))
+                                
+                                # 事件处理
+                                for event in pygame.event.get():
+                                    if event.type == pygame.QUIT:
+                                        pygame.quit()
+                                        sys.exit()
+                                    if event.type == pygame.KEYDOWN:
+                                        if event.key == pygame.K_UP:
+                                            selected_slot = (selected_slot - 1) % 3
+                                        elif event.key == pygame.K_DOWN:
+                                            selected_slot = (selected_slot + 1) % 3
+                                        elif event.key == pygame.K_RETURN:
+                                            save_manager.save_game(save_state, selected_slot)
+                                            showing_overwrite = False
+                                            # 显示保存成功消息...
+                                            break
+                                        elif event.key == pygame.K_ESCAPE:
+                                            showing_overwrite = False
+                                            break
+                                
+                                pygame.display.update()
+
+
 
 
             is_moving = player.move(moving_left,moving_right)
@@ -173,7 +296,7 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
 
 #============ Dialogue System =============
 class dialog:
-    def __init__(self,npc,player,all_dialogues,bgm_vol=0.5, sfx_vol=0.5,cutscene_speed=3, npc_manager=None, shown_dialogues=None):
+    def __init__(self,npc,player,all_dialogues,bgm_vol=0.5, sfx_vol=0.5,cutscene_speed=3, npc_manager=None, shown_dialogues=None,initial_state=None):
         super().__init__()
 
         self.sounds = {
@@ -240,6 +363,19 @@ class dialog:
 
         self.cutscene_speed = cutscene_speed
         self.npc_manager = npc_manager
+        
+        self.shown_dialogues = shown_dialogues if shown_dialogues is not None else {}
+
+        if initial_state:
+            self.current_story = initial_state.get("current_chapter", "chapter_1")
+            self.shown_dialogues = initial_state.get("shown_dialogues", {})
+            self.selected_options = initial_state.get("player_choices", {})
+        else:
+            self.current_story = "chapter_1"
+            self.shown_dialogues = shown_dialogues if shown_dialogues is not None else {}
+            self.selected_options = {}
+
+        self.load_dialogue(self.npc_name, self.current_story)
 
 
     def change_bgm(self, bgm_path):
@@ -498,7 +634,14 @@ class dialog:
                         else:
                            #reset typing effect for the next dialogue entry
                            self.reset_typing()
-    
+
+         if self.step >= len(self.story_data):
+            # 对话结束时保存已显示的对话
+            global shown_dialogues
+            shown_dialogues = self.shown_dialogues
+            self.talking = False
+            return   
+
 
     def load_dialogue(self,npc_name,chapter):
 
@@ -521,7 +664,10 @@ class dialog:
             elif self.npc_name == "Nuva" and self.current_story == "chapter_1_common" and entry.get("text") == "She is waiting in your office,you can head over when you are ready":
                 if dialogue_id not in self.shown_dialogues:
                     filtered_story_data.append(entry)
-                    
+
+        self.story_data = filtered_story_data
+        self.step = 0
+        self.reset_typing()            
             
             
 

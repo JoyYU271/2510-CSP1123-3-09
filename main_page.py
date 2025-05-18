@@ -3,6 +3,8 @@ import sys
 import Dialogue1
 from Dialogue1 import run_dialogue
 from ui_components import Button, get_font
+from save_load import SaveManager
+
 
 pygame.init() #initialize all import pygame modules
 pygame.mixer.init()
@@ -14,7 +16,7 @@ screen = pygame.display.set_mode((screen_width, screen_height))#pygame.FULLSCREE
 pygame.display.set_caption("main page test")
 
 #background image
-bg_img = pygame.image.load("main page/background1.png").convert() #converts is for optimize image faster blitting on screen
+bg_img = pygame.image.load("main page/Menu Page.png").convert() #converts is for optimize image faster blitting on screen
 bg_img = pygame.transform.scale(bg_img, (screen_width, screen_height))
 
 #button image
@@ -98,20 +100,63 @@ def main_menu():
 
 
 def load_screen():
+    save_manager = SaveManager()
+    save_files = save_manager.get_save_files()
+    
+    load_bg_img = pygame.image.load("main page/common background.png").convert()
+    load_bg_img = pygame.transform.scale(load_bg_img, (screen_width, screen_height))
+
+    # Create buttons for each save slot
+    save_slots = []
+    delete_buttons = []
+    for i in range(3):  # Support for 3 save slots
+        exists = f"save_{i}.sav" in save_files
+        save_slots.append({
+            "exists": exists,
+            "button": Button(image=None, pos=(640, 200 + i*120), 
+                           text_input=f"Slot {i+1} {'(Empty)' if not exists else ''}",
+                           font=get_font(45), base_color="White", hovering_color="Green")
+        })
+        
+        delete_buttons.append(
+            Button(image=None, pos=(800, 200 + i*120), 
+                 text_input="Delete" if exists else "",
+                 font=get_font(30), base_color="Red", hovering_color="Dark Red")
+        )
+
+    back_button = Button(image=None, pos=(640, 600), text_input="BACK",
+                        font=get_font(75), base_color="White", hovering_color="Green")
+    
     while True:
-        screen.fill("white")
+        screen.blit(load_bg_img, (0, 0))
         mouse_pos = pygame.mouse.get_pos()
+        
+        # Draw title
+        title_text = get_font(60).render("LOAD GAME", True, "White")
+        title_rect = title_text.get_rect(center=(640, 100))
+        screen.blit(title_text, title_rect)
+        
+        # Draw save slots
+        for i, (slot, del_btn) in enumerate(zip(save_slots, delete_buttons)):
+            if slot["exists"]:
+                slot["button"].changeColor(mouse_pos)
+            slot["button"].update(screen)
+            
+            save_data = save_manager.load_game(i)
+            if save_data:
+                # Show timestamp and chapter info
+               time_text = get_font(25).render(save_data["timestamp"], True, "White")
+               screen.blit(time_text, (350, 170 + i*120))  # Moved further left
 
-        text = get_font(45).render("This is the LOAD screen.", True, "Black")
-        rect = text.get_rect(center=(640, 260))
-        screen.blit(text, rect)
+               chapter_text = get_font(25).render(f"Chapter: {save_data['current_chapter']}", True, "White")
+               screen.blit(chapter_text, (350, 200 + i*120))
 
-        back_button = Button(image=None, pos=(640, 460), text_input="BACK",
-                             font=get_font(75), base_color="Black", hovering_color="Green")
-
+               del_btn.changeColor(mouse_pos)
+               del_btn.update(screen)
+            
         back_button.changeColor(mouse_pos)
         back_button.update(screen)
-
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -120,6 +165,57 @@ def load_screen():
                 if back_button.checkForInput(mouse_pos):
                     click_sound.play()
                     return
+                
+                for i, slot in enumerate(save_slots):
+                    if slot["button"].checkForInput(mouse_pos) and slot["exists"]:
+                        click_sound.play()
+                        # Load the game
+                        save_data = save_manager.load_game(i)
+                        if save_data:
+                            # Update global settings
+                            global bgm_vol, sfx_vol, text_size, current_font_size, current_language
+                            settings = save_data.get("settings", {})
+                            bgm_vol = settings.get("bgm_vol", 0.5)
+                            sfx_vol = settings.get("sfx_vol", 0.5)
+                            text_size = settings.get("text_size", "Medium")
+                            current_language = settings.get("language", "EN")
+                            
+                            # Convert text size to font size
+                            if text_size == "Small":
+                                current_font_size = 25
+                            elif text_size == "Medium":
+                                current_font_size = 30
+                            elif text_size == "Large":
+                                current_font_size = 35
+                            
+                            # Start game with loaded state
+                            pygame.mixer.music.stop()
+                            run_dialogue(
+                                current_font_size, 
+                                current_language, 
+                                bgm_vol, 
+                                sfx_vol,
+                                initial_state=save_data
+                            )
+                            return
+                    
+                for i, del_btn in enumerate(delete_buttons):
+                    if del_btn.text_input == "Delete" and del_btn.checkForInput(mouse_pos):
+                        click_sound.play()
+                        if save_manager.delete_save(i):
+                            # Update the slot and button states
+                            save_slots[i]["exists"] = False
+                            save_slots[i]["button"].base_color = "Gray"
+                            save_slots[i]["button"].hovering_color = "Gray"
+                            delete_buttons[i].text_input = ""
+                            # Redraw immediately
+                            screen.blit(load_bg_img, (0, 0))
+                            screen.blit(title_text, title_rect)
+                            for j, (s, d) in enumerate(zip(save_slots, delete_buttons)):
+                                s["button"].update(screen)
+                                d.update(screen)
+                            pygame.display.flip()
+                            pygame.time.delay(300)  # Short delay for visual feedback
 
         pygame.display.update()
 
@@ -168,35 +264,35 @@ def settings_screen():
 
         #bgm volume
         bgm_text = get_font(40).render(f"BGM Volume: {int(bgm_vol * 100)}%", True, "White")
-        screen.blit(bgm_text, (screen_width // 2 - bgm_text.get_width() // 2, 150))
+        screen.blit(bgm_text, (screen_width // 2 - bgm_text.get_width() // 2, 100))
 
-        bgm_minus = Button(None, (screen_width//2 - 100, 200), text_input="-", font=get_font(50), base_color="White", hovering_color="Green")
-        bgm_plus = Button(None, (screen_width//2 + 100, 200), text_input="+", font=get_font(50), base_color="White", hovering_color="Green")
+        bgm_minus = Button(None, (screen_width//2 - 100, 150), text_input="-", font=get_font(50), base_color="White", hovering_color="Green")
+        bgm_plus = Button(None, (screen_width//2 + 100, 150), text_input="+", font=get_font(50), base_color="White", hovering_color="Green")
 
         #SFX Volume
         sfx_text = get_font(40).render(f"SFX Volume: {int(sfx_vol * 100)}%", True, "White")
-        screen.blit(sfx_text, (screen_width // 2 - sfx_text.get_width() // 2, 250))
+        screen.blit(sfx_text, (screen_width // 2 - sfx_text.get_width() // 2, 200))
 
-        sfx_minus = Button(None, (screen_width//2 - 100, 300), text_input="-", font=get_font(50), base_color="White", hovering_color="Green")
-        sfx_plus = Button(None, (screen_width//2 + 100, 300), text_input="+", font=get_font(50), base_color="White", hovering_color="Green")
+        sfx_minus = Button(None, (screen_width//2 - 100, 250), text_input="-", font=get_font(50), base_color="White", hovering_color="Green")
+        sfx_plus = Button(None, (screen_width//2 + 100, 250), text_input="+", font=get_font(50), base_color="White", hovering_color="Green")
 
         #language setting
         lang_text = get_font(40).render(f"Language(Dialogue): {current_language}", True, "White")
-        screen.blit(lang_text, (screen_width // 2 - lang_text.get_width() // 2, 350))
+        screen.blit(lang_text, (screen_width // 2 - lang_text.get_width() // 2, 300))
 
-        lang_toggle_button = Button(None, (screen_width//2, 400), text_input="Switch", font=get_font(40), base_color="White", hovering_color="Green")
+        lang_toggle_button = Button(None, (screen_width//2, 350), text_input="Switch", font=get_font(40), base_color="White", hovering_color="Green")
 
         #text size
         text_size_text = get_font(40).render(f"Text Size: {text_size}", True, "White")
-        screen.blit(text_size_text, (screen_width // 2 - text_size_text.get_width() // 2, 450))
+        screen.blit(text_size_text, (screen_width // 2 - text_size_text.get_width() // 2, 400))
 
-        small_button = Button(None, (screen_width//2 - 150, 500), text_input="Small", font=get_font(40), base_color="White", hovering_color="Green")
-        medium_button = Button(None, (screen_width//2, 500), text_input="Medium", font=get_font(40), base_color="White", hovering_color="Green")
-        large_button = Button(None, (screen_width//2 + 150, 500), text_input="Large", font=get_font(40), base_color="White", hovering_color="Green")
+        small_button = Button(None, (screen_width//2 - 150, 450), text_input="Small", font=get_font(40), base_color="White", hovering_color="Green")
+        medium_button = Button(None, (screen_width//2, 450), text_input="Medium", font=get_font(40), base_color="White", hovering_color="Green")
+        large_button = Button(None, (screen_width//2 + 150, 450), text_input="Large", font=get_font(40), base_color="White", hovering_color="Green")
 
         #reset and back 
-        default_button = Button(None, (screen_width//2, 580), text_input="Reset to Default", font=get_font(45), base_color="White", hovering_color="Green")
-        back_button = Button(None, (screen_width//2, 640), text_input="BACK", font=get_font(50), base_color="White", hovering_color="Green")
+        default_button = Button(None, (screen_width//2, 550), text_input="Reset to Default", font=get_font(45), base_color="White", hovering_color="Green")
+        back_button = Button(None, (screen_width//2, 640), text_input="BACK", font=get_font(60), base_color="White", hovering_color="Green")
 
 
         buttons = [bgm_plus, bgm_minus, sfx_plus, sfx_minus,

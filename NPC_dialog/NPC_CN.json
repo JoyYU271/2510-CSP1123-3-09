@@ -119,7 +119,7 @@
 
   "Dean":{
     "chapter_1":[
-        {"speaker" :"player","text":"(这里就是诊所了……)","shown": false},
+        {"speaker" :"player","text":"(这里就是诊所了……)","bgm": "bgm/talk_with_dean.mp3","shown": false},
         {"speaker" :"npc","text":"八点十分，你早到了五十分钟","shown": false},
         {"speaker" :"player","text":"我想提前了解这里的环境……父亲。","shown": false},
         {"speaker" :"narrator","text":"(在你喊出父亲的瞬间，你看见他的眉头轻皱。)","shown": false},
@@ -138,7 +138,7 @@
         {"speaker" :"player","text":"你会为我感到骄傲吗，母亲？","shown": false},
         {"speaker" :"narrator","text":"(......)","sound_stop": true,"shown": false},
         {"speaker" :"narrator","text":"(你望着不会有回应的聊天看了几秒后收起手机。)","shown": false},
-        {"speaker" :"player","text":"先走走吧。","shown": false}
+        {"speaker" :"player","text":"先走走吧。","bgm": "bgm/intro.mp3","shown": false}
 
 
     ],
