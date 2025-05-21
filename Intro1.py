@@ -353,9 +353,11 @@ def draw_text(surface,text,size,color,x,y,center = False,max_width = None):
     
 
 class SimpleChapterIntro:
-    def __init__(self):
+    def __init__(self, display, gameStateManager):
         self.active = False
         self.background = None
+        self.display = display
+        self.gameStateManager = gameStateManager
         self.dialogue = []
         self.step = 0
         self.last_time = 0
@@ -381,7 +383,6 @@ class SimpleChapterIntro:
             print("Background loaded successfully")
         except Exception as e:
             print(f"Error loading background: {e}")
-            
         
         # Get dialogue from JSON
         self.dialogue = all_dialogues.get("intro", {}).get(chapter, [])
@@ -512,8 +513,31 @@ class SimpleChapterIntro:
 
            screen.blit(hint_text, hint_rect)
      
+class Game:
+    def __init__(self):
+        self.screen = screen
+        self.gameStateManager = GameStateManager()
+        self.start = SimpleChapterIntro(self.screen, self.gameStateManager)
+        self.level = Rooms(self.screen, self.gameStateManager)
             
-            
+class Rooms:
+    def __init__(self, display, gameStateManager):
+        self.display = display
+        self.gameStateManager = gameStateManager        
+    def run(self):
+        pass
+    #thisdict = {
+#   "world": ["Outside", "Inside", "PlayerOff", "DeanOff", "Basement", "Store"],
+#   "sub_worlds": {"chapter1":["work", "class", "office", "lab?"], "chapter2":["runway ad", "dressing", "home", "bedroom", "clinic?"]}
+# }
+
+#print(thisdict)
+
+class GameStateManager:
+    def __inti__(self):
+        pass
+
+
 
 
 # Create intro object
