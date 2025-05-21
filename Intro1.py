@@ -543,10 +543,18 @@ while running:
     if chapter_intro.active:
         if chapter_intro.update(keys):
             chapter_intro.draw(screen)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                   running = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_r:
+                        # Restart intro
+                        chapter_intro.start("chapter_1")
+                        print("Chapter intro restarting...")
         else:
             # If intro is no longer active, restart it
-            print("Chapter intro finished, restarting...")
-            chapter_intro.start("chapter_1")
+            print("Chapter intro finished")
+            #chapter_intro.start("chapter_1")
     
     # Update display
     pygame.display.flip()
