@@ -353,11 +353,9 @@ def draw_text(surface,text,size,color,x,y,center = False,max_width = None):
     
 
 class SimpleChapterIntro:
-    def __init__(self, display, gameStateManager):
+    def __init__(self):
         self.active = False
         self.background = None
-        self.display = display
-        self.gameStateManager = gameStateManager
         self.dialogue = []
         self.step = 0
         self.last_time = 0
@@ -513,32 +511,74 @@ class SimpleChapterIntro:
 
            screen.blit(hint_text, hint_rect)
      
+SCREENWIDTH, SCREENHEIGHT = 1280, 720
+
 class Game:
     def __init__(self):
-        self.screen = screen
-        self.gameStateManager = GameStateManager()
-        self.start = SimpleChapterIntro(self.screen, self.gameStateManager)
+        pygame.init()
+        self.clock = pygame.time.Clock()
+        self.screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
+
+        self.gameStateManager = GameStateManager('start')
+        self.start = Start(self.screen, self.gameStateManager)
         self.level = Rooms(self.screen, self.gameStateManager)
-            
-class Rooms:
+        
+
+        self.states = {'start':self.start, 'level':self.level}
+    def run(self):
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+            self.states[self.gameStateManager.get_state()].run()
+
+            pygame.display.update()
+            self.clock.tick(FPS)
+
+
+class Start:    #try to call back SimpleChapterIntro
     def __init__(self, display, gameStateManager):
         self.display = display
         self.gameStateManager = gameStateManager        
     def run(self):
-        pass
-    #thisdict = {
-#   "world": ["Outside", "Inside", "PlayerOff", "DeanOff", "Basement", "Store"],
-#   "sub_worlds": {"chapter1":["work", "class", "office", "lab?"], "chapter2":["runway ad", "dressing", "home", "bedroom", "clinic?"]}
-# }
+        self.display.fill('blue')
+        # keys = pygame.key.get_pressed()
+        # if keys[pygame.K_e]:
+        #     self.gameStateManager.set_state('level')
 
-#print(thisdict)
+#make plan to change by colliderect/position of player.rect
+
+class Rooms:    # class Level in tutorial
+    def __init__(self, display, gameStateManager):
+        self.display = display
+        self.gameStateManager = gameStateManager        
+    def run(self):
+        self.display.fill('red')
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_g]:
+            self.gameStateManager.set_state('start')
 
 class GameStateManager:
-    def __inti__(self):
-        pass
+    def __init__(self, currentState):
+        self.currentState = currentState
+    def get_state(self):
+        return self.currentState
+    def set_state(self, state):
+        self.currentState = state
+
+if __name__== '__main__':
+    game = Game()
+    game.run()
 
 
+#     #thisdict = {
+# #   "world": ["Outside", "Inside", "PlayerOff", "DeanOff", "Basement", "Store"],
+# #   "sub_worlds": {"chapter1":["work", "class", "office", "lab?"], "chapter2":["runway ad", "dressing", "home", "bedroom", "clinic?"]}
+# # }
 
+# #print(thisdict)
 
 # Create intro object
 showing_intro = True
@@ -559,7 +599,8 @@ while running:
             elif event.key == pygame.K_r:
                 # Restart intro
                 chapter_intro.start("chapter_1")
-    
+
+
     # Get keys
     keys = pygame.key.get_pressed()
     
