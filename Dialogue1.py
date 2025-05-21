@@ -458,8 +458,13 @@ current_dialogue = None
 run = True
 while run:
           screen.blit(background, (0,0))
-          is_moving = player.move(moving_left,moving_right)
-          player.update_animation(is_moving)
+
+          if not current_dialogue or not current_dialogue.talking:
+              is_moving = player.move(moving_left,moving_right)
+              player.update_animation(is_moving)
+          else:
+              is_moving = False
+              player.update_animation(is_moving)
           
           for npc in npc_manager.npcs:
               screen.blit(npc.image,npc.rect)
