@@ -13,12 +13,11 @@ screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE
 clock = pygame.time.Clock()
 FPS = 60
 
-player = doctor(100,520,4.5) 
+player = doctor(400,500,4.5) 
 player.name = "You" # remember to put in class doctor
 moving_left = False
 moving_right = False
 
-background = pygame.image.load("picture/Map Art/Map clinic.png").convert_alpha()
 
 font = pygame.font.SysFont('Comic Sans MS',40)
 space_released = True # control the dialog will not happen continuously when press key space
@@ -31,9 +30,6 @@ with open('NPC_dialog/NPC.json','r',encoding = 'utf-8') as f:
 npc_list =["Nuva"]
 shown_dialogues = {}
 selected_options = {}
-
-cutscene_active = False
-cutscene_speed = 3 #pixel per frame
 
 #============ Dialogue System =============
 class dialog:
@@ -53,6 +49,8 @@ class dialog:
             self.portrait = pygame.image.load("picture/Character Dialogue/Patient1.png").convert_alpha()
         elif npc.name == "Emma":
             self.portrait = pygame.image.load("picture/Character Dialogue/Patient2.png").convert_alpha()
+        elif npc.name == "player":
+            self.player_portrait = pygame.image.load("picture/Character Dialogue/Doctor.png").convert_alpha()
 
         # always load player portrait
         self.player_portrait = pygame.image.load("picture/Character Dialogue/Doctor.png").convert_alpha()
@@ -66,11 +64,7 @@ class dialog:
         self.npc_data = all_dialogues.get(self.npc_name)
 
          #dialogue state variacbles
-<<<<<<< HEAD
         self.current_story = "chapter_3" #default chapter
-=======
-        self.current_story = "chapter_1" #default chapter 
->>>>>>> 6b4f1d0ebf9bf609a7238778b86fbb03ae6f87ea
         self.story_data = self.npc_data.get(self.current_story,[])
         self.step = 0 # present current sentence
         global shown_dialogues
@@ -114,16 +108,17 @@ class dialog:
                      else:
                          self.fade(screen,fade_in=True,cg_list=self.cg_images)
 
-<<<<<<< HEAD
-=======
-     
-    def update(self): 
->>>>>>> 6b4f1d0ebf9bf609a7238778b86fbb03ae6f87ea
         #only update if in dialogue n not at the end
         if self.talking and self.step < len(self.story_data):
              self.entry = self.story_data[self.step] # current dialogue entry
+             
 
              if isinstance(self.entry,dict) and "cg" in self.entry:
+                 
+                 self.cg_images = []
+                 self.cg_index = 0
+                 self.showing_cg = False
+
                  self.cg_images = [pygame.image.load(path).convert() for path in self.entry["cg"]]
                  self.cg_index = 0
                  self.showing_cg = True
@@ -140,12 +135,6 @@ class dialog:
              else:
                  self.options = []
                  
-
-             #if this works???
-             if "event" in entry:
-                 if entry["event"] == "dean_exit_cutscene":
-                    dean.rect.x -= cutscene_speed
-                    return
 
              # text typing effect
              current_time = pygame.time.get_ticks()
@@ -165,6 +154,7 @@ class dialog:
          self.letter_index = 0
          self.last_time = pygame.time.get_ticks()
 
+
     def draw(self,screen):
 
         # calculate the distance between player n NPC
@@ -179,8 +169,13 @@ class dialog:
             screen.blit(key_hint_text,key_hint_rect)
 
         if self.showing_cg:
+               
                if self.cg_index < len(self.cg_images):
                    screen.blit(self.cg_images[self.cg_index],(0,0))
+               else:
+                   self.showing_cg = False
+                   self.cg_index = 0
+                   self.cg_images = []
  
         
         #only draw when in talking mode n not finished talk
@@ -198,22 +193,28 @@ class dialog:
            text_max_width = self.dialog_box_img.get_width() - 300 #pixel padding each side
 
            # choose portrait n position based on speaker
-           if speaker == "npc":
-                portrait = self.portrait
-                name_to_display = self.npc.name
-                portrait_pos =(dialog_x + 800,dialog_y - 400) #right side
+           if speaker == "narrator":
+               name_to_display = " "
+               screen.blit(self.dialog_box_img, (dialog_x, dialog_y))
+               
+           elif speaker == "npc":
+                   portrait = self.portrait
+                   name_to_display = self.npc.name
+                   portrait_pos =(dialog_x + 800,dialog_y - 400) #right side
+                   screen.blit(portrait,portrait_pos)
            else:
-                portrait = self.player_portrait
-                name_to_display = "You"
-                portrait_pos = (dialog_x +20,dialog_y - 400) #left side
+                   portrait = self.player_portrait
+                   name_to_display = "You"
+                   portrait_pos = (dialog_x +20,dialog_y - 400) #left side
+                   screen.blit(portrait,portrait_pos)
 
             #draw Character portraits n dialog box
-           screen.blit(portrait,portrait_pos)
+          
            screen.blit(self.dialog_box_img, (dialog_x, dialog_y))
 
            #draw speaker name
-           name_to_display = self.npc.name if speaker == "npc" else self.player.name
-           draw_text(screen,name_to_display,40,(0,0,0),dialog_x + 150, dialog_y + 5)
+           if name_to_display :
+               draw_text(screen,name_to_display,40,(0,0,0),dialog_x + 150, dialog_y + 5)
 
            #draw choice options if present
            if self.options:
@@ -551,25 +552,24 @@ class NPCManager:
 
 npc_manager = NPCManager()
 
-nuva = NPC(1090,540,"Nuva")
-dean = NPC(400,520,"Dean")
-#patient1 = NPC(1000,500,"Zheng")
-#patient2 = NPC(400,500,"Emma")
+nuva = NPC(600,500,"Nuva")
+dean = NPC(800,500,"Dean")
+patient1 = NPC(1000,500,"Zheng")
+patient2 = NPC(400,500,"Emma")
 
 current_dialogue = None
 
 npc_manager.add_npc(nuva)
 npc_manager.add_npc(dean)
-#npc_manager.add_npc(patient1)
-#npc_manager.add_npc(patient2)
-
-dean_interacted = False
+npc_manager.add_npc(patient1)
+npc_manager.add_npc(patient2)
 
 current_dialogue = None
-<<<<<<< HEAD
 show_cg = False
 cg_image = None
 cg_loaded = False
+
+
 
 run = True
 while run:
@@ -582,14 +582,6 @@ while run:
           else:
               is_moving = False
               player.update_animation(is_moving)
-=======
-
-run = True
-while run:
-          screen.blit(background, (0,0))
-          is_moving = player.move(moving_left,moving_right)
-          player.update_animation(is_moving)
->>>>>>> 6b4f1d0ebf9bf609a7238778b86fbb03ae6f87ea
           
           for npc in npc_manager.npcs:
               screen.blit(npc.image,npc.rect)
@@ -638,7 +630,6 @@ while run:
               current_dialogue.update(pygame.event.get())
               current_dialogue.draw(screen)
 
-<<<<<<< HEAD
           if current_dialogue and current_dialogue.chapter_end and not cg_loaded :
               if "cg" in current_dialogue.entry:
                   cg_image = pygame.image.load(current_dialogue.entry["cg"])
@@ -649,21 +640,6 @@ while run:
           if show_cg and cg_image:
               screen.blit(cg_image,(0,0))
    
-=======
-
-          # --- Trigger cutscene --- 
-          if nearest_npc and nearest_npc.name == "Dean": 
-            if not current_dialogue.talking and not cutscene_active:
-                print("Cutscene start!")
-                cutscene_active = True
-            if nearest_npc and nearest_npc.name == "Dean":
-                if cutscene_active and dean.rect.x < 0:
-                    cutscene_active = False
-                    print("Dean has exited the screen.")
-                    
-
-          
->>>>>>> 6b4f1d0ebf9bf609a7238778b86fbb03ae6f87ea
           pygame.display.update()
           clock.tick(FPS)    
           
