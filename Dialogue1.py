@@ -20,7 +20,7 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,initial_st
     screen_width = 1280
     screen_height = 720
 
-    shown_dialogues = {}
+    shown_dialogues = initial_state.get("shown_dialogues", {}) if initial_state else {}
 
 
     pygame.mixer.music.set_volume(bgm_vol)
@@ -149,14 +149,21 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,initial_st
                         from save_load import SaveManager
                         save_manager = SaveManager()
 
-                        current_chapter = current_dialogue.current_story if current_dialogue else "chapter_1"
-                        shown_dialogues = current_dialogue.shown_dialogues if current_dialogue else {}
+                        if current_dialogue:
+                            shown_to_save = current_dialogue.shown_dialogues
+                            choices_to_save = current_dialogue.selected_options
+                            current_chapter = current_dialogue.current_story
+                        else:
+                            shown_to_save = game_state.get("shown_dialogues", {})
+                            choices_to_save = game_state.get("player_choices", {})
+                            current_chapter = "chapter_1"
+    
                     
                         save_state = {
                             "current_chapter": current_chapter,
                             "player_position": (player.rect.x, player.rect.y),
-                            "shown_dialogues": current_dialogue.shown_dialogues if current_dialogue else {},
-                            "player_choices": current_dialogue.selected_options if current_dialogue else {},
+                            "shown_dialogues": shown_to_save,
+                            "player_choices": choices_to_save,
                             "settings": {
                                 "bgm_vol": bgm_vol,
                                 "sfx_vol": sfx_vol,
@@ -165,62 +172,54 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,initial_st
                             }
                         }
                         
-                        available_slot = None
-                        for i in range(3):
-                            if not save_manager.load_game(i):
-                                available_slot = i
-                                break
+                        showing_overwrite = True
+                        selected_slot = 0
                         
-                        if available_slot is not None:
-                            # 有空槽，直接保存
-                            save_manager.save_game(save_state, available_slot)
-                            # 显示保存成功消息...
-                        else:
-                            # 没有空槽，显示覆盖选择界面
-                            showing_overwrite = True
-                            selected_slot = 0
+                        while showing_overwrite:
+                            screen.blit(background, (0,0))
                             
-                            while showing_overwrite:
-                                screen.blit(background, (0,0))
+                            # Draw overwrite prompt
+                            prompt_text = get_font(40).render("Select a slot to save to:", True, (255,255,255))
+                            screen.blit(prompt_text, (screen_width//2 - prompt_text.get_width()//2, 100))
+                            
+                            # Draw save slot options
+                            for i in range(3):
+                                color = (255,0,0) if i == selected_slot else (255,255,255)
+                                slot_text = get_font(30).render(f"Slot {i+1}", True, color)
+                                screen.blit(slot_text, (screen_width//2 - 50, 200 + i*50))
                                 
-                                # 绘制覆盖提示
-                                prompt_text = get_font(40).render("All slots full. Overwrite which save?", True, (255,255,255))
-                                screen.blit(prompt_text, (screen_width//2 - prompt_text.get_width()//2, 100))
-                                
-                                # 绘制存档槽选项
-                                for i in range(3):
-                                    color = (255,0,0) if i == selected_slot else (255,255,255)
-                                    slot_text = get_font(30).render(f"Slot {i+1}", True, color)
-                                    screen.blit(slot_text, (screen_width//2 - 50, 200 + i*50))
-                                    
-                                    # 显示存档信息
-                                    save_data = save_manager.load_game(i)
+                                # Show save info if exists
+                                save_data = save_manager.load_game(i)
+                                if save_data:
                                     info_text = get_font(20).render(
                                         f"{save_data['timestamp']} - {save_data['current_chapter']}", 
                                         True, (200,200,200))
                                     screen.blit(info_text, (screen_width//2 + 50, 200 + i*50))
-                                
-                                # 事件处理
-                                for event in pygame.event.get():
-                                    if event.type == pygame.QUIT:
-                                        pygame.quit()
-                                        sys.exit()
-                                    if event.type == pygame.KEYDOWN:
-                                        if event.key == pygame.K_UP:
-                                            selected_slot = (selected_slot - 1) % 3
-                                        elif event.key == pygame.K_DOWN:
-                                            selected_slot = (selected_slot + 1) % 3
-                                        elif event.key == pygame.K_RETURN:
-                                            save_manager.save_game(save_state, selected_slot)
-                                            showing_overwrite = False
-                                            # 显示保存成功消息...
-                                            break
-                                        elif event.key == pygame.K_ESCAPE:
-                                            showing_overwrite = False
-                                            break
-                                
-                                pygame.display.update()
-
+                            
+                            # Event handling
+                            for event in pygame.event.get():
+                                if event.type == pygame.QUIT:
+                                    pygame.quit()
+                                    sys.exit()
+                                if event.type == pygame.KEYDOWN:
+                                    if event.key == pygame.K_UP:
+                                        selected_slot = (selected_slot - 1) % 3
+                                    elif event.key == pygame.K_DOWN:
+                                        selected_slot = (selected_slot + 1) % 3
+                                    elif event.key == pygame.K_RETURN:
+                                        save_manager.save_game(save_state, selected_slot)
+                                        showing_overwrite = False
+                                        # Show save confirmation
+                                        confirm_text = get_font(30).render("Game saved successfully!", True, (0,255,0))
+                                        screen.blit(confirm_text, (screen_width//2 - confirm_text.get_width()//2, 400))
+                                        pygame.display.update()
+                                        pygame.time.delay(1000)  # Show for 1 second
+                                        break
+                                    elif event.key == pygame.K_ESCAPE:
+                                        showing_overwrite = False
+                                        break
+                            
+                            pygame.display.update()
 
 
 
@@ -284,9 +283,12 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,initial_st
                     sfx_vol, 
                     cutscene_speed=3, 
                     npc_manager=npc_manager,
-                    shown_dialogues=shown_dialogues  # 确保传递这个参数
+                    shown_dialogues=game_state["shown_dialogues"],
+                    initial_state=game_state
                 )
-            
+                
+                current_dialogue.game_state = game_state
+
             pygame.display.update()
             clock.tick(FPS)  
 
@@ -364,17 +366,30 @@ class dialog:
         self.cutscene_speed = cutscene_speed
         self.npc_manager = npc_manager
         
-        self.shown_dialogues = shown_dialogues if shown_dialogues is not None else {}
+        self.shown_dialogues = initial_state.get("shown_dialogues", {}) if initial_state else (shown_dialogues if shown_dialogues is not None else {})
 
         if initial_state:
             self.current_story = initial_state.get("current_chapter", "chapter_1")
             self.shown_dialogues = initial_state.get("shown_dialogues", {})
             self.selected_options = initial_state.get("player_choices", {})
+            self.game_state = initial_state
         else:
             self.current_story = "chapter_1"
             self.shown_dialogues = shown_dialogues if shown_dialogues is not None else {}
             self.selected_options = {}
-
+            self.game_state = {
+            "current_chapter": "chapter_1",
+            "player_position": (player.rect.x, player.rect.y),
+            "shown_dialogues": self.shown_dialogues,
+            "player_choices": self.selected_options,
+            "settings": {
+                "bgm_vol": bgm_vol,
+                "sfx_vol": sfx_vol,
+                "text_size": "Medium",  # Default size
+                "language": "EN"  # Default language
+            }
+        }
+   
         self.load_dialogue(self.npc_name, self.current_story)
 
 
@@ -572,10 +587,12 @@ class dialog:
               entry = self.story_data[self.step]
               text = entry.get("text","")
 
-              #mark dialogue as shown if needed
               if "shown" in entry and entry["shown"] == False:
-                  dialogue_id = f"{self.npc_name}_{self.current_story}_{self.step}"
-                  self.shown_dialogues[dialogue_id] = True
+                    dialogue_id = f"{self.npc_name}_{self.current_story}_{self.step}"
+                    self.shown_dialogues[dialogue_id] = True
+                    if hasattr(self, 'game_state'):
+                        self.game_state["shown_dialogues"] = self.shown_dialogues
+
 
               if "chapter_ending" in entry:
              #save which ending was chosen
@@ -645,25 +662,22 @@ class dialog:
 
     def load_dialogue(self,npc_name,chapter):
 
-        self.option = []
+        self.options = []
         #update NPC detials
         self.npc_name = npc_name
         self.npc_data = self.all_dialogues.get(self.npc_name,{})
         self.current_story = chapter
-        self.story_data = self.npc_data.get(self.current_story,[])
+        raw_story_data = self.npc_data.get(self.current_story,[])
+
         filtered_story_data = []
-
-        # filter out already shown dialogues marked with "shown":false ( in json)
-        
-        for i,entry in enumerate(self.story_data):
+        for i, entry in enumerate(raw_story_data):
             dialogue_id = f"{self.npc_name}_{self.current_story}_{i}"
-
-            if ("shown" not in entry or entry["shown"] != False) or (dialogue_id not in self.shown_dialogues):
+            # Always include choices and entries marked as shown=True
+            if "choice" in entry or entry.get("shown", False):
                 filtered_story_data.append(entry)
-
-            elif self.npc_name == "Nuva" and self.current_story == "chapter_1_common" and entry.get("text") == "She is waiting in your office,you can head over when you are ready":
-                if dialogue_id not in self.shown_dialogues:
-                    filtered_story_data.append(entry)
+            # Include if not shown before
+            elif dialogue_id not in self.shown_dialogues:
+                filtered_story_data.append(entry)
 
         self.story_data = filtered_story_data
         self.step = 0
@@ -779,7 +793,3 @@ class NPCManager:
                     min_distance = distance
                     nearest_npc = npc
         return nearest_npc
-
-
-
-          
