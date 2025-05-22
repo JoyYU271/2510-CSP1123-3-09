@@ -511,6 +511,7 @@ class SimpleChapterIntro:
 
            screen.blit(hint_text, hint_rect)
      
+     
 SCREENWIDTH, SCREENHEIGHT = 1280, 720
 
 class Game:
@@ -544,9 +545,9 @@ class Start:    #try to call back SimpleChapterIntro
         self.gameStateManager = gameStateManager        
     def run(self):
         self.display.fill('blue')
-        # keys = pygame.key.get_pressed()
-        # if keys[pygame.K_e]:
-        #     self.gameStateManager.set_state('level')
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_e]:
+            self.gameStateManager.set_state('level')
 
 #make plan to change by colliderect/position of player.rect
 
