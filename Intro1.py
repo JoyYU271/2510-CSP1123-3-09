@@ -381,7 +381,6 @@ class SimpleChapterIntro:
             print("Background loaded successfully")
         except Exception as e:
             print(f"Error loading background: {e}")
-            
         
         # Get dialogue from JSON
         self.dialogue = all_dialogues.get("intro", {}).get(chapter, [])
@@ -512,9 +511,75 @@ class SimpleChapterIntro:
 
            screen.blit(hint_text, hint_rect)
      
-            
-            
+     
+SCREENWIDTH, SCREENHEIGHT = 1280, 720
 
+class Game:
+    def __init__(self):
+        pygame.init()
+        self.clock = pygame.time.Clock()
+        self.screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
+
+        self.gameStateManager = GameStateManager('start')
+        self.start = Start(self.screen, self.gameStateManager)
+        self.level = Rooms(self.screen, self.gameStateManager)
+        
+
+        self.states = {'start':self.start, 'level':self.level}
+    def run(self):
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+            self.states[self.gameStateManager.get_state()].run()
+
+            pygame.display.update()
+            self.clock.tick(FPS)
+
+
+class Start:    #try to call back SimpleChapterIntro
+    def __init__(self, display, gameStateManager):
+        self.display = display
+        self.gameStateManager = gameStateManager        
+    def run(self):
+        self.display.fill('blue')
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_e]:
+            self.gameStateManager.set_state('level')
+
+#make plan to change by colliderect/position of player.rect
+
+class Rooms:    # class Level in tutorial
+    def __init__(self, display, gameStateManager):
+        self.display = display
+        self.gameStateManager = gameStateManager        
+    def run(self):
+        self.display.fill('red')
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_g]:
+            self.gameStateManager.set_state('start')
+
+class GameStateManager:
+    def __init__(self, currentState):
+        self.currentState = currentState
+    def get_state(self):
+        return self.currentState
+    def set_state(self, state):
+        self.currentState = state
+
+if __name__== '__main__':
+    game = Game()
+    game.run()
+
+
+#     #thisdict = {
+# #   "world": ["Outside", "Inside", "PlayerOff", "DeanOff", "Basement", "Store"],
+# #   "sub_worlds": {"chapter1":["work", "class", "office", "lab?"], "chapter2":["runway ad", "dressing", "home", "bedroom", "clinic?"]}
+# # }
+
+# #print(thisdict)
 
 # Create intro object
 showing_intro = True
@@ -535,7 +600,8 @@ while running:
             elif event.key == pygame.K_r:
                 # Restart intro
                 chapter_intro.start("chapter_1")
-    
+
+
     # Get keys
     keys = pygame.key.get_pressed()
     
@@ -543,10 +609,18 @@ while running:
     if chapter_intro.active:
         if chapter_intro.update(keys):
             chapter_intro.draw(screen)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                   running = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_r:
+                        # Restart intro
+                        chapter_intro.start("chapter_1")
+                        print("Chapter intro restarting...")
         else:
             # If intro is no longer active, restart it
-            print("Chapter intro finished, restarting...")
-            chapter_intro.start("chapter_1")
+            print("Chapter intro finished")
+            #chapter_intro.start("chapter_1")
     
     # Update display
     pygame.display.flip()
