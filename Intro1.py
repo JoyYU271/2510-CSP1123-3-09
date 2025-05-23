@@ -353,7 +353,9 @@ def draw_text(surface,text,size,color,x,y,center = False,max_width = None):
     
 
 class SimpleChapterIntro:
-    def __init__(self):
+    def __init__(self, display, gameStateManager):
+        self.display = display
+        self.gameStateManager = gameStateManager
         self.active = False
         self.background = None
         self.dialogue = []
@@ -510,57 +512,74 @@ class SimpleChapterIntro:
            hint_rect = hint_text.get_rect(bottomright=(dialog_x + dialog_box_img.get_width() - 90,  dialog_y + dialog_box_img.get_height() - 20))
 
            screen.blit(hint_text, hint_rect)
-     
-     
-SCREENWIDTH, SCREENHEIGHT = 1280, 720
+
+    def run(self):
+        keys = pygame.key.get_pressed()
+        self.update(keys)
+        self.draw(self.display)
 
 class Game:
     def __init__(self):
         pygame.init()
         self.clock = pygame.time.Clock()
-        self.screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
+        self.screen = pygame.display.set_mode((screen_width, screen_height))
 
         self.gameStateManager = GameStateManager('start')
-        self.start = Start(self.screen, self.gameStateManager)
+        self.intro = SimpleChapterIntro(self.screen, self.gameStateManager)
+        self.start = Start(self.screen, self.gameStateManager, self.intro)
         self.level = Rooms(self.screen, self.gameStateManager)
         
+        self.intro.completed_callback = lambda: self.gameStateManager.set_state('level')
 
-        self.states = {'start':self.start, 'level':self.level}
+        self.states = {'intro':self.intro, 'start':self.start, 'level':self.level}
+    
     def run(self):
-        while True:
+        gameLoop = True
+        while gameLoop:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+
+                # elif event.type == pygame.KEYDOWN:
+                #     if event.key == pygame.K_i:
+                #         self.intro.start("chapter_1")
+                #         self.gameStateManager.set_state('intro')
 
             self.states[self.gameStateManager.get_state()].run()
 
             pygame.display.update()
             self.clock.tick(FPS)
 
-
 class Start:    #try to call back SimpleChapterIntro
-    def __init__(self, display, gameStateManager):
+    def __init__(self, display, gameStateManager, intro): #, intro
         self.display = display
-        self.gameStateManager = gameStateManager        
+        self.gameStateManager = gameStateManager
+        self.intro = intro
+
     def run(self):
         self.display.fill('blue')
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_e]:
-            self.gameStateManager.set_state('level')
+        if keys[pygame.K_i]:
+            self.intro.start("chapter_1")
+            self.gameStateManager.set_state('intro')
+            # self.gameStateManager.states['intro'].start("chapter_1")
 
 #make plan to change by colliderect/position of player.rect
 
 class Rooms:    # class Level in tutorial
     def __init__(self, display, gameStateManager):
         self.display = display
-        self.gameStateManager = gameStateManager        
+        self.gameStateManager = gameStateManager
+              
     def run(self):
         self.display.fill('red')
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_g]:
+
+        if keys[pygame.K_d]:
             self.gameStateManager.set_state('start')
 
+            
 class GameStateManager:
     def __init__(self, currentState):
         self.currentState = currentState
@@ -582,48 +601,48 @@ if __name__== '__main__':
 # #print(thisdict)
 
 # Create intro object
-showing_intro = True
-chapter_intro = SimpleChapterIntro()
-chapter_intro.start("chapter_1")
+# showing_intro = True
+# chapter_intro = SimpleChapterIntro()
+# chapter_intro.start("chapter_1")
 
 
-# Main loop
-running = True
-while running:
-    # Handle events
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                running = False
-            elif event.key == pygame.K_r:
-                # Restart intro
-                chapter_intro.start("chapter_1")
+# # Main loop
+# running = True
+# while running:
+#     # Handle events
+#     for event in pygame.event.get():
+#         if event.type == pygame.QUIT:
+#             running = False
+#         elif event.type == pygame.KEYDOWN:
+#             if event.key == pygame.K_ESCAPE:
+#                 running = False
+#             elif event.key == pygame.K_r:
+#                 # Restart intro
+#                 chapter_intro.start("chapter_1")
 
 
-    # Get keys
-    keys = pygame.key.get_pressed()
+#     # Get keys
+#     keys = pygame.key.get_pressed()
     
-    # Update and draw intro
-    if chapter_intro.active:
-        if chapter_intro.update(keys):
-            chapter_intro.draw(screen)
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                   running = False
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_r:
-                        # Restart intro
-                        chapter_intro.start("chapter_1")
-                        print("Chapter intro restarting...")
-        else:
-            # If intro is no longer active, restart it
-            print("Chapter intro finished")
-            #chapter_intro.start("chapter_1")
+#     # Update and draw intro
+#     if chapter_intro.active:
+#         if chapter_intro.update(keys):
+#             chapter_intro.draw(screen)
+#             for event in pygame.event.get():
+#                 if event.type == pygame.QUIT:
+#                    running = False
+#                 elif event.type == pygame.KEYDOWN:
+#                     if event.key == pygame.K_r:
+#                         # Restart intro
+#                         chapter_intro.start("chapter_1")
+#                         print("Chapter intro restarting...")
+#         else:
+#             # If intro is no longer active, restart it
+#             print("Chapter intro finished")
+#             #chapter_intro.start("chapter_1")
     
-    # Update display
-    pygame.display.flip()
-    clock.tick(FPS)
-pygame.quit()
-sys.exit()
+#     # Update display
+#     pygame.display.flip()
+#     clock.tick(FPS)
+# pygame.quit()
+# sys.exit()
