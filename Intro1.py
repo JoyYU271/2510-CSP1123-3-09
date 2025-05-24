@@ -1,7 +1,7 @@
 import pygame
 import sys
 from pygame.locals import *
-from character_movement import *
+import character_movement
 import json
 
 
@@ -21,7 +21,7 @@ with open('NPC_dialog/NPC.json', 'r', encoding='utf-8') as f:
 
 dialog_box_img = pygame.image.load("picture/Character Dialogue/dialog boxxx.png").convert_alpha()
 
-player = doctor(100,520,4.5) 
+player = character_movement.doctor(100,520,4.5) 
 player.name = "You" # remember to put in class doctor
 moving_left = False
 moving_right = False
@@ -589,21 +589,13 @@ class SimpleChapterIntro:
 
 npc_manager = NPCManager()
 
-nuva = NPC(1090,540,"Nuva")
-dean = NPC(400,520,"Dean")
 #patient1 = NPC(1000,500,"Zheng")
 #patient2 = NPC(400,500,"Emma")
 
 current_dialogue = None
 
-npc_manager.add_npc(nuva)
-npc_manager.add_npc(dean)
 #npc_manager.add_npc(patient1)
 #npc_manager.add_npc(patient2)
-
-dean_interacted = False
-
-current_dialogue = None
 
 class Game:
     def __init__(self):
@@ -622,24 +614,36 @@ class Game:
 
         self.states = {'intro':self.intro, 'start':self.start, 'level':self.level}
     
+        nuva = NPC(1090,540,"Nuva")
+        dean = NPC(400,520,"Dean")
+        self.npc_manager.add_npc(nuva)
+        self.npc_manager.add_npc(dean)
+
     def run(self):
         running = True
         moving_left = False
         moving_right = False
-        run = False
+        run = True
+
         while running:
-            for event in pygame.event.get():
+            events = pygame.event.get()
+
+            # handle input once for everyone
+            moving_left, moving_right, run = character_movement.keyboard_input(events, moving_left, moving_right, run)
+
+            currentState = self.gameStateManager.get_state()
+
+            for event in events:
                 if event.type == pygame.QUIT:
-                    # pygame.quit()
-                    # sys.exit()
                     running = False
+                    sys.exit()
 
             #self.states[self.gameStateManager.get_state()].run()
             
-            currentState = self.gameStateManager.get_state()
-
             if currentState == 'level':
-                self.level.run(moving_left, moving_right, run, dean)
+                dean = next(npc for npc in self.npc_manager.npcs if npc.name == "Dean")
+                if dean:
+                    self.states['level'].run(moving_left, moving_right, run, dean)
             else:
                 self.states[currentState].run()
 
@@ -658,6 +662,9 @@ class Start:    #try to call back SimpleChapterIntro
         if keys[pygame.K_i]:
             self.intro.start("chapter_1")
             self.gameStateManager.set_state('intro')
+        if keys[pygame.K_l]:
+            self.gameStateManager.set_state('level')
+
             
 #make plan to change by colliderect/position of player.rect
 
@@ -675,27 +682,29 @@ class Rooms:    # class Level in tutorial
         self.cutscene_active = False
 
     def run(self, moving_left, moving_right, run, dean):
+        self.dean = dean
         keys = pygame.key.get_pressed()
         if self.background:
             self.display.blit(self.background, (0,0))
         else:
             self.display.fill('red')
 
+        # --- Movement ---
         if not self.current_dialogue or not self.current_dialogue.talking:
               is_moving = self.player.move(moving_left,moving_right)
-              self.player.update_animation(is_moving)
+              #self.player.update_animation(is_moving) 
         else:
               is_moving = False
-              self.player.update_animation(is_moving)
+        self.player.update_animation(is_moving)
           
+        # --- Draw NPCs ---
         for npc in self.npc_manager.npcs:
-              screen.blit(npc.image,npc.rect)
+            #if not self.cutscene_active and npc.name == "Dean":
+                self.display.blit(npc.image,npc.rect)
 
-        self.player.draw(screen)
-          
-        moving_left,moving_right,run =  keyboard_input(moving_left, moving_right, run)
+        self.player.draw(self.display)
 
-
+        # --- Dialogue logic ---
         nearest_npc = self.npc_manager.get_nearest_npc(self.player)
 
         #=====space======
@@ -710,30 +719,62 @@ class Rooms:    # class Level in tutorial
 
             if self.current_dialogue:
                self.current_dialogue.handle_option_selection(keys)
-          
 
             if not keys[pygame.K_SPACE]:
                   self.space_released = True
         elif self.current_dialogue:
             self.current_dialogue.talking = False
             self.current_dialogue.options = []
-
-            
+        
+        # --- Draw dialogue if active ---
         if self.current_dialogue and self.current_dialogue.talking:
             self.current_dialogue.update()
-            self.current_dialogue.draw(screen)
+            self.current_dialogue.draw(self.display)
+    
 
+        # --- Trigger 'walk away' cutscene --- 
+        #if nearest_npc and nearest_npc.name == "Dean": 
+            #if not self.current_dialogue.talking and not self.cutscene_active:
+        # if self.current_dialogue and not self.current_dialogue.talking:
+        #     if self.current_dialogue.npc.name == "Dean" and not self.cutscene_active:
+        #         print("Cutscene start!")
+        #         self.cutscene_active = True
+        #     #self.current_dialogue = None
+
+        # # --- Move Dean if cutscene is active ---
+        # if self.cutscene_active and self.current_dialogue.talking:
+        #     print(f"Dean X: {self.dean.rect.x}")
+        #     self.dean.rect.x -= 3  # adjust speed if needed
+        #     self.display.blit(self.dean.image, self.dean.rect)
+            
+        #     if self.dean.rect.x < -self.dean.image.get_width():
+        #         if nearest_npc and nearest_npc.name == "Dean":
+        #             if self.cutscene_active and self.dean.rect.x < 0:
+        #                 self.cutscene_active = False
+        #                 print("Dean has exited the screen.")
 
         # --- Trigger cutscene --- 
-        if nearest_npc and nearest_npc.name == "Dean": 
-            if not self.current_dialogue.talking and not self.cutscene_active:
+        self.npc_name = npc.name
+        self.npc = npc
+        self.npc_data = all_dialogues.get(self.npc_name)
+        self.current_story = "chapter_1"
+        self.story_data = self.npc_data.get(self.current_story,[])
+        self.step = 0 
+        entry = self.story_data[self.step]
+
+        if self.current_dialogue and not self.cutscene_active:
+            if nearest_npc and nearest_npc.name == "Dean": 
                 print("Cutscene start!")
                 self.cutscene_active = True
-            if nearest_npc and nearest_npc.name == "Dean":
-                if self.cutscene_active and dean.rect.x < 0:
-                    self.cutscene_active = False
-                    print("Dean has exited the screen.")
+    
+        if self.cutscene_active and entry.get("event") == "dean_exits":
+            self.dean.rect.x -= 3
+            if self.dean.rect.x < -self.dean.image.get_width():
+                        print("Dean has exited the screen.")
+                        self.cutscene_active = False
+                    
 
+        # --- Back to start screen ---
         if keys[pygame.K_t]:
             self.gameStateManager.set_state('start')
 
@@ -762,45 +803,3 @@ if __name__== '__main__':
 # showing_intro = True
 # chapter_intro = SimpleChapterIntro()
 # chapter_intro.start("chapter_1")
-
-
-# # Main loop
-# running = True
-# while running:
-#     # Handle events
-#     for event in pygame.event.get():
-#         if event.type == pygame.QUIT:
-#             running = False
-#         elif event.type == pygame.KEYDOWN:
-#             if event.key == pygame.K_ESCAPE:
-#                 running = False
-#             elif event.key == pygame.K_r:
-#                 # Restart intro
-#                 chapter_intro.start("chapter_1")
-
-
-#     # Get keys
-#     keys = pygame.key.get_pressed()
-    
-#     # Update and draw intro
-#     if chapter_intro.active:
-#         if chapter_intro.update(keys):
-#             chapter_intro.draw(screen)
-#             for event in pygame.event.get():
-#                 if event.type == pygame.QUIT:
-#                    running = False
-#                 elif event.type == pygame.KEYDOWN:
-#                     if event.key == pygame.K_r:
-#                         # Restart intro
-#                         chapter_intro.start("chapter_1")
-#                         print("Chapter intro restarting...")
-#         else:
-#             # If intro is no longer active, restart it
-#             print("Chapter intro finished")
-#             #chapter_intro.start("chapter_1")
-    
-#     # Update display
-#     pygame.display.flip()
-#     clock.tick(FPS)
-# pygame.quit()
-# sys.exit()
