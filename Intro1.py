@@ -681,6 +681,10 @@ class Rooms:    # class Level in tutorial
         self.space_released = True
         self.cutscene_active = False
 
+        self.dean_exiting = False
+
+        
+
     def run(self, moving_left, moving_right, run, dean):
         self.dean = dean
         keys = pygame.key.get_pressed()
@@ -692,7 +696,6 @@ class Rooms:    # class Level in tutorial
         # --- Movement ---
         if not self.current_dialogue or not self.current_dialogue.talking:
               is_moving = self.player.move(moving_left,moving_right)
-              #self.player.update_animation(is_moving) 
         else:
               is_moving = False
         self.player.update_animation(is_moving)
@@ -719,60 +722,54 @@ class Rooms:    # class Level in tutorial
 
             if self.current_dialogue:
                self.current_dialogue.handle_option_selection(keys)
+        
 
+            if self.current_dialogue:
+                self.npc_name = self.current_dialogue.npc.name
+                self.npc_data = all_dialogues.get(self.npc_name)
+                self.current_story = "chapter_1"
+                self.story_data = self.npc_data.get(self.current_story,[])
+
+                self.step = self.current_dialogue.step
+
+                if self.current_dialogue.step >= len(self.story_data):
+                    self.current_dialogue = None
+                    entry = {}
+                else:
+                    entry = self.story_data[self.step]
+
+            else:
+                entry = {}
+            
             if not keys[pygame.K_SPACE]:
-                  self.space_released = True
-        elif self.current_dialogue:
-            self.current_dialogue.talking = False
-            self.current_dialogue.options = []
+                self.space_released = True
         
         # --- Draw dialogue if active ---
         if self.current_dialogue and self.current_dialogue.talking:
             self.current_dialogue.update()
             self.current_dialogue.draw(self.display)
     
-
-        # --- Trigger 'walk away' cutscene --- 
-        #if nearest_npc and nearest_npc.name == "Dean": 
-            #if not self.current_dialogue.talking and not self.cutscene_active:
-        # if self.current_dialogue and not self.current_dialogue.talking:
-        #     if self.current_dialogue.npc.name == "Dean" and not self.cutscene_active:
-        #         print("Cutscene start!")
-        #         self.cutscene_active = True
-        #     #self.current_dialogue = None
-
-        # # --- Move Dean if cutscene is active ---
-        # if self.cutscene_active and self.current_dialogue.talking:
-        #     print(f"Dean X: {self.dean.rect.x}")
-        #     self.dean.rect.x -= 3  # adjust speed if needed
-        #     self.display.blit(self.dean.image, self.dean.rect)
-            
-        #     if self.dean.rect.x < -self.dean.image.get_width():
-        #         if nearest_npc and nearest_npc.name == "Dean":
-        #             if self.cutscene_active and self.dean.rect.x < 0:
-        #                 self.cutscene_active = False
-        #                 print("Dean has exited the screen.")
-
         # --- Trigger cutscene --- 
-        self.npc_name = npc.name
-        self.npc = npc
-        self.npc_data = all_dialogues.get(self.npc_name)
-        self.current_story = "chapter_1"
-        self.story_data = self.npc_data.get(self.current_story,[])
-        self.step = 0 
-        entry = self.story_data[self.step]
+        if self.current_dialogue and self.current_dialogue.talking:
+            current_npc_name = self.current_dialogue.npc.name
 
-        if self.current_dialogue and not self.cutscene_active:
-            if nearest_npc and nearest_npc.name == "Dean": 
-                print("Cutscene start!")
-                self.cutscene_active = True
+            if current_npc_name == "Dean":
+                if not self.cutscene_active:
+                    print("Cutscene start!")
+                    self.cutscene_active = True
+
+        else:
+            self.cutscene_active = False
     
         if self.cutscene_active and entry.get("event") == "dean_exits":
+            self.dean_exiting = True
+        
+        if self.dean_exiting:
             self.dean.rect.x -= 3
             if self.dean.rect.x < -self.dean.image.get_width():
                         print("Dean has exited the screen.")
+                        self.dean_exiting = False
                         self.cutscene_active = False
-                    
 
         # --- Back to start screen ---
         if keys[pygame.K_t]:
