@@ -78,7 +78,7 @@
 
     ],
     "repeat_only":[
-        {"speaker":"npc","text":"She is waiting in your office, you can head over when you are ready","shown": false}
+        {"speaker":"npc","text":"She is waiting in your office, you can head over when you are ready"}
     ],
 
     "chapter_2":[
@@ -126,7 +126,7 @@
         {"speaker" :"narrator","text":"(You have had been in the habit of updating her ever since your father said she left home.)","shown": false},
         {"speaker" :"narrator","text":"(From what you ate for lunch, to the friends you've made or your choice of major—every little story is in this chat.)","shown": false},
         {"speaker" :"narrator","text":"(What you truly hope for, is her response, and maybe an explanation, nothing more.)","shown": false},
-        {"speaker" :"narrator","text":"(You type in the chat box:)","shown": false},
+        {"speaker" :"narrator","text":"(You type in the chat box)","shown": false},
         {"speaker" :"player","text":"Today is my first day at work.","shown": false},
         {"speaker" :"player","text":"Finally, I've become a doctor, like Father.","shown": false},
         {"speaker" :"player","text":"Would you be proud of me, Mom?","shown": false},
@@ -373,7 +373,8 @@
         {"speaker" :"npc","text":"...…Yes. I thought, “If this proposal isn’t perfect and something goes wrong, it could stain my entire career.”","shown": false},
         {"speaker" :"npc","text":" Just thinking about that will made me feel awful","shown": false},
         {"speaker" :"player","text":"(Perfectionism-induced anxiety. CBT (Cognitive Behavioral Therapy) might be an appropriate and effective approach here.)","shown": false},
-        {"speaker" :"narrator","text":"(Cognitive behavioral therapy (CBT) is a form of psychological treatment that has been demonstrated to be effective for a range of problems","shown": false},
+        {"speaker" :"narrator","text":"(Cognitive behavioral therapy (CBT) is a form of psychological treatment","shown": false},
+        {"speaker" :"narrator","text":" that has been demonstrated to be effective for a range of problems","shown": false},
         {"speaker" :"narrator","text":" including depression, anxiety disorders, alcohol and drug use problems, marital problems, eating disorders, and severe mental illness. )","shown": false},
         {"speaker" :"narrator","text":"(CBT treatment usually involves efforts to change thinking patterns. )","shown": false},
         {"speaker" :"npc","text":"I heard that this clinic have some kind of machine here which can treat psychological problems. Can that fix mine directly?","shown": false},

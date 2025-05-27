@@ -93,6 +93,11 @@ class dialog:
         self.chapter_end = False
         self.cg_shown = False
 
+        if self.current_story in self.npc.shown_options and self.npc.shown_options[self.current_story]:
+            self.current_story = "repeat_only"
+       
+             
+
     def update(self,event_list): 
 
         if self.showing_cg:
@@ -240,7 +245,7 @@ class dialog:
              screen.blit(key_hint_text2,key_hint_rect2)
           
            # draw dialogue text 
-           draw_text(screen,self.displayed_text,30,(0,0,0),dialog_x + self.dialog_box_img.get_width()//2  ,dialog_y + self.dialog_box_img.get_height()//2 - 25,center = True,max_width=text_max_width)
+           draw_text(screen,self.displayed_text,30,(0,0,0),dialog_x + self.dialog_box_img.get_width()//2  ,dialog_y + self.dialog_box_img.get_height()//2 - 38,center = True,max_width=text_max_width)
 
            #only show space hint if no options are present 
            if not self.options:
@@ -282,7 +287,6 @@ class dialog:
 
     def handle_option_selection(self,keys):
 
-
         # only handle if in dialogue with options n text is full displayed
         if (self.talking and self.options and self.step <len(self.story_data) and self.letter_index >= len(self.story_data[self.step].get("text",""))):
                   
@@ -303,6 +307,7 @@ class dialog:
                     # comfirm selection with E Key
                    if keys[pygame.K_e] and self.key_e_released:
                       selected_option = self.options[self.option_selected]
+                      self.npc.shown_options[self.current_story] = True
                       next_target = selected_option["next"]
 
                       if next_target == "back_reality":
@@ -522,6 +527,7 @@ class NPC(pygame.sprite.Sprite):
         self.rect.center = (x,y)
         self.name = name
         self.dialog = None
+        self.shown_options = {}
 
 # to manage multiples NPCs
 class NPCManager:
