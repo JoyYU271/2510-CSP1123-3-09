@@ -208,6 +208,7 @@
     ],
 
     "Ship_of_Theseus":[
+        {"cg":["picture/Ending/black screen.png"]},
         {"speaker" :"player","text":"...If I must choose, I’ll pull the lever"},
         {"speaker" :"player","text":"(He smiles, pleased.)"},
         {"speaker" :"npc","text":"Good. You understand."},
@@ -240,6 +241,7 @@
     ],
 
     "Justice_Served":[
+        {"cg":["picture/Ending/black screen.png"]},
         {"speaker" :"player","text":" I won’t pull the lever... Every life deserves an equal chance."},
         {"speaker" :"npc","text":"Naïve. Still clinging to morals"},
         {"speaker" :"player","text":"...I can’t accept your ideals, Father."},
@@ -276,73 +278,74 @@
     ],
 
     "Rebirth_of_the_Dual_Soul":[
-        {"speaker" :"player","text":" Don't give me that philosophical nonsense. Stop trying to justify yourself!","shown": false},
-        {"speaker" :"player","text":"Too emotional. Like your mother.","shown": false},
-        {"speaker" :"player","text":"Don’t bring her up now. If you hadn’t fought her so much, she wouldn’t have left home—","shown": false},
-        {"speaker" :"player","text":"I even hear voices in my head saying you killed her—what a joke...","shown": false},
-        {"speaker" :"narrator","text":"(You see his face twist: shock, shameful anger, and a trace of sorrow.)","shown": false},
-        {"speaker" :"npc","text":"……","shown": false},
-        {"speaker" :"player","text":"Is it true?","shown": false},
-        {"speaker" :"npc","text":"……","shown": false},
-        {"speaker" :"narrator","text":"(His silence is a blade, slicing through years of lies.)","shown": false},
-        {"speaker" :"narrator","text":"(A sound—glass shattering. Not in the room, but your mind.)","shown": false},
-        {"speaker" :"narrator","text":"('Crack')","shown": false},
-        {"speaker" :"narrator","text":"(Memory floods in.)","shown": false},
-
-        {"speaker" :"narrator","text":"(Flashback)","shown": false},
-        {"speaker" :"narrator","text":"(An empty classroom. Equations still faintly on the blackboard)","shown": false},
-        {"speaker" :"narrator","text":"?: Ugh. Rain again.","shown": false},
-        {"speaker" :"player","text":"Rain's peaceful.","shown": false},
-        {"speaker" :"narrator","text":"?: Not for me. Reminds me of their shouting this morning.","shown": false},
-        {"speaker" :"player","text":" Forget that. I’m here. Let’s go.","shown": false},
-        {"speaker" :"narrator","text":"(He slowly packs up, grabs an umbrella, and walks out.)","shown": false},
-        {"speaker" :"narrator","text":"?: Don’t wanna go home...","shown": false},
-        {"speaker" :"player","text":"There’s cake in the fridge. That might cheer you up.","shown": false},
-        {"speaker" :"narrator","text":"?: I guess.","shown": false},
-        {"speaker" :"narrator","text":"(He agrees, but doesn’t speed up.)","shown": false},
-        {"speaker" :"narrator","text":"?:  Sometimes I wish I could give you control of my body. You’re stronger.","shown": false},
-        {"speaker" :"player","text":"I’m here to protect you.","shown": false},
-        {"speaker" :"narrator","text":"?: Protected by my own alter...Pathetic.","shown": false},
-        {"speaker" :"narrator","text":"(They arrive at home.)","shown": false},
-        {"speaker" :"player","text":"It’s not pathetic. That’s why you created me.","shown": false},
-        {"speaker" :"narrator","text":"(He opens the door.)","shown": false},
-
-        {"speaker" :"narrator","text":"(Blood—deep red blood—spreads to feet.)","shown": false},
-        {"speaker" :"narrator","text":"(In the center lies the woman who had always gently stroked his hair)","shown": false},
-        {"speaker" :"narrator","text":"?: M...Mother?","shown": false},
-        {"speaker" :"narrator","text":"(Her pupils are dilated, eyes still toward the door—as if even in death, she was worried her child would see this.)","shown": false},
-        {"speaker" :"narrator","text":"(At the top of the stairs stands Father. His lab coat hem drips with dark red.)","shown": false},
-        {"speaker" :"player","text":"DON’T LOOK—","shown": false},
-        {"speaker" :"narrator","text":"(Too late. He retreats, leaving you in control—just as pain explodes in your skull.)","shown": false},
-        {"speaker" :"narrator","text":"(You’re knocked out cold.)","shown": false},
-        {"speaker" :"narrator","text":"(When you wake, a cold glint of a pocket watch is in your face.)","shown": false},
-
-        {"speaker" :"npc","text":" From today on, your mother just left home.","shown": false},
-        {"speaker" :"npc","text":"You fainted from grief.","shown": false},
-        {"speaker" :"npc","text":"Tomorrow, everything will be fine.","shown": false},
-
-        {"speaker" :"narrator","text":"(Back to the present.)","shown": false},
-        {"speaker" :"player","text":"...You bastard.","shown": false},
-        {"speaker" :"npc","text":" You think I wanted this? She found the data—threatened to ruin my life’s work——","shown": false},
-        {"speaker" :"narrator","text":"(You grab his collar, cutting him off.)","shown": false},
-        {"speaker" :"player","text":"I should kill you for her.","shown": false},
-        {"speaker" :"narrator","text":"?: Don’t dirty your hands. Call the police.","shown": false},
-        {"speaker" :"narrator","text":"?: You still have a future.","shown": false},
-        {"speaker" :"narrator","text":"(You breathe deeply and let go.)","shown": false},
-        {"speaker" :"player","text":"Save your excuses for the police.","shown": false},
-        {"speaker" :"npc","text":"……","shown": false},
-        {"speaker" :"narrator","text":"(He says nothing more. He closes his eyes, like a criminal awaiting judgment.)","shown": false},
-
-        {"speaker" :"narrator","text":"?: Are you alright?","shown": false},
-        {"speaker" :"player","text":"Shouldn’t I be asking you? You’re the original personality.","shown": false},
-        {"speaker" :"narrator","text":"Because I accepted the truth long ago. You haven’t.","shown": false},
-        {"speaker" :"player","text":"……","shown": false},
-        {"speaker" :"narrator","text":"Do you think Father will regret it? In prison?","shown": false},
-        {"speaker" :"player","text":"Maybe. Maybe not. I just wanted him punished.","shown": false},
-        {"speaker" :"player","text":"...By the way, don't you want to take body control again?","shown": false},
-        {"speaker" :"narrator","text":"?:  No. This is fine.","shown": false},
-
-        {"speaker" :"narrator","text":"?: This time, let me protect you.","shown": false}
+        {"cg":["picture/Ending/black screen.png"]},
+        {"speaker" :"player","text":" Don't give me that philosophical nonsense. Stop trying to justify yourself!"},
+        {"speaker" :"npc","text":"Too emotional. Like your mother."},
+        {"speaker" :"player","text":"Don’t bring her up now. If you hadn’t fought her so much, she wouldn’t have left home—"},
+        {"speaker" :"player","text":"I even hear voices in my head saying you killed her—what a joke..."},
+        {"cg":["picture/Ending/End3.1.png"]},
+        {"speaker" :"narrator","text":"(You see his face twist: shock, shameful anger, and a trace of sorrow.)"},
+        {"speaker" :"npc","text":"……"},
+        {"speaker" :"player","text":"Is it true?"},
+        {"speaker" :"npc","text":"……"},
+        {"speaker" :"narrator","text":"(His silence is a blade, slicing through years of lies.)"},
+        {"speaker" :"narrator","text":"(A sound—glass shattering. Not in the room, but your mind.)"},
+        {"speaker" :"narrator","text":"('Crack')"},
+        {"speaker" :"narrator","text":"(Memory floods in.)"},
+        {"cg":["picture/Ending/End3.2.png"]},
+        {"speaker" :"narrator","text":"(Flashback)"},
+        {"speaker" :"narrator","text":"(An empty classroom. Equations still faintly on the blackboard)"},
+        {"speaker" :"narrator","text":"?: Ugh. Rain again."},
+        {"speaker" :"player","text":"Rain's peaceful."},
+        {"speaker" :"narrator","text":"?: Not for me. Reminds me of their shouting this morning."},
+        {"speaker" :"player","text":" Forget that. I’m here. Let’s go."},
+        {"speaker" :"narrator","text":"(He slowly packs up, grabs an umbrella, and walks out.)"},
+        {"speaker" :"narrator","text":"?: Don’t wanna go home..."},
+        {"speaker" :"player","text":"There’s cake in the fridge. That might cheer you up."},
+        {"speaker" :"narrator","text":"?: I guess."},
+        {"speaker" :"narrator","text":"(He agrees, but doesn’t speed up.)"},
+        {"speaker" :"narrator","text":"?:  Sometimes I wish I could give you control of my body. You’re stronger."},
+        {"speaker" :"player","text":"I’m here to protect you."},
+        {"speaker" :"narrator","text":"?: Protected by my own alter...Pathetic."},
+        {"speaker" :"narrator","text":"(They arrive at home.)"},
+        {"speaker" :"player","text":"It’s not pathetic. That’s why you created me."},
+        {"speaker" :"narrator","text":"(He opens the door.)"},
+        {"cg":["picture/Ending/End3.3.png"]},
+        {"speaker" :"narrator","text":"(Blood—deep red blood—spreads to feet.)"},
+        {"speaker" :"narrator","text":"(In the center lies the woman who had always gently stroked his hair)"},
+        {"speaker" :"narrator","text":"?: M...Mother?"},
+        {"speaker" :"narrator","text":"(Her pupils are dilated, eyes still toward the door—as if even in death, she was worried her child would see this.)"},
+        {"speaker" :"narrator","text":"(At the top of the stairs stands Father. His lab coat hem drips with dark red.)"},
+        {"speaker" :"player","text":"DON’T LOOK—"},
+        {"speaker" :"narrator","text":"(Too late. He retreats, leaving you in control—just as pain explodes in your skull.)"},
+        {"speaker" :"narrator","text":"(You’re knocked out cold.)"},
+        {"speaker" :"narrator","text":"(When you wake, a cold glint of a pocket watch is in your face.)"},
+        {"speaker" :"npc","text":" From today on, your mother just left home."},
+        {"speaker" :"npc","text":"You fainted from grief."},
+        {"speaker" :"npc","text":"Tomorrow, everything will be fine."},
+        {"speaker" :"narrator","text":"(Back to the present.)"},
+        {"cg":["picture/Ending/End3.4.png"]},
+        {"speaker" :"player","text":"...You bastard."},
+        {"speaker" :"npc","text":" You think I wanted this? She found the data—threatened to ruin my life’s work——"},
+        {"speaker" :"narrator","text":"(You grab his collar, cutting him off.)"},
+        {"speaker" :"player","text":"I should kill you for her."},
+        {"speaker" :"narrator","text":"?: Don’t dirty your hands. Call the police."},
+        {"speaker" :"narrator","text":"?: You still have a future."},
+        {"speaker" :"narrator","text":"(You breathe deeply and let go.)"},
+        {"speaker" :"player","text":"Save your excuses for the police."},
+        {"speaker" :"npc","text":"……"},
+        {"speaker" :"narrator","text":"(He says nothing more. He closes his eyes, like a criminal awaiting judgment.)"},
+        {"cg":["picture/Ending/black screen.png"]},
+        {"speaker" :"narrator","text":"?: Are you alright?"},
+        {"speaker" :"player","text":"Shouldn’t I be asking you? You’re the original personality."},
+        {"speaker" :"narrator","text":"Because I accepted the truth long ago. You haven’t."},
+        {"speaker" :"player","text":"……"},
+        {"speaker" :"narrator","text":"Do you think Father will regret it? In prison?"},
+        {"speaker" :"player","text":"Maybe. Maybe not. I just wanted him punished."},
+        {"speaker" :"player","text":"...By the way, don't you want to take body control again?"},
+        {"speaker" :"narrator","text":"?:  No. This is fine."},
+        {"cg":["picture/Ending/End3.5.png"]},
+        {"speaker" :"narrator","text":"?: This time, let me protect you."}
      
     ]
 
@@ -546,21 +549,64 @@
         {"speaker" :"narrator","text":"(It was an assessment of sorts. But what was written in the conclusion made your breath stutter.)","shown": false},
         {"speaker" :"narrator","text":"?:  [... He was exactly like this to you. Do you still not remember?]","shown": false},
         {"speaker" :"player","text":"(There's that voice again...)","shown": false},
-        {"speaker" :"narrator","text":"(Failure)","shown": false},
-        {"speaker" :"narrator","text":"(Failure)","shown": false},
-        {"speaker" :"narrator","text":"(Failure)","shown": false},
-        {"speaker" :"narrator","text":"(Failure)","shown": false}
-
+        {"speaker" :"narrator","text":"(As the memory fades, you find something in your hand)","shown": false},
+        {"speaker" :"narrator","text":"(It was a set of car keys.)","shown": false},
+        {"speaker" :"narrator","text":"(A convenient means of transportation in modern society, and the source of someone's nightmare.)","shown": false},
+        {"speaker" :"narrator","text":"(You already know the process. Time to choose.)","shown": false},
+        {"choice":[
+            {"option":"Destroy","next":"back_reality_destroy2"},
+            {"option":"Keep","next":"back_reality_keep2"}
+        ]
+        }
 
     ],
 
     "back_reality_destroy2":[
         {"speaker" :"narrator","text":"(You take the device off of her head)","shown": false},
-        {"speaker" :"narrator","text":"The treatment is done, how do you feel? Do you feel uncomfortable?","shown": false},
-        {"speaker" :"narrator","text":"I feel fine.","shown": false},
-        {"speaker" :"narrator","text":"That's good. I had made a treatment decision, so you should not have a problem with the nightmares anymore.","shown": false},
-        {"speaker" :"narrator","text":"Alright. Thank you very much, doctor.","shown": false},
-        {"speaker" :"narrator","text":".......","shown": false}
+        {"speaker" :"player","text":"The treatment is done, how do you feel? Do you feel uncomfortable?","shown": false},
+        {"speaker" :"npc","text":"I feel fine.","shown": false},
+        {"speaker" :"player","text":"That's good. I had made a treatment decision, so you should not have a problem with the nightmares anymore.","shown": false},
+        {"speaker" :"npc","text":"Alright. Thank you very much, doctor.","shown": false},
+        {"speaker" :"narrator","text":".......","shown": false,"next":"sub_end_3"}
+    ],
+
+    "sub_end_3":[
+        {"cg":"picture/P2 End1.png"},
+        {"speaker" :"npc","text":" (The nightmares are really gone... and I am no longer afraid of getting into a car.)","shown": false},
+        {"speaker" :"npc","text":"(It's great! I feel relieved, and I can work again)","shown": false},
+        {"speaker" :"npc","text":" (But... Why do I feel like something's missing?)","shown": false},
+        {"speaker" :"npc","text":" (The camera flashes that once made my heart race are now nothing more then just blinding lights)","shown": false},
+        {"speaker" :"npc","text":"(Walking the catwalk has become... forced. Precise but empty. Almost mechanical.)","shown": false},
+        {"speaker" :"npc","text":"(When I look back at old photos of previous shows, the girl in them smiled, so confident and dazzling, but now, I no longer remember how she felt at that time.)","shown": false},
+        {"speaker" :"narrator","text":"?: Emma, there's an upcoming press conference that you'll be attending.","shown": false},
+        {"speaker" :"npc","text":"Alright, tell me the details.","shown": false},
+        {"speaker" :"npc","text":" (This is fine.)","shown": false},
+        {"speaker" :"npc","text":"(It was worth it to no longer wake up screaming at night.)","shown": false}
+
+    ],
+
+    "back_reality_keep2":[
+        {"speaker" :"narrator","text":"(You take the device off of her head)","shown": false},
+        {"speaker" :"player","text":"The treatment is done, how do you feel? Do you feel uncomfortable?","shown": false},
+        {"speaker" :"npc","text":"I feel fine.","shown": false},
+        {"speaker" :"player","text":"That's good. I had made a treatment decision, so you should not have a problem with the nightmares anymore.","shown": false},
+        {"speaker" :"npc","text":"Alright. Thank you very much, doctor.","shown": false},
+        {"speaker" :"narrator","text":".......","shown": false,"next":"sub_end_3"}
+    ],
+
+    "sub_end_4":[
+        {"cg":"picture/P2 End2.png"},
+        {"speaker" :"npc","text":"(... I dreamt that nightmare again.)","shown": false},
+        {"speaker" :"npc","text":" (It was all very clear... but I was unexpectedly calm)","shown": false},
+        {"speaker" :"npc","text":"(The treatment had really helped. I'm no longer as scared as before.)","shown": false},
+        {"speaker" :"npc","text":"(... I should get ready for work soon)","shown": false},
+        {"speaker" :"npc","text":"(After a shower, a change of clothes, some breakfast, I walked up to my car.)","shown": false},
+        {"speaker" :"npc","text":"(It did not start even after I got in.)","shown": false},
+        {"speaker" :"npc","text":"(... It's okay, take it easy. Just like the first time I walked the runway.)","shown": false},
+        {"speaker" :"npc","text":"(The car started up and drove out. The sunlight shone its comforting warmth on the steering wheel.)","shown": false},
+        {"speaker" :"npc","text":"(The nightmares may not be gone)","shown": false},
+        {"speaker" :"npc","text":"(But for today, I have overcome it.)","shown": false}
+     
 
 
 
