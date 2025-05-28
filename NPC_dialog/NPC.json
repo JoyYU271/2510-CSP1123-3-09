@@ -6,6 +6,7 @@
         {"speaker" :"narrator","text":"(After graduation, you were invited by your father——)","shown": false},
         {"speaker": "narrator","text":"(the dean of Mindscape Chamber, to work there.)","shown":false},
         {"speaker" :"narrator","text":"(Today is your first day on the job.)","shown": false},
+        {"speaker" :"narrator","text":"[Hint: Press W / D to move]","shown": false},
         {"speaker" :"narrator","text":"...........","shown": false}
         
     ],

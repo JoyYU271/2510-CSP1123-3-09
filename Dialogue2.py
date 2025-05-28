@@ -92,6 +92,7 @@ class dialog:
         self.entry = None
         self.chapter_end = False
         self.cg_shown = False
+        self.waiting_for_next_cg = False
 
         if self.current_story in self.npc.shown_options and self.npc.shown_options[self.current_story]:
             self.current_story = "repeat_only"
@@ -101,17 +102,27 @@ class dialog:
     def update(self,event_list): 
 
         if self.showing_cg:
-             for event in event_list:
-                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                     self.fade(screen,fade_in=False,cg_list=self.cg_images)
+           for event in event_list:
+               if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                print("Space pressed during CG showing")
+                
+                # Fade out the current Cg first
+                self.fade(screen,fade_in=False,cg_list= [self.cg_images[self.cg_index]])
+           
+               #change to next CG
+                self.cg_index += 1
 
-                     self.cg_index += 1
-
-                     if self.cg_index >= len(self.cg_images):
-                         self.showing_cg = False
-                         self.end = True
-                     else:
-                         self.fade(screen,fade_in=True,cg_list=self.cg_images)
+                if self.cg_index >= len(self.cg_images):
+                    #when all cg displayed, qiut CG
+                    self.showing_cg = False
+                    self.cg_index = 0
+                    self.cg_images = []
+                    
+                else:
+                    #fade in to next cg
+                    self.fade(screen, fade_in = True, cg_list=[self.cg_images[self.cg_index]])
+                return
+       
 
         #only update if in dialogue n not at the end
         if self.talking and self.step < len(self.story_data):
@@ -124,7 +135,7 @@ class dialog:
                  self.cg_index = 0
                  self.showing_cg = False
 
-                 self.cg_images = [pygame.image.load(path).convert() for path in self.entry["cg"]]
+                 self.cg_images = [pygame.image.load(path).convert_alpha() for path in self.entry["cg"]]
                  self.cg_index = 0
                  self.showing_cg = True
                  self.fade(screen,fade_in = True,cg_list=self.cg_images)
@@ -134,13 +145,11 @@ class dialog:
              text = self.entry.get("text","") #get text
              
              #check if this is a choice entry
-
              if "choice" in self.entry :
               self.options = self.entry.get("choice",[])
              else:
                  self.options = []
                  
-
              # text typing effect
              current_time = pygame.time.get_ticks()
              if self.letter_index < len(text):
@@ -175,7 +184,7 @@ class dialog:
 
         if self.showing_cg:
                
-               if self.cg_index < len(self.cg_images):
+               if  self.cg_index < len(self.cg_images):
                    screen.blit(self.cg_images[self.cg_index],(0,0))
                else:
                    self.showing_cg = False
@@ -255,14 +264,13 @@ class dialog:
                screen.blit(hint_text, hint_rect)
     
 
-    def fade (self,screen,cg_list,fade_in =True):
-        
+    def fade ( self, screen, cg_list, fade_in =True ):
+        print(f"fade called with fade_in={fade_in}")
         for original_image in cg_list:
-         
-            cg_image = pygame.transform.scale(original_image ,(screen.get_width(),screen.get_height()))
+            cg_image = pygame.transform.scale(original_image ,(screen.get_width(),screen.get_height())).convert_alpha()
 
             if fade_in:       #fade in
-             for alpha in range (0,255,10):
+              for alpha in range (0,255,10):
                 screen.fill((0,0,0))
                 cg_image.set_alpha(alpha)
                 screen.blit(cg_image,(0,0))
@@ -270,8 +278,9 @@ class dialog:
                 pygame.time.delay(30)
 
           
-            else:#fade out 
-             for alpha in range(255,0,-10):
+            else:             #fade out 
+              print("Fading out image...")
+              for alpha in range(255,-1,-10):
                 screen.fill((0,0,0))
                 cg_image.set_alpha(alpha)
                 screen.blit(cg_image,(0,0))
