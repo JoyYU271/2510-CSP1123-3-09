@@ -14,8 +14,8 @@ screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE
 pygame.display.set_caption("Chapter Intro Test")
 clock = pygame.time.Clock()
 FPS = 60
-# Load JSON data
 
+# Load JSON data
 with open('NPC_dialog/NPC.json', 'r', encoding='utf-8') as f:
         all_dialogues = json.load(f)
 
@@ -42,20 +42,20 @@ class dialog:
         self.dialog_box_img.set_alpha(200)
 
         # character portrait selection based on NPC name
-        if npc.name == "Nuva":
-             self.portrait = pygame.image.load("picture/Character Dialogue/Nurse.png").convert_alpha()
-        elif npc.name == "Dean":
-            self.portrait = pygame.image.load("picture/Character Dialogue/Dean.png").convert_alpha()
-        elif npc.name == "Zheng":
-            self.portrait = pygame.image.load("picture/Character Dialogue/Patient1.png").convert_alpha()
-        elif npc.name == "Emma":
-            self.portrait = pygame.image.load("picture/Character Dialogue/Patient2.png").convert_alpha()
-        elif npc.name == "John":
-            self.portrait = pygame.image.load("picture/Character Dialogue/Patient3.png").convert_alpha()
-        elif npc.name == "Police":
-            self.portrait = pygame.image.load("picture/Character Dialogue/Police.png").convert_alpha()
+        potrait_paths = {
+            "Nuva": "picture/Character Dialogue/Nurse.png",
+            "Dean": "picture/Character Dialogue/Dean.png",
+            "Zheng": "picture/Character Dialogue/Patient1.png",
+            "Emma": "picture/Character Dialogue/Patient2.png",
+        }
 
         # always load player portrait
+        portrait_path = potrait_paths.get(npc.name)
+        if portrait_path:
+            self.portrait = pygame.image.load(portrait_path).convert_alpha()
+        else:
+            self.portrait = pygame.Surface((1,1)) #fallback or error handling
+
         self.player_portrait = pygame.image.load("picture/Character Dialogue/Doctor.png").convert_alpha()
 
         self.player = player
@@ -163,15 +163,6 @@ class dialog:
 
                      if option_y < screen.get_height() - 40: #ensure option is on screen
                         draw_text(screen, option["option"],30,color,dialog_center_x,option_y,center= True)
-
-          
-        #    # words come out one by one effect
-        #    current_time = pygame.time.get_ticks()
-        #    if self.letter_index < len(text):
-        #         if current_time - self.last_time > self.letter_delay:
-        #              self.displayed_text += text[self.letter_index]
-        #              self.letter_index += 1
-        #              self.last_time = current_time
           
            # draw dialogue text 
            draw_text(screen,self.displayed_text,30,(0,0,0),dialog_x + self.dialog_box_img.get_width()//2  ,dialog_y + self.dialog_box_img.get_height()//2 - 15 ,center = True,max_width=text_max_width)
@@ -597,6 +588,8 @@ current_dialogue = None
 #npc_manager.add_npc(patient1)
 #npc_manager.add_npc(patient2)
 
+
+
 class Game:
     def __init__(self):
         pygame.init()
@@ -614,7 +607,7 @@ class Game:
 
         self.states = {'intro':self.intro, 'start':self.start, 'level':self.level}
     
-        nuva = NPC(1090,540,"Nuva")
+        nuva = NPC(890,520,"Nuva")
         dean = NPC(400,520,"Dean")
         self.npc_manager.add_npc(nuva)
         self.npc_manager.add_npc(dean)
@@ -683,9 +676,12 @@ class Rooms:    # class Level in tutorial
 
         self.dean_exiting = False
 
+        self.last_npc_name = None
+        self.last_story = None
         
 
     def run(self, moving_left, moving_right, run, dean):
+        entry = {}
         self.dean = dean
         keys = pygame.key.get_pressed()
         if self.background:
@@ -702,7 +698,6 @@ class Rooms:    # class Level in tutorial
           
         # --- Draw NPCs ---
         for npc in self.npc_manager.npcs:
-            #if not self.cutscene_active and npc.name == "Dean":
                 self.display.blit(npc.image,npc.rect)
 
         self.player.draw(self.display)
@@ -711,7 +706,7 @@ class Rooms:    # class Level in tutorial
         nearest_npc = self.npc_manager.get_nearest_npc(self.player)
 
         #=====space======
-        if nearest_npc or (self.current_dialogue and self.current_dialogue.talking):
+        if nearest_npc or self.current_dialogue:
             if nearest_npc and (self.current_dialogue is None or self.current_dialogue.npc != nearest_npc):
                 self.current_dialogue = dialog(nearest_npc,self.player)
             
@@ -726,23 +721,28 @@ class Rooms:    # class Level in tutorial
 
             if self.current_dialogue:
                 self.npc_name = self.current_dialogue.npc.name
-                self.npc_data = all_dialogues.get(self.npc_name)
-                self.current_story = "chapter_1"
-                self.story_data = self.npc_data.get(self.current_story,[])
+                self.current_story = getattr(self.current_dialogue, "current_story", "chapter_1")
+
+                # Only update story_data if the NPC or story changed
+                if (self.last_npc_name != self.npc_name) or (self.last_story != self.current_story):
+                    self.npc_data = all_dialogues.get(self.npc_name, {})
+                    self.story_data = self.npc_data.get(self.current_story, [])
+                    self.last_npc_name = self.npc_name
+                    self.last_story = self.current_story
 
                 self.step = self.current_dialogue.step
 
-                if self.current_dialogue.step >= len(self.story_data):
+                if not self.current_dialogue.talking:
                     self.current_dialogue = None
                     entry = {}
                 else:
                     entry = self.story_data[self.step]
-
             else:
                 entry = {}
+
             
-            if not keys[pygame.K_SPACE]:
-                self.space_released = True
+        if not keys[pygame.K_SPACE]:
+            self.space_released = True
         
         # --- Draw dialogue if active ---
         if self.current_dialogue and self.current_dialogue.talking:
@@ -758,8 +758,8 @@ class Rooms:    # class Level in tutorial
                     print("Cutscene start!")
                     self.cutscene_active = True
 
-        else:
-            self.cutscene_active = False
+            else:
+                self.cutscene_active = False
     
         if self.cutscene_active and entry.get("event") == "dean_exits":
             self.dean_exiting = True
@@ -795,8 +795,3 @@ if __name__== '__main__':
 # # }
 
 # #print(thisdict)
-
-# Create intro object
-# showing_intro = True
-# chapter_intro = SimpleChapterIntro()
-# chapter_intro.start("chapter_1")
