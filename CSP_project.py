@@ -89,8 +89,8 @@ class CameraGroup(pygame.sprite.Group):
         self.camera_rect = pygame.Rect(l,t,w,h)
 
         #ground
-        self.ground_surf = pygame.image.load('GUI 1.png').convert_alpha()
-        self.ground_rect = self.ground_surf.get_rect(topleft = (0,0))
+        # self.ground_surf = pygame.image.load('GUI 1.png').convert_alpha()
+        # self.ground_rect = self.ground_surf.get_rect(topleft = (0,0))
 
     def center_target_camera(self,target):
         self.offset.x = target.rect.centerx - self.half_w

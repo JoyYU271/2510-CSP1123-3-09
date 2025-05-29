@@ -2,6 +2,7 @@ import pygame
 import sys
 from pygame.locals import *
 import character_movement
+#import CSP_project
 import json
 
 
@@ -32,6 +33,8 @@ selected_options = {}
 
 cutscene_active = False
 cutscene_speed = 3 #pixel per frame
+
+#camera_group = CSP_project.CameraGroup()
 
 class dialog:
     def __init__(self,npc,player):
@@ -588,8 +591,6 @@ current_dialogue = None
 #npc_manager.add_npc(patient1)
 #npc_manager.add_npc(patient2)
 
-
-
 class Game:
     def __init__(self):
         pygame.init()
@@ -631,14 +632,21 @@ class Game:
                     running = False
                     sys.exit()
 
-            #self.states[self.gameStateManager.get_state()].run()
-            
+                # if event.type == pygame.VIDEORESIZE:
+                #     screen_width, screen_height = event.w, event.h
+                #     # Optional: tell the camera group about the new size
+                #     camera_group.display_surface = screen
+                #     camera_group.half_w = screen_width // 2
+                #     camera_group.half_h = screen_height // 2
+
             if currentState == 'level':
                 dean = next(npc for npc in self.npc_manager.npcs if npc.name == "Dean")
                 if dean:
                     self.states['level'].run(moving_left, moving_right, run, dean)
             else:
                 self.states[currentState].run()
+
+            #camera_group.custom_draw(player)
 
             pygame.display.update()
             self.clock.tick(FPS)
