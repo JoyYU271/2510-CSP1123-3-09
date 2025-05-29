@@ -4,23 +4,34 @@ from pygame.locals import *
 from character_movement import *
 import json
 from ui_components import Button
+import os
+from save_system import save_checkpoint, load_checkpoint
 
+    
 current_text_size = 30
 click_sound = pygame.mixer.Sound("main page/click1.wav") 
 
 current_dialogue_instance = None
 
+player_choices = {}
 
-def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
-    global current_dialogue_instance
+flags = {}
+
+shown_dialogues = {}
+
+def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_from=None):
+    global current_dialogue_instance,save_message_timer
+
+    save_message_timer = 0
+
+    npc_dialog_state = {}
+
 
     pygame.init()
     pygame.mixer.init()
 
     screen_width = 1280
     screen_height = 720
-
-    shown_dialogues = {}
 
 
     pygame.mixer.music.set_volume(bgm_vol)
@@ -59,7 +70,7 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
 
 
     npc_list =["Nuva"]
-    shown_dialogues = {}
+  
     selected_options = {}
 
     cutscene_active = False
@@ -82,6 +93,47 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
     dean_interacted = False
 
     current_dialogue = None
+
+
+        # 在设置完 NPC 后检查 resume_from
+        # 在run_dialogue()函数中修改resume_from的处理部分
+    if resume_from:
+        npc_state, player_choices, resume_flags, resume_shown_dialogues = resume_from
+        flags = resume_flags
+        shown_dialogues = resume_shown_dialogues
+
+        for npc in npc_manager.npcs:
+            if npc.name in npc_state:
+                state = npc_state[npc.name]
+                chapter = state["chapter"]
+                step = state["step"]
+
+                # 特殊处理Nuva的repeat_only章节
+                if npc.name == "Nuva" and chapter == "repeat_only":
+                    d = dialog(npc, player, all_dialogues, bgm_vol, sfx_vol, 
+                            cutscene_speed=3, npc_manager=npc_manager,
+                            shown_dialogues=shown_dialogues)
+                    d.load_dialogue(npc.name, chapter, start_step=0)  # 强制从0开始
+                    d.talking = False
+                    npc_dialog_state[npc.name] = d
+                    current_dialogue = d
+                else:
+                    d = dialog(npc, player, all_dialogues, bgm_vol, sfx_vol,
+                            cutscene_speed=3, npc_manager=npc_manager,
+                            shown_dialogues=shown_dialogues)
+                    d.load_dialogue(npc.name, chapter, start_step=step)
+                    d.talking = False
+                    npc_dialog_state[npc.name] = d
+
+                    if npc.name == npc_state.get("last_talking_npc", ""):
+                        current_dialogue = d
+
+                if npc.name == "Dean" and flags.get("dean_cutscene_played"):
+                    npc.rect.x = -1000
+
+                # 如果当前最近的 NPC 是这个，再赋值为 current_dialogue
+                if npc.name == npc_state.get("last_talking_npc", ""):
+                    current_dialogue = d
 
     run = True
     while run:
@@ -153,16 +205,29 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
                         
 
             if nearest_npc and (current_dialogue is None or current_dialogue.npc != nearest_npc):
-                current_dialogue = dialog(
-                    nearest_npc,
-                    player, 
-                    all_dialogues, 
-                    bgm_vol, 
-                    sfx_vol, 
-                    cutscene_speed=3, 
-                    npc_manager=npc_manager,
-                    shown_dialogues=shown_dialogues  # 确保传递这个参数
-                )
+                if nearest_npc and (current_dialogue is None or current_dialogue.npc != nearest_npc):
+                    if nearest_npc.name in npc_dialog_state:
+                        current_dialogue = npc_dialog_state[nearest_npc.name]  # ✅ 使用恢复的对象
+                    else:
+                        current_dialogue = dialog(
+                            nearest_npc,
+                            player, 
+                            all_dialogues, 
+                            bgm_vol, 
+                            sfx_vol, 
+                            cutscene_speed=3, 
+                            npc_manager=npc_manager,
+                            shown_dialogues=shown_dialogues
+                        )
+                        npc_dialog_state[nearest_npc.name] = current_dialogue  # ✅ 保证它也被记录下来
+
+            if save_message_timer > 0:
+                save_message_timer -= 1
+                font = pygame.font.SysFont('Arial', 40)
+                save_text = font.render("Game Saved", True, (0, 255, 0))  # 绿色文字
+                screen.blit(save_text, (50, screen.get_height() - 700))
+
+
             
             pygame.display.update()
             clock.tick(FPS)  
@@ -267,6 +332,7 @@ class dialog:
     def update(self): 
         #only update if in dialogue n not at the end
         if self.talking and self.step < len(self.story_data):
+            
              entry = self.story_data[self.step] # current dialogue entry
 
              text = entry.get("text","") #get text
@@ -297,6 +363,21 @@ class dialog:
 
              if "event" in entry:
                 if entry["event"] == "dean_exit_cutscene":
+                   flags["dean_cutscene_played"] = True
+                   # 将 cutscene 设置为结束状态
+                   cutscene_active = False
+
+                    # 保存游戏进度（重要）
+                   save_checkpoint(
+                    npc_name=self.npc_name,
+                    chapter=self.current_story,
+                    step=self.step,
+                    player_choices=player_choices,
+                    flags=flags,
+                    shown_dialogues=self.shown_dialogues
+                )
+
+
                    if self.npc_manager:
                     for npc in self.npc_manager.npcs:
                         if npc.name == "Dean":
@@ -424,22 +505,29 @@ class dialog:
                        
 
     def handle_space(self,keys):
-         
+         global save_message_timer  
          #start dialogue if not talked
          if not self.talking:
               self.talking = True
               self.load_dialogue(self.npc_name,self.current_story)
               return
          
+
+         if self.npc_name == "Nuva" and self.current_story == "repeat_only":
+            dialogue_id = f"{self.npc_name}_{self.current_story}_{self.step}"
+            if dialogue_id in self.shown_dialogues:
+                self.talking = False
+                return
+
+
          #process current dialogue step
          if self.step <len(self.story_data):
               entry = self.story_data[self.step]
               text = entry.get("text","")
 
-              #mark dialogue as shown if needed
-              if "shown" in entry and entry["shown"] == False:
-                  dialogue_id = f"{self.npc_name}_{self.current_story}_{self.step}"
-                  self.shown_dialogues[dialogue_id] = True
+              dialogue_id = f"{self.npc_name}_{self.current_story}_{self.step}"
+              self.shown_dialogues[dialogue_id] = True
+
 
               if "chapter_ending" in entry:
              #save which ending was chosen
@@ -475,6 +563,20 @@ class dialog:
                    else:
                     if "next" in entry:
                       next_target = entry["next"]
+               
+
+                      save_checkpoint(
+                        npc_name=self.npc_name,
+                        chapter=self.current_story,
+                        step=self.step,
+                        player_choices=player_choices,
+                        flags=flags,
+                        shown_dialogues=self.shown_dialogues
+                         )
+                      save_message_timer = 90
+
+
+
 
                       if isinstance(next_target,int):
                           
@@ -489,46 +591,83 @@ class dialog:
                           
 
                     else:
-                        #if there is no "next",proceed to the next dialogue step
                         self.step += 1
                         if self.step >= len(self.story_data):
-                            #end the dialogue if reached the end
+                            # ✅ 如果是 Nuva 的 chapter_1_common，就跳到 repeat_only 并保存
+                            if self.npc_name == "Nuva" and self.current_story == "chapter_1_common":
+                                self.current_story = "repeat_only"
+                                self.story_data = self.npc_data.get("repeat_only", [])
+                                self.step = 0
+                                self.reset_typing()
+
+                                save_checkpoint(
+                                    npc_name=self.npc_name,
+                                    chapter=self.current_story,
+                                    step=self.step,
+                                    player_choices=player_choices,
+                                    flags=flags,
+                                    shown_dialogues=self.shown_dialogues
+                                )
+                                save_message_timer = 90
+                                return
+
+                            # ✅ 普通存档流程（不在特殊处理中的）
+                            save_checkpoint(
+                                npc_name=self.npc_name,
+                                chapter=self.current_story,
+                                step=self.step,
+                                player_choices=player_choices,
+                                flags=flags,
+                                shown_dialogues=self.shown_dialogues
+                            )
+                            save_message_timer = 90
+
                             self.talking = False
                             self.step = 0
                         else:
-                           #reset typing effect for the next dialogue entry
-                           self.reset_typing()
-    
+                            self.reset_typing()
 
-    def load_dialogue(self,npc_name,chapter):
-
-        self.option = []
-        #update NPC detials
+    # 修改dialog类的load_dialogue方法
+    def load_dialogue(self, npc_name, chapter, start_step=0):
+        self.options = []
         self.npc_name = npc_name
-        self.npc_data = self.all_dialogues.get(self.npc_name,{})
+        self.npc_data = self.all_dialogues.get(self.npc_name, {})
         self.current_story = chapter
-        self.story_data = self.npc_data.get(self.current_story,[])
-        filtered_story_data = []
-
-        # filter out already shown dialogues marked with "shown":false ( in json)
         
-        for i,entry in enumerate(self.story_data):
+        # 特殊处理Nuva的repeat_only章节
+        if self.npc_name == "Nuva" and self.current_story == "repeat_only":
+            self.story_data = self.npc_data.get("repeat_only", [])
+            self.step = 0
+            self.reset_typing()
+            return
+            
+        raw_story_data = self.npc_data.get(self.current_story, [])
+        filtered_story_data = []
+        self.step_map = []
+        
+        for i, entry in enumerate(raw_story_data):
             dialogue_id = f"{self.npc_name}_{self.current_story}_{i}"
-
+            
+            # 如果条目标记为shown=false，或者尚未显示过，则包含
             if ("shown" not in entry or entry["shown"] != False) or (dialogue_id not in self.shown_dialogues):
                 filtered_story_data.append(entry)
-
-            elif self.npc_name == "Nuva" and self.current_story == "chapter_1_common" and entry.get("text") == "She is waiting in your office,you can head over when you are ready":
-                if dialogue_id not in self.shown_dialogues:
-                    filtered_story_data.append(entry)
-                    
-            
-            
-
-        # set filtered dialogue n reset state
+                self.step_map.append(i)
+        
         self.story_data = filtered_story_data
-        self.step = 0
+        
+        # 找出过滤后对应的step
+        if start_step in self.step_map:
+            self.step = self.step_map.index(start_step)
+        else:
+            self.step = 0
+        
         self.reset_typing()
+
+
+
+        
+
+
                 
 
 # =============text setting================
@@ -633,6 +772,13 @@ class NPCManager:
                     min_distance = distance
                     nearest_npc = npc
         return nearest_npc
+
+
+
+
+
+
+
 
 
 

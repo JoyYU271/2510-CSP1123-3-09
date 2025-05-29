@@ -73,8 +73,8 @@
     "chapter_1_common":[
         {"speaker" :"npc","text":"我叫Nuva，是负责前台的护士，如果你有什么问题都可以来问我这个前辈哦~","shown": false},
         {"speaker" :"player","text":"好，我知道了。","shown": false},
-        {"speaker" :"npc","text":"对了，昨天已经有一位患者预约了你今天的治疗。"},
-        {"speaker" :"npc","text":"她已经在你的办公室等候了，你准备好后可以随时过去。"}
+        {"speaker" :"npc","text":"对了，昨天已经有一位患者预约了你今天的治疗。","shown":false},
+        {"speaker" :"npc","text":"她已经在你的办公室等候了，你准备好后可以随时过去。","shown":false}
 
 
 
@@ -125,7 +125,7 @@
         {"speaker" :"narrator","text":"(在你喊出父亲的瞬间，你看见他的眉头轻皱。)","shown": false},
         {"speaker" :"npc","text":"在诊所我们只是上下关系，不要叫我父亲。","shown": false},
         {"speaker" :"npc","text":"我先走了，你自行探索，我还有会议。","sound": "footsteps","shown": false},
-        {"speaker" :"narrator","text":"(他走出了诊所。)","shown": false},
+        {"speaker" :"narrator","text":"(他走出了诊所。)","event": "dean_exit_cutscene","shown": false},
         {"speaker" :"player","text":"(在探索前先跟母亲报备吧。)","shown": false},
         {"speaker" :"player","text":"(你拿起了手机，打开了母亲的聊天栏。)","shown": false},
         {"speaker" :"narrator","text":"(但是聊天栏里只有你的自言自语，对方始终没有已读，没有回应。) ","shown": false},

@@ -3,6 +3,8 @@ import sys
 import Dialogue1
 from Dialogue1 import run_dialogue
 from ui_components import Button, get_font
+from save_system import save_checkpoint, load_checkpoint
+ 
 
 pygame.init() #initialize all import pygame modules
 pygame.mixer.init()
@@ -98,30 +100,74 @@ def main_menu():
 
 
 def load_screen():
+    #set backgound
+    load_bg_img = pygame.image.load("main page/common background.png").convert()
+    load_bg_img = pygame.transform.scale(load_bg_img, (screen_width, screen_height))
+
     while True:
-        screen.fill("white")
+        screen.blit(load_bg_img, (0, 0))
+
         mouse_pos = pygame.mouse.get_pos()
 
-        text = get_font(45).render("This is the LOAD screen.", True, "Black")
-        rect = text.get_rect(center=(640, 260))
-        screen.blit(text, rect)
+        title_text = get_font(45).render("LOAD SCREEN", True, "White")
+        screen.blit(title_text, title_text.get_rect(center=(640, 180)))
 
-        back_button = Button(image=None, pos=(640, 460), text_input="BACK",
-                             font=get_font(75), base_color="Black", hovering_color="Green")
+        # 加载按钮
+        continue_button = Button(
+            image=None,
+            pos=(640, 300),
+            text_input="Continue from Last Checkpoint",
+            font=get_font(40),
+            base_color="White",
+            hovering_color="Green"
+        )
 
-        back_button.changeColor(mouse_pos)
-        back_button.update(screen)
+        back_button = Button(
+            image=None,
+            pos=(640, 450),
+            text_input="BACK",
+            font=get_font(50),
+            base_color="White",
+            hovering_color="Green"
+        )
+
+        for button in [continue_button, back_button]:
+            button.changeColor(mouse_pos)
+            button.update(screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if back_button.checkForInput(mouse_pos):
+                if continue_button.checkForInput(mouse_pos):
+                    click_sound.play()
+
+                    save_data = load_checkpoint()
+                    if save_data:
+                        pygame.mixer.music.stop()
+                        run_dialogue(
+                            text_size=current_font_size,
+                            language=current_language,
+                            bgm_vol=bgm_vol,
+                            sfx_vol=sfx_vol,
+                            resume_from = (
+                                save_data.get("npc_state", {}),
+                                save_data.get("player_choices", {}),
+                                save_data.get("flags", {}),
+                                save_data.get("shown_dialogues", {})
+                            )
+                        )
+                    else:
+                        print("No save data found.")
+
+
+                elif back_button.checkForInput(mouse_pos):
                     click_sound.play()
                     return
 
         pygame.display.update()
+
 
 def collections_screen():
     while True:
@@ -275,5 +321,7 @@ def settings_screen():
         pygame.display.update()
 
 main_menu()
+
+
 
 
