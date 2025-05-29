@@ -54,12 +54,9 @@
         {"speaker":"npc","text":"Are you here to see the Dean? He just left for a meeting.","shown": false},
         {"speaker" :"player","text":".....Sorry, I was joking. Seems like my sense of humor needs work. ","shown": false},
         {"speaker" :"narrator","text":"(You see her pause, and then chuckle.) ","shown": false},
-    
         {"speaker" :"npc","text":" Ha Ha, you are quite an interesting person.","shown": false},
-        {"next":"chapter_1_common","shown": false},
+        {"next":"chapter_1_common","shown": false}
 
-        {"speaker" :"npc","text":" Ha Ha, you are a quite interesting person.","shown": false},
-        {"next":"chapter_1_common"}
 
     ],
     "a_doctor":[
@@ -114,13 +111,13 @@
 
   "Dean":{
     "chapter_1":[
-        {"speaker" :"player","text":"(So this is the clinic…...)","shown": false},
+        {"speaker" :"player","text":"(So this is the clinic…...)","bgm": "bgm/talk_with_dean.mp3","shown": false},
         {"speaker" :"npc","text":"It is 8:10 a.m. You're 50 minutes early.","shown": false},
         {"speaker" :"player","text":"I just wanted to familiarize myself with the environment...Father.","shown": false},
         {"speaker" :"narrator","text":"(When you called him 'Father' you notice his brow furrow slightly.)","shown": false},
         {"speaker" :"npc","text":"In the clinic, we are considered superior and subordinate. Try not to call me ‘Father’ here.","shown": false},
         {"speaker" :"npc","text":"I should go now, I have a meeting to attend. Feel free to look around your own.","shown": false},
-        {"speaker" :"narrator","text":"(He exits the clinic.)", "event": "dean_exit_cutscene", "shown": false},
+        {"speaker" :"narrator","text":"(He exits the clinic.)", "event": "dean_exit_cutscene","sound": "footsteps", "shown": false},
         {"speaker" :"player","text":"(Before exploring, I should send a message to mom.)","shown": false},
         {"speaker" :"player","text":"(You take out your phone and open the chat with your mother.)","shown": false},
         {"speaker" :"narrator","text":"(However,the chat is filled with your own messages.She doesn't read or reply to them.) ","shown": false},
@@ -128,12 +125,12 @@
         {"speaker" :"narrator","text":"(From what you ate for lunch, to the friends you've made or your choice of major—every little story is in this chat.)","shown": false},
         {"speaker" :"narrator","text":"(What you truly hope for, is her response, and maybe an explanation, nothing more.)","shown": false},
         {"speaker" :"narrator","text":"(You type in the chat box)","shown": false},
-        {"speaker" :"player","text":"Today is my first day at work.","shown": false},
+        {"speaker" :"player","text":"Today is my first day at work.","sound": "phone_typing","shown": false},
         {"speaker" :"player","text":"Finally, I've become a doctor, like Father.","shown": false},
         {"speaker" :"player","text":"Would you be proud of me, Mom?","shown": false},
-        {"speaker" :"narrator","text":"(......)","shown": false},
+        {"speaker" :"narrator","text":"(......)","sound_stop": true,"shown": false},
         {"speaker" :"narrator","text":"(You stare at the unanswered chat for a few seconds then put your phone back to pocket.)","shown": false},
-        {"speaker" :"player","text":"Maybe I should walk around clinic first.","shown": false}
+        {"speaker" :"player","text":"Maybe I should walk around clinic first.","bgm": "bgm/intro.mp3","shown": false}
 
     ],
 
