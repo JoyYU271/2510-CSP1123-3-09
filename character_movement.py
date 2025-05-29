@@ -90,24 +90,27 @@ class doctor(pygame.sprite.Sprite):
     def draw(self,screen):
         screen.blit (pygame.transform.flip(self.image,self.flip,False),self.rect)
 
+def keyboard_input(events, moving_left, moving_right, run) :
+        for event in events:
+           if event.type == pygame.QUIT:
+                run = False
 
-def keyboard_input(event, moving_left, moving_right, run):
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-        moving_left = True
-    else:
-        moving_left = False
+        # Keyboard button pressed
+           if event.type == KEYDOWN :
+              if event.key == K_a:
+                    moving_left = True
+              if event.key == K_d:
+                    moving_right = True
 
-    if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-        moving_right = True
-    else:
-        moving_right = False
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-    return moving_left, moving_right, run
-
+        # keyboard button released
+           if event.type == KEYUP :
+               if event.key == K_a:
+                    moving_left = False
+               if event.key == K_d:
+                    moving_right = False
+               if event.key == K_ESCAPE:
+                    run = False
+        return moving_left,moving_right,run
 
 
 
