@@ -64,7 +64,7 @@ class dialog:
         self.npc_data = all_dialogues.get(self.npc_name)
 
          #dialogue state variacbles
-        self.current_story = "chapter_3" #default chapter
+        self.current_story = "chapter_1" #default chapter
         self.story_data = self.npc_data.get(self.current_story,[])
         self.step = 0 # present current sentence
         global shown_dialogues
