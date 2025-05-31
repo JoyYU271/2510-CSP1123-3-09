@@ -89,6 +89,7 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
             draw_bg(screen)
             backmain_button.draw(screen)   
                    
+            # check event        
             events = pygame.event.get()       
             for event in events:
                 if event.type == pygame.QUIT:
@@ -100,6 +101,7 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
                        pygame.mixer.music.stop()
                        return
             
+            # player movement n movement animation
             if not current_dialogue or not current_dialogue.talking:
                is_moving = player.move(moving_left,moving_right)
                player.update_animation(is_moving)
@@ -107,10 +109,12 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
               is_moving = False
               player.update_animation(is_moving)
           
+            # draw Npc n interact hint 
             for npc in npc_manager.npcs:
               screen.blit(npc.image,npc.rect)
               player_pos = pygame.Vector2(player.rect.center)
               npc_pos = pygame.Vector2(npc.rect.center)
+
               if player_pos.distance_to(npc_pos) < 100 :
                     font = pygame.font.SysFont('Comic Sans MS', 20)
                     hint_text = font.render("Press SPACE to talk", True, (0, 0, 0))
@@ -119,12 +123,15 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
 
               if npc.dialog:
                   npc.dialog.draw(screen)
-
+            
+            # draw player
             player.draw(screen)
+            # update movement position
             moving_left,moving_right,run =  keyboard_input(moving_left, moving_right, run)
+            #get nearest NPC
             nearest_npc = npc_manager.get_nearest_npc(player)
 
-            #=====space======
+            # key space n dialogue logic
             keys = pygame.key.get_pressed()
             if nearest_npc or (current_dialogue and current_dialogue.talking):
                 if nearest_npc and (current_dialogue is None or current_dialogue.npc != nearest_npc):
@@ -145,11 +152,13 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
             elif current_dialogue:
                 current_dialogue.talking = False
                 current_dialogue.options = []
-
+            
+            # update n draw cuurent dialogue
             if current_dialogue and current_dialogue.talking:
                 current_dialogue.update(events)
                 current_dialogue.draw(screen)
 
+            # chapter Ending n CG load display
             if current_dialogue and current_dialogue.chapter_end and not cg_loaded :
               if "cg" in current_dialogue.entry:
                   cg_image = pygame.image.load(current_dialogue.entry["cg"])
@@ -159,6 +168,7 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
             if show_cg and cg_image:
                 screen.blit(cg_image,(0,0))
             
+            #Main Ending finished jump to main Menu (with fade effect)
             if current_dialogue and current_dialogue.ready_to_quit:
                 fade_to_main(screen)
                 pygame.mixer.music.stop()
@@ -173,7 +183,7 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
 class dialog:
     def __init__(self,npc,player,all_dialogues,bgm_vol=0.5,sfx_vol=0.5):
         super().__init__()
-
+        
         self.sounds = {
             "phone_typing": pygame.mixer.Sound("sfx/phone_typing.wav"),
             "footsteps": pygame.mixer.Sound("sfx/footsteps.wav"),
@@ -250,7 +260,6 @@ class dialog:
         
         self.currently_playing_sfx = None
         self.sound_played_for_current_step = False
-
         self.current_bgm = None
         self.bgm_volume = bgm_vol
     
@@ -279,7 +288,6 @@ class dialog:
     
 
     def update(self,events): 
-
         if self.showing_cg:
            for event in events:
                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
@@ -502,6 +510,7 @@ class dialog:
                       self.npc.shown_options[self.current_story] = True
                       next_target = selected_option["next"]
 
+                      #======not really function========
                       if next_target == "back_reality":
                           self.load_back_reality()
                       elif next_target == "check_sub_end":
@@ -519,7 +528,7 @@ class dialog:
                    if not keys[pygame.K_e]:
                        self.key_e_released = True
 
-
+    # not really function , need to combine codes mini games n modify
     def load_back_reality(self):
         self.displayed_text = ""
         self.letter_index = 0
@@ -544,6 +553,8 @@ class dialog:
                   dialogue_id = f"{self.npc_name}_{self.current_story}_{self.step}"
                   self.shown_dialogues[dialogue_id] = True
 
+
+      #========not really fonction , need to combine others codes n modify======
               if "chapter_ending" in entry:
              #save which ending was chosen
                   global player_choices, showing_chapter_ending, ending_start_time, ending_complete_callback
@@ -564,6 +575,8 @@ class dialog:
                   ending_complete_callback = ending_complete
                   self.talking = False
                   return
+       #========================================================
+
 
               # if test is typing, complete it immdiately
               if self.letter_index <len (text):
@@ -614,7 +627,6 @@ class dialog:
         filtered_story_data = []
 
         # filter out already shown dialogues marked with "shown":false ( in json)
-        
         for i,entry in enumerate(self.story_data):
             dialogue_id = f"{self.npc_name}_{self.current_story}_{i}"
 
