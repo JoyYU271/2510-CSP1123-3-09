@@ -61,7 +61,7 @@
     "a_doctor":[
         {"speaker" :"player","text":"I am. Hello.","shown": false},
         {"speaker" :"narrator","text":"(You see her smile widen.)","shown": false},
-        {"speaker" :"npc","text":"The Dean mentioned that we had a new psychologist starting today, but I didn’t expect him to be so handsome!","shown": false},
+        {"speaker" :"npc","text":"The Dean mentioned that we had a new psychologist starting today, but I didn't expect him to be so handsome!","shown": false},
         {"speaker" :"narrator","text":"(Her compliment makes your ears turn red.)","shown": false},
         {"speaker" :"player","text":"......Thanks","shown": false},
         {"next":"chapter_1_common","shown":false}
