@@ -9,6 +9,10 @@ pygame.init()
 #=======screen setting==========
 screen_width = 1280
 screen_height = 720
+
+world_width = 2488
+world_height = 720
+
 #set framerate
 FPS = 60
 #define background color
@@ -63,8 +67,8 @@ class doctor(pygame.sprite.Sprite):
     # let player cannot get out of screen
        if self.rect.left < 0 :
            self.rect.left = 0
-       if self.rect.right > screen_width:
-           self.rect.right = screen_width
+       if self.rect.right > world_width:
+           self.rect.right = world_width
        return moving_left or moving_right
     
 

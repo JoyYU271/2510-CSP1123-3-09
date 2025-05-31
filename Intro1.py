@@ -13,6 +13,10 @@ screen_width = 1280
 screen_height = 720
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
 pygame.display.set_caption("Chapter Intro Test")
+
+world_width = 2488
+world_height = 720
+
 clock = pygame.time.Clock()
 FPS = 60
 
@@ -22,7 +26,7 @@ with open('NPC_dialog/NPC.json', 'r', encoding='utf-8') as f:
 
 dialog_box_img = pygame.image.load("picture/Character Dialogue/dialog boxxx.png").convert_alpha()
 
-player = character_movement.doctor(100,520,4.5) 
+player = character_movement.doctor(100,521,4.5) 
 player.name = "You" # remember to put in class doctor
 moving_left = False
 moving_right = False
@@ -369,6 +373,8 @@ class NPC(pygame.sprite.Sprite):
     def __init__(self,x,y,name,image_path = None):
         super().__init__()
 
+        self.flip = False
+
         if image_path is None:
             if name == "Nuva":
                 image_path = 'picture/Character QQ/Nurse idle.png'
@@ -591,6 +597,70 @@ current_dialogue = None
 #npc_manager.add_npc(patient1)
 #npc_manager.add_npc(patient2)
 
+class CameraGroup(pygame.sprite.Group):
+    def __init__(self):
+        super().__init__()
+        self.display_surface = pygame.display.get_surface()
+        
+        self.player = player
+        self.npc_manager = npc_manager
+        self.screen = screen
+
+        #camera offset
+        self.offset = pygame.math.Vector2()
+        self.half_w = self.display_surface.get_size()[0] // 2
+        self.half_h = self.display_surface.get_size()[1] // 2
+
+        #box camera 
+        self.camera_borders = {'left':200, 'right':200, 'top':100, 'bottom':100}
+        l = self.camera_borders['left']
+        t = self.camera_borders['top']
+        w = self.display_surface.get_size()[0] - (self.camera_borders['left'] + self.camera_borders['right'])
+        h = self.display_surface.get_size()[1] - (self.camera_borders['top'] + self.camera_borders['bottom'])
+        self.camera_rect = pygame.Rect(l,t,w,h)
+
+        self.background = None
+
+    def set_background(self, background):
+        self.background = background
+
+    def center_target_camera(self,target):
+        self.offset.x = target.rect.centerx - self.half_w
+        self.offset.y = target.rect.centery - self.half_h
+
+    def box_target_camera(self,target):
+
+        if target.rect.left < self.camera_rect.left:
+           self.camera_rect.left = target.rect.left
+        if target.rect.right > self.camera_rect.right:
+           self.camera_rect.right = target.rect.right 
+
+        self.offset.x = self.camera_rect.left - self.camera_borders['left']
+        self.offset.y = self.camera_rect.top - self.camera_borders['top']
+
+         # Clamp offset to world bounds
+        self.offset.x = max(0, min(self.offset.x, world_width - self.display_surface.get_width()))
+        self.offset.y = max(0, min(self.offset.y, world_height - self.display_surface.get_height()))
+
+    def custom_draw(self,player):
+
+        #self.center_target_camera(player)
+        self.box_target_camera(player)
+
+        # draw background (adjust this to match your game's background)
+        if self.background:
+            offset_bg = pygame.Vector2(0,0) - self.offset
+            self.display_surface.blit(self.background, offset_bg)
+
+        #player?
+        for sprite in sorted(self.sprites(), key=lambda spr: (spr.rect.centery, spr != player)):
+            offset_pos = sprite.rect.topleft - self.offset
+            flipped_image = pygame.transform.flip(sprite.image, sprite.flip, False)
+            self.display_surface.blit(flipped_image, offset_pos)
+
+
+camera_group = CameraGroup()
+
 class Game:
     def __init__(self):
         pygame.init()
@@ -613,6 +683,10 @@ class Game:
         self.npc_manager.add_npc(nuva)
         self.npc_manager.add_npc(dean)
 
+        camera_group.add(self.player)
+        camera_group.add(nuva)
+        camera_group.add(dean)
+
     def run(self):
         running = True
         moving_left = False
@@ -632,12 +706,12 @@ class Game:
                     running = False
                     sys.exit()
 
-                # if event.type == pygame.VIDEORESIZE:
-                #     screen_width, screen_height = event.w, event.h
-                #     # Optional: tell the camera group about the new size
-                #     camera_group.display_surface = screen
-                #     camera_group.half_w = screen_width // 2
-                #     camera_group.half_h = screen_height // 2
+                if event.type == pygame.VIDEORESIZE:
+                    screen_width, screen_height = event.w, event.h
+                    # Optional: tell the camera group about the new size
+                    camera_group.display_surface = screen
+                    camera_group.half_w = screen_width // 2
+                    camera_group.half_h = screen_height // 2
 
             if currentState == 'level':
                 dean = next(npc for npc in self.npc_manager.npcs if npc.name == "Dean")
@@ -645,9 +719,7 @@ class Game:
                     self.states['level'].run(moving_left, moving_right, run, dean)
             else:
                 self.states[currentState].run()
-
-            #camera_group.custom_draw(player)
-
+            
             pygame.display.update()
             self.clock.tick(FPS)
 
@@ -674,6 +746,8 @@ class Rooms:    # class Level in tutorial
         self.display = display
         self.gameStateManager = gameStateManager
         self.background = pygame.image.load("picture/Map Art/Map clinic.png").convert_alpha()
+        camera_group.set_background(self.background)
+
         self.player = player
         self.npc_manager = npc_manager
         self.screen = screen
@@ -692,10 +766,11 @@ class Rooms:    # class Level in tutorial
         entry = {}
         self.dean = dean
         keys = pygame.key.get_pressed()
-        if self.background:
-            self.display.blit(self.background, (0,0))
-        else:
-            self.display.fill('red')
+
+        # if self.background:
+        #     self.display.blit(self.background, (0,0))
+        # else:
+        #     self.display.fill('red')
 
         # --- Movement ---
         if not self.current_dialogue or not self.current_dialogue.talking:
@@ -705,10 +780,10 @@ class Rooms:    # class Level in tutorial
         self.player.update_animation(is_moving)
           
         # --- Draw NPCs ---
-        for npc in self.npc_manager.npcs:
-                self.display.blit(npc.image,npc.rect)
+        # for npc in self.npc_manager.npcs:
+        #         self.display.blit(npc.image,npc.rect)
 
-        self.player.draw(self.display)
+        # self.player.draw(self.display)
 
         # --- Dialogue logic ---
         nearest_npc = self.npc_manager.get_nearest_npc(self.player)
@@ -752,6 +827,8 @@ class Rooms:    # class Level in tutorial
         if not keys[pygame.K_SPACE]:
             self.space_released = True
         
+        camera_group.custom_draw(self.player)
+        
         # --- Draw dialogue if active ---
         if self.current_dialogue and self.current_dialogue.talking:
             self.current_dialogue.update()
@@ -763,7 +840,6 @@ class Rooms:    # class Level in tutorial
 
             if current_npc_name == "Dean":
                 if not self.cutscene_active:
-                    print("Cutscene start!")
                     self.cutscene_active = True
 
             else:
@@ -775,7 +851,6 @@ class Rooms:    # class Level in tutorial
         if self.dean_exiting:
             self.dean.rect.x -= 3
             if self.dean.rect.x < -self.dean.image.get_width():
-                        print("Dean has exited the screen.")
                         self.dean_exiting = False
                         self.cutscene_active = False
 
