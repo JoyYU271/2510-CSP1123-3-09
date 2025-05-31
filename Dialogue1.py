@@ -111,14 +111,17 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
         shown_dialogues = resume_shown_dialogues
     else:
         npc_state = {}
-        player_choices = {}
-        flags = {}
-        shown_dialogues = {}
-        
-         # ➕ 启动新游戏时仍保留旧 flags（特别是结局解锁状态）
         previous_save = load_checkpoint()
+
+        # 保留旧 flags（包括已解锁结局）
         if previous_save:
-            flags.update(previous_save.get("flags", {}))
+            flags = previous_save.get("flags", {}).copy()
+        else:
+            flags = {}
+
+        player_choices = {}
+        shown_dialogues = {}
+
 
         for npc in npc_manager.npcs:
             if npc.name in npc_state:
