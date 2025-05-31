@@ -5,14 +5,24 @@ from character_movement import *
 import json
 from ui_components import Button, get_font
 
-screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
 
+screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
 current_text_size = 30
 click_sound = pygame.mixer.Sound("main page/click1.wav") 
 
 current_dialogue_instance = None
 shown_dialogues = {}
 selected_options = {}
+
+def fade_to_main(surface ,speed = 5):
+    fade = pygame.Surface((screen_width,screen_height))
+    fade.fill((0,0,0))
+    for alpha in range(0,255,speed):
+        fade.set_alpha(alpha)
+        draw_bg(surface)
+        surface.blit(fade,(0,0))
+        pygame.display.update()
+        pygame.time.delay(30)
 
 def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
     global current_dialogue_instance
@@ -39,7 +49,7 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
     FPS = 60
 
     player = doctor(400,500,4.5) 
-    player.name = "You" # remember to put in class doctor
+    player.name = "You" 
     moving_left = False
     moving_right = False
     space_released = True # control the dialog will not happen continuously when press key space
@@ -73,17 +83,14 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
     cg_image = None
     cg_loaded = False
 
-    shown_dialogues = {}
-    selected_options = {}
-
-
     run = True
     while run:
 
             draw_bg(screen)
-            backmain_button.draw(screen)          
-
-            for event in pygame.event.get():
+            backmain_button.draw(screen)   
+                   
+            events = pygame.event.get()       
+            for event in events:
                 if event.type == pygame.QUIT:
                    pygame.quit()
                    sys.exit()
@@ -140,7 +147,7 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
                 current_dialogue.options = []
 
             if current_dialogue and current_dialogue.talking:
-                current_dialogue.update([pygame.event.get()])
+                current_dialogue.update(events)
                 current_dialogue.draw(screen)
 
             if current_dialogue and current_dialogue.chapter_end and not cg_loaded :
@@ -149,10 +156,13 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5):
                   show_cg = True
                   cg_loaded = True
 
-
             if show_cg and cg_image:
                 screen.blit(cg_image,(0,0))
             
+            if current_dialogue and current_dialogue.ready_to_quit:
+                fade_to_main(screen)
+                pygame.mixer.music.stop()
+                return
 
             pygame.display.update()
             clock.tick(FPS)
@@ -170,10 +180,8 @@ class dialog:
         }
 
         self.sfx_vol = sfx_vol
-
         for sound in self.sounds.values():
             sound.set_volume(sfx_vol)
-
 
         #load dialog box img n set transparency
         self.dialog_box_img = pygame.image.load("picture/Character Dialogue/dialog boxxx.png").convert_alpha()
@@ -204,7 +212,7 @@ class dialog:
         self.npc_data = self.all_dialogues.get(self.npc_name)
 
          #dialogue state variacbles
-        self.current_story = "chapter_1" #default chapter
+        self.current_story = "chapter_3" #default chapter
         self.story_data = self.npc_data.get(self.current_story,[])
         self.step = 0 # present current sentence
         global shown_dialogues
@@ -223,12 +231,15 @@ class dialog:
 
         self.cg_images = []
         self.cg_index = 0
-        self.showing_cg = False
+        self.showing_cg = None
 
         self.entry = None
         self.chapter_end = False
+        self.finished = True
+
         self.cg_shown = False
-        self.waiting_for_next_cg = False
+        self.ready_to_quit = False
+       
 
         if self.current_story in self.npc.shown_options and self.npc.shown_options[self.current_story]:
             self.current_story = "repeat_only"
@@ -254,67 +265,53 @@ class dialog:
     def update_bgm_volume(self, new_volume):
         self.bgm_volume = new_volume
         pygame.mixer.music.set_volume(new_volume)
-    
 
     def update_sfx_volume(self, new_volume):
         self.sfx_vol = new_volume
         for sound in self.sounds.values():
             sound.set_volume(self.sfx_vol)
             
-  
     def stop_all_sfx(self):
         for sound in self.sounds.values():
             sound.stop()
         self.currently_playing_sfx = None
     
-             
+    
 
-    def update(self,event_list): 
+    def update(self,events): 
 
         if self.showing_cg:
-           for event in event_list:
+           for event in events:
                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 print("Space pressed during CG showing")
-                
-                # Fade out the current Cg first
-                self.fade(screen,fade_in=False,cg_list= [self.cg_images[self.cg_index]])
            
                #change to next CG
                 self.cg_index += 1
 
                 if self.cg_index >= len(self.cg_images):
-                    #when all cg displayed, qiut CG
-                    self.showing_cg = False
-                    self.cg_index = 0
-                    self.cg_images = []
-                    
+                    #when all cg displayed, quit CG
+                    self.cg_index = len(self.cg_images) - 1  # stay on last frame instead of blank
+                   
                 else:
                     #fade in to next cg
                     self.fade(screen, fade_in = True, cg_list=[self.cg_images[self.cg_index]])
                 return
        
-
-        #only update if in dialogue n not at the end
+        #update dialogue content
         if self.talking and self.step < len(self.story_data):
              self.entry = self.story_data[self.step] # current dialogue entry
-             
 
              if isinstance(self.entry,dict) and "cg" in self.entry:
-                 
-                 self.cg_images = []
-                 self.cg_index = 0
-                 self.showing_cg = False
-
                  self.cg_images = [pygame.image.load(path).convert_alpha() for path in self.entry["cg"]]
                  self.cg_index = 0
                  self.showing_cg = True
+
                  self.fade(screen,fade_in = True,cg_list=self.cg_images)
                  self.step += 1
-                 return
+               
 
              text = self.entry.get("text","") #get text
 
-        
              if self.entry.get("sound_stop"):
                 self.stop_all_sfx()
 
@@ -325,13 +322,11 @@ class dialog:
                     self.currently_playing_sfx = sound_name
                 self.sound_played_for_current_step = True
 
-             
              if "bgm" in self.entry:
                  self.change_bgm(self.entry["bgm"])
              elif "bgm_stop" in self.entry:
                    pygame.mixer.music.stop()
                    self.current_bgm = None
-
 
              #check if this is a choice entry
              if "choice" in self.entry :
@@ -339,7 +334,6 @@ class dialog:
              else:
                  self.options = []
                  
-
              # text typing effect
              current_time = pygame.time.get_ticks()
              if self.letter_index < len(text):
@@ -348,9 +342,9 @@ class dialog:
                      self.letter_index += 1
                      self.last_time = current_time
 
-        
         if isinstance(self.entry,dict) and self.entry.get("type") == "ending":
             self.chapter_end = True    
+            self.ready_to_quit = True
 
     def reset_typing(self):
          #reset text displayed for a new line 
@@ -373,11 +367,10 @@ class dialog:
             key_hint_rect = key_hint_text.get_rect(center=(self.npc.rect.centerx,self.npc.rect.top - 30))
             screen.blit(key_hint_text,key_hint_rect)
 
-        if self.showing_cg:
-               
-               if  self.cg_index < len(self.cg_images):
+    
+        if self.showing_cg and self.cg_index < len(self.cg_images):
                    screen.blit(self.cg_images[self.cg_index],(0,0))
-               else:
+        else:
                    self.showing_cg = False
                    self.cg_index = 0
                    self.cg_images = []
@@ -432,7 +425,7 @@ class dialog:
 
                      option_y =  dialog_y+ 60 + i * 45
 
-                     if option_y < screen.get_height() - 10: #ensure option is on screen
+                     if option_y < screen.get_height() - 15: #ensure option is on screen
                         draw_text(screen, option["option"],30,color,dialog_center_x,option_y,center= True)
 
              key_hint_font = pygame.font.SysFont('Comic Sans MS', 20)
@@ -467,7 +460,6 @@ class dialog:
                 screen.blit(cg_image,(0,0))
                 pygame.display.update()
                 pygame.time.delay(30)
-
           
             else:             #fade out 
               print("Fading out image...")
@@ -534,10 +526,8 @@ class dialog:
         self.check_sub_end_conditions()
         pygame.display.update()
 
-      
 
     def handle_space(self,keys):
-         
          #start dialogue if not talked
          if not self.talking:
               self.talking = True
@@ -663,7 +653,6 @@ def draw_text(surface, text, size=None, color=(0,0,0), x=0, y=0, center=False, m
     global current_text_size
     font_size = size if size is not None else current_text_size
     font = pygame.font.Font('fonts/NotoSansSC-Regular.ttf', font_size)
-
 
     # If no max width is specified or text is short, render it normally
     if max_width is None or font.size(text)[0] <= max_width:

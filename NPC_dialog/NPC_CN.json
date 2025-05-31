@@ -6,6 +6,7 @@
         {"speaker" :"narrator","text":"(毕业后，你被身为诊所院长的父亲邀请过去他的诊所工作。)","shown": false},
         {"speaker": "narrator","text":"(“Mindscape Chamber”,这是诊所的名字。)","shown":false},
         {"speaker" :"narrator","text":"(今天，是你上班的第一天。)","shown": false},
+        {"speaker" :"narrator","text":"[提示: 按 W / D 键 来移动]","shown": false},
         {"speaker" :"narrator","text":"...........","shown": false}
         
     ],
@@ -75,10 +76,6 @@
         {"speaker" :"player","text":"好，我知道了。","shown": false},
         {"speaker" :"npc","text":"对了，昨天已经有一位患者预约了你今天的治疗。"},
         {"speaker" :"npc","text":"她已经在你的办公室等候了，你准备好后可以随时过去。"}
-
-
-
-
     ],
 
     "repeat_only":[
@@ -99,7 +96,6 @@
         {"speaker" :"player","text":"谢谢，那我先走了。","shown": false},
         {"speaker" :"npc","text":"好～拜拜～","shown": false},
         {"speaker" :"npc","text":"院长办公室就在你工作室隔壁哦~"}
-        
     ],
 
     "chapter_3":[
