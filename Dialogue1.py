@@ -109,6 +109,16 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
         npc_state, player_choices, resume_flags, resume_shown_dialogues = resume_from
         flags = resume_flags
         shown_dialogues = resume_shown_dialogues
+    else:
+        npc_state = {}
+        player_choices = {}
+        flags = {}
+        shown_dialogues = {}
+        
+         # ➕ 启动新游戏时仍保留旧 flags（特别是结局解锁状态）
+        previous_save = load_checkpoint()
+        if previous_save:
+            flags.update(previous_save.get("flags", {}))
 
         for npc in npc_manager.npcs:
             if npc.name in npc_state:
@@ -473,6 +483,21 @@ class dialog:
         if isinstance(self.entry,dict) and self.entry.get("type") == "ending":
             self.chapter_end = True    
             self.ready_to_quit = True
+                
+            ending_key = self.current_story 
+            flags[f"ending_unlocked_{ending_key}"] = True
+
+            # 保存解锁状态
+            save_checkpoint(
+                npc_name=self.npc_name,
+                chapter=self.current_story,
+                step=self.step,
+                player_choices=player_choices,
+                flags=flags,
+                shown_dialogues=self.shown_dialogues
+            ) 
+            
+
 
     def reset_typing(self):
          #reset text displayed for a new line 

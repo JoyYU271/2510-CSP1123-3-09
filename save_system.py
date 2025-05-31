@@ -38,11 +38,16 @@ def save_checkpoint(npc_name, chapter, step, player_choices, flags=None, shown_d
 
 
 
-
-
 def load_checkpoint():
     if not os.path.exists(SAVE_PATH):
         return None
-    with open(SAVE_PATH, "r", encoding="utf-8") as f:
-        return json.load(f)
+    if os.path.getsize(SAVE_PATH) == 0:  # 如果是空文件
+        return None
+    try:
+        with open(SAVE_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except json.JSONDecodeError:
+        print("WARNING: Save file is corrupted or not valid JSON.")
+        return None
+
 

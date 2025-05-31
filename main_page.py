@@ -16,7 +16,7 @@ screen = pygame.display.set_mode((screen_width, screen_height))#pygame.FULLSCREE
 pygame.display.set_caption("main page test")
 
 #background image
-bg_img = pygame.image.load("main page/background1.png").convert() #converts is for optimize image faster blitting on screen
+bg_img = pygame.image.load("main page/Menu Page.png").convert() #converts is for optimize image faster blitting on screen
 bg_img = pygame.transform.scale(bg_img, (screen_width, screen_height))
 
 #button image
@@ -170,17 +170,94 @@ def load_screen():
 
 
 def collections_screen():
+    collections_bg_img = pygame.image.load("main page/common background.png").convert()
+    collections_bg_img = pygame.transform.scale(collections_bg_img, (screen_width, screen_height))
+
+    save_data = load_checkpoint()
+    unlocked_endings = save_data.get("flags", {}) if save_data else {}
+
+    # 按角色组织结局
+    grouped_endings = [
+        ("Zheng's Endings", [
+            ("The Routine Life", show_zheng_routine_life),
+            ("Rediscovered Dreams", show_zheng_dreams)
+        ]),
+        ("Emma's Endings", [
+            ("Blissful Emptiness", show_emma_bliss),
+            ("Living Despite Fear", show_emma_fear)
+        ]),
+        ("Player's Endings", [
+            ("Ship of Theseus", show_player_ship if unlocked_endings.get("ending_unlocked_Ship_of_Theseus") else None),
+            ("Justice Served", show_player_justice if unlocked_endings.get("ending_unlocked_Justice_Served") else None),
+            ("Rebirth of the Dual Soul", show_player_rebirth if unlocked_endings.get("ending_unlocked_Rebirth_of_the_Dual_Soul") else None)
+        ])
+    ]
+
+    # 用于按钮排布的起始位置
+    start_y = 70
+    section_spacing = 40  # 每组之间的间距
+    button_spacing = 50   # 同组按钮之间的间距
+
+    all_buttons = []
+    y = start_y
+
+    for section_title, endings in grouped_endings:
+        # 添加组标题
+        title_text = get_font(36).render(section_title, True, "White")
+        title_rect = title_text.get_rect(center=(640, y))
+        all_buttons.append(("label", title_text, title_rect))
+        y += 40  # 标题高度
+
+        for text, action in endings:
+            if action:
+                button = Button(
+                    image=None,
+                    pos=(640, y),
+                    text_input=text,
+                    font=get_font(30),
+                    base_color="White",
+                    hovering_color="Green"
+                )
+            else:
+                button = Button(
+                    image=None,
+                    pos=(640, y),
+                    text_input=f"{text} (Locked)",
+                    font=get_font(30),
+                    base_color="Grey",
+                    hovering_color="Grey"
+                )
+            all_buttons.append(("button", button, action))
+            y += button_spacing
+
+
+        y += section_spacing  # 组之间的空隙
+
+    # 添加返回按钮
+    back_button = Button(
+        image=None,
+        pos=(640, 650),
+        text_input="BACK",
+        font=get_font(40),
+        base_color="White",
+        hovering_color="Green"
+    )
+
     while True:
-        screen.fill("white")
+        screen.blit(collections_bg_img, (0, 0))
         mouse_pos = pygame.mouse.get_pos()
 
-        text = get_font(45).render("This is the COLLECTIONS screen.", True, "Black")
-        rect = text.get_rect(center=(640, 260))
-        screen.blit(text, rect)
+        # 处理所有结局按钮和标题
+        for kind, *data in all_buttons:
+            if kind == "label":
+                text_surface, rect = data
+                screen.blit(text_surface, rect)
+            elif kind == "button":
+                button, _ = data
+                button.changeColor(mouse_pos)
+                button.update(screen)
 
-        back_button = Button(image=None, pos=(640, 460), text_input="BACK",
-                             font=get_font(75), base_color="Black", hovering_color="Green")
-
+        # BACK 按钮
         back_button.changeColor(mouse_pos)
         back_button.update(screen)
 
@@ -188,12 +265,88 @@ def collections_screen():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
             if event.type == pygame.MOUSEBUTTONDOWN:
+                for kind, *data in all_buttons:
+                    if kind == "button":
+                        button, action = data
+                        if button.checkForInput(mouse_pos):
+                            if action:  # ✅ 只有解锁了才调用
+                                click_sound.play()
+                                action()
+                                return
+                            else:
+                                # 未解锁提示
+                                click_sound.play()
+                                warning_font = get_font(30)
+                                warning_text = warning_font.render("You haven't unlocked this ending yet.", True, "Red")
+                                screen.blit(warning_text, warning_text.get_rect(center=(640, 680)))
+                                pygame.display.update()
+                                pygame.time.delay(1500)  # 停顿显示提示
+                                break  # ✅ 避免同时点多个按钮
+
                 if back_button.checkForInput(mouse_pos):
                     click_sound.play()
                     return
 
+
         pygame.display.update()
+
+
+def show_cg_sequence(image_paths):
+    clock = pygame.time.Clock()
+    index = 0
+    show = True
+
+    while show:
+        screen.fill((0, 0, 0))
+        image = pygame.image.load(image_paths[index]).convert()
+        image = pygame.transform.scale(image, (screen_width, screen_height))
+        screen.blit(image, (0, 0))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                index += 1
+                if index >= len(image_paths):
+                    show = False
+
+        pygame.display.update()
+        clock.tick(60)
+
+
+def show_zheng_routine_life():
+    # 这里是展示 CG 或其他内容的 screen
+    return
+
+def show_zheng_dreams():
+    return
+
+def show_emma_bliss():
+    return
+
+def show_emma_fear():
+    return
+
+def show_player_ship():
+    show_cg_sequence([
+        "picture/Ending/End1.1.png",
+        "picture/Ending/End1.2.png",
+        "picture/Ending/End1.3.png",
+        "picture/Ending/End1.4.png",
+    ])
+
+
+def show_player_justice():
+    pass
+
+def show_player_rebirth():
+    pass
+
+
+
 
 def settings_screen():
     global screen,bgm_vol, sfx_vol, text_size,current_font_size,current_language #modify the global variables 
