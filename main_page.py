@@ -170,17 +170,81 @@ def load_screen():
 
 
 def collections_screen():
+    collections_bg_img = pygame.image.load("main page/common background.png").convert()
+    collections_bg_img = pygame.transform.scale(collections_bg_img, (screen_width, screen_height))
+
+    # 按角色组织结局
+    grouped_endings = [
+        ("Zheng's Endings", [
+            ("The Routine Life", show_zheng_routine_life),
+            ("Rediscovered Dreams", show_zheng_dreams)
+        ]),
+        ("Emma's Endings", [
+            ("Blissful Emptiness", show_emma_bliss),
+            ("Living Despite Fear", show_emma_fear)
+        ]),
+        ("Player's Endings", [
+            ("Ship of Theseus", show_player_ship),
+            ("Justice Served", show_player_justice),
+            ("Rebirth of the Dual Soul", show_player_rebirth)
+        ])
+    ]
+
+    # 用于按钮排布的起始位置
+    start_y = 70
+    section_spacing = 40  # 每组之间的间距
+    button_spacing = 50   # 同组按钮之间的间距
+
+    all_buttons = []
+    y = start_y
+
+    for section_title, endings in grouped_endings:
+        # 添加组标题
+        title_text = get_font(36).render(section_title, True, "White")
+        title_rect = title_text.get_rect(center=(640, y))
+        all_buttons.append(("label", title_text, title_rect))
+        y += 40  # 标题高度
+
+        # 添加该组内的按钮
+        for text, action in endings:
+            button = Button(
+                image=None,
+                pos=(640, y),
+                text_input=text,
+                font=get_font(30),
+                base_color="White",
+                hovering_color="Green"
+            )
+            all_buttons.append(("button", button, action))
+            y += button_spacing
+
+        y += section_spacing  # 组之间的空隙
+
+    # 添加返回按钮
+    back_button = Button(
+        image=None,
+        pos=(640, 650),
+        text_input="BACK",
+        font=get_font(40),
+        base_color="White",
+        hovering_color="Green"
+    )
+
     while True:
-        screen.fill("white")
+        screen.blit(collections_bg_img, (0, 0))
         mouse_pos = pygame.mouse.get_pos()
 
-        text = get_font(45).render("This is the COLLECTIONS screen.", True, "Black")
-        rect = text.get_rect(center=(640, 260))
-        screen.blit(text, rect)
+        # 处理所有结局按钮和标题
+        for kind, *data in all_buttons:
+            if kind == "label":
+                text_surface, rect = data
+                screen.blit(text_surface, rect)
+            elif kind == "button":
+                button, _ = data
+                button.changeColor(mouse_pos)
+                button.update(screen)
 
-        back_button = Button(image=None, pos=(640, 460), text_input="BACK",
-                             font=get_font(75), base_color="Black", hovering_color="Green")
-
+        # BACK 按钮
         back_button.changeColor(mouse_pos)
         back_button.update(screen)
 
@@ -188,12 +252,48 @@ def collections_screen():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
             if event.type == pygame.MOUSEBUTTONDOWN:
+                for kind, *data in all_buttons:
+                    if kind == "button":
+                        button, action = data
+                        if button.checkForInput(mouse_pos):
+                            click_sound.play()
+                            action()
+                            return
+
                 if back_button.checkForInput(mouse_pos):
                     click_sound.play()
                     return
 
         pygame.display.update()
+
+
+
+def show_zheng_routine_life():
+    # 这里是展示 CG 或其他内容的 screen
+    pass
+
+def show_zheng_dreams():
+    pass
+
+def show_emma_bliss():
+    pass
+
+def show_emma_fear():
+    pass
+
+def show_player_ship():
+    pass
+
+def show_player_justice():
+    pass
+
+def show_player_rebirth():
+    pass
+
+
+
 
 def settings_screen():
     global screen,bgm_vol, sfx_vol, text_size,current_font_size,current_language #modify the global variables 
