@@ -282,7 +282,7 @@ def collections_screen():
                                 warning_text = warning_font.render("You haven't unlocked this ending yet.", True, "Red")
                                 screen.blit(warning_text, warning_text.get_rect(center=(640, 680)))
                                 pygame.display.update()
-                                pygame.time.delay(1500)  # 停顿显示提示
+                                pygame.time.delay(1000)  # 停顿显示提示
                                 break  # ✅ 避免同时点多个按钮
 
                 if back_button.checkForInput(mouse_pos):
@@ -293,28 +293,105 @@ def collections_screen():
         pygame.display.update()
 
 
-def show_cg_sequence(image_paths):
-    clock = pygame.time.Clock()
-    index = 0
-    show = True
+def show_cg_gallery(image_paths):
+    background = pygame.image.load("main page/common background.png").convert()
+    background = pygame.transform.scale(background, (screen_width, screen_height))
 
-    while show:
-        screen.fill((0, 0, 0))
-        image = pygame.image.load(image_paths[index]).convert()
-        image = pygame.transform.scale(image, (screen_width, screen_height))
-        screen.blit(image, (0, 0))
+    thumbnail_size = (320, 180)
+    spacing_x = 30
+    spacing_y = 30
+
+    thumbnails = []
+
+    for path in image_paths:
+        try:
+            image = pygame.image.load(path).convert()
+            thumb = pygame.transform.scale(image, thumbnail_size)
+            thumbnails.append((thumb, image))
+        except:
+            print(f"Failed to load {path}")
+
+    layout_positions = []
+    num = len(thumbnails)
+
+    if num == 1:
+        layout_positions = [(screen_width // 2 - thumbnail_size[0] // 2, 180)]
+    elif num == 4:
+        start_x = (screen_width - (2 * thumbnail_size[0] + spacing_x)) // 2
+        y1 = 150  # ✅ 原 100 → 150：稍微往下移
+        y2 = y1 + thumbnail_size[1] + spacing_y
+        layout_positions = [
+            (start_x, y1), (start_x + thumbnail_size[0] + spacing_x, y1),
+            (start_x, y2), (start_x + thumbnail_size[0] + spacing_x, y2)
+        ]
+    elif num == 5:
+        start_x = (screen_width - (2 * thumbnail_size[0] + spacing_x)) // 2
+        y1 = 60
+        y2 = y1 + thumbnail_size[1] + spacing_y
+        y3 = y2 + thumbnail_size[1] + spacing_y
+        layout_positions = [
+            (start_x, y1), (start_x + thumbnail_size[0] + spacing_x, y1),
+            (start_x, y2), (start_x + thumbnail_size[0] + spacing_x, y2),
+            (screen_width // 2 - thumbnail_size[0] // 2, y3)
+        ]
+    else:
+        print("Unsupported number of CGs for layout.")
+        return
+
+    # ✅ BACK 按钮放左下角
+    back_button = Button(
+        image=None,
+        pos=(150, screen_height - 100),
+        text_input="BACK",
+        font=get_font(40),
+        base_color="White",
+        hovering_color="Green"
+    )
+
+    viewing_fullscreen = False
+    selected_image = None
+
+    while True:
+        screen.blit(background, (0, 0))
+        mouse_pos = pygame.mouse.get_pos()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                index += 1
-                if index >= len(image_paths):
-                    show = False
+
+            if viewing_fullscreen:
+                if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN:
+                    viewing_fullscreen = False
+            else:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    for idx, (thumb, full_image) in enumerate(thumbnails):
+                        rect = pygame.Rect(*layout_positions[idx], *thumbnail_size)
+                        if rect.collidepoint(mouse_pos):
+                            selected_image = full_image
+                            viewing_fullscreen = True
+                            break
+
+                    if back_button.checkForInput(mouse_pos):
+                        click_sound.play()
+                        return  # ✅ 返回上一级（collections_screen）
+
+        if viewing_fullscreen and selected_image:
+            fullscreen = pygame.transform.scale(selected_image, (screen_width, screen_height))
+            screen.blit(fullscreen, (0, 0))
+        else:
+            for idx, (thumb, _) in enumerate(thumbnails):
+                pos = layout_positions[idx]
+                screen.blit(thumb, pos)
+
+            back_button.changeColor(mouse_pos)
+            back_button.update(screen)
 
         pygame.display.update()
-        clock.tick(60)
+
+
+
+
 
 
 def show_zheng_routine_life():
@@ -331,19 +408,30 @@ def show_emma_fear():
     return
 
 def show_player_ship():
-    show_cg_sequence([
+    show_cg_gallery([
         "picture/Ending/End1.1.png",
         "picture/Ending/End1.2.png",
         "picture/Ending/End1.3.png",
         "picture/Ending/End1.4.png",
     ])
 
-
 def show_player_justice():
-    pass
+    show_cg_gallery([
+        "picture/Ending/End2.1.png",
+        "picture/Ending/End2.2.png",
+        "picture/Ending/End2.3.png",
+        "picture/Ending/End2.4.png",
+    ])
 
 def show_player_rebirth():
-    pass
+    show_cg_gallery([
+        "picture/Ending/End3.1.png",
+        "picture/Ending/End3.2.png",
+        "picture/Ending/End3.3.png",
+        "picture/Ending/End3.4.png",
+        "picture/Ending/End3.5.png",
+    ])
+
 
 
 
