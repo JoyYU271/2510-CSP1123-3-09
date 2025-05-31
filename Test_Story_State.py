@@ -315,7 +315,7 @@ def init_game():
     start_chapter("chapter_1")
 
 init_game()  
-
+npc_manager = NPCManager()
 
 
 run = True
