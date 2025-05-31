@@ -1,5 +1,8 @@
 import pygame
 import sys
+from pygame.locals import *
+import character_movement
+#import CSP_project
 import json
 
 
@@ -10,38 +13,56 @@ screen_width = 1280
 screen_height = 720
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
 pygame.display.set_caption("Chapter Intro Test")
+
+world_width = 2488
+world_height = 720
+
 clock = pygame.time.Clock()
 FPS = 60
-# Load JSON data
 
+# Load JSON data
 with open('NPC_dialog/NPC.json', 'r', encoding='utf-8') as f:
         all_dialogues = json.load(f)
 
 dialog_box_img = pygame.image.load("picture/Character Dialogue/dialog boxxx.png").convert_alpha()
 
+player = character_movement.doctor(100,521,4.5) 
+player.name = "You" # remember to put in class doctor
+moving_left = False
+moving_right = False
+
+npc_list =["Nuva"]
+shown_dialogues = {}
+selected_options = {}
+
+cutscene_active = False
+cutscene_speed = 3 #pixel per frame
+
+#camera_group = CSP_project.CameraGroup()
+
 class dialog:
     def __init__(self,npc,player):
-        super().__init__()
+        #Remove super().__init__()
 
         #load dialog box img n set transparency
         self.dialog_box_img = pygame.image.load("picture/Character Dialogue/dialog boxxx.png").convert_alpha()
         self.dialog_box_img.set_alpha(200)
 
         # character portrait selection based on NPC name
-        if npc.name == "Nuva":
-             self.portrait = pygame.image.load("picture/Character Dialogue/Nurse.png").convert_alpha()
-        elif npc.name == "Dean":
-            self.portrait = pygame.image.load("picture/Character Dialogue/Dean.png").convert_alpha()
-        elif npc.name == "Zheng":
-            self.portrait = pygame.image.load("picture/Character Dialogue/Patient1.png").convert_alpha()
-        elif npc.name == "Emma":
-            self.portrait = pygame.image.load("picture/Character Dialogue/Patient2.png").convert_alpha()
-        elif npc.name == "John":
-            self.portrait = pygame.image.load("picture/Character Dialogue/Patient3.png").convert_alpha()
-        elif npc.name == "Police":
-            self.portrait = pygame.image.load("picture/Character Dialogue/Police.png").convert_alpha()
+        potrait_paths = {
+            "Nuva": "picture/Character Dialogue/Nurse.png",
+            "Dean": "picture/Character Dialogue/Dean.png",
+            "Zheng": "picture/Character Dialogue/Patient1.png",
+            "Emma": "picture/Character Dialogue/Patient2.png",
+        }
 
         # always load player portrait
+        portrait_path = potrait_paths.get(npc.name)
+        if portrait_path:
+            self.portrait = pygame.image.load(portrait_path).convert_alpha()
+        else:
+            self.portrait = pygame.Surface((1,1)) #fallback or error handling
+
         self.player_portrait = pygame.image.load("picture/Character Dialogue/Doctor.png").convert_alpha()
 
         self.player = player
@@ -133,7 +154,7 @@ class dialog:
            screen.blit(self.dialog_box_img, (dialog_x, dialog_y))
 
            #draw speaker name
-           name_to_display = self.npc.name if speaker == "npc" else self.player.name
+           name_to_display if speaker == "npc" else self.player.name #change here
            draw_text(screen,name_to_display,40,(0,0,0),dialog_x + 200, dialog_y + 10)
 
            #draw choice options if present
@@ -149,15 +170,6 @@ class dialog:
 
                      if option_y < screen.get_height() - 40: #ensure option is on screen
                         draw_text(screen, option["option"],30,color,dialog_center_x,option_y,center= True)
-
-          
-           # words come out one by one effect
-           current_time = pygame.time.get_ticks()
-           if self.letter_index < len(text):
-                if current_time - self.last_time > self.letter_delay:
-                     self.displayed_text += text[self.letter_index]
-                     self.letter_index += 1
-                     self.last_time = current_time
           
            # draw dialogue text 
            draw_text(screen,self.displayed_text,30,(0,0,0),dialog_x + self.dialog_box_img.get_width()//2  ,dialog_y + self.dialog_box_img.get_height()//2 - 15 ,center = True,max_width=text_max_width)
@@ -299,7 +311,12 @@ class dialog:
         self.story_data = filtered_story_data
         self.step = 0
         self.reset_typing()
-                
+
+        if self.current_story in self.shown_dialogues:
+            self.story_data = []
+        else:
+            self.shown_dialogues[self.current_story] = True
+        
 
 # =============text setting================
 def draw_text(surface,text,size,color,x,y,center = False,max_width = None):
@@ -351,9 +368,63 @@ def draw_text(surface,text,size,color,x,y,center = False,max_width = None):
 
     return line_y + line_height#return the y position after all text
     
+#===========NPCs==============
+class NPC(pygame.sprite.Sprite):
+    def __init__(self,x,y,name,image_path = None):
+        super().__init__()
+
+        self.flip = False
+
+        if image_path is None:
+            if name == "Nuva":
+                image_path = 'picture/Character QQ/Nurse idle.png'
+            elif name == "Dean":
+                image_path = 'picture/Character QQ/Dean idle.png'
+            elif name == "Zheng":
+                image_path = 'picture/Character QQ/Zheng idle.png'
+            elif name =="Emma":
+                image_path = 'picture/Character QQ/Emma idle.png'
+            elif name == "John":
+                image_path = 'picture/Character QQ/John idle.png'
+            elif name =="Police":
+                image_path = 'picture/Character QQ/Police idle.png'
+        
+        
+        self.image = pygame.image.load(image_path).convert_alpha()
+        self.world_pos = pygame.Vector2(x,y) #for world coordinate
+        self.rect = self.image.get_rect()
+        self.rect.center = (x,y)
+        self.name = name
+
+# to manage multiples NPCs
+class NPCManager:
+    def __init__(self):
+        self.npcs = []
+
+    def add_npc(self,npc):
+        self.npcs.append(npc)
+    
+    def get_nearest_npc(self,player):
+        nearest_npc = None
+        min_distance = float('inf')
+
+        for npc in self.npcs:
+
+            if npc.rect.colliderect(player.rect):
+
+                dx = npc.rect.centerx - player.rect.centerx
+                dy = npc.rect.centery - player.rect.centery
+                distance = (dx**2 + dy**2)**0.5
+
+                if distance< min_distance:
+                    min_distance = distance
+                    nearest_npc = npc
+        return nearest_npc
 
 class SimpleChapterIntro:
-    def __init__(self):
+    def __init__(self, display, gameStateManager):
+        self.display = display
+        self.gameStateManager = gameStateManager
         self.active = False
         self.background = None
         self.dialogue = []
@@ -510,57 +581,284 @@ class SimpleChapterIntro:
            hint_rect = hint_text.get_rect(bottomright=(dialog_x + dialog_box_img.get_width() - 90,  dialog_y + dialog_box_img.get_height() - 20))
 
            screen.blit(hint_text, hint_rect)
-     
-     
-SCREENWIDTH, SCREENHEIGHT = 1280, 720
+
+    def run(self):
+        keys = pygame.key.get_pressed()
+        self.update(keys)
+        self.draw(self.display)
+
+npc_manager = NPCManager()
+
+#patient1 = NPC(1000,500,"Zheng")
+#patient2 = NPC(400,500,"Emma")
+
+current_dialogue = None
+
+#npc_manager.add_npc(patient1)
+#npc_manager.add_npc(patient2)
+
+class CameraGroup(pygame.sprite.Group):
+    def __init__(self):
+        super().__init__()
+        self.display_surface = pygame.display.get_surface()
+        
+        self.player = player
+        self.npc_manager = npc_manager
+        self.screen = screen
+
+        #camera offset
+        self.offset = pygame.math.Vector2()
+        self.half_w = self.display_surface.get_size()[0] // 2
+        self.half_h = self.display_surface.get_size()[1] // 2
+
+        #box camera 
+        self.camera_borders = {'left':200, 'right':200, 'top':100, 'bottom':100}
+        l = self.camera_borders['left']
+        t = self.camera_borders['top']
+        w = self.display_surface.get_size()[0] - (self.camera_borders['left'] + self.camera_borders['right'])
+        h = self.display_surface.get_size()[1] - (self.camera_borders['top'] + self.camera_borders['bottom'])
+        self.camera_rect = pygame.Rect(l,t,w,h)
+
+        self.background = None
+
+    def set_background(self, background):
+        self.background = background
+
+    def center_target_camera(self,target):
+        self.offset.x = target.rect.centerx - self.half_w
+        self.offset.y = target.rect.centery - self.half_h
+
+    def box_target_camera(self,target):
+
+        if target.rect.left < self.camera_rect.left:
+           self.camera_rect.left = target.rect.left
+        if target.rect.right > self.camera_rect.right:
+           self.camera_rect.right = target.rect.right 
+
+        self.offset.x = self.camera_rect.left - self.camera_borders['left']
+        self.offset.y = self.camera_rect.top - self.camera_borders['top']
+
+         # Clamp offset to world bounds
+        self.offset.x = max(0, min(self.offset.x, world_width - self.display_surface.get_width()))
+        self.offset.y = max(0, min(self.offset.y, world_height - self.display_surface.get_height()))
+
+    def custom_draw(self,player):
+
+        #self.center_target_camera(player)
+        self.box_target_camera(player)
+
+        # draw background (adjust this to match your game's background)
+        if self.background:
+            offset_bg = pygame.Vector2(0,0) - self.offset
+            self.display_surface.blit(self.background, offset_bg)
+
+        #player?
+        for sprite in sorted(self.sprites(), key=lambda spr: (spr.rect.centery, spr != player)):
+            offset_pos = sprite.rect.topleft - self.offset
+            flipped_image = pygame.transform.flip(sprite.image, sprite.flip, False)
+            self.display_surface.blit(flipped_image, offset_pos)
+
+
+camera_group = CameraGroup()
 
 class Game:
     def __init__(self):
         pygame.init()
         self.clock = pygame.time.Clock()
-        self.screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
+        self.screen = pygame.display.set_mode((screen_width, screen_height))
+        self.player = player
+        self.npc_manager = NPCManager()
 
         self.gameStateManager = GameStateManager('start')
-        self.start = Start(self.screen, self.gameStateManager)
-        self.level = Rooms(self.screen, self.gameStateManager)
+        self.intro = SimpleChapterIntro(self.screen, self.gameStateManager)
+        self.start = Start(self.screen, self.gameStateManager, self.intro)
+        self.level = Rooms(self.screen, self.gameStateManager, self.player, self.npc_manager, self.screen)
         
+        self.intro.completed_callback = lambda: self.gameStateManager.set_state('level')
 
-        self.states = {'start':self.start, 'level':self.level}
+        self.states = {'intro':self.intro, 'start':self.start, 'level':self.level}
+    
+        nuva = NPC(890,520,"Nuva")
+        dean = NPC(400,520,"Dean")
+        self.npc_manager.add_npc(nuva)
+        self.npc_manager.add_npc(dean)
+
+        camera_group.add(self.player)
+        camera_group.add(nuva)
+        camera_group.add(dean)
+
     def run(self):
-        while True:
-            for event in pygame.event.get():
+        running = True
+        moving_left = False
+        moving_right = False
+        run = True
+
+        while running:
+            events = pygame.event.get()
+
+            # handle input once for everyone
+            moving_left, moving_right, run = character_movement.keyboard_input(events, moving_left, moving_right, run)
+
+            currentState = self.gameStateManager.get_state()
+
+            for event in events:
                 if event.type == pygame.QUIT:
-                    pygame.quit()
+                    running = False
                     sys.exit()
 
-            self.states[self.gameStateManager.get_state()].run()
+                if event.type == pygame.VIDEORESIZE:
+                    screen_width, screen_height = event.w, event.h
+                    # Optional: tell the camera group about the new size
+                    camera_group.display_surface = screen
+                    camera_group.half_w = screen_width // 2
+                    camera_group.half_h = screen_height // 2
 
+            if currentState == 'level':
+                dean = next(npc for npc in self.npc_manager.npcs if npc.name == "Dean")
+                if dean:
+                    self.states['level'].run(moving_left, moving_right, run, dean)
+            else:
+                self.states[currentState].run()
+            
             pygame.display.update()
             self.clock.tick(FPS)
 
-
 class Start:    #try to call back SimpleChapterIntro
-    def __init__(self, display, gameStateManager):
+    def __init__(self, display, gameStateManager, intro): #, intro
         self.display = display
-        self.gameStateManager = gameStateManager        
+        self.gameStateManager = gameStateManager
+        self.intro = intro
+
     def run(self):
         self.display.fill('blue')
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_e]:
+        if keys[pygame.K_i]:
+            self.intro.start("chapter_1")
+            self.gameStateManager.set_state('intro')
+        if keys[pygame.K_l]:
             self.gameStateManager.set_state('level')
 
+            
 #make plan to change by colliderect/position of player.rect
 
 class Rooms:    # class Level in tutorial
-    def __init__(self, display, gameStateManager):
+    def __init__(self, display, gameStateManager, player, npc_manager, screen):
         self.display = display
-        self.gameStateManager = gameStateManager        
-    def run(self):
-        self.display.fill('red')
+        self.gameStateManager = gameStateManager
+        self.background = pygame.image.load("picture/Map Art/Map clinic.png").convert_alpha()
+        camera_group.set_background(self.background)
+
+        self.player = player
+        self.npc_manager = npc_manager
+        self.screen = screen
+        
+        self.current_dialogue = None
+        self.space_released = True
+        self.cutscene_active = False
+
+        self.dean_exiting = False
+
+        self.last_npc_name = None
+        self.last_story = None
+        
+
+    def run(self, moving_left, moving_right, run, dean):
+        entry = {}
+        self.dean = dean
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_g]:
+
+        # if self.background:
+        #     self.display.blit(self.background, (0,0))
+        # else:
+        #     self.display.fill('red')
+
+        # --- Movement ---
+        if not self.current_dialogue or not self.current_dialogue.talking:
+              is_moving = self.player.move(moving_left,moving_right)
+        else:
+              is_moving = False
+        self.player.update_animation(is_moving)
+          
+        # --- Draw NPCs ---
+        # for npc in self.npc_manager.npcs:
+        #         self.display.blit(npc.image,npc.rect)
+
+        # self.player.draw(self.display)
+
+        # --- Dialogue logic ---
+        nearest_npc = self.npc_manager.get_nearest_npc(self.player)
+
+        #=====space======
+        if nearest_npc or self.current_dialogue:
+            if nearest_npc and (self.current_dialogue is None or self.current_dialogue.npc != nearest_npc):
+                self.current_dialogue = dialog(nearest_npc,self.player)
+            
+            if keys[pygame.K_SPACE] and self.space_released:
+                self.space_released = False
+                if self.current_dialogue:
+                   self.current_dialogue.handle_space(keys)
+
+            if self.current_dialogue:
+               self.current_dialogue.handle_option_selection(keys)
+        
+
+            if self.current_dialogue:
+                self.npc_name = self.current_dialogue.npc.name
+                self.current_story = getattr(self.current_dialogue, "current_story", "chapter_1")
+
+                # Only update story_data if the NPC or story changed
+                if (self.last_npc_name != self.npc_name) or (self.last_story != self.current_story):
+                    self.npc_data = all_dialogues.get(self.npc_name, {})
+                    self.story_data = self.npc_data.get(self.current_story, [])
+                    self.last_npc_name = self.npc_name
+                    self.last_story = self.current_story
+
+                self.step = self.current_dialogue.step
+
+                if not self.current_dialogue.talking:
+                    self.current_dialogue = None
+                    entry = {}
+                else:
+                    entry = self.story_data[self.step]
+            else:
+                entry = {}
+
+            
+        if not keys[pygame.K_SPACE]:
+            self.space_released = True
+        
+        camera_group.custom_draw(self.player)
+        
+        # --- Draw dialogue if active ---
+        if self.current_dialogue and self.current_dialogue.talking:
+            self.current_dialogue.update()
+            self.current_dialogue.draw(self.display)
+    
+        # --- Trigger cutscene --- 
+        if self.current_dialogue and self.current_dialogue.talking:
+            current_npc_name = self.current_dialogue.npc.name
+
+            if current_npc_name == "Dean":
+                if not self.cutscene_active:
+                    self.cutscene_active = True
+
+            else:
+                self.cutscene_active = False
+    
+        if self.cutscene_active and entry.get("event") == "dean_exits":
+            self.dean_exiting = True
+        
+        if self.dean_exiting:
+            self.dean.rect.x -= 3
+            if self.dean.rect.x < -self.dean.image.get_width():
+                        self.dean_exiting = False
+                        self.cutscene_active = False
+
+        # --- Back to start screen ---
+        if keys[pygame.K_t]:
             self.gameStateManager.set_state('start')
 
+            
 class GameStateManager:
     def __init__(self, currentState):
         self.currentState = currentState
@@ -580,50 +878,3 @@ if __name__== '__main__':
 # # }
 
 # #print(thisdict)
-
-# Create intro object
-showing_intro = True
-chapter_intro = SimpleChapterIntro()
-chapter_intro.start("chapter_1")
-
-
-# Main loop
-running = True
-while running:
-    # Handle events
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                running = False
-            elif event.key == pygame.K_r:
-                # Restart intro
-                chapter_intro.start("chapter_1")
-
-
-    # Get keys
-    keys = pygame.key.get_pressed()
-    
-    # Update and draw intro
-    if chapter_intro.active:
-        if chapter_intro.update(keys):
-            chapter_intro.draw(screen)
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                   running = False
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_r:
-                        # Restart intro
-                        chapter_intro.start("chapter_1")
-                        print("Chapter intro restarting...")
-        else:
-            # If intro is no longer active, restart it
-            print("Chapter intro finished")
-            #chapter_intro.start("chapter_1")
-    
-    # Update display
-    pygame.display.flip()
-    clock.tick(FPS)
-pygame.quit()
-sys.exit()

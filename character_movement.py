@@ -9,6 +9,10 @@ pygame.init()
 #=======screen setting==========
 screen_width = 1280
 screen_height = 720
+
+world_width = 2488
+world_height = 720
+
 #set framerate
 FPS = 60
 #define background color
@@ -63,8 +67,8 @@ class doctor(pygame.sprite.Sprite):
     # let player cannot get out of screen
        if self.rect.left < 0 :
            self.rect.left = 0
-       if self.rect.right > screen_width:
-           self.rect.right = screen_width
+       if self.rect.right > world_width:
+           self.rect.right = world_width
        return moving_left or moving_right
     
 
@@ -90,27 +94,26 @@ class doctor(pygame.sprite.Sprite):
     def draw(self,screen):
         screen.blit (pygame.transform.flip(self.image,self.flip,False),self.rect)
 
-def keyboard_input(moving_left, moving_right, run) :
-        for event in pygame.event.get():
-           
+def keyboard_input(events, moving_left, moving_right, run) :
+        for event in events:
            if event.type == pygame.QUIT:
-              run = False
+                run = False
 
         # Keyboard button pressed
            if event.type == KEYDOWN :
               if event.key == K_a:
-                moving_left = True
+                    moving_left = True
               if event.key == K_d:
-                moving_right = True
+                    moving_right = True
 
         # keyboard button released
            if event.type == KEYUP :
                if event.key == K_a:
-                moving_left = False
+                    moving_left = False
                if event.key == K_d:
-                moving_right = False
+                    moving_right = False
                if event.key == K_ESCAPE:
-                run = False
+                    run = False
         return moving_left,moving_right,run
 
 

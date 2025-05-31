@@ -470,8 +470,9 @@ while run:
               screen.blit(npc.image,npc.rect)
 
           player.draw(screen)
-          
-          moving_left,moving_right,run =  keyboard_input(moving_left, moving_right, run)
+
+          events = pygame.event.get()
+          moving_left,moving_right,run =  keyboard_input(events, moving_left, moving_right, run)
 
 
           nearest_npc = npc_manager.get_nearest_npc(player)
