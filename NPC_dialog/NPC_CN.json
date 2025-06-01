@@ -1,16 +1,54 @@
 {
+  "intro":{
+    "chapter_1":[
+        {"speaker" :"narrator","text":"(2025年，4月15日)","shown": false},
+        {"speaker" :"narrator","text":"(你是一个心理医生。)","shown": false},
+        {"speaker" :"narrator","text":"(毕业后，你被身为诊所院长的父亲邀请过去他的诊所工作。)","shown": false},
+        {"speaker": "narrator","text":"(“Mindscape Chamber”,这是诊所的名字。)","shown":false},
+        {"speaker" :"narrator","text":"(今天，是你上班的第一天。)","shown": false},
+        {"speaker" :"narrator","text":"[提示: 按 W / D 键 来移动角色]","shown": false},
+        {"speaker" :"narrator","text":"...........","shown": false}
+        
+    ],
+    "chapter_2":[
+        {"speaker" :"narrator","text":"(今天也是新一天。)","shown": false},
+        {"speaker" :"narrator","text":"(今天你也选择了早到，诊所内几乎没什么人)","shown": false},
+        {"speaker" :"narrator","text":"......","shown": false}
+
+    ],
+    "chapter_3":[
+        {"speaker" :"player","text":"(我该找父亲谈谈，这个‘实验’显然有问题。)","shown": false},
+        {"speaker" :"player","text":"(话说自从治疗Emma小姐之后，我就偶尔会出现幻听的症状。)","shown": false},
+        {"speaker" :"player","text":"(还有一直梦见奇怪的噩梦……)","shown": false},
+        {"speaker" :"player","text":"(梦里，父母亲又再次争吵，但画面一转母亲就倒在血泊里……)","shown": false},
+        {"speaker" :"player","text":"(是我太累了吗)","shown": false},
+        {"speaker" :"player","text":"(可能我也该看心理医生了。)","shown": false},
+        {"speaker" :"narrator","text":"???: [那不是噩梦。]","shown": false},
+        {"speaker" :"player","text":"什么意思？","shown": false},
+        {"speaker" :"narrator","text":"???: [字面意思。你还是没能记起来吗？哪怕是一小点？]","shown": false},
+        {"speaker" :"player","text":"你到底在说什么？","shown": false},
+        {"speaker" :"narrator","text":"???: [他杀了母亲。]","shown": false},
+        {"speaker" :"player","text":"？！","shown": false},
+        {"speaker" :"player","text":"少开玩笑了。","shown": false},
+        {"speaker" :"narrator","text":"???: [我知道你不会信，毕竟你已把我和一切都遗忘。]","shown": false},
+        {"speaker" :"narrator","text":"......","shown": false}
+
+    ]
+  },
+  
+
+
  "Nuva":{
     "chapter_1":[
         {"speaker":"npc","text":"哈咯！你就是新来的心理医生吗？","shown": false},
         {"choice":[
             {"option":"我不是","next":"not_a_doctor"},
             {"option":"我是","next":"a_doctor"}
-        ]
+        ],"shown":false
         }
     ],
 
     "not_a_doctor" :[
-
         {"speaker" :"player","text":"我不是。","shown": false},
         {"speaker":"npc","text":"诶～～～我还以为这么好看的帅哥会是我们新来的医生。","shown": false},
         {"speaker":"npc","text":"你是来找院长的吗？他刚刚离开去参加会议了哦。","shown": false},
@@ -32,22 +70,57 @@
     "chapter_1_common":[
         {"speaker" :"npc","text":"我叫Nuva，是负责前台的护士，如果你有什么问题都可以来问我这个前辈哦~","shown": false},
         {"speaker" :"player","text":"好，我知道了。","shown": false},
-        {"speaker" :"npc","text":"对了，昨天已经有一位患者预约了你今天的治疗。"},
-        {"speaker" :"npc","text":"她已经在你的办公室等候了，你准备好后可以随时过去。"}
+        {"speaker" :"npc","text":"对了，昨天已经有一位患者预约了你今天的治疗。","shown":false},
+        {"speaker" :"npc","text":"她已经在你的办公室等候了，你准备好后可以随时过去。","shown":false}
 
 
 
+
+    ],
+
+    "repeat_only":[
+       {"speaker":"npc","text":"她已经在你的办公室等候了，你准备好后可以随时过去。"}
+    ],
+
+    "chapter_2":[
+        {"speaker" :"npc","text":"早上好！今天你也来得这么早啊！","shown": false},
+        {"speaker" :"player","text":"早上好！今天你也来得这么早啊！","shown": false},
+        {"speaker" :"player","text":"(郑小姐和父亲的关系，果然还是有些在意。)","shown": false},
+        {"speaker" :"player","text":" (......那个“实验”到底是怎么回事？)","shown": false},
+        {"speaker" :"player","text":"请问院长在诊所吗？","shown": false},
+        {"speaker" :"npc","text":"院长在的哦～就在他的办公室里。","shown": false},
+        {"speaker" :"npc","text":"你要找他吗？","shown": false},
+        {"speaker" :"player","text":"嗯，有些事情要找他询问。他的办公室在哪？","shown": false},
+        {"speaker" :"npc","text":"就在你的办公室隔壁而已～","shown": false},
+        {"speaker" :"player","text":"(原来上次锁着的房间就是他的办公室)","shown": false},
+        {"speaker" :"player","text":"谢谢，那我先走了。","shown": false},
+        {"speaker" :"npc","text":"好～拜拜～","shown": false},
+        {"speaker" :"npc","text":"院长办公室就在你工作室隔壁哦~"}
+    ],
+
+    "chapter_3":[
+        {"speaker" :"npc","text":"早～","shown": false},
+        {"speaker" :"player","text":"(这位护士似乎每一天都活力满满。)","shown": false},
+        {"speaker" :"player","text":"早。","shown": false},
+        {"speaker" :"npc","text":"你看起来很累，没休息好吗？","shown": false},
+        {"speaker" :"player","text":"大概吧。","shown": false},
+        {"speaker" :"npc","text":"我可以请你杯咖啡！","shown": false},
+        {"speaker" :"player","text":"你的好意我心领了，谢谢。","shown": false},
+        {"speaker" :"player","text":"......","shown": false},
+        {"speaker" :"player","text":"(……去找父亲吧。)"}
     ]
  },
+
+
   "Dean":{
     "chapter_1":[
-        {"speaker" :"player","text":"(这里就是诊所了……)","shown": false},
+        {"speaker" :"player","text":"(这里就是诊所了……)","bgm": "bgm/talk_with_dean.mp3","shown": false},
         {"speaker" :"npc","text":"八点十分，你早到了五十分钟","shown": false},
         {"speaker" :"player","text":"我想提前了解这里的环境……父亲。","shown": false},
         {"speaker" :"narrator","text":"(在你喊出父亲的瞬间，你看见他的眉头轻皱。)","shown": false},
         {"speaker" :"npc","text":"在诊所我们只是上下关系，不要叫我父亲。","shown": false},
         {"speaker" :"npc","text":"我先走了，你自行探索，我还有会议。","sound": "footsteps","shown": false},
-        {"speaker" :"narrator","text":"(他走出了诊所。)","shown": false},
+        {"speaker" :"narrator","text":"(他走出了诊所。)", "event": "dean_exit_cutscene","sound": "footsteps","shown": false},
         {"speaker" :"player","text":"(在探索前先跟母亲报备吧。)","shown": false},
         {"speaker" :"player","text":"(你拿起了手机，打开了母亲的聊天栏。)","shown": false},
         {"speaker" :"narrator","text":"(但是聊天栏里只有你的自言自语，对方始终没有已读，没有回应。) ","shown": false},
@@ -60,9 +133,233 @@
         {"speaker" :"player","text":"你会为我感到骄傲吗，母亲？","shown": false},
         {"speaker" :"narrator","text":"(......)","sound_stop": true,"shown": false},
         {"speaker" :"narrator","text":"(你望着不会有回应的聊天看了几秒后收起手机。)","shown": false},
-        {"speaker" :"player","text":"先走走吧。","shown": false}
+        {"speaker" :"player","text":"先走走吧。","bgm": "bgm/intro.mp3","shown": false}
+    ],
+
+    "chapter_2":[
+        {"speaker" :"npc","text":"有事吗？","shown": false},
+        {"speaker" :"player","text":"我想问一些事情。","shown": false},
+        {"speaker" :"player","text":"(该一步步问还是直入正题？)","shown": false},
+        {"choice":[
+            {"option":"你之前是不是有一位叫Zheng的学生？","next":"student"},
+            {"option":"你以前进行过什么实验吗？","next":"experiment"}
+        ]
+        }
+    ],
+
+    "student":[
+        {"speaker" :"player","text":"你之前是不是有一位叫Zheng的学生？","shown": false},
+        {"speaker" :"narrator","text":"(你见他思索了片刻.)","shown": false},
+        {"speaker" :"npc","text":"有。她是个优秀的学生。","shown": false},
+        {"speaker" :"npc","text":"她曾在工作上协助过我，只是可惜毕业后她似乎没再往心理学深造。","shown": false},
+        {"speaker" :"npc","text":"你怎么会问起她？","shown": false},
+        {"speaker" :"npc","text":"前段时间她来这里问诊，在她的潜意识里我看见你出现在她的回忆……","shown": false},
+        {"speaker" :"narrator","text":"(他打断了你.)","shown": false},
+        {"speaker" :"npc","text":"病人的记忆是隐私，不要再提起这个。","shown": false},
+        {"speaker" :"player","text":"(......)","shown": false},
+        {"speaker" :"player","text":"(……离开吧)"}
+    ],
+
+    "experiment":[
+        {"speaker" :"player","text":"你以前进行过什么实验吗？","shown": false},
+        {"speaker" :"player","text":"(你注意到他听到‘实验’这字时骤然冰冷的视线，明明是炎热的天气却令你感到刺骨。)","shown": false},
+        {"speaker" :"npc","text":"(很快他又收起了那寒然的目光，仿佛刚刚是幻觉一般。)","shown": false},
+        {"speaker" :"npc","text":"为研究者，参与学术研究相关实验是本职工作。而我参与过的学术项目很多，你是指哪个？","shown": false},
+        {"speaker" :"player","text":"催眠疗法实验，我在郑小姐记忆里看到的。","shown": false},
+        {"speaker" :"narrator","text":"(他露出了了然的表情，但他明白了什么？)","shown": false},
+        {"speaker" :"npc","text":"原来如此，她是我带过的学生，协助过实验的常规数据收集。","shown": false},
+        {"speaker" :"player","text":"但是，报告上都写着失败。那场实验都发生了什么，实验里的病人都如何了？","shown": false},
+        {"speaker" :"narrator","text":"(他抬手打断你的话语，袖口露出腕表——是母亲送他的那只。)","shown": false},
+        {"speaker" :"npc","text":"在临床上，我们叫它'疗效未达预期'。","shown": false},
+        {"speaker" :"npc","text":"你该专注当下患者的治疗，而非讨论病人的隐私，还觉得自己发现了什么阴谋。","shown": false},
+        {"speaker" :"npc","text":"现在，出去时带上门。","shown": false},
+        {"speaker" :"player","text":"(......)","shown": false},
+        {"speaker" :"player","text":"(……离开吧)"}
+    ],
+
+     "repeat_only":[
+        {"speaker":"npc","text":"(……离开吧)"}
+    ],
+    
+
+    "chapter_3":[
+        {"speaker" :"npc","text":"你来了。","shown": false},
+        {"speaker" :"narrator","text":"(他看起来完全不惊讶于你的出现。)","shown": false},
+        {"speaker" :"player","text":"这里就是‘实验’的所在地了…？你不可能那么粗心大意，所以，是故意让我发现这里的？","shown": false},
+        {"speaker" :"npc","text":"没错。反正你也知道不少了吧？","shown": false},
+        {"speaker" :"npc","text":"不如先说说你的结论？","shown": false},
+        {"speaker" :"player","text":"……你一直推崇的催眠疗法，是用其他人创伤筑成的金字塔。","shown": false},
+        {"speaker" :"npc","text":"那叫'疗效未达预期‘。","shown": false},
+        {"speaker" :"player","text":"但他们的痛苦却是真的！","shown": false},
+        {"speaker" :"player","text":"Emma小姐就是其中之一……她曾说过‘不知道为什么越来越频繁梦到噩梦‘，就是因为疗程失败导致的对吧！","shown": false},
+        {"speaker" :"player","text":"她曾说过‘不知道为什么越来越频繁梦到噩梦‘，就是因为疗程失败导致的对吧？","shown": false},
+        {"speaker" :"npc","text":"我不否认。但成功例子并不是完全没有。","shown": false},
+        {"speaker" :"player","text":"……你是说Zheng小姐吗？但是我不明白她怎么会接受。","shown": false},
+        {"speaker" :"npc","text":"那孩子心理承受能力不行，看到报告上的失败就怀疑自己所做的事情。","shown": false},
+        {"speaker" :"npc","text":"所以，我只能用催眠让她忘记有关的一切。","shown": false},
+        {"speaker" :"npc","text":"所幸，进行得非常成功。","shown": false},
+        {"speaker" :"player","text":"......","shown": false},
+        {"speaker" :"npc","text":"科学探索总要付出代价。那些失败案例也好，成功案例也罢…...他们为心理学进步做出了贡献。","shown": false},
+        {"speaker" :"npc","text":"好比电车难题","shown": false},
+        {"speaker" :"npc","text":"被绑在轨道上即将被列车碾压的五个人和只要拉下拉杆就能只牺牲的一个人......","shown": false},
+        {"speaker" :"npc","text":"你会怎么选？","shown": false},
+        {"speaker" :"narrator","text":"(提醒: 接下来的选择将影响结局)","shown": false},
+        {"choice":[
+            {"option":"拉下拉杆牺牲一个人","next":"Ship_of_Theseus"},
+            {"option":"什么都不做牺牲五个人","next":"Justice_Served"},
+            {"option":"别扯什么哲学问题","next":"Rebirth_of_the_Dual_Soul"}
+        ]
+        }
+        
+        
+    ],
+
+    "Ship_of_Theseus":[
+        {"cg":["picture/Ending/black screen.png"]},
+        {"speaker" :"player","text":"……如果必须选择，我会拉下拉杆。"},
+        {"speaker" :"narrator","text":"(你见他露出欣慰的微笑)"},
+        {"speaker" :"npc","text":"很好，你也能理解我的逻辑不是吗？"},
+        {"speaker" :"npc","text":"科学需要取舍，而我的研究最终会拯救更多人。"},
+        {"speaker" :"npc","text":" 现在，你愿意加入我吗？我们可以一起完善这个疗法。 "},
+        {"cg":["picture/Ending/End1.1.png"]},
+        {"speaker" :"narrator","text":"(几个月后)"},
+        {"speaker" :"narrator","text":"(诊所的灯光依旧明亮)"},
+        {"speaker" :"narrator","text":"(你白天在诊所用仪器治疗他人，夜晚在地下室用一个个实验体验证催眠疗法的可能性)"},
+        {"speaker" :"narrator","text":"(但现在，你只是平静地记录数据，分析误差，然后调整下一次实验的参数。)"},
+        {"cg":["picture/Ending/End1.2.png"]},
+        {"speaker" :"player","text":"(没有牺牲，又会有哪来的救赎呢)"},
+        {"speaker" :"player","text":"(为了更伟大的福祉……我必须走下去)"},
+        {"cg":["picture/Ending/End1.3.png"]},
+        {"speaker" :"narrator","text":"(一年后的学术发布会)"},
+        {"speaker" :"narrator","text":"(灯光闪烁，你站在演讲台上，往下望黑压压的人群)"},
+        {"speaker" :"player","text":": 我们的研究证明，人类的大脑并非不可修改的硬盘。"},
+        {"speaker" :"player","text":"通过精准的催眠干预，我们可以剥离创伤，重塑健康的心理结构。"},
+        {"speaker" :"narrator","text":"(掌声雷动)"},
+        {"speaker" :"narrator","text":"(你继续发言详细内容，结束后走下台回到父亲身边)"},
+        {"cg":["picture/Ending/End1.4.png"]},
+        {"speaker" :"narrator","text":"((他递给你一杯香槟，杯壁映出你们两人的倒影——同样的白大褂，同样的冷静眼神)"},
+        {"speaker" :"narrator","text":"(他举杯)"},
+        {"speaker":"npc","text":"敬未来。"},
+        {"speaker" :"narrator","text":"(你轻轻碰杯，玻璃相撞的声音清脆而冰冷。)"},
+        {"speaker" :"player","text":"敬未来。"},
+        {"speaker" :"narrator","text":"?:你逐步继承了他的意志，就像被逐渐替换的船板。"},
+        {"speaker" :"narrator","text":"?:你还觉得你还是原来的你吗？","type":"ending"}
+
+
+    ],
+
+    "Justice_Served":[
+        {"cg":["picture/Ending/black screen.png"]},
+        {"speaker" :"player","text":" 我不会碰拉杆…...每个生命都该有平等存续的机会。"},
+        {"speaker" :"npc","text":"真天真，你还是选择了道义主义。"},
+        {"speaker" :"player","text":"……我无法认同你的观念，父亲。"},
+        {"speaker" :"player","text":"我也……不能再这样放任你做下去。"},
+        {"cg":["picture/Ending/End2.1.png"]},
+        {"speaker" :"narrator","text":"(几个星期后)"},
+        {"speaker" :"narrator","text":"(你坐在沙发看着报纸发呆，标题上的‘知名心理学家涉嫌非法人体实验‘相当瞩目) "},
+        {"speaker" :"narrator","text":"(配图是父亲被警方带走的背影，他的白大褂依旧笔挺，神情冷淡)"},
+        {"speaker" :"narrator","text":"(地下室到对话仍然令你记忆犹新，对话结束后你选择了正义的道路——报警)"},
+        {"speaker" :"narrator","text":"(电视里正播放着后续报道: “涉事诊所已被查封，警方在内部发现大量未经许可的催眠治疗记录……” )"},
+        {"speaker" :"narrator","text":"(你关掉了电视。房间里安静得可怕，只剩下挂钟的滴答声。"},
+        {"cg":["picture/Ending/End2.4.png"]},
+        {"speaker" :"narrator","text":"(回忆闪回报警当夜)"},
+        {"speaker" :"npc","text":"你当真要这么做？"},
+        {"speaker" :"player","text":"那些被你‘治疗’的人，他们也有家人。"},
+        {"speaker" :"npc","text":"科学需要牺牲。"},
+        {"speaker" :"narrator","text":"(他的声音像是在陈述一个简单不过的事实)"},
+        {"speaker" :"player","text":"……不。"},
+        {"speaker" :"player","text":"科学需要的是伦理，不是人命。"},
+        {"speaker" :"narrator","text":"(他的表情出现了裂痕，不是愤怒，是一种近乎失望的冷漠)"},
+        {"speaker" :"npc","text":"真遗憾。"},
+        {"speaker" :"narrator","text":"(你按下了报警键)"},
+        {"cg":["picture/Ending/End2.2.png"]},
+        {"speaker" :"narrator","text":"(现在，法庭)"},
+        {"speaker" :"narrator","text":"(法官敲下法槌)"},
+        {"speaker" :"narrator","text":"法官: 被告人，你还有什么要说的吗？"},
+        {"speaker" :"narrator","text":"(父亲站在被告席上，目光扫过旁听席，视线落在你身上)"},
+        {"cg":["picture/Ending/End2.3.png"]},
+        {"speaker" :"npc","text":"我唯一的遗憾，是没能教会我儿子……"},
+        {"speaker" :"npc","text":"科学，从来不需要慈悲。","type":"ending"}
+
+    ],
+
+    "Rebirth_of_the_Dual_Soul":[
+
+        {"cg":["picture/Ending/black screen.png"]},
+        {"speaker" :"player","text":"少扯什么哲学问题，也别用那种比喻来洗白自己！!"},
+        {"speaker" :"npc","text":"呵，你情绪太容易激动了.......就像你母亲一样。"},
+        {"speaker" :"player","text":" 别在这种时候提起母亲，如果当年不是因为你一直与她争吵，她也不会离家出走…… "},
+        {"speaker" :"player","text":"我脑海里的声音甚至告诉我你杀了她，真可笑啊……"},
+        {"cg":["picture/Ending/End3.1.png"]},
+        {"speaker" :"narrator","text":"(话末，你见他的表情非常难看。有惊讶，有羞怒，还有一丝几乎无法察觉的悲伤)"},
+        {"speaker" :"npc","text":"……"},
+        {"speaker" :"player","text":"那个声音说的难道是真的吗？"},
+        {"speaker" :"npc","text":"……"},
+        {"speaker" :"narrator","text":"(他的沉默像一把刀，缓慢地切开了几年的谎言)"},
+        {"speaker" :"narrator","text":"(你突然听见玻璃碎裂的声音——不是来自现实，而是你的脑海)"},
+        {"speaker" :"narrator","text":"(“咔”)"},
+        {"speaker" :"narrator","text":"(记忆的堤坝决堤了)"},
+        {"cg":["picture/Ending/End3.2.png"]},
+        {"speaker" :"narrator","text":"(回忆)"},
+        {"speaker" :"narrator","text":"(一个空荡荡的教室，黑板还留着没人擦干净的方程式)"},
+        {"speaker" :"narrator","text":"???: [真讨厌啊，今天也是雨天。]"},
+        {"speaker" :"player","text":"雨天不好吗？令人感到宁静。"},
+        {"speaker" :"narrator","text":"???: [不好，让我想起早上他们的吵架声，犹如这般刺耳。]"},
+        {"speaker" :"player","text":"别想这个了，有我陪着你。都放学了，快走吧？"},
+        {"speaker" :"narrator","text":"(你，不如说是他，慢悠悠的收拾着书包，顺便拿出个雨伞然后走出教室)"},
+        {"speaker" :"narrator","text":"???: [真不想回家啊。] "},
+        {"speaker" :"player","text":" 但回去后就能吃放在冰箱里的蛋糕了，这会让你开心点。"},
+        {"speaker" :"narrator","text":"???: [也是。] "},
+        {"speaker" :"narrator","text":"(虽然他同意了你的话语，但步调并未加快)"},
+        {"speaker" :"narrator","text":"???: [有时我会想，能把身体控制权交给你就好了，你比我坚强。] "},
+        {"speaker" :"player","text":"别这样想，我的存在就是为了守护你。"},
+        {"speaker" :"narrator","text":"???: [被自己的第二人格守护……听起来好懦弱。] "},
+        {"speaker" :"narrator","text":"(不知不觉就到了家门口)"},
+        {"speaker" :"player","text":"不懦弱，这是你创造我的意义。"},
+        {"speaker" :"narrator","text":"(他打开了家门)"},
+        {"cg":["picture/Ending/End3.3.png"]},
+        {"speaker" :"narrator","text":"(血，深红的血蔓延到脚下)"},
+        {"speaker" :"narrator","text":"(血色中央，躺着那个从小到大温柔抚摸他发顶的女人)"},
+        {"speaker" :"narrator","text":"???: [母亲…？] "},
+        {"speaker" :"narrator","text":"(母亲的瞳孔已经扩散，却还望着门口的方向——仿佛在最后一刻，仍在担心放学回家的孩子会看到这一幕。)"},
+        {"speaker" :"narrator","text":"(楼梯高处站着握紧拳头的父亲，他的白大褂下摆滴落着暗红的液体。)"},
+        {"speaker" :"player","text":" 别看!!！"},
+        {"speaker" :"narrator","text":"(太迟了...他早已因为惊吓而把身体控制权交给了你，你还没反应过来，就感受到后颈的疼痛)"},
+        {"speaker" :"narrator","text":"(你被毫不留情的打晕了)"},
+        {"speaker" :"narrator","text":"(醒来时，怀表的金属冷光在眼前晃动。)"},
+        {"speaker" :"npc","text":"从今天起，妈妈只是离家出走了。"},
+        {"speaker" :"npc","text":"你因为悲伤过度，而晕倒在客厅里。"},
+        {"speaker" :"npc","text":"明天醒来，一切都会好起来。"},
+        {"speaker" :"narrator","text":"(回归现实)"},
+        {"cg":["picture/Ending/End3.4.png"]},
+        {"speaker" :"player","text":" ……你，真是个混账。"},
+        {"speaker" :"npc","text":"你以为我想吗？那天她发现了实验数据，说要报警毁了我一辈子的研究——"},
+        {"speaker" :"narrator","text":"(你揪住他的衣领，打断他的话)"},
+        {"speaker" :"player","text":"我真想杀了你给她报仇。"},
+        {"speaker" :"narrator","text":"???: [别脏了自己的手，报警。]"},
+        {"speaker" :"narrator","text":"???: [你还有前程。] "},
+        {"speaker" :"narrator","text":"(你大口吸气，收起了手)"},
+        {"speaker" :"player","text":"你还有什么话，就留着跟警察说吧。"},
+        {"speaker" :"npc","text":"……"},
+        {"speaker" :"narrator","text":"(他不再说话，只是闭上了眼，犹如等待审判的罪犯)"},
+        {"cg":["picture/Ending/black screen.png"]},
+        {"speaker":"narrator","text":"(几个星期后)"},
+        {"speaker" :"narrator","text":"???: [你还好吗？] "},
+        {"speaker" :"player","text":"该难受的人是你吧，你才是主人格，怎么还关心起我了。"},
+        {"speaker" :"narrator","text":"???: [因为我早已接受了真相，但你还没有。] "},
+        {"speaker" :"player","text":"……"},
+        {"speaker" :"narrator","text":"???: [你说，父亲在狱里会反省自己的错误吗？] "},
+        {"speaker" :"player","text":"或许会，或许不会，我不在乎这个，我只想让他得到惩罚。"},
+        {"speaker" :"player","text":"说起来，你不拿回身体控制权吗？"},
+        {"speaker" :"narrator","text":"???: [不了，这样也不错。] "},
+        {"cg":["picture/Ending/End3.5.png"]},
+        {"speaker" :"narrator","text":"???: [这次就让我守着你吧。] ","type":"ending"}
 
     ]
+
+
+    
+
   },
   "Zheng":{
     "chapter_1":[
@@ -84,6 +381,10 @@
         {"speaker" :"narrator","text":"(她闭上了眼，微微皱眉，似乎是不想承认什么。但片刻后她表情恢复成原本模样，点了点头。)","shown": false},
         {"speaker" :"npc","text":" ……有，我当时在想，‘如果我没把这个方案做到最好，出了什么差错，会不会成为我职业生涯的一个污点。‘","shown": false},
         {"speaker" :"npc","text":"单是想到这点，就让我很不舒服。","shown": false},
+        {"speaker" :"player","text":"(因完美主义而导致的焦虑心理。CBT(认知行为疗法)会是个适合她且有效的治疗方式。)","shown": false},
+        {"speaker" :"narrator","text":"(认知行为疗法 (CBT) 是一种心理治疗形式，已被证明可有效解决一系列问题。","shown": false},
+        {"speaker" :"narrator","text":"包括抑郁症、焦虑症、酒精和药物使用问题、婚姻问题、饮食失调和严重的精神疾病。)","shown": false},
+        {"speaker" :"narrator","text":"(CBT治疗通常涉及改变思维模式的努力。)","shown": false},
         {"speaker" :"player","text":"(因完美主义而导致的焦虑心理。CBT(Cognitive Behavioural Therapy)会是个适合她且有效的治疗方式。)","shown": false},
         {"speaker" :"narrator","text":"(Cognitive behavioral therapy (CBT) is a form of psychological treatment that has been demonstrated to be effective for a range of problems","shown": false},
         {"speaker" :"narrator","text":" including depression, anxiety disorders, alcohol and drug use problems, marital problems, eating disorders, and severe mental illness. )","shown": false},
@@ -103,18 +404,220 @@
         {"speaker" :"player","text":"......","shown": false},
         {"speaker" :"player","text":"我理解你想要早点恢复正常状态的心情，但你可以先仔细阅读这个合同后再做决定。","shown": false},
         {"speaker" :"narrator","text":"(你把关于仪器使用的合同递给了她。)","shown": false},
-        {"speaker" :"narrator","text":"(你把关于仪器使用的合同递给了她)","shown": false},
-        {"speaker" :"narrator","text":"(After a moment, she looks up.)","shown": false},
-        {"speaker" :"npc","text":"I’ve read it. I’m willing to accept the risks. Just need to sign here, right?","shown": false},
-        {"speaker" :"player","text":"Right. Once you sign, I’ll prepare the treatment.","shown": false},
-        {"speaker" :"narrator","text":"(She signs without hesitation and returns the form to you.)","shown": false},
-        {"speaker" :"player","text":"(Alright, let’s begin.)","shown": false},
+        {"speaker" :"narrator","text":"(一会儿后，她抬起了头。)","shown": false},
+        {"speaker" :"npc","text":"我读完了，我愿意接受风险，直接签字就好了对吗？","shown": false},
+        {"speaker" :"player","text":"嗯，签字后我就会开始准备用仪器为你治疗。","shown": false},
+        {"speaker" :"narrator","text":"(她毫不犹豫的签下，然后把合同递回给你)","shown": false},
+        {"speaker" :"player","text":"(好了，那现在开始吧。)","shown": false},
         {"next":"chapter_1_common"}
 
     ],
 
     "chapter_1_common":[
-        {"speaker" :"player","text":"(I’ve finished speaking with the patient. Time to begin treatment using the machine.)"}
+        {"speaker":"player","text":"......"},
+        {"speaker" :"player","text":"(已经跟患者交谈完毕了，该使用仪器治疗了。)"}
+    ],
+
+    "after_puzzle":[
+        {"speaker" :"narrator","text":"(这段记忆非常朦胧，时而是跟人交谈的画面，时而是写报告的画面，报告上的字眼引起了你的注意。)","shown": false},
+        {"speaker" :"player","text":"(催眠疗法结果报告…？这就是所谓的“实验”？)","shown": false},
+        {"speaker" :"narrator","text":"(你仔细查看报告上都写了什么，许多专业词汇堆在了一起，令人眼花。)","shown": false},
+        {"speaker" :"narrator","text":"(第一个报告，第二个报告，第三个报告……)","shown": false},
+        {"speaker" :"narrator","text":"(尽管各个实验体对实验的反应结果不同，但都无一例外指向了一个结果......)","shown": false},
+        {"speaker" :"narrator","text":"(失败)","shown": false},
+        {"speaker" :"narrator","text":"(这令你无来由的感到不安，以及莫名其妙的熟悉。)","shown": false},
+        {"speaker" :"narrator","text":"(回忆消散后，你手上多了个物品。)","shown": false},
+        {"speaker" :"narrator","text":"(是个笔记本，不过没有那些“完美”的线条，笔记，高亮。只是空白。)","shown": false},
+        {"speaker" :"narrator","text":"(或许哪怕空空如也，也是一种完美。)","shown": false},
+        {"speaker" :"narrator","text":"(但是完美究竟由谁来定义？由谁来实行？)","shown": false},
+        {"speaker" :"narrator","text":"(不是哲学家的你不需要思考这个。)","shown": false},
+        {"speaker" :"player","text":"(这就是郑小姐的情感链接之物了……)","shown": false},
+        {"speaker" :"player","text":"(如果摧毁，她的病情会马上好了，但会失去某些记忆。保留的话又可能无法完全治好，该如何选择呢?)","shown": false},
+        {"choice":[
+            {"option":"摧毁","next":"back_reality_destroy1"},
+            {"option":"保留","next":"back_reality_keep1"}
+        ]
+        }
+    ],
+
+     "back_reality_destroy1":[
+        {"speaker" :"narrator","text":"(你摘下她头上的仪器)","shown": false},
+        {"speaker" :"player","text":"郑小姐，疗程结束了，你现在感觉如何？有没有出现不舒服的感觉？","shown": false},
+        {"speaker" :"npc","text":"不……我没事。","shown": false},
+        {"speaker" :"player","text":"那就好，我已经通过了解你潜意识内的记忆做出了治疗选择，之后你就能恢复正常生活了。","shown": false},
+        {"speaker" :"player","text":"但请同样记得不要给自己造成太大压力，你已经做得很好了郑小姐，无论是作为优等生、白领还是你自己。","shown": false},
+        {"speaker" :"npc","text":"……我知道了，谢谢。","shown": false,"next":"sub_end_1"}
+     ],
+     "sub_end_1":[
+        {"cg":"picture/P1 End1.png"},
+        {"speaker" :"npc","text":"(那位医生的治疗真是有效，这段时间我已经不会再为一些小事而焦躁了。)","shown": false},
+        {"speaker" :"npc","text":"(老板也说我最近精神了许多，工作效率可见的变好。)","shown": false},
+        {"speaker" :"npc","text":"(就这样继续在职场打拼吧，稳定的生活就是我的理想……)","shown": false},
+        {"speaker" :"npc","text":" (...)","shown": false},
+        {"speaker" :"npc","text":"(我的理想真的是这个吗？)","shown": false},
+        {"speaker" :"narrator","text":"?: Zheng, 晚上的庆功宴你来不来, 老板说是奖励我们这次策划做得非常好，要请客哦！","shown": false},
+        {"speaker" :"npc","text":"嗯，我会去的。","shown": false},
+        {"speaker" :"npc","text":"(算了, 这样也好不是吗？)","shown": false}
+     ],
+
+     "back_reality_keep1":[
+         {"speaker" :"narrator","text":"(你摘下她头上的仪器)","shown": false},
+        {"speaker" :"player","text":"郑小姐，疗程结束了，你现在感觉如何？有没有出现不舒服的感觉？","shown": false},
+        {"speaker" :"npc","text":"不……我没事。","shown": false},
+        {"speaker" :"player","text":"那就好，我已经通过了解你潜意识内的记忆做出了治疗选择，之后你就能恢复正常生活了。","shown": false},
+        {"speaker" :"player","text":"但请同样记得不要给自己造成太大压力，你已经做得很好了郑小姐，无论是作为优等生、白领还是你自己。","shown": false},
+        {"speaker" :"npc","text":"……我知道了，谢谢。","shown": false,"next":"sub_end_2"}
+     ],
+     "sub_end_2":[
+        {"cg":"picture/P1 End2.png"},
+        {"speaker" :"npc","text":" (那位医生的治疗真是有效，这段时间我已经不会再为一些小事而焦躁了。)","shown": false},
+        {"speaker" :"npc","text":" (更重要的是，我想起了自己真正想要的东西——研究。)","shown": false},
+        {"speaker" :"npc","text":"(我怎么能忘了呢，想在心理学埋头研究的理想。)","shown": false},
+        {"speaker" :"npc","text":"(但还好，一切都不算晚。)","shown": false},
+        {"speaker" :"npc","text":"(这会是新开始。)","shown": false}
+     ]
+  },
+
+
+
+  "Emma":{
+    "chapter_2":[
+        {"speaker" :"player","text":"早上好，请问是Emma小姐吗？","shown": false},
+        {"speaker" :"narrator","text":"(她礼貌的回应了你。)","shown": false},
+        {"speaker" :"npc","text":"我是，早安。","shown": false},
+        {"speaker" :"narrator","text":"(她的声音轻柔，像一匹绸缎，细腻地划过耳畔。)","shown": false},
+        {"speaker" :"player","text":"(很温柔的声音……)","shown": false},
+        {"speaker" :"player","text":"好的，那么Emma小姐。请你随意谈谈你想在这里咨询的任何事情，我会聆听着。","shown": false},
+        {"speaker" :"npc","text":"是这样的，前段时间，我经历了一场……车祸。","shown": false},
+        {"speaker" :"narrator","text":"(她有些低沉的垂下了头，但很快又抬起，对你露出了淡淡的微笑。)","shown": false},
+        {"speaker" :"npc","text":"幸运的是，我的伤情不重，很快就恢复出院了。","shown": false},
+        {"speaker" :"npc","text":"只是……这之后，我经常会梦到车祸时的现场，半夜惊醒时才会察觉——这只是梦。","shown": false},
+        {"speaker" :"npc","text":"一开始只是偶尔，可能一个星期两次。但不知道为什么，我越来越频繁梦到那时的事情。","shown": false},
+        {"speaker" :"narrator","text":"(你注意到她的眼眶下带有淡淡的青黑，显然是许久没睡了个好觉。)","shown": false},
+        {"speaker" :"player","text":"谢谢你告诉我这件事。除了噩梦以外，还有什么症状吗？","shown": false},
+        {"speaker" :"npc","text":"不敢坐车了算吗？不止开车，我连坐别人车时都感觉自己在难以呼吸，手抖个不停。","shown": false},
+        {"speaker" :"npc","text":"刚刚司机载我来这里时，看到我脸上都是冷汗，被吓坏了。","shown": false},
+        {"speaker" :"narrator","text":"(说到这里，她的手揪了揪裙子。)","shown": false},
+        {"speaker" :"player","text":"我注意到你说这些，手指一直在捏紧裙子……现在身体有哪里感觉特别紧绷吗？","shown": false},
+        {"speaker" :"npc","text":"啊……可能是肩膀和胸口，像被什么东西压着。","shown": false},
+        {"speaker" :"player","text":"如果你愿意，我们可以先做个简单的呼吸练习，帮你和这种紧绷感相处。只需要跟着我的节奏…吸气4秒…屏住2秒…呼气6秒…","shown": false},
+        {"speaker" :"narrator","text":"(她跟着你的节奏重复了三次。)","shown": false},
+        {"speaker" :"player","text":"有稍微好些了吗？","shown": false},
+        {"speaker" :"npc","text":"嗯…好像轻松了一点点。","shown": false},
+        {"speaker" :"player","text":"(Emma小姐的情况，是因车祸引起的创伤……)","shown": false},
+        {"speaker" :"player","text":" (适合她的治疗方式，想必是TF-CBT(Trauma-focused cognitive behavioral therapy)了。)","shown": false},
+        {"speaker" :"player","text":"(不过这是需要长期的治疗方式，如果要短期内治好的话，还是需要用上机器。)","shown": false},
+        {"speaker" :"player","text":"你的情况我大概了解了，现在有两种方案可以治好你的问题。","shown": false},
+        {"speaker" :"player","text":"一是传统的TF-CBT，这是最安全稳妥但也需要长时间的方式。","shown": false},
+        {"speaker" :"player","text":"另一个是通过我们诊所的机器来进行治疗，这个方案有失败可能，但如果成功，短期能很快见效。","shown": false},
+        {"speaker" :"npc","text":"其实，我就是因为听说你们这里有特殊的机器，才会选择来你们这里。","shown": false},
+        {"speaker" :"player","text":" (只有我第一次来诊所时差点忘了机器的存在吗？)","shown": false},
+        {"speaker" :"player","text":"既然如此，我想我需要仔细跟你说这个机器的疗程方式……","shown": false},
+        {"speaker" :"narrator","text":"(你把同郑小姐说过的话语，重复跟Emma说了一遍。)","shown": false},
+        {"speaker" :"narrator","text":"(她认真的听着，不时点点头。)","shown": false},
+        {"speaker" :"player","text":"……就是这样。你也可以查看合同来阅读更详细的说明。","shown": false},
+        {"speaker" :"narrator","text":"(你把合同递给了她，她专注读着的同时，你感觉脑海闪过什么。)","shown": false},
+        {"speaker" :"narrator","text":"???: [……可怜的女孩。]","shown": false},
+        {"speaker" :"narrator","text":"(这个声音明显不属于你或是Emma。)","shown": false},
+        {"speaker" :"player","text":"(谁？！)","shown": false},
+        {"speaker" :"narrator","text":"(但是没有人，除了你和emma外，根本没有第三个人。)","shown": false},
+        {"speaker" :"narrator","text":"(Emma依然低头读着，没有任何反应，似乎只有你听见了这个声音。)","shown": false},
+        {"speaker" :"npc","text":"……我读完了，我选用机器治疗。","shown": false},
+        {"speaker" :"player","text":"好，那么在这里签字……","shown": false},
+        {"speaker" :"narrator","text":"???: [……不要，不要用机器。]","shown": false},
+        {"speaker" :"player","text":" (到底是哪来的声音？)","shown": false},
+        {"speaker" :"narrator","text":"(你选择暂时无视这道声音)","shown": false},
+        {"speaker" :"player","text":" 给，笔在这。","shown": false},
+        {"speaker" :"narrator","text":"(她签完后，把合同和笔递回给你)","shown": false},
+        {"speaker" :"player","text":"(可以开始了。)","shown": false},
+        {"speaker" :"player","text":".......","shown": false},
+        {"speaker" :"player","text":"已经跟患者交谈完毕了，该使用仪器治疗了。"}
+    ],
+    "after_puzzle":[
+        {"speaker" :"narrator","text":"(她来到了个诊所)","shown": false},
+        {"speaker" :"narrator","text":"(很眼熟，你这样想着)","shown": false},
+        {"speaker" :"narrator","text":"(熟悉的布告栏，熟悉的前台，熟悉的构造……)","shown": false},
+        {"speaker" :"narrator","text":"(除了陈旧些和前台的人不是你认识的护士以外，跟你所在的诊所没两样) ","shown": false},
+        {"speaker" :"player","text":"(她之前就来过诊所了？)","shown": false},
+        {"speaker" :"narrator","text":"(她走到前台)","shown": false},
+        {"speaker" :"npc","text":"那个……我预约了下午一点的治疗……","shown": false},
+        {"speaker" :"narrator","text":"?nurse? :啊，好的，你前往尾间的门进去就可以了，医生就在里面。","shown": false},
+        {"speaker" :"narrator","text":"(画面切换，是一个骤然陌生的地方)","shown": false},
+        {"speaker" :"narrator","text":"(阴深，像是什么地下室，这是你对这个地方的第一想法)","shown": false},
+        {"speaker" :"npc","text":" 医生，这真的能让我不再做那个噩梦吗？我不想……我不想再梦见那辆卡车冲过来，不想再感受到窒息的恐惧，不想再……","shown": false},
+        {"speaker" :"narrator","text":"(对面的人抬手示意暂停)","shown": false},
+        {"speaker" :"narrator","text":"别去回忆它了，现在，看着这个怀表。","shown": false},
+        {"speaker" :"player","text":"(父亲……)","shown": false},
+        {"speaker" :"narrator","text":"专注盯着它的摆动...对，就是这样。","shown": false},
+        {"speaker" :"player","text":"(该不会又是跟‘实验’有关吧？)","shown": false},
+        {"speaker" :"narrator","text":"想象你站在一条长长的走廊里……走廊尽头有一扇门，门后是你想忘记的那段记忆。","shown": false},
+        {"speaker" :"narrator","text":"现在，把手放在门把上……慢慢推开。","shown": false},
+        {"speaker" :"npc","text":"不……不行！那辆车……它冲过来了！","shown": false},
+        {"speaker" :"npc","text":"你抵抗得太厉害了。催眠需要配合，而不是对抗。","shown": false},
+        {"speaker" :"narrator","text":"(他边说着，边在纸上写了些什么，随机把纸笔放到一边)","shown": false},
+        {"speaker" :"npc","text":"今天就到这里，记得按时服药。","shown": false},
+        {"speaker" :"narrator","text":"(Emma点了点头，没去看纸上的内容，但你看见了，清楚的看见了)","shown": false},
+        {"speaker" :"narrator","text":"(纸上结果那一栏的字眼让你感到难以呼吸——)","shown": false},
+        {"speaker":"narrator","text":"(失败)","shown":false},
+        {"speaker" :"narrator","text":"???:  [.……他也是这么对你的，你还没想起来吗？]","shown": false},
+        {"speaker" :"player","text":"(又是那个声音……)","shown": false},
+        {"speaker" :"narrator","text":"(回忆消散后，你手上多了个物品。)","shown": false},
+        {"speaker" :"narrator","text":"(是一串车钥匙)","shown": false},
+        {"speaker" :"narrator","text":"(现代社会便利的交通工具，却是某人噩梦的温床)","shown": false},
+        {"speaker" :"narrator","text":"(流程你已知晓，选择吧)","shown": false},
+        {"choice":[
+            {"option":"摧毁","next":"back_reality_destroy2"},
+            {"option":"保留","next":"back_reality_keep2"}
+        ]
+        }
+    ],
+
+    "back_reality_destroy2":[
+        {"speaker" :"narrator","text":"(你摘下她头上的仪器)","shown": false},
+        {"speaker" :"player","text":"疗程结束了，感觉如何？有不舒服吗？","shown": false},
+        {"speaker" :"npc","text":"我没事哦。","shown": false},
+        {"speaker" :"player","text":"嗯，那好。我已经为你选好了治疗选择，之后你想必就不会再做噩梦了。","shown": false},
+        {"speaker" :"npc","text":"好，真是谢谢你了，医生。","shown": false},
+        {"speaker" :"narrator","text":".......","shown": false,"next":"sub_end_3"}
+    ],
+
+    "sub_end_3":[
+        {"cg":"picture/P2 End1.png"},
+        {"speaker" :"npc","text":" (噩梦已离我远去，坐车时也不再害怕了)","shown": false},
+        {"speaker" :"npc","text":"(真好啊，感觉自己一身轻松，也可以重新接工作了)","shown": false},
+        {"speaker" :"npc","text":"(可是……为什么当我站在镜头前时，总觉得少了什么？)","shown": false},
+        {"speaker" :"npc","text":" (那些曾经让我心跳加速的闪光灯，现在只是刺眼的光)","shown": false},
+        {"speaker" :"npc","text":"(T台上的步伐像机械程序，精准却空洞)","shown": false},
+        {"speaker" :"npc","text":"(我翻开手机相册，看到过去走秀的照片——照片里的女孩笑得自信耀眼，可我却想不起她当时的心情。)","shown": false},
+        {"speaker" :"narrator","text": "?: Emma，有新的发布会需要你出场！","shown": false},
+        {"speaker" :"npc","text":"好，我会去的。","shown": false},
+        {"speaker" :"npc","text":" (这样就好)","shown": false},
+        {"speaker" :"npc","text":"(至少，我不会再尖叫着从噩梦中惊醒了)","shown": false}
+
+    ],
+
+    "back_reality_keep2":[
+        {"speaker" :"narrator","text":"(你摘下她头上的仪器)","shown": false},
+        {"speaker" :"player","text":"疗程结束了，感觉如何？有不舒服吗？","shown": false},
+        {"speaker" :"npc","text":"我没事哦。","shown": false},
+        {"speaker" :"player","text":"嗯，那好。我已经为你选好了治疗选择，之后你想必就不会再做噩梦了。","shown": false},
+        {"speaker" :"npc","text":"好，真是谢谢你了，医生。","shown": false},
+        {"speaker" :"narrator","text":".......","shown": false,"next":"sub_end_4"}
+    ],
+
+    "sub_end_4":[
+        {"cg":"picture/P2 End2.png"},
+        {"speaker" :"npc","text":"(……又梦见那场车祸了)","shown": false},
+        {"speaker" :"npc","text":"  (一切都如此清晰，但是我的呼吸却平静得出奇)","shown": false},
+        {"speaker" :"npc","text":"(治疗还是有效果的，我没再像之前一样那么恐惧了)","shown": false},
+        {"speaker" :"npc","text":"(……准备好后就去上班吧)","shown": false},
+        {"speaker" :"narrator","text":"(洗漱，更衣，早餐后，我走到了车前)","shown": false},
+        {"speaker" :"narrator","text":"(上车后迟迟没有发动)","shown": false},
+        {"speaker" :"npc","text":"(……没事的，慢一点。就像第一次走秀时一样)","shown": false},
+        {"speaker" :"narrator","text":"(发动后，车缓缓驶出，阳光照在了方向盘上)","shown": false},
+        {"speaker" :"npc","text":"(噩梦还没消失)","shown": false},
+        {"speaker" :"npc","text":"(但今天，我赢了他一次)","shown": false}
+     
     ]
   }
 
