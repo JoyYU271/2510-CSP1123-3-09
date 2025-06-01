@@ -2,9 +2,11 @@ import pygame
 import sys
 from pygame.locals import *
 import character_movement
-#import CSP_project
 import json
 
+# Load object data
+with open("objects.json", "r") as f:
+    object_data = json.load(f)
 
 pygame.init()
 
@@ -652,14 +654,62 @@ class CameraGroup(pygame.sprite.Group):
             offset_bg = pygame.Vector2(0,0) - self.offset
             self.display_surface.blit(self.background, offset_bg)
 
-        #player?
+        #Draw item(s) here before sprites
+        for obj in interactable_objects:
+            obj.draw(self.display_surface, self.offset)
+
+        #Draw characters after
         for sprite in sorted(self.sprites(), key=lambda spr: (spr.rect.centery, spr != player)):
             offset_pos = sprite.rect.topleft - self.offset
             flipped_image = pygame.transform.flip(sprite.image, sprite.flip, False)
             self.display_surface.blit(flipped_image, offset_pos)
 
-
 camera_group = CameraGroup()
+
+image_path = {
+            "Table": "Table.png"
+        }
+
+class InteractableObject(pygame.sprite.Sprite):
+    def __init__(self, name, rect, dialogue_id, start_node, image_path=None, active=True):
+        super().__init__()
+
+        self.name = name
+        self.dialogue_id = dialogue_id
+        self.start_node = start_node
+        self.active = active
+
+        self.image = pygame.image.load(image_path).convert_alpha() if image_path else None
+        self.rect = rect
+        self.flip = False #so CameraGroup won't flip items with player
+
+    def draw(self, surface, offset):
+        if self.image:
+            offset_rect =self.rect.topleft - offset
+            surface.blit(self.image, offset_rect)
+
+interactable_objects = []
+
+for obj_id, obj_info in object_data.items():
+    name=obj_info["name"]
+    pos = obj_info["position"]
+    size = obj_info["size"]
+    image = obj_info.get("image")
+    image_path_str=image_path.get(image, None)
+    dialogue_id=obj_info["dialogue_id"]
+    start_node=obj_info["start_node"]
+    active=obj_info.get("active", True)
+
+rect = pygame.Rect(pos[0], pos[1], size[0], size[1])
+obj = InteractableObject(name, rect, dialogue_id, start_node, image_path=image_path_str, active=active)
+camera_group.add(obj)
+interactable_objects.append(obj)
+
+def check_object_interaction(player_rect, interactable_objects):
+    for obj in interactable_objects:
+        if obj.active and player_rect.colliderect(obj.rect):
+            return obj
+    return None
 
 class Game:
     def __init__(self):
@@ -678,7 +728,7 @@ class Game:
 
         self.states = {'intro':self.intro, 'start':self.start, 'level':self.level}
     
-        nuva = NPC(890,520,"Nuva")
+        nuva = NPC(840,520,"Nuva")
         dean = NPC(400,520,"Dean")
         self.npc_manager.add_npc(nuva)
         self.npc_manager.add_npc(dean)
@@ -713,6 +763,13 @@ class Game:
                     camera_group.half_w = screen_width // 2
                     camera_group.half_h = screen_height // 2
 
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_e:
+                    interacted_obj = check_object_interaction(player.rect, interactable_objects)
+                    if interacted_obj:
+                        print(f"Interacted with {interacted_obj.name}") 
+                        dialog(interacted_obj.dialogue_id, interacted_obj.start_node)
+
+
             if currentState == 'level':
                 dean = next(npc for npc in self.npc_manager.npcs if npc.name == "Dean")
                 if dean:
@@ -720,6 +777,13 @@ class Game:
             else:
                 self.states[currentState].run()
             
+            near_obj = check_object_interaction(player.rect, interactable_objects)
+            if near_obj:
+                font = pygame.font.Font(None, 24)
+                text = font.render("Press E to interact", True, (0, 0, 0))
+                self.screen.blit(text, (player.rect.x, player.rect.y - 30))
+            
+
             pygame.display.update()
             self.clock.tick(FPS)
 
