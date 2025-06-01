@@ -667,17 +667,19 @@ class CameraGroup(pygame.sprite.Group):
 camera_group = CameraGroup()
 
 image_path = {
-            "Table": "Table.png"
+            "Table": "Table.png",
+            "Door01": "Door01.png"
         }
 
 class InteractableObject(pygame.sprite.Sprite):
-    def __init__(self, name, rect, dialogue_id, start_node, image_path=None, active=True):
+    def __init__(self, name, rect, dialogue_id, start_node, image_path=None, active=True, text=None):
         super().__init__()
 
         self.name = name
         self.dialogue_id = dialogue_id
         self.start_node = start_node
         self.active = active
+        self.text = text
 
         self.image = pygame.image.load(image_path).convert_alpha() if image_path else None
         self.rect = rect
@@ -688,9 +690,20 @@ class InteractableObject(pygame.sprite.Sprite):
             offset_rect =self.rect.topleft - offset
             surface.blit(self.image, offset_rect)
 
+    def interaction(self):
+        if self.dialogue_id:
+            dialog(self.dialogue_id, self.start_node)
+        elif self.text:
+            print(f"{self.name}:{self.text}")
+        else:
+            print(f"You see {self.name}.")
+
 interactable_objects = []
 
 for obj_id, obj_info in object_data.items():
+    if "position" not in obj_info or "size" not in obj_info:
+        continue
+
     name=obj_info["name"]
     pos = obj_info["position"]
     size = obj_info["size"]
@@ -699,9 +712,11 @@ for obj_id, obj_info in object_data.items():
     dialogue_id=obj_info["dialogue_id"]
     start_node=obj_info["start_node"]
     active=obj_info.get("active", True)
+    text = obj_info.get("text")
 
 rect = pygame.Rect(pos[0], pos[1], size[0], size[1])
-obj = InteractableObject(name, rect, dialogue_id, start_node, image_path=image_path_str, active=active)
+
+obj = InteractableObject(name, rect, dialogue_id, start_node, image_path=image_path_str, active=active, text=text)
 camera_group.add(obj)
 interactable_objects.append(obj)
 
@@ -763,12 +778,11 @@ class Game:
                     camera_group.half_w = screen_width // 2
                     camera_group.half_h = screen_height // 2
 
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_e:
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
                     interacted_obj = check_object_interaction(player.rect, interactable_objects)
                     if interacted_obj:
                         print(f"Interacted with {interacted_obj.name}") 
-                        dialog(interacted_obj.dialogue_id, interacted_obj.start_node)
-
+                        interacted_obj.interact()
 
             if currentState == 'level':
                 dean = next(npc for npc in self.npc_manager.npcs if npc.name == "Dean")
@@ -780,7 +794,7 @@ class Game:
             near_obj = check_object_interaction(player.rect, interactable_objects)
             if near_obj:
                 font = pygame.font.Font(None, 24)
-                text = font.render("Press E to interact", True, (0, 0, 0))
+                text = font.render("Press Q to interact", True, (0, 0, 0))
                 self.screen.blit(text, (player.rect.x, player.rect.y - 30))
             
 

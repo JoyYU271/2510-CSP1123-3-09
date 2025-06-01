@@ -7,5 +7,23 @@
     "dialogue_id": "table_dialogue",
     "start_node": "start",
     "active": true
+  },
+
+  "table_dialogue":{
+    "start":{
+      "text": "The receptionist's counter."
+    }
+
+  },
+
+  "door01":{
+    "name": "Player's room",
+    "position": [1389, 263],
+    "size": [64, 64],
+    "image": "Door01",
+    "dialogue_id": "door01_dialogue",
+    "start_node": "start",
+    "active": true
+
   }
 }
