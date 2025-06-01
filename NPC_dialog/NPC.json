@@ -55,7 +55,7 @@
         {"speaker":"npc","text":"Are you here to see the Dean? He just left for a meeting.","shown": false},
         {"speaker" :"player","text":".....Sorry, I was joking. Seems like my sense of humor needs work. ","shown": false},
         {"speaker" :"narrator","text":"(You see her pause, and then chuckle.) ","shown": false},
-        {"speaker" :"npc","text":" Ha Ha, you are quite an interesting person.","shown": false},
+        {"speaker" :"npc","text":" Ha Ha, you are quite an interesting person.","bgm": "bgm/intro.mp3","shown": false},
         {"next":"chapter_1_common","shown": false}
     ],
 
@@ -69,7 +69,7 @@
     ],
 
     "chapter_1_common":[
-        {"speaker" :"npc","text":"I'm Nuva, the receptionist nurse. If you have any questions, feel free to ask me—your senior!","bgm": "bgm/intro.mp3","shown": false},
+        {"speaker" :"npc","text":"I'm Nuva, the receptionist nurse. If you have any questions, feel free to ask me—your senior!","shown": false},
         {"speaker" :"player","text":"Got it.","shown": false},
         {"speaker" :"npc","text":"Oh, by the way, already have a patient booked a session with you for today.","shown":false},
         {"speaker" :"npc","text":"She is waiting in your office, you can head over when you are ready","shown":false}
@@ -359,7 +359,7 @@
   },
   "Zheng":{
     "chapter_1":[
-        {"speaker" :"player","text":"Sorry for the wait. I’m your scheduled psychologist. You’re Ms. Zheng, right?","shown": false},
+        {"speaker" :"player","text":"Sorry for the wait. I’m your scheduled psychologist. You’re Ms. Zheng, right?","bgm": "bgm/talk_with_patient.mp3","shown": false},
         {"speaker" :"narrator","text":"(You see she sitting upright and nod.)","shown": false},
         {"speaker" :"npc","text":"Yes, hello.","shown": false},
         {"speaker" :"player","text":"Alright, Ms. Zheng. First, we will start with getting to know you and understanding your situation.","shown": false},
@@ -462,7 +462,7 @@
      ],
      "sub_end_2":[
         {"cg":"picture/P1 End2.png"},
-        {"speaker" :"npc","text":" (That doctor’s treatment really worked. I don’t get anxious over small things anymore.)","shown": false},
+        {"speaker" :"npc","text":" (That doctor’s treatment really worked. I don’t get anxious over small things anymore.)","bgm": "bgm/zheng_preserved.mp3","shown": false},
         {"speaker" :"npc","text":" (More importantly, I remembered what I truly wanted.)","shown": false},
         {"speaker" :"npc","text":"(How could I have forgotten? My dream of studying psychology deeply (professionally?))","shown": false},
         {"speaker" :"npc","text":"(But it’s not too late.)","shown": false},
@@ -474,7 +474,7 @@
 
   "Emma":{
     "chapter_2":[
-        {"speaker" :"player","text":"Good morning, are you Ms. Emma?","shown": false},
+        {"speaker" :"player","text":"Good morning, are you Ms. Emma?","bgm": "bgm/talk_with_patient.mp3","shown": false},
         {"speaker" :"narrator","text":"(She nodded politely.)","shown": false},
         {"speaker" :"npc","text":"I am. Good morning to you too.","shown": false},
         {"speaker" :"narrator","text":"(Her voice is soft and delicate on the ears.)","shown": false},
@@ -601,7 +601,7 @@
 
     "sub_end_4":[
         {"cg":"picture/P2 End2.png"},
-        {"speaker" :"npc","text":"(... I dreamt that nightmare again.)","shown": false},
+        {"speaker" :"npc","text":"(... I dreamt that nightmare again.)","bgm": "bgm/emma_preserved.mp3","shown": false},
         {"speaker" :"npc","text":" (It was all very clear... but I was unexpectedly calm)","shown": false},
         {"speaker" :"npc","text":"(The treatment had really helped. I'm no longer as scared as before.)","shown": false},
         {"speaker" :"npc","text":"(... I should get ready for work soon)","shown": false},
