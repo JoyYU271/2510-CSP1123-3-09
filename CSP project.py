@@ -1,5 +1,5 @@
 import pygame
-import random
+#import random
 
 pygame.init()
 
@@ -10,43 +10,119 @@ SCREEN_HEIGHT = 450
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Drag and Drop')
 
-active_box = None   #to check clicked or not...?
-boxes = []
-for i in range(5):  #repeat this whole thing 5 times (for 5 boxes)
-    x = random.randint(50,700)
-    y = random.randint(50, 350)
-    w = random.randint(35,65)
-    h = random.randint(35, 65)
-    box = pygame.Rect(x,y,w,h)
-    boxes.append(box)
+class DraggableObjects:
+    def __init__(self, image_path, start_pos, target_pos):
+        self.image = pygame.image.load(image_path).convert_alpha()
+        self.original_image = self.image.copy()  #keep original
+        self.dark_image = self.create_darkened_image(self.image)
+        self.rect = self.image.get_rect(topleft=start_pos)
+        self.mask = pygame.mask.from_surface(self.image)
+        self.original_pos = start_pos
+
+        self.target_position = target_pos  # the fixed "hole" position
+        self.mask_surf = self.mask
+        self.placed = False     #true if snappped into hole
+        
+        #for dragging
+        self.dragging = False   #basically my acitve_object but made relevant to the class
+        self.mouse_offset = (0,0)
+
+        self.mask_surf = self.mask.to_surface()
+        self.mask_surf.set_colorkey((0,0,0))
+
+        for x in range(self.mask_surf.get_width()):
+            for y in range(self.mask_surf.get_height()):
+                if self.mask_surf.get_at((x, y))[0] != 0:
+                    self.mask_surf.set_at((x, y), pygame.Color("gray18"))
+
+    def handle_event(self):     #, event, active_obj_ref
+        if self.placed:
+            return
+
+    def reset(self):
+        self.rect.topleft = self.original_pos
+        self.dragging = False
+        self.placed = False
+
+    def draw_target_slot(self, screen, offset=3):
+        screen.blit(self.mask_surf, self.target_position)
+
+        for dx in [-offset, 0, offset]:
+            for dy in [-offset, 0, offset]:
+                if dx != 0 or dy != 0:
+                    screen.blit(self.mask_surf, (self.target_position[0] + dx, self.target_position[1] + dy))
+
+
+    def draw(self, screen, is_selected=False):
+        if is_selected:
+            pygame.draw.rect(screen, 'gold', self.rect.inflate(4, 4), 2)
+        if self.placed:
+            screen.blit(self.dark_image, self.rect)
+        else:
+            screen.blit(self.image,self.rect)
+
+    def create_darkened_image(self, surface):
+        darkened = surface.copy()
+        darkened.fill((0,0,0,100), special_flags=pygame.BLEND_RGBA_SUB)
+        return darkened
+
+objects = [DraggableObjects("minigame 1/binder_clip(small).png", (100, 100), (200, 100)), 
+           DraggableObjects("minigame 1/binder_clip(tall).png", (300,290), (600, 250))]
+
+selected_object_index = 0
 
 run = True
 while run:
-
-    screen.fill('turquoise1')
-
-    #update and draw boxes
-    for box in boxes:
-       pygame.draw.rect(screen, 'purple', box) 
-
     for event in pygame.event.get():
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:   #1 = left most button on mouse...?
-                for num, box in enumerate(boxes):
-                    if box.collidepoint(event.pos):  #checking for each box if collide with mouse pointer
-                        active_box = num             #event.pos is mouse position, but need variable to check which box mouse is over
+        if event.type == pygame.KEYDOWN:
+            #to reset the game
+            if event.key == pygame.K_z:
+                for obj in objects:
+                    obj.reset()
+                selected_object_index = 0
+    
+            if event.key == pygame.K_TAB:
+                selected_object_index = (selected_object_index + 1) % len(objects)
 
-        if event.type == pygame.MOUSEBUTTONUP:
-            if event.button == 1:
-                active_box = None
-
-        if event.type == pygame.MOUSEMOTION:
-            if active_box != None:   #check box is being clicked on
-                boxes[active_box].move_ip(event.rel)    #event.rel comes from pygame.MOUSEMOTION and shows the exact position of mouse pointer
+            #Try to 'drop' with SPACE
+            if event.key == pygame.K_SPACE:
+                obj = objects[selected_object_index]
+                offset_x = obj.rect.x - obj.target_position[0]
+                offset_y = obj.rect.y - obj.target_position[1]
+                if obj.mask.overlap(obj.mask, (offset_x, offset_y)):
+                    obj.rect.topleft = obj.target_position
+                    obj.placed = True
 
         if event.type == pygame.QUIT:
             run = False
-    
+
+    keys = pygame.key.get_pressed()
+    obj = objects[selected_object_index]
+
+    #Movement keys (WASD or Arrows)
+    if not obj.placed:
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+            obj.rect.x -= 2
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            obj.rect.x += 2
+        if keys[pygame.K_UP] or keys[pygame.K_w]:
+            obj.rect.y -= 2
+        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+            obj.rect.y += 2    
+
+    screen.fill('turquoise1')
+
+    #draw all target holes first
+    for obj in objects:
+        obj.draw_target_slot(screen)
+
+    #draw draggable objects
+    for obj in objects:
+        obj.draw(screen)
+
+    for i, obj in enumerate(objects):
+        obj.draw(screen, is_selected=(i == selected_object_index))
+
     pygame.display.update()
 
 pygame.quit()
