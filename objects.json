@@ -1,7 +1,7 @@
 {
   "table01": {
-    "name": "Old Table",
-    "position": [813, 397],
+    "name": "Recp. Table",
+    "position": [400, 397],
     "size": [64, 64],
     "image": "Table",
     "dialogue_id": "table_dialogue",
@@ -9,16 +9,9 @@
     "active": true
   },
 
-  "table_dialogue":{
-    "start":{
-      "text": "The receptionist's counter."
-    }
-
-  },
-
   "door01":{
     "name": "Player's room",
-    "position": [1389, 263],
+    "position": [1370, 263],
     "size": [64, 64],
     "image": "Door01",
     "dialogue_id": "door01_dialogue",

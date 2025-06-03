@@ -8,6 +8,9 @@ import json
 with open("objects.json", "r") as f:
     object_data = json.load(f)
 
+with open("object_dialogue.json") as f:
+    object_dialogue = json.load(f)
+
 pygame.init()
 
 # Set up display
@@ -690,20 +693,17 @@ class InteractableObject(pygame.sprite.Sprite):
             offset_rect =self.rect.topleft - offset
             surface.blit(self.image, offset_rect)
 
-    def interaction(self):
-        if self.dialogue_id:
-            dialog(self.dialogue_id, self.start_node)
-        elif self.text:
-            print(f"{self.name}:{self.text}")
-        else:
-            print(f"You see {self.name}.")
+    # def interaction(self):
+    #     if self.dialogue_id:
+    #         dialog(self.dialogue_id, self.start_node)
+    #     elif self.text:
+    #         print(f"{self.name}:{self.text}")
+    #     else:
+    #         print(f"You see {self.name}.")
 
 interactable_objects = []
 
 for obj_id, obj_info in object_data.items():
-    if "position" not in obj_info or "size" not in obj_info:
-        continue
-
     name=obj_info["name"]
     pos = obj_info["position"]
     size = obj_info["size"]
@@ -782,7 +782,7 @@ class Game:
                     interacted_obj = check_object_interaction(player.rect, interactable_objects)
                     if interacted_obj:
                         print(f"Interacted with {interacted_obj.name}") 
-                        interacted_obj.interact()
+                        # interacted_obj.interact()
 
             if currentState == 'level':
                 dean = next(npc for npc in self.npc_manager.npcs if npc.name == "Dean")
@@ -802,7 +802,7 @@ class Game:
             self.clock.tick(FPS)
 
 class Start:    #try to call back SimpleChapterIntro
-    def __init__(self, display, gameStateManager, intro): #, intro
+    def __init__(self, display, gameStateManager, intro):
         self.display = display
         self.gameStateManager = gameStateManager
         self.intro = intro
