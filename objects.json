@@ -1,7 +1,7 @@
 {
   "table01": {
     "name": "Recp. Table",
-    "position": [400, 397],
+    "position": [813, 397],
     "size": [64, 64],
     "image": "Table",
     "dialogue_id": "table_dialogue",
@@ -17,6 +17,5 @@
     "dialogue_id": "door01_dialogue",
     "start_node": "start",
     "active": true
-
   }
 }

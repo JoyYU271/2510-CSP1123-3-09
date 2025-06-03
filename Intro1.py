@@ -714,17 +714,14 @@ for obj_id, obj_info in object_data.items():
     active=obj_info.get("active", True)
     text = obj_info.get("text")
 
-rect = pygame.Rect(pos[0], pos[1], size[0], size[1])
+    rect = pygame.Rect(pos[0], pos[1], size[0], size[1])
 
-obj = InteractableObject(name, rect, dialogue_id, start_node, image_path=image_path_str, active=active, text=text)
-camera_group.add(obj)
-interactable_objects.append(obj)
+    obj = InteractableObject(name, rect, dialogue_id, start_node, image_path=image_path_str, active=active, text=text)
+    camera_group.add(obj)
+    interactable_objects.append(obj)
 
 def check_object_interaction(player_rect, interactable_objects):
-    for obj in interactable_objects:
-        if obj.active and player_rect.colliderect(obj.rect):
-            return obj
-    return None
+    return [obj for obj in interactable_objects if obj.active and player_rect.colliderect(obj.rect)]
 
 class Game:
     def __init__(self):
@@ -781,8 +778,7 @@ class Game:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
                     interacted_obj = check_object_interaction(player.rect, interactable_objects)
                     if interacted_obj:
-                        print(f"Interacted with {interacted_obj.name}") 
-                        # interacted_obj.interact()
+                        print(f"Interacted with {interacted_obj[1].name}") 
 
             if currentState == 'level':
                 dean = next(npc for npc in self.npc_manager.npcs if npc.name == "Dean")
@@ -791,7 +787,8 @@ class Game:
             else:
                 self.states[currentState].run()
             
-            near_obj = check_object_interaction(player.rect, interactable_objects)
+            padded_rect = player.rect.inflate(10,10)
+            near_obj = check_object_interaction(padded_rect, interactable_objects)
             if near_obj:
                 font = pygame.font.Font(None, 24)
                 text = font.render("Press Q to interact", True, (0, 0, 0))
