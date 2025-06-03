@@ -70,8 +70,12 @@
     "chapter_1_common":[
         {"speaker" :"npc","text":"我叫Nuva，是负责前台的护士，如果你有什么问题都可以来问我这个前辈哦~","shown": false},
         {"speaker" :"player","text":"好，我知道了。","shown": false},
-        {"speaker" :"npc","text":"对了，昨天已经有一位患者预约了你今天的治疗。","shown": false},
-        {"speaker" :"npc","text":"她已经在你的办公室等候了，你准备好后可以随时过去。","shown": false}
+        {"speaker" :"npc","text":"对了，昨天已经有一位患者预约了你今天的治疗。","shown":false},
+        {"speaker" :"npc","text":"她已经在你的办公室等候了，你准备好后可以随时过去。","shown":false}
+
+
+
+
     ],
 
     "repeat_only":[
