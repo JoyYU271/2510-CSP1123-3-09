@@ -59,11 +59,11 @@
     ],
 
     "a_doctor":[
-        {"speaker" :"player","text":"我是，你好。","shown": false},
+        {"speaker" :"player","text":"我是，你好。","bgm": "bgm/selection_no.mp3","shown": false},
         {"speaker" :"narrator","text":"(你见她笑意更明显了。)","shown": false},
         {"speaker" :"npc","text":"院长跟我提及过今天会有个新来的心理医生，没想到还是个帅哥！","shown": false},
         {"speaker" :"narrator","text":"( 直白的话语让你耳尖泛红）","shown": false},
-        {"speaker" :"player","text":"……谢谢。","shown": false},
+        {"speaker" :"player","text":"……谢谢。","bgm": "bgm/intro.mp3","shown": false},
         {"next":"chapter_1_common"}
     ],
 
@@ -119,7 +119,7 @@
         {"speaker" :"player","text":"我想提前了解这里的环境……父亲。","shown": false},
         {"speaker" :"narrator","text":"(在你喊出父亲的瞬间，你看见他的眉头轻皱。)","shown": false},
         {"speaker" :"npc","text":"在诊所我们只是上下关系，不要叫我父亲。","shown": false},
-        {"speaker" :"npc","text":"我先走了，你自行探索，我还有会议。","sound": "footsteps","shown": false},
+        {"speaker" :"npc","text":"我先走了，你自行探索，我还有会议。","shown": false},
         {"speaker" :"narrator","text":"(他走出了诊所。)", "event": "dean_exit_cutscene","sound": "footsteps","shown": false},
         {"speaker" :"player","text":"(在探索前先跟母亲报备吧。)","shown": false},
         {"speaker" :"player","text":"(你拿起了手机，打开了母亲的聊天栏。)","shown": false},
@@ -148,7 +148,7 @@
     ],
 
     "student":[
-        {"speaker" :"player","text":"你之前是不是有一位叫Zheng的学生？","shown": false},
+        {"speaker" :"player","text":"你之前是不是有一位叫Zheng的学生？","bgm": "bgm/dean_chapter_2.mp3","shown": false},
         {"speaker" :"narrator","text":"(你见他思索了片刻.)","shown": false},
         {"speaker" :"npc","text":"有。她是个优秀的学生。","shown": false},
         {"speaker" :"npc","text":"她曾在工作上协助过我，只是可惜毕业后她似乎没再往心理学深造。","shown": false},
@@ -157,7 +157,7 @@
         {"speaker" :"narrator","text":"(他打断了你.)","shown": false},
         {"speaker" :"npc","text":"病人的记忆是隐私，不要再提起这个。","shown": false},
         {"speaker" :"player","text":"(......)","shown": false},
-        {"speaker" :"player","text":"(……离开吧)"}
+        {"speaker" :"player","text":"(……离开吧)","bgm": "bgm/intro.mp3"}
     ],
 
     "experiment":[
@@ -174,7 +174,7 @@
         {"speaker" :"npc","text":"你该专注当下患者的治疗，而非讨论病人的隐私，还觉得自己发现了什么阴谋。","shown": false},
         {"speaker" :"npc","text":"现在，出去时带上门。","shown": false},
         {"speaker" :"player","text":"(......)","shown": false},
-        {"speaker" :"player","text":"(……离开吧)"}
+        {"speaker" :"player","text":"(……离开吧)","bgm": "bgm/intro.mp3"}
     ],
 
      "repeat_only":[
@@ -216,7 +216,7 @@
 
     "Ship_of_Theseus":[
         {"cg":["picture/Ending/black screen.png"]},
-        {"speaker" :"player","text":"……如果必须选择，我会拉下拉杆。"},
+        {"speaker" :"player","text":"……如果必须选择，我会拉下拉杆。","bgm": "bgm/ship.mp3"},
         {"speaker" :"narrator","text":"(你见他露出欣慰的微笑)"},
         {"speaker" :"npc","text":"很好，你也能理解我的逻辑不是吗？"},
         {"speaker" :"npc","text":"科学需要取舍，而我的研究最终会拯救更多人。"},
@@ -234,13 +234,13 @@
         {"speaker" :"narrator","text":"(灯光闪烁，你站在演讲台上，往下望黑压压的人群)"},
         {"speaker" :"player","text":": 我们的研究证明，人类的大脑并非不可修改的硬盘。"},
         {"speaker" :"player","text":"通过精准的催眠干预，我们可以剥离创伤，重塑健康的心理结构。"},
-        {"speaker" :"narrator","text":"(掌声雷动)"},
+        {"speaker" :"narrator","text":"(掌声雷动)","sound": "claps"},
         {"speaker" :"narrator","text":"(你继续发言详细内容，结束后走下台回到父亲身边)"},
         {"cg":["picture/Ending/End1.4.png"]},
         {"speaker" :"narrator","text":"((他递给你一杯香槟，杯壁映出你们两人的倒影——同样的白大褂，同样的冷静眼神)"},
         {"speaker" :"narrator","text":"(他举杯)"},
         {"speaker":"npc","text":"敬未来。"},
-        {"speaker" :"narrator","text":"(你轻轻碰杯，玻璃相撞的声音清脆而冰冷。)"},
+        {"speaker" :"narrator","text":"(你轻轻碰杯，玻璃相撞的声音清脆而冰冷。)","sound": "wine_glass"},
         {"speaker" :"player","text":"敬未来。"},
         {"speaker" :"narrator","text":"?:你逐步继承了他的意志，就像被逐渐替换的船板。"},
         {"speaker" :"narrator","text":"?:你还觉得你还是原来的你吗？","type":"ending"}
@@ -250,7 +250,7 @@
 
     "Justice_Served":[
         {"cg":["picture/Ending/black screen.png"]},
-        {"speaker" :"player","text":" 我不会碰拉杆…...每个生命都该有平等存续的机会。"},
+        {"speaker" :"player","text":" 我不会碰拉杆…...每个生命都该有平等存续的机会。","bgm": "bgm/justice.mp3"},
         {"speaker" :"npc","text":"真天真，你还是选择了道义主义。"},
         {"speaker" :"player","text":"……我无法认同你的观念，父亲。"},
         {"speaker" :"player","text":"我也……不能再这样放任你做下去。"},
@@ -274,7 +274,7 @@
         {"speaker" :"narrator","text":"(你按下了报警键)"},
         {"cg":["picture/Ending/End2.2.png"]},
         {"speaker" :"narrator","text":"(现在，法庭)"},
-        {"speaker" :"narrator","text":"(法官敲下法槌)"},
+        {"speaker" :"narrator","text":"(法官敲下法槌)","sound": "gavel"},
         {"speaker" :"narrator","text":"法官: 被告人，你还有什么要说的吗？"},
         {"speaker" :"narrator","text":"(父亲站在被告席上，目光扫过旁听席，视线落在你身上)"},
         {"cg":["picture/Ending/End2.3.png"]},
@@ -286,7 +286,7 @@
     "Rebirth_of_the_Dual_Soul":[
 
         {"cg":["picture/Ending/black screen.png"]},
-        {"speaker" :"player","text":"少扯什么哲学问题，也别用那种比喻来洗白自己！!"},
+        {"speaker" :"player","text":"少扯什么哲学问题，也别用那种比喻来洗白自己！!","bgm": "bgm/rebirth.mp3"},
         {"speaker" :"npc","text":"呵，你情绪太容易激动了.......就像你母亲一样。"},
         {"speaker" :"player","text":" 别在这种时候提起母亲，如果当年不是因为你一直与她争吵，她也不会离家出走…… "},
         {"speaker" :"player","text":"我脑海里的声音甚至告诉我你杀了她，真可笑啊……"},
@@ -302,7 +302,7 @@
         {"cg":["picture/Ending/End3.2.png"]},
         {"speaker" :"narrator","text":"(回忆)"},
         {"speaker" :"narrator","text":"(一个空荡荡的教室，黑板还留着没人擦干净的方程式)"},
-        {"speaker" :"narrator","text":"???: [真讨厌啊，今天也是雨天。]"},
+        {"speaker" :"narrator","text":"???: [真讨厌啊，今天也是雨天。]","sound": "rain"},
         {"speaker" :"player","text":"雨天不好吗？令人感到宁静。"},
         {"speaker" :"narrator","text":"???: [不好，让我想起早上他们的吵架声，犹如这般刺耳。]"},
         {"speaker" :"player","text":"别想这个了，有我陪着你。都放学了，快走吧？"},
@@ -324,7 +324,7 @@
         {"speaker" :"narrator","text":"(母亲的瞳孔已经扩散，却还望着门口的方向——仿佛在最后一刻，仍在担心放学回家的孩子会看到这一幕。)"},
         {"speaker" :"narrator","text":"(楼梯高处站着握紧拳头的父亲，他的白大褂下摆滴落着暗红的液体。)"},
         {"speaker" :"player","text":" 别看!!！"},
-        {"speaker" :"narrator","text":"(太迟了...他早已因为惊吓而把身体控制权交给了你，你还没反应过来，就感受到后颈的疼痛)"},
+        {"speaker" :"narrator","text":"(太迟了...他早已因为惊吓而把身体控制权交给了你，你还没反应过来，就感受到后颈的疼痛)","sound_stop": true},
         {"speaker" :"narrator","text":"(你被毫不留情的打晕了)"},
         {"speaker" :"narrator","text":"(醒来时，怀表的金属冷光在眼前晃动。)"},
         {"speaker" :"npc","text":"从今天起，妈妈只是离家出走了。"},
@@ -363,7 +363,7 @@
   },
   "Zheng":{
     "chapter_1":[
-        {"speaker" :"player","text":"久等了，我是你预约的心理医生。你就是郑小姐吗？","shown": false},
+        {"speaker" :"player","text":"久等了，我是你预约的心理医生。你就是郑小姐吗？","bgm": "bgm/talk_with_patient.mp3","shown": false},
         {"speaker" :"narrator","text":"(你见她坐姿端正地点了点头。)","shown": false},
         {"speaker" :"npc","text":"是的，你好。","shown": false},
         {"speaker" :"player","text":"好的，郑小姐。我们的会谈主要是了解你的情况。","shown": false},
@@ -407,7 +407,7 @@
         {"speaker" :"narrator","text":"(一会儿后，她抬起了头。)","shown": false},
         {"speaker" :"npc","text":"我读完了，我愿意接受风险，直接签字就好了对吗？","shown": false},
         {"speaker" :"player","text":"嗯，签字后我就会开始准备用仪器为你治疗。","shown": false},
-        {"speaker" :"narrator","text":"(她毫不犹豫的签下，然后把合同递回给你)","shown": false},
+        {"speaker" :"narrator","text":"(她毫不犹豫的签下，然后把合同递回给你)","sound": "write_pen","shown": false},
         {"speaker" :"player","text":"(好了，那现在开始吧。)","shown": false},
         {"next":"chapter_1_common"}
 
@@ -450,7 +450,7 @@
      ],
      "sub_end_1":[
         {"cg":"picture/P1 End1.png"},
-        {"speaker" :"npc","text":"(那位医生的治疗真是有效，这段时间我已经不会再为一些小事而焦躁了。)","shown": false},
+        {"speaker" :"npc","text":"(那位医生的治疗真是有效，这段时间我已经不会再为一些小事而焦躁了。)","bgm": "bgm/zheng_destroyed.mp3","shown": false},
         {"speaker" :"npc","text":"(老板也说我最近精神了许多，工作效率可见的变好。)","shown": false},
         {"speaker" :"npc","text":"(就这样继续在职场打拼吧，稳定的生活就是我的理想……)","shown": false},
         {"speaker" :"npc","text":" (...)","shown": false},
@@ -470,7 +470,7 @@
      ],
      "sub_end_2":[
         {"cg":"picture/P1 End2.png"},
-        {"speaker" :"npc","text":" (那位医生的治疗真是有效，这段时间我已经不会再为一些小事而焦躁了。)","shown": false},
+        {"speaker" :"npc","text":" (那位医生的治疗真是有效，这段时间我已经不会再为一些小事而焦躁了。)","bgm": "bgm/zheng_preserved.mp3","shown": false},
         {"speaker" :"npc","text":" (更重要的是，我想起了自己真正想要的东西——研究。)","shown": false},
         {"speaker" :"npc","text":"(我怎么能忘了呢，想在心理学埋头研究的理想。)","shown": false},
         {"speaker" :"npc","text":"(但还好，一切都不算晚。)","shown": false},
@@ -482,7 +482,7 @@
 
   "Emma":{
     "chapter_2":[
-        {"speaker" :"player","text":"早上好，请问是Emma小姐吗？","shown": false},
+        {"speaker" :"player","text":"早上好，请问是Emma小姐吗？","bgm": "bgm/talk_with_patient.mp3","shown": false},
         {"speaker" :"narrator","text":"(她礼貌的回应了你。)","shown": false},
         {"speaker" :"npc","text":"我是，早安。","shown": false},
         {"speaker" :"narrator","text":"(她的声音轻柔，像一匹绸缎，细腻地划过耳畔。)","shown": false},
@@ -583,7 +583,7 @@
 
     "sub_end_3":[
         {"cg":"picture/P2 End1.png"},
-        {"speaker" :"npc","text":" (噩梦已离我远去，坐车时也不再害怕了)","shown": false},
+        {"speaker" :"npc","text":" (噩梦已离我远去，坐车时也不再害怕了)","bgm": "bgm/emma_destroyed.mp3","shown": false},
         {"speaker" :"npc","text":"(真好啊，感觉自己一身轻松，也可以重新接工作了)","shown": false},
         {"speaker" :"npc","text":"(可是……为什么当我站在镜头前时，总觉得少了什么？)","shown": false},
         {"speaker" :"npc","text":" (那些曾经让我心跳加速的闪光灯，现在只是刺眼的光)","shown": false},
@@ -607,7 +607,7 @@
 
     "sub_end_4":[
         {"cg":"picture/P2 End2.png"},
-        {"speaker" :"npc","text":"(……又梦见那场车祸了)","shown": false},
+        {"speaker" :"npc","text":"(……又梦见那场车祸了)","bgm": "bgm/emma_preserved.mp3","shown": false},
         {"speaker" :"npc","text":"  (一切都如此清晰，但是我的呼吸却平静得出奇)","shown": false},
         {"speaker" :"npc","text":"(治疗还是有效果的，我没再像之前一样那么恐惧了)","shown": false},
         {"speaker" :"npc","text":"(……准备好后就去上班吧)","shown": false},

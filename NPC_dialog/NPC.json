@@ -135,7 +135,7 @@
     ],
 
     "chapter_2":[
-        {"speaker" :"npc","text":"Is there a problem?","shown": false},
+        {"speaker" :"npc","text":"Is there a problem?","bgm": "bgm/dean_chapter_2.mp3","shown": false},
         {"speaker" :"player","text":"There's something I need to discuss with you.","shown": false},
         {"speaker" :"player","text":"(Should I play it by ear, or just get straight to the point?)","shown": false},
         {"choice":[
@@ -154,7 +154,7 @@
         {"speaker" :"narrator","text":"(The Dean suddenly coughs, interrupting you.)","shown": false},
         {"speaker" :"npc","text":"That is the patient's private matter. Do not simply bring this up on your own accord.......","shown": false},
         {"speaker" :"player","text":"(......)","shown": false},
-        {"speaker" :"player","text":"(I should go.......)"}
+        {"speaker" :"player","text":"(I should go.......)","bgm": "bgm/intro.mp3"}
     ],
 
     "experiment":[
@@ -171,7 +171,7 @@
         {"speaker" :"npc","text":"You should focus more on treating the patient, not talking about their private matters like you've uncovered some conspiracy.","shown": false},
         {"speaker" :"npc","text":"If there's nothing else, do see yourself out.","shown": false},
         {"speaker" :"player","text":"(......)","shown": false},
-        {"speaker" :"player","text":"(I should go.......)"}
+        {"speaker" :"player","text":"(I should go.......)","bgm": "bgm/intro.mp3"}
     ],
     
     "repeat_only":[
@@ -213,7 +213,7 @@
 
     "Ship_of_Theseus":[
         {"cg":["picture/Ending/black screen.png"]},
-        {"speaker" :"player","text":"...If I must choose, I’ll pull the lever"},
+        {"speaker" :"player","text":"...If I must choose, I’ll pull the lever","bgm": "bgm/ship.mp3"},
         {"speaker" :"narrator","text":"(He smiles, pleased.)"},
         {"speaker" :"npc","text":"Good. You understand."},
         {"speaker" :"npc","text":"Science requires trade-offs. My research will save more in the end."},
@@ -232,12 +232,12 @@
         {"speaker" :"narrator","text":"(Spotlights flash. You stand at the podium before a dark sea of faces.)"},
         {"speaker" :"player","text":"Our research proves that the human brain is not an immutable hard drive."},
         {"speaker" :"player","text":"With precise hypnosis, we can strip away trauma and rebuild a healthy psyche."},
-        {"speaker" :"narrator","text":"(Applause erupts.)"},
+        {"speaker" :"narrator","text":"(Applause erupts.)","sound": "claps"},
         {"speaker" :"narrator","text":"(You continue your speech and return to your father’s side after)"},
         {"cg":["picture/Ending/End1.4.png"]},
         {"speaker" :"narrator","text":"(He hands you a glass of champagne. Reflected on the surface are your two faces—same white coat, same calm gaze.)"},
         {"speaker" :"narrator","text":"(He raises his glass.)"},
-        {"speaker" :"narrator","text":"(Glasses clink, crisp and icy.)"},
+        {"speaker" :"narrator","text":"(Glasses clink, crisp and icy.)","sound": "wine_glass"},
         {"speaker" :"player","text":"To the future."},
         {"speaker" :"narrator","text":"???: You gradually inherited his will, like a ship with its planks replaced one by one."},
         {"speaker" :"narrator","text":"???: Do you still think you're the same person you once were?","type":"ending"}
@@ -246,7 +246,7 @@
 
     "Justice_Served":[
         {"cg":["picture/Ending/black screen.png"]},
-        {"speaker" :"player","text":" I won’t pull the lever... Every life deserves an equal chance."},
+        {"speaker" :"player","text":" I won’t pull the lever... Every life deserves an equal chance.","bgm": "bgm/justice.mp3"},
         {"speaker" :"npc","text":"Naïve. Still clinging to morals"},
         {"speaker" :"player","text":"...I can’t accept your ideals, Father."},
         {"speaker" :"player","text":"And I won’t let this continue."},
@@ -271,7 +271,7 @@
         {"speaker" :"narrator","text":"(You press the call button.)"},
         {"cg":["picture/Ending/End2.2.png"]},
         {"speaker" :"narrator","text":"(Now, in court.)"},
-        {"speaker" :"narrator","text":"(The gavel falls.)"},
+        {"speaker" :"narrator","text":"(The gavel falls.)","sound": "gavel"},
         {"speaker" :"narrator","text":"Judge:Defendant, do you have anything to say?"},
         {"speaker" :"narrator","text":"(Your father stands in the defendant’s box. His gaze sweeps across the courtroom and lands on you.)"},
         {"cg":["picture/Ending/End2.3.png"]},
@@ -283,7 +283,7 @@
 
     "Rebirth_of_the_Dual_Soul":[
         {"cg":["picture/Ending/black screen.png"]},
-        {"speaker" :"player","text":" Don't give me that philosophical nonsense. Stop trying to justify yourself!"},
+        {"speaker" :"player","text":" Don't give me that philosophical nonsense. Stop trying to justify yourself!","bgm": "bgm/rebirth.mp3"},
         {"speaker" :"npc","text":"Too emotional. Like your mother."},
         {"speaker" :"player","text":"Don’t bring her up now. If you hadn’t fought her so much, she wouldn’t have left home—"},
         {"speaker" :"player","text":"I even hear voices in my head saying you killed her—what a joke..."},
@@ -299,7 +299,7 @@
         {"cg":["picture/Ending/End3.2.png"]},
         {"speaker" :"narrator","text":"(Flashback)"},
         {"speaker" :"narrator","text":"(An empty classroom. Equations still faintly on the blackboard)"},
-        {"speaker" :"narrator","text":"???: [Ugh. Rain again.]"},
+        {"speaker" :"narrator","text":"???: [Ugh. Rain again.]","sound": "rain"},
         {"speaker" :"player","text":"Rain's peaceful."},
         {"speaker" :"narrator","text":"???: [Not for me. Reminds me of their shouting this morning.] "},
         {"speaker" :"player","text":" Forget that. I’m here. Let’s go."},
@@ -401,7 +401,7 @@
         {"speaker" :"narrator","text":"(After a moment, she looks up.)","shown": false},
         {"speaker" :"npc","text":"I’ve read it. I’m willing to accept the risks. Just need to sign here, right?","shown": false},
         {"speaker" :"player","text":"Right. Once you sign, I’ll prepare the treatment.","shown": false},
-        {"speaker" :"narrator","text":"(She signs without hesitation and returns the form to you.)","shown": false},
+        {"speaker" :"narrator","text":"(She signs without hesitation and returns the form to you.)","sound": "write_pen","shown": false},
         {"speaker" :"player","text":"(Alright, let’s begin.)","shown": false},
         {"next":"chapter_1_common"}
 
@@ -442,7 +442,7 @@
      ],
      "sub_end_1":[
         {"cg":"picture/P1 End1.png"},
-        {"speaker" :"npc","text":"(That doctor’s treatment really worked. I don’t get anxious over little things anymore.)","shown": false},
+        {"speaker" :"npc","text":"(That doctor’s treatment really worked. I don’t get anxious over little things anymore.)","bgm": "bgm/zheng_destroyed.mp3","shown": false},
         {"speaker" :"npc","text":"(My boss even said I seem refreshed. Efficiency has improved.)","shown": false},
         {"speaker" :"npc","text":"(This stable routine is all I need...)","shown": false},
         {"speaker" :"npc","text":" (...)","shown": false},
@@ -520,7 +520,7 @@
         {"speaker" :"player","text":" (Seriously. Where am I hearing this from?)","shown": false},
         {"speaker" :"narrator","text":"(You choose to ignore the voice for now.)","shown": false},
         {"speaker" :"player","text":"Here's a pen.","shown": false},
-        {"speaker" :"narrator","text":"(After she signs, she hands the contract and pen back to you.)","shown": false},
+        {"speaker" :"narrator","text":"(After she signs, she hands the contract and pen back to you.)","sound": "write_pen","shown": false},
         {"speaker" :"player","text":"(We can start now.)","shown": false},
         {"speaker" :"narrator","text":"......."},
         {"speaker" :"player","text":"I’ve finished speaking with the patient. Time to begin treatment using the machine."}
@@ -577,7 +577,7 @@
 
     "sub_end_3":[
         {"cg":"picture/P2 End1.png"},
-        {"speaker" :"npc","text":" (The nightmares are really gone... and I am no longer afraid of getting into a car.)","shown": false},
+        {"speaker" :"npc","text":" (The nightmares are really gone... and I am no longer afraid of getting into a car.)","bgm": "bgm/emma_destroyed.mp3","shown": false},
         {"speaker" :"npc","text":"(It's great! I feel relieved, and I can work again)","shown": false},
         {"speaker" :"npc","text":" (But... Why do I feel like something's missing?)","shown": false},
         {"speaker" :"npc","text":" (The camera flashes that once made my heart race are now nothing more then just blinding lights)","shown": false},
