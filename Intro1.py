@@ -8,6 +8,9 @@ import json
 with open("objects.json", "r") as f:
     object_data = json.load(f)
 
+with open("object_dialogue.json") as f:
+    object_dialogue = json.load(f)
+
 pygame.init()
 
 # Set up display
@@ -667,17 +670,19 @@ class CameraGroup(pygame.sprite.Group):
 camera_group = CameraGroup()
 
 image_path = {
-            "Table": "Table.png"
+            "Table": "Table.png",
+            "Door01": "Door01.png"
         }
 
 class InteractableObject(pygame.sprite.Sprite):
-    def __init__(self, name, rect, dialogue_id, start_node, image_path=None, active=True):
+    def __init__(self, name, rect, dialogue_id, start_node, image_path=None, active=True, text=None):
         super().__init__()
 
         self.name = name
         self.dialogue_id = dialogue_id
         self.start_node = start_node
         self.active = active
+        self.text = text
 
         self.image = pygame.image.load(image_path).convert_alpha() if image_path else None
         self.rect = rect
@@ -687,6 +692,14 @@ class InteractableObject(pygame.sprite.Sprite):
         if self.image:
             offset_rect =self.rect.topleft - offset
             surface.blit(self.image, offset_rect)
+
+    # def interaction(self):
+    #     if self.dialogue_id:
+    #         dialog(self.dialogue_id, self.start_node)
+    #     elif self.text:
+    #         print(f"{self.name}:{self.text}")
+    #     else:
+    #         print(f"You see {self.name}.")
 
 interactable_objects = []
 
@@ -699,17 +712,16 @@ for obj_id, obj_info in object_data.items():
     dialogue_id=obj_info["dialogue_id"]
     start_node=obj_info["start_node"]
     active=obj_info.get("active", True)
+    text = obj_info.get("text")
 
-rect = pygame.Rect(pos[0], pos[1], size[0], size[1])
-obj = InteractableObject(name, rect, dialogue_id, start_node, image_path=image_path_str, active=active)
-camera_group.add(obj)
-interactable_objects.append(obj)
+    rect = pygame.Rect(pos[0], pos[1], size[0], size[1])
+
+    obj = InteractableObject(name, rect, dialogue_id, start_node, image_path=image_path_str, active=active, text=text)
+    camera_group.add(obj)
+    interactable_objects.append(obj)
 
 def check_object_interaction(player_rect, interactable_objects):
-    for obj in interactable_objects:
-        if obj.active and player_rect.colliderect(obj.rect):
-            return obj
-    return None
+    return [obj for obj in interactable_objects if obj.active and player_rect.colliderect(obj.rect)]
 
 class Game:
     def __init__(self):
@@ -763,12 +775,10 @@ class Game:
                     camera_group.half_w = screen_width // 2
                     camera_group.half_h = screen_height // 2
 
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_e:
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
                     interacted_obj = check_object_interaction(player.rect, interactable_objects)
                     if interacted_obj:
-                        print(f"Interacted with {interacted_obj.name}") 
-                        dialog(interacted_obj.dialogue_id, interacted_obj.start_node)
-
+                        print(f"Interacted with {interacted_obj[1].name}") 
 
             if currentState == 'level':
                 dean = next(npc for npc in self.npc_manager.npcs if npc.name == "Dean")
@@ -777,10 +787,11 @@ class Game:
             else:
                 self.states[currentState].run()
             
-            near_obj = check_object_interaction(player.rect, interactable_objects)
+            padded_rect = player.rect.inflate(10,10)
+            near_obj = check_object_interaction(padded_rect, interactable_objects)
             if near_obj:
                 font = pygame.font.Font(None, 24)
-                text = font.render("Press E to interact", True, (0, 0, 0))
+                text = font.render("Press Q to interact", True, (0, 0, 0))
                 self.screen.blit(text, (player.rect.x, player.rect.y - 30))
             
 
@@ -788,7 +799,7 @@ class Game:
             self.clock.tick(FPS)
 
 class Start:    #try to call back SimpleChapterIntro
-    def __init__(self, display, gameStateManager, intro): #, intro
+    def __init__(self, display, gameStateManager, intro):
         self.display = display
         self.gameStateManager = gameStateManager
         self.intro = intro
