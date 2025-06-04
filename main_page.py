@@ -395,17 +395,24 @@ def show_cg_gallery(image_paths):
 
 
 def show_zheng_routine_life():
-    # 这里是展示 CG 或其他内容的 screen
-    return
+    show_cg_gallery([
+        "picture/Ending/P1 End1.png",
+    ])
 
 def show_zheng_dreams():
-    return
+    show_cg_gallery([
+        "picture/Ending/P1 End2.png",
+    ])
 
 def show_emma_bliss():
-    return
+    show_cg_gallery([
+        "picture/Ending/P2 End1.png",
+    ])
 
 def show_emma_fear():
-    return
+    show_cg_gallery([
+        "picture/Ending/P2 End2.png",
+    ])
 
 def show_player_ship():
     show_cg_gallery([
