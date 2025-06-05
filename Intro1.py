@@ -643,11 +643,23 @@ class CameraGroup(pygame.sprite.Group):
         self.offset.x = self.camera_rect.left - self.camera_borders['left']
         self.offset.y = self.camera_rect.top - self.camera_borders['top']
 
+        #camera speed
+        self.keyboard_speed = 5 
+
          # Clamp offset to world bounds
         self.offset.x = max(0, min(self.offset.x, world_width - self.display_surface.get_width()))
         self.offset.y = max(0, min(self.offset.y, world_height - self.display_surface.get_height()))
 
+    def keyboard_control(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_a]:
+            self.offset.x -= self.keyboard_speed
+        if keys[pygame.K_d]:
+            self.offset.x += self.keyboard_speed  
+
     def custom_draw(self,player):
+
+        #self.keyboard_control() to manually move camera, can be for animation?
 
         #self.center_target_camera(player)
         self.box_target_camera(player)
@@ -675,7 +687,7 @@ image_path = {
         }
 
 class InteractableObject(pygame.sprite.Sprite):
-    def __init__(self, name, rect, dialogue_id, start_node, image_path=None, active=True, text=None):
+    def __init__(self, name, position, dialogue_id, start_node, image_path=None, active=True, text=None):
         super().__init__()
 
         self.name = name
@@ -685,14 +697,25 @@ class InteractableObject(pygame.sprite.Sprite):
         self.text = text
 
         self.image = pygame.image.load(image_path).convert_alpha() if image_path else None
-        self.rect = rect
+        self.rect = self.image.get_rect(topleft=position)
         self.flip = False #so CameraGroup won't flip items with player
 
     def draw(self, surface, offset):
         if self.image:
-            offset_rect =self.rect.topleft - offset
+            offset_rect = self.rect.move(-offset[0], -offset[1])
             surface.blit(self.image, offset_rect)
-
+            
+            pygame.draw.rect(surface, (0, 255, 0), offset_rect, 2) 
+        
+            padded_rect = player.rect.inflate(10,10)
+            near_obj = check_object_interaction(padded_rect, interactable_objects)
+            if near_obj:
+                font = pygame.font.Font(None, 24)
+                text = font.render("Press Q to interact", True, (0, 0, 0), (255, 255, 255))
+                for obj in near_obj:
+                    screen_pos = obj.rect.move(-offset[0], -offset[1])
+                    surface.blit(text, (screen_pos.centerx - text.get_width() // 2, screen_pos.top - 20))
+                    
     # def interaction(self):
     #     if self.dialogue_id:
     #         dialog(self.dialogue_id, self.start_node)
@@ -706,7 +729,6 @@ interactable_objects = []
 for obj_id, obj_info in object_data.items():
     name=obj_info["name"]
     pos = obj_info["position"]
-    size = obj_info["size"]
     image = obj_info.get("image")
     image_path_str=image_path.get(image, None)
     dialogue_id=obj_info["dialogue_id"]
@@ -714,9 +736,7 @@ for obj_id, obj_info in object_data.items():
     active=obj_info.get("active", True)
     text = obj_info.get("text")
 
-    rect = pygame.Rect(pos[0], pos[1], size[0], size[1])
-
-    obj = InteractableObject(name, rect, dialogue_id, start_node, image_path=image_path_str, active=active, text=text)
+    obj = InteractableObject(name, pos, dialogue_id, start_node, image_path=image_path_str, active=active, text=text)
     camera_group.add(obj)
     interactable_objects.append(obj)
 
@@ -777,8 +797,8 @@ class Game:
 
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
                     interacted_obj = check_object_interaction(player.rect, interactable_objects)
-                    if interacted_obj:
-                        print(f"Interacted with {interacted_obj[1].name}") 
+                    for obj in interacted_obj:
+                        print(f"Interacted with {obj.name}") 
 
             if currentState == 'level':
                 dean = next(npc for npc in self.npc_manager.npcs if npc.name == "Dean")
@@ -787,13 +807,19 @@ class Game:
             else:
                 self.states[currentState].run()
             
-            padded_rect = player.rect.inflate(10,10)
-            near_obj = check_object_interaction(padded_rect, interactable_objects)
-            if near_obj:
-                font = pygame.font.Font(None, 24)
-                text = font.render("Press Q to interact", True, (0, 0, 0))
-                self.screen.blit(text, (player.rect.x, player.rect.y - 30))
+            # padded_rect = player.rect.inflate(10,10)
+            # near_obj = check_object_interaction(padded_rect, interactable_objects)
+            # if near_obj:
+            #     font = pygame.font.Font(None, 24)
+            #     text = font.render("Press Q to interact", True, (0, 0, 0))
+            #     for obj in near_obj:
+            #         self.screen.blit(text, (obj.rect.centerx - text.get_width() // 2, obj.rect.top - 20))
             
+            for obj in interactable_objects:
+                obj.draw(self.screen, camera_group.offset)
+
+            screen_pos = player.rect.move(-camera_group.offset.x, -camera_group.offset.y)
+            pygame.draw.rect(self.screen, (255, 0, 0), screen_pos, 2)  # red box = player
 
             pygame.display.update()
             self.clock.tick(FPS)
