@@ -669,10 +669,6 @@ class CameraGroup(pygame.sprite.Group):
             offset_bg = pygame.Vector2(0,0) - self.offset
             self.display_surface.blit(self.background, offset_bg)
 
-        #Draw item(s) here before sprites
-        for obj in interactable_objects:
-            obj.draw(self.display_surface, self.offset)
-
         #Draw characters after
         for sprite in sorted(self.sprites(), key=lambda spr: (spr.rect.centery, spr != player)):
             offset_pos = sprite.rect.topleft - self.offset
@@ -699,12 +695,12 @@ class InteractableObject(pygame.sprite.Sprite):
         self.image = pygame.image.load(image_path).convert_alpha() if image_path else None
         self.rect = self.image.get_rect(topleft=position)
         self.flip = False #so CameraGroup won't flip items with player
+        
 
     def draw(self, surface, offset):
         if self.image:
             offset_rect = self.rect.move(-offset[0], -offset[1])
-            surface.blit(self.image, offset_rect)
-            
+        
             pygame.draw.rect(surface, (0, 255, 0), offset_rect, 2) 
         
             padded_rect = player.rect.inflate(10,10)
@@ -716,13 +712,17 @@ class InteractableObject(pygame.sprite.Sprite):
                     screen_pos = obj.rect.move(-offset[0], -offset[1])
                     surface.blit(text, (screen_pos.centerx - text.get_width() // 2, screen_pos.top - 20))
                     
-    # def interaction(self):
-    #     if self.dialogue_id:
-    #         dialog(self.dialogue_id, self.start_node)
-    #     elif self.text:
-    #         print(f"{self.name}:{self.text}")
-    #     else:
-    #         print(f"You see {self.name}.")
+    def interaction(self):
+        if self.dialogue_id:
+            self.interacted = True
+            # Run object dialogue
+            global current_dialog
+            current_dialog = ObjectDialogue(self.dialogue_id, self.start_node)
+            current_dialog.start()
+        elif self.text:
+            print(f"{self.name}:{self.text}")
+        else:
+            print(f"You see {self.name}.")
 
 interactable_objects = []
 
@@ -737,11 +737,75 @@ for obj_id, obj_info in object_data.items():
     text = obj_info.get("text")
 
     obj = InteractableObject(name, pos, dialogue_id, start_node, image_path=image_path_str, active=active, text=text)
-    camera_group.add(obj)
     interactable_objects.append(obj)
 
 def check_object_interaction(player_rect, interactable_objects):
     return [obj for obj in interactable_objects if obj.active and player_rect.colliderect(obj.rect)]
+
+class ObjectDialogue:
+    def __init__(self, dialogue_id, start_node):
+        self.dialogue_id = dialogue_id
+        self.current_node = start_node
+        self.dialogue_data = object_dialogue.get(dialogue_id, {})
+        self.talking = False
+
+        self.dialogue_box_img = pygame.image.load("picture/Character Dialogue/dialog boxxx.png").convert_alpha()
+        self.dialogue_box_img.set_alpha(200)
+
+        self.displayed_text = ""
+        self.letter_index = 0
+        self.last_time = pygame.time.get_ticks()
+        self.letter_delay = 45
+
+    def start(self):
+        self.talking = True
+        self.displayed_text = ""
+        self.letter_index = 0
+        self.last_time = pygame.time.get_ticks()
+
+    def update(self):
+        if self.talking:
+            node = self.dialogue_data.get(self.current_node, {})
+            text = node.get("text", "")
+
+            current_time = pygame.time.get_ticks()
+            if self.letter_index < len(text):
+                if current_time - self.last_time > self.letter_delay:
+                    self.displayed_text += text[self.letter_index]
+                    self.letter_index += 1
+                    self.last_time = current_time
+
+    def draw(self, screen):
+        if self.talking:
+            x = screen.get_width() // 2 - self.dialogue_box_img.get_width() // 2
+            y = screen.get_height() - self.dialogue_box_img.get_height() - 20
+            screen.blit(self.dialogue_box_img, (x, y))
+
+            # Padding inside the dialogue box
+            text_x = x + 150
+            text_y = y + 60
+            max_text_width = self.dialogue_box_img.get_width() - 200  # 40 padding on each side
+
+            draw_text(screen, self.displayed_text, size=30, color=(0, 0, 0), x=text_x, y=text_y, center=False, max_width=max_text_width)
+
+    def handle_space(self):
+        if not self.talking:
+            self.start()
+            return
+
+        node = self.dialogue_data.get(self.current_node, {})
+        text = node.get("text", "")
+        if self.letter_index < len(text):
+            self.displayed_text = text
+            self.letter_index = len(text)
+        else:
+            next_node = node.get("next")
+            if next_node:
+                self.current_node = next_node
+                self.start()
+            else:
+                self.talking = False
+
 
 class Game:
     def __init__(self):
@@ -795,10 +859,19 @@ class Game:
                     camera_group.half_w = screen_width // 2
                     camera_group.half_h = screen_height // 2
 
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
-                    interacted_obj = check_object_interaction(player.rect, interactable_objects)
-                    for obj in interacted_obj:
-                        print(f"Interacted with {obj.name}") 
+                elif event.type == pygame.KEYDOWN:
+                    global current_dialogue
+                    if event.key == pygame.K_q:
+                        if current_dialogue and current_dialogue.talking:
+                            current_dialogue.handle_space()
+                        else:
+                            interacted_obj = check_object_interaction(player.rect, interactable_objects)
+                            if interacted_obj:
+                                # Choose the first interactable object the player is near
+                                obj = interacted_obj[0]
+                                # Start new dialogue (replace old one)
+                                current_dialogue = ObjectDialogue(obj.dialogue_id, obj.start_node)
+                                current_dialogue.start()
 
             if currentState == 'level':
                 dean = next(npc for npc in self.npc_manager.npcs if npc.name == "Dean")
@@ -806,20 +879,17 @@ class Game:
                     self.states['level'].run(moving_left, moving_right, run, dean)
             else:
                 self.states[currentState].run()
-            
-            # padded_rect = player.rect.inflate(10,10)
-            # near_obj = check_object_interaction(padded_rect, interactable_objects)
-            # if near_obj:
-            #     font = pygame.font.Font(None, 24)
-            #     text = font.render("Press Q to interact", True, (0, 0, 0))
-            #     for obj in near_obj:
-            #         self.screen.blit(text, (obj.rect.centerx - text.get_width() // 2, obj.rect.top - 20))
-            
+
             for obj in interactable_objects:
                 obj.draw(self.screen, camera_group.offset)
 
             screen_pos = player.rect.move(-camera_group.offset.x, -camera_group.offset.y)
             pygame.draw.rect(self.screen, (255, 0, 0), screen_pos, 2)  # red box = player
+
+            if current_dialogue:
+                current_dialogue.update()
+                current_dialogue.draw(screen)
+
 
             pygame.display.update()
             self.clock.tick(FPS)
@@ -868,11 +938,6 @@ class Rooms:    # class Level in tutorial
         self.dean = dean
         keys = pygame.key.get_pressed()
 
-        # if self.background:
-        #     self.display.blit(self.background, (0,0))
-        # else:
-        #     self.display.fill('red')
-
         # --- Movement ---
         if not self.current_dialogue or not self.current_dialogue.talking:
               is_moving = self.player.move(moving_left,moving_right)
@@ -880,12 +945,6 @@ class Rooms:    # class Level in tutorial
               is_moving = False
         self.player.update_animation(is_moving)
           
-        # --- Draw NPCs ---
-        # for npc in self.npc_manager.npcs:
-        #         self.display.blit(npc.image,npc.rect)
-
-        # self.player.draw(self.display)
-
         # --- Dialogue logic ---
         nearest_npc = self.npc_manager.get_nearest_npc(self.player)
 

@@ -4,5 +4,11 @@
       "text": "The receptionist's counter."
     }
 
+  },
+
+  "door01_dialogue":{
+    "start":{
+      "text": "Your office."
+    }
   }
 }
