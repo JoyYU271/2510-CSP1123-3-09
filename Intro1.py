@@ -743,10 +743,11 @@ def check_object_interaction(player_rect, interactable_objects):
     return [obj for obj in interactable_objects if obj.active and player_rect.colliderect(obj.rect)]
 
 class ObjectDialogue:
-    def __init__(self, dialogue_id, start_node):
+    def __init__(self, dialogue_id, start_node, current_dialogue_ref):
         self.dialogue_id = dialogue_id
         self.current_node = start_node
         self.dialogue_data = object_dialogue.get(dialogue_id, {})
+        self.current_dialogue_ref = current_dialogue_ref
         self.talking = False
 
         self.dialogue_box_img = pygame.image.load("picture/Character Dialogue/dialog boxxx.png").convert_alpha()
@@ -756,6 +757,9 @@ class ObjectDialogue:
         self.letter_index = 0
         self.last_time = pygame.time.get_ticks()
         self.letter_delay = 45
+
+        self.current_line = 0
+        self.lines = []
 
     def start(self):
         self.talking = True
@@ -791,20 +795,38 @@ class ObjectDialogue:
     def handle_space(self):
         if not self.talking:
             self.start()
+            self.talking = True
+            
+            # Only show dialogue if door is first time
+            if self.dialogue_id not in self.current_dialogue_ref.visited_doors:
+                self.lines = ["Your office."]
+                self.current_line = 0
+                self.displayed_text = ""
+            else:
+                self.lines = []
+                self.current_line = 0
             return
-
+        
         node = self.dialogue_data.get(self.current_node, {})
         text = node.get("text", "")
         if self.letter_index < len(text):
             self.displayed_text = text
             self.letter_index = len(text)
-        else:
-            next_node = node.get("next")
-            if next_node:
-                self.current_node = next_node
-                self.start()
-            else:
-                self.talking = False
+            return
+
+        self.current_line += 1
+        if self.current_line >= len(self.lines):
+            self.talking = False
+            if self.dialogue_id == "door01_dialogue":
+                if self.dialogue_id not in self.current_dialogue_ref.visited_doors:
+                    self.current_dialogue_ref.visited_doors.add(self.dialogue_id)
+                else:
+                    self.current_dialogue_ref.states['level'].fading = True
+            return
+    
+        self.displayed_text = ""
+        self.letter_index = 0
+        self.last_time = pygame.time.get_ticks()
 
 
 class Game:
@@ -815,6 +837,7 @@ class Game:
         self.player = player
         self.npc_manager = NPCManager()
         self.current_dialogue = None
+        self.visited_doors = set()
 
         self.gameStateManager = GameStateManager('start')
         self.intro = SimpleChapterIntro(self.screen, self.gameStateManager)
@@ -870,7 +893,7 @@ class Game:
                             interacted_obj = check_object_interaction(player.rect, interactable_objects)
                             if interacted_obj:
                                 obj = interacted_obj[0]
-                                self.current_dialogue = ObjectDialogue(obj.dialogue_id, obj.start_node)
+                                self.current_dialogue = ObjectDialogue(obj.dialogue_id, obj.start_node, self)
                                 self.current_dialogue.start()
 
 
@@ -933,7 +956,18 @@ class Rooms:    # class Level in tutorial
 
         self.last_npc_name = None
         self.last_story = None
-        
+
+        self.visited_doors = set()  #keep track of doors used
+        self.current_room = "room01"
+        self.fading = False
+        self.fade_alpha = 0
+
+    def load_room(self, room_name):
+        if room_name == "room2":
+            self.background = pygame.image.load("Player room.png").convert_alpha()
+            camera_group.set_background(self.background)
+            self.player.rect.topleft = (100, 520)  # reset player position
+            # Optionally clear/reload interactables or NPCs
 
     def run(self, moving_left, moving_right, run, dean):
         entry = {}
@@ -1009,6 +1043,21 @@ class Rooms:    # class Level in tutorial
             self.current_dialogue_ref.current_dialogue.update()
             self.current_dialogue_ref.current_dialogue.draw(self.display)
     
+        # --- Handle fade-to-black transition ---
+        if self.fading:
+            self.fade_alpha += 5
+            fade_surface = pygame.Surface((screen_width, screen_height))
+            fade_surface.fill((0, 0, 0))
+            fade_surface.set_alpha(self.fade_alpha)
+            self.display.blit(fade_surface, (0, 0))
+
+            if self.fade_alpha >= 255:
+                # Transition complete — change room state
+                self.current_room = "room2"   # e.g., swap to room2
+                self.load_room("room2")       # call a method to load new map/positions
+                self.fading = False
+                self.fade_alpha = 0
+
         # --- Trigger cutscene --- 
         if self.current_dialogue_ref.current_dialogue and self.current_dialogue_ref.current_dialogue.talking:
             
