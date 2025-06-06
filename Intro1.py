@@ -597,7 +597,7 @@ npc_manager = NPCManager()
 #patient1 = NPC(1000,500,"Zheng")
 #patient2 = NPC(400,500,"Emma")
 
-current_dialogue = None
+#current_dialogue = None
 
 #npc_manager.add_npc(patient1)
 #npc_manager.add_npc(patient2)
@@ -814,11 +814,12 @@ class Game:
         self.screen = pygame.display.set_mode((screen_width, screen_height))
         self.player = player
         self.npc_manager = NPCManager()
+        self.current_dialogue = None
 
         self.gameStateManager = GameStateManager('start')
         self.intro = SimpleChapterIntro(self.screen, self.gameStateManager)
         self.start = Start(self.screen, self.gameStateManager, self.intro)
-        self.level = Rooms(self.screen, self.gameStateManager, self.player, self.npc_manager, self.screen)
+        self.level = Rooms(self.screen, self.gameStateManager, self.player, self.npc_manager, self.screen, self)
         
         self.intro.completed_callback = lambda: self.gameStateManager.set_state('level')
 
@@ -860,18 +861,18 @@ class Game:
                     camera_group.half_h = screen_height // 2
 
                 elif event.type == pygame.KEYDOWN:
-                    global current_dialogue
                     if event.key == pygame.K_q:
-                        if current_dialogue and current_dialogue.talking:
-                            current_dialogue.handle_space()
+                        if self.current_dialogue and self.current_dialogue.talking:
+                            # Ignore Q if dialogue is already ongoing
+                            if isinstance(self.current_dialogue, ObjectDialogue):
+                                self.current_dialogue.handle_space()
                         else:
                             interacted_obj = check_object_interaction(player.rect, interactable_objects)
                             if interacted_obj:
-                                # Choose the first interactable object the player is near
                                 obj = interacted_obj[0]
-                                # Start new dialogue (replace old one)
-                                current_dialogue = ObjectDialogue(obj.dialogue_id, obj.start_node)
-                                current_dialogue.start()
+                                self.current_dialogue = ObjectDialogue(obj.dialogue_id, obj.start_node)
+                                self.current_dialogue.start()
+
 
             if currentState == 'level':
                 dean = next(npc for npc in self.npc_manager.npcs if npc.name == "Dean")
@@ -886,9 +887,10 @@ class Game:
             screen_pos = player.rect.move(-camera_group.offset.x, -camera_group.offset.y)
             pygame.draw.rect(self.screen, (255, 0, 0), screen_pos, 2)  # red box = player
 
-            if current_dialogue:
-                current_dialogue.update()
-                current_dialogue.draw(screen)
+            if self.current_dialogue:
+                self.current_dialogue.update()
+                self.current_dialogue.draw(self.screen)
+
 
 
             pygame.display.update()
@@ -913,7 +915,7 @@ class Start:    #try to call back SimpleChapterIntro
 #make plan to change by colliderect/position of player.rect
 
 class Rooms:    # class Level in tutorial
-    def __init__(self, display, gameStateManager, player, npc_manager, screen):
+    def __init__(self, display, gameStateManager, player, npc_manager, screen, current_dialogue_ref):
         self.display = display
         self.gameStateManager = gameStateManager
         self.background = pygame.image.load("picture/Map Art/Map clinic.png").convert_alpha()
@@ -923,7 +925,7 @@ class Rooms:    # class Level in tutorial
         self.npc_manager = npc_manager
         self.screen = screen
         
-        self.current_dialogue = None
+        self.current_dialogue_ref = current_dialogue_ref
         self.space_released = True
         self.cutscene_active = False
 
@@ -939,7 +941,7 @@ class Rooms:    # class Level in tutorial
         keys = pygame.key.get_pressed()
 
         # --- Movement ---
-        if not self.current_dialogue or not self.current_dialogue.talking:
+        if not self.current_dialogue_ref.current_dialogue or not self.current_dialogue_ref.current_dialogue.talking:
               is_moving = self.player.move(moving_left,moving_right)
         else:
               is_moving = False
@@ -949,22 +951,30 @@ class Rooms:    # class Level in tutorial
         nearest_npc = self.npc_manager.get_nearest_npc(self.player)
 
         #=====space======
-        if nearest_npc or self.current_dialogue:
-            if nearest_npc and (self.current_dialogue is None or self.current_dialogue.npc != nearest_npc):
-                self.current_dialogue = dialog(nearest_npc,self.player)
+        if nearest_npc or self.current_dialogue_ref.current_dialogue:
+            if nearest_npc: 
+                if self.current_dialogue_ref.current_dialogue is None or not self.current_dialogue_ref.current_dialogue.talking:
+                    self.current_dialogue_ref.current_dialogue = dialog(nearest_npc,self.player)
+                elif isinstance(self.current_dialogue_ref.current_dialogue, ObjectDialogue):
+                    pass
             
             if keys[pygame.K_SPACE] and self.space_released:
                 self.space_released = False
-                if self.current_dialogue:
-                   self.current_dialogue.handle_space(keys)
+                if self.current_dialogue_ref.current_dialogue:
+                    dialogue = self.current_dialogue_ref.current_dialogue
+                    
+                    if isinstance(dialogue, ObjectDialogue):
+                        dialogue.handle_space()
+                    else:
+                        dialogue.handle_space(keys)
 
-            if self.current_dialogue:
-               self.current_dialogue.handle_option_selection(keys)
+            if isinstance(self.current_dialogue_ref.current_dialogue, dialog):
+               self.current_dialogue_ref.current_dialogue.handle_option_selection(keys)
         
 
-            if self.current_dialogue:
-                self.npc_name = self.current_dialogue.npc.name
-                self.current_story = getattr(self.current_dialogue, "current_story", "chapter_1")
+            if isinstance(self.current_dialogue_ref.current_dialogue, dialog):
+                self.npc_name = self.current_dialogue_ref.current_dialogue.npc.name
+                self.current_story = getattr(self.current_dialogue_ref.current_dialogue, "current_story", "chapter_1")
 
                 # Only update story_data if the NPC or story changed
                 if (self.last_npc_name != self.npc_name) or (self.last_story != self.current_story):
@@ -973,15 +983,20 @@ class Rooms:    # class Level in tutorial
                     self.last_npc_name = self.npc_name
                     self.last_story = self.current_story
 
-                self.step = self.current_dialogue.step
+                self.step = self.current_dialogue_ref.current_dialogue.step
 
-                if not self.current_dialogue.talking:
-                    self.current_dialogue = None
+                if not self.current_dialogue_ref.current_dialogue.talking:
+                    self.current_dialogue_ref.current_dialogue = None
                     entry = {}
                 else:
                     entry = self.story_data[self.step]
             else:
-                entry = {}
+                # 👇 This runs for ObjectDialogue — we don't use npc/story/step
+                if not self.current_dialogue_ref.current_dialogue.talking:
+                    self.current_dialogue_ref.current_dialogue = None
+                    entry = {}
+                else:
+                    entry = {}
 
             
         if not keys[pygame.K_SPACE]:
@@ -990,20 +1005,22 @@ class Rooms:    # class Level in tutorial
         camera_group.custom_draw(self.player)
         
         # --- Draw dialogue if active ---
-        if self.current_dialogue and self.current_dialogue.talking:
-            self.current_dialogue.update()
-            self.current_dialogue.draw(self.display)
+        if self.current_dialogue_ref.current_dialogue:
+            self.current_dialogue_ref.current_dialogue.update()
+            self.current_dialogue_ref.current_dialogue.draw(self.display)
     
         # --- Trigger cutscene --- 
-        if self.current_dialogue and self.current_dialogue.talking:
-            current_npc_name = self.current_dialogue.npc.name
+        if self.current_dialogue_ref.current_dialogue and self.current_dialogue_ref.current_dialogue.talking:
+            
+            if isinstance(self.current_dialogue_ref.current_dialogue, dialog):
+                current_npc_name = self.current_dialogue_ref.current_dialogue.npc.name
 
-            if current_npc_name == "Dean":
-                if not self.cutscene_active:
-                    self.cutscene_active = True
+                if current_npc_name == "Dean":
+                    if not self.cutscene_active:
+                        self.cutscene_active = True
 
-            else:
-                self.cutscene_active = False
+                else:
+                    self.cutscene_active = False
     
         if self.cutscene_active and entry.get("event") == "dean_exits":
             self.dean_exiting = True
