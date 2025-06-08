@@ -1,8 +1,11 @@
 import pygame
 import sys
 from pygame.locals import *
-import character_movement
 import json
+import character_movement
+import shared
+from shared import CameraGroup
+
 
 # Load object data
 with open("objects.json", "r") as f:
@@ -18,10 +21,7 @@ screen_width = 1280
 screen_height = 720
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
 pygame.display.set_caption("Chapter Intro Test")
-
-world_width = 2488
-world_height = 720
-
+shared.screen = screen
 clock = pygame.time.Clock()
 FPS = 60
 
@@ -31,8 +31,6 @@ with open('NPC_dialog/NPC.json', 'r', encoding='utf-8') as f:
 
 dialog_box_img = pygame.image.load("picture/Character Dialogue/dialog boxxx.png").convert_alpha()
 
-player = character_movement.doctor(100,521,4.5) 
-player.name = "You" # remember to put in class doctor
 moving_left = False
 moving_right = False
 
@@ -43,7 +41,7 @@ selected_options = {}
 cutscene_active = False
 cutscene_speed = 3 #pixel per frame
 
-#camera_group = CSP_project.CameraGroup()
+
 
 class dialog:
     def __init__(self,npc,player):
@@ -594,6 +592,14 @@ class SimpleChapterIntro:
 
 npc_manager = NPCManager()
 
+player = character_movement.doctor(100,521,4.5) 
+player.name = "You" # remember to put in class doctor
+
+camera_group = CameraGroup(player, npc_manager, screen)
+shared.camera_group = camera_group
+
+player.camera_group = camera_group
+
 #patient1 = NPC(1000,500,"Zheng")
 #patient2 = NPC(400,500,"Emma")
 
@@ -601,81 +607,6 @@ npc_manager = NPCManager()
 
 #npc_manager.add_npc(patient1)
 #npc_manager.add_npc(patient2)
-
-class CameraGroup(pygame.sprite.Group):
-    def __init__(self):
-        super().__init__()
-        self.display_surface = pygame.display.get_surface()
-        
-        self.player = player
-        self.npc_manager = npc_manager
-        self.screen = screen
-
-        #camera offset
-        self.offset = pygame.math.Vector2()
-        self.half_w = self.display_surface.get_size()[0] // 2
-        self.half_h = self.display_surface.get_size()[1] // 2
-
-        #box camera 
-        self.camera_borders = {'left':200, 'right':200, 'top':100, 'bottom':100}
-        l = self.camera_borders['left']
-        t = self.camera_borders['top']
-        w = self.display_surface.get_size()[0] - (self.camera_borders['left'] + self.camera_borders['right'])
-        h = self.display_surface.get_size()[1] - (self.camera_borders['top'] + self.camera_borders['bottom'])
-        self.camera_rect = pygame.Rect(l,t,w,h)
-
-        self.background = None
-
-    def set_background(self, background):
-        self.background = background
-
-    def center_target_camera(self,target):
-        self.offset.x = target.rect.centerx - self.half_w
-        self.offset.y = target.rect.centery - self.half_h
-
-    def box_target_camera(self,target):
-
-        if target.rect.left < self.camera_rect.left:
-           self.camera_rect.left = target.rect.left
-        if target.rect.right > self.camera_rect.right:
-           self.camera_rect.right = target.rect.right 
-
-        self.offset.x = self.camera_rect.left - self.camera_borders['left']
-        self.offset.y = self.camera_rect.top - self.camera_borders['top']
-
-        #camera speed
-        self.keyboard_speed = 5 
-
-         # Clamp offset to world bounds
-        self.offset.x = max(0, min(self.offset.x, world_width - self.display_surface.get_width()))
-        self.offset.y = max(0, min(self.offset.y, world_height - self.display_surface.get_height()))
-
-    def keyboard_control(self):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_a]:
-            self.offset.x -= self.keyboard_speed
-        if keys[pygame.K_d]:
-            self.offset.x += self.keyboard_speed  
-
-    def custom_draw(self,player):
-
-        #self.keyboard_control() to manually move camera, can be for animation?
-
-        #self.center_target_camera(player)
-        self.box_target_camera(player)
-
-        # draw background (adjust this to match your game's background)
-        if self.background:
-            offset_bg = pygame.Vector2(0,0) - self.offset
-            self.display_surface.blit(self.background, offset_bg)
-
-        #Draw characters after
-        for sprite in sorted(self.sprites(), key=lambda spr: (spr.rect.centery, spr != player)):
-            offset_pos = sprite.rect.topleft - self.offset
-            flipped_image = pygame.transform.flip(sprite.image, sprite.flip, False)
-            self.display_surface.blit(flipped_image, offset_pos)
-
-camera_group = CameraGroup()
 
 image_path = {
             "Table": "Table.png",
@@ -743,12 +674,15 @@ def check_object_interaction(player_rect, interactable_objects):
     return [obj for obj in interactable_objects if obj.active and player_rect.colliderect(obj.rect)]
 
 class ObjectDialogue:
-    def __init__(self, dialogue_id, start_node, current_dialogue_ref):
-        self.dialogue_id = dialogue_id
-        self.current_node = start_node
-        self.dialogue_data = object_dialogue.get(dialogue_id, {})
-        self.current_dialogue_ref = current_dialogue_ref
+    def __init__(self, obj_info, game_ref):
+        self.obj_info = obj_info
+        self.dialogue_id = obj_info.dialogue_id
+        self.start_node = obj_info.start_node
+        self.current_node = obj_info.start_node
+        self.dialogue_data = object_dialogue.get(self.dialogue_id, {})
+        #self.current_dialogue_ref = current_dialogue_ref
         self.talking = False
+        self.game_ref = game_ref
 
         self.dialogue_box_img = pygame.image.load("picture/Character Dialogue/dialog boxxx.png").convert_alpha()
         self.dialogue_box_img.set_alpha(200)
@@ -766,6 +700,7 @@ class ObjectDialogue:
         self.displayed_text = ""
         self.letter_index = 0
         self.last_time = pygame.time.get_ticks()
+        self.current_node = self.start_node
 
     def update(self):
         if self.talking:
@@ -793,40 +728,72 @@ class ObjectDialogue:
             draw_text(screen, self.displayed_text, size=30, color=(0, 0, 0), x=text_x, y=text_y, center=False, max_width=max_text_width)
 
     def handle_space(self):
-        if not self.talking:
-            self.start()
-            self.talking = True
-            
-            # Only show dialogue if door is first time
-            if self.dialogue_id not in self.current_dialogue_ref.visited_doors:
-                self.lines = ["Your office."]
-                self.current_line = 0
-                self.displayed_text = ""
-            else:
-                self.lines = []
-                self.current_line = 0
+        node = self.dialogue_data[self.current_node]
+        full_text = node.get("text", "")
+
+        # 1) complete typing if in middle
+        if self.letter_index < len(full_text):
+            self.displayed_text = full_text
+            self.letter_index = len(full_text)
             return
         
-        node = self.dialogue_data.get(self.current_node, {})
-        text = node.get("text", "")
-        if self.letter_index < len(text):
-            self.displayed_text = text
-            self.letter_index = len(text)
+        # 2) if there's a "next" in JSON, go there
+        next_node = node.get("next")
+        if next_node:
+            self.current_node = next_node
+            self.displayed_text = ""
+            self.letter_index = 0
+            self.last_time = pygame.time.get_ticks()
             return
+        
+        # 3) otherwise, we've reached the end of the dialogue
+        self.talking = False
 
-        self.current_line += 1
-        if self.current_line >= len(self.lines):
-            self.talking = False
-            if self.dialogue_id == "door01_dialogue":
-                if self.dialogue_id not in self.current_dialogue_ref.visited_doors:
-                    self.current_dialogue_ref.visited_doors.add(self.dialogue_id)
-                else:
-                    self.current_dialogue_ref.states['level'].fading = True
-            return
+        # 4) now trigger transition, if any
+        next_room = self.obj_info.get("next_room")
+        if next_room:
+            #if first time, show dialogue next time; else start fade
+            if self.dialogue_id in self.game_ref.visited_doors:
+                self.game_ref.start_fade_to(next_room)
+            else:
+                self.game_ref.visited_doors.add(self.dialogue_id)
+        # done
+
+
+        # if not self.talking:
+        #     self.start()
+        #     self.talking = True
+            
+        #     # Only show dialogue if door is first time
+        #     if self.dialogue_id not in self.current_dialogue_ref.visited_doors:
+        #         self.lines = ["Your office."]
+        #         self.current_line = 0
+        #         self.displayed_text = ""
+        #     else:
+        #         self.lines = []
+        #         self.current_line = 0
+        #     return
+        
+        # node = self.dialogue_data.get(self.current_node, {})
+        # text = node.get("text", "")
+        # if self.letter_index < len(text):
+        #     self.displayed_text = text
+        #     self.letter_index = len(text)
+        #     return
+
+        # self.current_line += 1
+        # if self.current_line >= len(self.lines):
+        #     self.talking = False
+        #     if self.dialogue_id == "door01_dialogue":
+        #         if self.dialogue_id not in self.current_dialogue_ref.visited_doors:
+        #             self.current_dialogue_ref.visited_doors.add(self.dialogue_id)
+        #         else:
+        #             self.current_dialogue_ref.states['level'].fading = True
+        #     return
     
-        self.displayed_text = ""
-        self.letter_index = 0
-        self.last_time = pygame.time.get_ticks()
+        # self.displayed_text = ""
+        # self.letter_index = 0
+        # self.last_time = pygame.time.get_ticks()
 
 
 class Game:
@@ -838,6 +805,9 @@ class Game:
         self.npc_manager = NPCManager()
         self.current_dialogue = None
         self.visited_doors = set()
+        self._pending_room = None
+        self._fading = False
+        self._fade_alpha = 0
 
         self.gameStateManager = GameStateManager('start')
         self.intro = SimpleChapterIntro(self.screen, self.gameStateManager)
@@ -856,6 +826,25 @@ class Game:
         camera_group.add(self.player)
         camera_group.add(nuva)
         camera_group.add(dean)
+
+    def start_fade_to(self, room_name):
+        """Called by ObjectDialogue when it’s time to switch rooms."""
+        self._pending_room = room_name
+        self._fading = True
+        self._fade_alpha = 0
+
+    def _do_fade_and_switch(self):
+        self._fade_alpha = min(255, self._fade_alpha + 5)
+        fade_surf = pygame.Surface(self.screen.get_size())
+        fade_surf.fill((0,0,0))
+        fade_surf.set_alpha(self._fade_alpha)
+        self.screen.blit(fade_surf, (0,0))
+        if self._fade_alpha >= 255:
+            # actually switch rooms
+            self.level.load_room(self._pending_room)
+            self._fading = False
+            self._pending_room = None
+            # you could also re-spawn NPCs/interactables here
 
     def run(self):
         running = True
@@ -893,9 +882,8 @@ class Game:
                             interacted_obj = check_object_interaction(player.rect, interactable_objects)
                             if interacted_obj:
                                 obj = interacted_obj[0]
-                                self.current_dialogue = ObjectDialogue(obj.dialogue_id, obj.start_node, self)
+                                self.current_dialogue = ObjectDialogue(obj, self)
                                 self.current_dialogue.start()
-
 
             if currentState == 'level':
                 dean = next(npc for npc in self.npc_manager.npcs if npc.name == "Dean")
@@ -913,6 +901,9 @@ class Game:
             if self.current_dialogue:
                 self.current_dialogue.update()
                 self.current_dialogue.draw(self.screen)
+
+            if self._fading:
+                self._do_fade_and_switch()
 
 
 
@@ -964,9 +955,13 @@ class Rooms:    # class Level in tutorial
 
     def load_room(self, room_name):
         if room_name == "room2":
-            self.background = pygame.image.load("Player room.png").convert_alpha()
+            self.background = pygame.image.load("picture/Map Art/Player room.png").convert_alpha()
             camera_group.set_background(self.background)
-            self.player.rect.topleft = (100, 520)  # reset player position
+            self.player.rect.topleft = (100, 500)  # reset player position
+            
+            room_width, room_height = self.background.get_size()
+            camera_group.set_limits(room_width, room_height)
+
             # Optionally clear/reload interactables or NPCs
 
     def run(self, moving_left, moving_right, run, dean):
