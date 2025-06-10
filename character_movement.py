@@ -18,7 +18,6 @@ FPS = 60
 #define background color
 BG = (255,255,255)
 
-
 def init_game():
     screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
     clock = pygame.time.Clock() #control framerate
@@ -31,7 +30,7 @@ def draw_bg(screen):
   screen.fill(BG)
 
 class doctor(pygame.sprite.Sprite):
-    def __init__(self,x,y,speed):
+    def __init__(self,x,y,speed, camera_group=None):
         super().__init__()   #auto find the sprite（pygame.sprite.Sprite）
         self.stand_img = pygame.image.load('picture/Character QQ/Doctor idle.png').convert_alpha()
         self.image =  self.stand_img
@@ -43,6 +42,7 @@ class doctor(pygame.sprite.Sprite):
         self.animation_list = []
         self.frame_index = 0
         self.update_time = pygame.time.get_ticks()
+        self.camera_group = camera_group
     
         for i in range(1,5):
             doctorwalk = pygame.image.load(f'picture/Doctor Walking/walk {i}.png').convert_alpha()
@@ -64,13 +64,18 @@ class doctor(pygame.sprite.Sprite):
     #update position
        self.rect.x += dx 
 
-    # let player cannot get out of screen
-       if self.rect.left < 0 :
-           self.rect.left = 0
-       if self.rect.right > world_width:
-           self.rect.right = world_width
+    # Clamp player to current room's size using camera_group's world size
+       if hasattr(self.camera_group, 'world_width') and hasattr(self.camera_group, 'world_height'):
+            self.rect.x = max(0, min(self.rect.x, self.camera_group.world_width - self.rect.width))
+            self.rect.y = max(0, min(self.rect.y, self.camera_group.world_height - self.rect.height))
+       else:
+            # fallback to screen limits
+            screen_width = pygame.display.get_surface().get_width()
+            screen_height = pygame.display.get_surface().get_height()
+            self.rect.x = max(0, min(self.rect.x, screen_width - self.rect.width))
+            self.rect.y = max(0, min(self.rect.y, screen_height - self.rect.height))
+
        return moving_left or moving_right
-    
 
     def update_animation(self,is_moving):
         if is_moving:

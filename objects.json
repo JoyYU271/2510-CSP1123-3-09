@@ -2,7 +2,6 @@
   "table01": {
     "name": "Recp. Table",
     "position": [813, 397],
-    "size": [64, 64],
     "image": "Table",
     "dialogue_id": "table_dialogue",
     "start_node": "start",
@@ -11,11 +10,15 @@
 
   "door01":{
     "name": "Player's room",
-    "position": [1370, 263],
-    "size": [64, 64],
+    "position": [1389, 263],
     "image": "Door01",
     "dialogue_id": "door01_dialogue",
     "start_node": "start",
-    "active": true
+    "active": true,
+
+    "next_room": "Player_room",
+    "first_time_text": [
+      {"node": "start"}
+    ]
   }
 }
