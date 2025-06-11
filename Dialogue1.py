@@ -104,8 +104,7 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
     cg_loaded = False
 
 
-        # 在设置完 NPC 后检查 resume_from
-        # 在run_dialogue()函数中修改resume_from的处理部分
+        
     if resume_from:
         npc_state, player_choices, resume_flags, resume_shown_dialogues = resume_from
         flags = resume_flags
@@ -114,7 +113,6 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
         npc_state = {}
         previous_save = load_checkpoint()
 
-        # 保留旧 flags（包括已解锁结局）
         if previous_save:
             flags = previous_save.get("flags", {}).copy()
         else:
@@ -130,12 +128,11 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
                 chapter = state["chapter"]
                 step = state["step"]
 
-                # 特殊处理Nuva的repeat_only章节
                 if npc.name == "Nuva" and chapter == "repeat_only":
                     d = dialog(npc, player, all_dialogues, bgm_vol, sfx_vol, 
                             cutscene_speed=3, npc_manager=npc_manager,
                             shown_dialogues=shown_dialogues)
-                    d.load_dialogue(npc.name, chapter, start_step=0)  # 强制从0开始
+                    d.load_dialogue(npc.name, chapter, start_step=0) 
                     d.talking = False
                     npc_dialog_state[npc.name] = d
                     current_dialogue = d
@@ -153,7 +150,6 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
                 if npc.name == "Dean" and flags.get("dean_cutscene_played"):
                     npc.rect.x = -1000
 
-                # 如果当前最近的 NPC 是这个，再赋值为 current_dialogue
                 if npc.name == npc_state.get("last_talking_npc", ""):
                     current_dialogue = d
 
@@ -255,7 +251,7 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
             if nearest_npc and (current_dialogue is None or current_dialogue.npc != nearest_npc):
                 if nearest_npc and (current_dialogue is None or current_dialogue.npc != nearest_npc):
                     if nearest_npc.name in npc_dialog_state:
-                        current_dialogue = npc_dialog_state[nearest_npc.name]  # ✅ 使用恢复的对象
+                        current_dialogue = npc_dialog_state[nearest_npc.name] 
                     else:
                         current_dialogue = dialog(
                             nearest_npc,
@@ -267,12 +263,12 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
                             npc_manager=npc_manager,
                             shown_dialogues=shown_dialogues
                         )
-                        npc_dialog_state[nearest_npc.name] = current_dialogue  # ✅ 保证它也被记录下来
+                        npc_dialog_state[nearest_npc.name] = current_dialogue 
 
             if save_message_timer > 0:
                 save_message_timer -= 1
                 font = pygame.font.SysFont('Arial', 40)
-                save_text = font.render("Game Saved", True, (0, 255, 0))  # 绿色文字
+                save_text = font.render("Game Saved", True, (0, 255, 0)) 
                 screen.blit(save_text, (50, screen.get_height() - 700))
 
 
@@ -456,10 +452,10 @@ class dialog:
              if "event" in entry:
                 if entry["event"] == "dean_exit_cutscene":
                    flags["dean_cutscene_played"] = True
-                   # 将 cutscene 设置为结束状态
+                   # change cutscene to end state
                    cutscene_active = False
 
-                    # 保存游戏进度（重要）
+                    # save
                    save_checkpoint(
                     npc_name=self.npc_name,
                     chapter=self.current_story,
@@ -491,7 +487,7 @@ class dialog:
             ending_key = self.current_story 
             flags[f"ending_unlocked_{ending_key}"] = True
 
-            # 保存解锁状态
+            # save unlocked state
             save_checkpoint(
                 npc_name=self.npc_name,
                 chapter=self.current_story,
@@ -778,7 +774,6 @@ class dialog:
                     else:
                         self.step += 1
                         if self.step >= len(self.story_data):
-                            # ✅ 如果是 Nuva 的 chapter_1_common，就跳到 repeat_only 并保存
                             if self.npc_name == "Nuva" and self.current_story == "chapter_1_common":
                                 self.current_story = "repeat_only"
                                 self.story_data = self.npc_data.get("repeat_only", [])
@@ -796,7 +791,6 @@ class dialog:
                                 save_message_timer = 90
                                 return
 
-                            # ✅ 普通存档流程（不在特殊处理中的）
                             save_checkpoint(
                                 npc_name=self.npc_name,
                                 chapter=self.current_story,
@@ -812,7 +806,6 @@ class dialog:
                         else:
                             self.reset_typing()
 
-    # 修改dialog类的load_dialogue方法
     def load_dialogue(self, npc_name, chapter, start_step=0):
         self.options = []
         self.npc_name = npc_name
@@ -820,7 +813,6 @@ class dialog:
         self.current_story = chapter
         self.story_data = self.npc_data.get(self.current_story,[])
         
-        # 特殊处理Nuva的repeat_only章节
         if self.npc_name == "Nuva" and self.current_story == "repeat_only":
             self.story_data = self.npc_data.get("repeat_only", [])
             self.step = 0
@@ -834,7 +826,6 @@ class dialog:
         for i, entry in enumerate(raw_story_data):
             dialogue_id = f"{self.npc_name}_{self.current_story}_{i}"
             
-            # 如果条目标记为shown=false，或者尚未显示过，则包含
             if ("shown" not in entry or entry["shown"] != False) or (dialogue_id not in self.shown_dialogues):
                 filtered_story_data.append(entry)
 
@@ -847,7 +838,6 @@ class dialog:
         
         self.story_data = filtered_story_data
         
-        # 找出过滤后对应的step
         if start_step in self.step_map:
             self.step = self.step_map.index(start_step)
         else:

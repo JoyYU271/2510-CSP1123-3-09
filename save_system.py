@@ -18,7 +18,6 @@ def save_checkpoint(npc_name, chapter, step, player_choices, flags=None, shown_d
                 old_data = json.load(f)
                 npc_state = old_data.get("npc_state", {})
         except json.JSONDecodeError:
-            # 如果读取失败（格式错误），忽略旧存档
             npc_state = {}
 
     npc_state[npc_name] = {
@@ -41,7 +40,7 @@ def save_checkpoint(npc_name, chapter, step, player_choices, flags=None, shown_d
 def load_checkpoint():
     if not os.path.exists(SAVE_PATH):
         return None
-    if os.path.getsize(SAVE_PATH) == 0:  # 如果是空文件
+    if os.path.getsize(SAVE_PATH) == 0:  # if is empty
         return None
     try:
         with open(SAVE_PATH, "r", encoding="utf-8") as f:
