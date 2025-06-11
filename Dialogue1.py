@@ -14,6 +14,8 @@ current_dialogue_instance = None
 shown_dialogues = {}
 selected_options = {}
 
+game_chapter = 1 # default chapter
+
 def fade_to_main(surface ,speed = 5):
     fade = pygame.Surface((screen_width,screen_height))
     fade.fill((0,0,0))
@@ -222,7 +224,7 @@ class dialog:
         self.npc_data = self.all_dialogues.get(self.npc_name)
 
          #dialogue state variacbles
-        self.current_story = "chapter_3" #default chapter
+        self.current_story = f"chapter_{game_chapter}" 
         self.story_data = self.npc_data.get(self.current_story,[])
         self.step = 0 # present current sentence
         global shown_dialogues
@@ -351,8 +353,23 @@ class dialog:
                      self.last_time = current_time
 
         if isinstance(self.entry,dict) and self.entry.get("type") == "ending":
-            self.chapter_end = True    
-            self.ready_to_quit = True
+            self.chapter_end = True 
+            
+            global game_chapter
+            # final chapter 
+            if game_chapter >= 3:   
+               self.ready_to_quit = True
+
+            else:
+                # next chapter
+                self.fade(screen , fade_in=True)
+                game_chapter += 1
+                self.step = 0 
+                self.talking = False
+                self.chapter_end = False
+                self.current_story = f"chapter_{game_chapter}"
+                self.story_data = self.npc.get(self.current_story)
+                
 
     def reset_typing(self):
          #reset text displayed for a new line 
@@ -532,7 +549,6 @@ class dialog:
     def load_back_reality(self):
         self.displayed_text = ""
         self.letter_index = 0
-        self.check_sub_end_conditions()
         pygame.display.update()
 
 
@@ -553,31 +569,7 @@ class dialog:
                   dialogue_id = f"{self.npc_name}_{self.current_story}_{self.step}"
                   self.shown_dialogues[dialogue_id] = True
 
-
-      #========not really fonction , need to combine others codes n modify======
-              if "chapter_ending" in entry:
-             #save which ending was chosen
-                  global player_choices, showing_chapter_ending, ending_start_time, ending_complete_callback
-                  player_choices["chapter_1_ending"] = entry["chapter_ending"]
-                  
-             #set up the ending screen
-                  showing_chapter_ending = True
-                  ending_start_time = pygame.time.get_ticks()
-
-             #set next chapter after ending
-                  next_chapter = entry["next_chapter"]
-
-             #run when ending screen done
-                  def ending_complete():
-                      global start_chapter 
-                      start_chapter(next_chapter, True)
-
-                  ending_complete_callback = ending_complete
-                  self.talking = False
-                  return
-       #========================================================
-
-
+           
               # if test is typing, complete it immdiately
               if self.letter_index <len (text):
                    self.letter_index = len(text)

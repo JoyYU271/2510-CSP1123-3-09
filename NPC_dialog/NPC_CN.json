@@ -453,7 +453,7 @@
         {"speaker" :"npc","text":"(我的理想真的是这个吗？)","shown": false},
         {"speaker" :"narrator","text":"?: Zheng, 晚上的庆功宴你来不来, 老板说是奖励我们这次策划做得非常好，要请客哦！","shown": false},
         {"speaker" :"npc","text":"嗯，我会去的。","shown": false},
-        {"speaker" :"npc","text":"(算了, 这样也好不是吗？)","shown": false}
+        {"speaker" :"npc","text":"(算了, 这样也好不是吗？)","shown": false,"type":"ending"}
      ],
 
      "back_reality_keep1":[
@@ -470,7 +470,7 @@
         {"speaker" :"npc","text":" (更重要的是，我想起了自己真正想要的东西——研究。)","shown": false},
         {"speaker" :"npc","text":"(我怎么能忘了呢，想在心理学埋头研究的理想。)","shown": false},
         {"speaker" :"npc","text":"(但还好，一切都不算晚。)","shown": false},
-        {"speaker" :"npc","text":"(这会是新开始。)","shown": false}
+        {"speaker" :"npc","text":"(这会是新开始。)","shown": false,"type":"ending"}
      ]
   },
 
@@ -588,7 +588,7 @@
         {"speaker" :"narrator","text": "?: Emma，有新的发布会需要你出场！","shown": false},
         {"speaker" :"npc","text":"好，我会去的。","shown": false},
         {"speaker" :"npc","text":" (这样就好)","shown": false},
-        {"speaker" :"npc","text":"(至少，我不会再尖叫着从噩梦中惊醒了)","shown": false}
+        {"speaker" :"npc","text":"(至少，我不会再尖叫着从噩梦中惊醒了)","shown": false,"type":"ending"}
 
     ],
 
@@ -612,7 +612,7 @@
         {"speaker" :"npc","text":"(……没事的，慢一点。就像第一次走秀时一样)","shown": false},
         {"speaker" :"narrator","text":"(发动后，车缓缓驶出，阳光照在了方向盘上)","shown": false},
         {"speaker" :"npc","text":"(噩梦还没消失)","shown": false},
-        {"speaker" :"npc","text":"(但今天，我赢了他一次)","shown": false}
+        {"speaker" :"npc","text":"(但今天，我赢了他一次)","shown": false,"type":"ending"}
      
     ]
   }

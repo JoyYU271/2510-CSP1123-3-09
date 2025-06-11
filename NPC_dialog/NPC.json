@@ -447,7 +447,7 @@
         {"speaker" :"npc","text":"(Is it, though?)","shown": false},
         {"speaker" :"narrator","text":"?: Zheng! Are you coming to the celebration party tonight? Boss is treating us for the successful proposal!","shown": false},
         {"speaker" :"npc","text":"Yeah, I'll be there.","shown": false},
-        {"speaker" :"npc","text":"(......Well. Maybe this is enough.)","shown": false}
+        {"speaker" :"npc","text":"(......Well. Maybe this is enough.)","shown": false,"type":"ending"}
      ],
 
      "back_reality_keep1":[
@@ -464,7 +464,7 @@
         {"speaker" :"npc","text":" (More importantly, I remembered what I truly wanted.)","shown": false},
         {"speaker" :"npc","text":"(How could I have forgotten? My dream of studying psychology deeply (professionally?))","shown": false},
         {"speaker" :"npc","text":"(But it's not too late.)","shown": false},
-        {"speaker" :"npc","text":"(This is a new beginning.)","shown": false}
+        {"speaker" :"npc","text":"(This is a new beginning.)","shown": false,"type":"ending"}
      ]
   },
 
@@ -584,7 +584,7 @@
         {"speaker" :"narrator","text":"?: Emma, there's an upcoming press conference that you'll be attending.","shown": false},
         {"speaker" :"npc","text":"Alright, tell me the details.","shown": false},
         {"speaker" :"npc","text":" (This is fine.)","shown": false},
-        {"speaker" :"npc","text":"(It was worth it to no longer wake up screaming at night.)","shown": false}
+        {"speaker" :"npc","text":"(It was worth it to no longer wake up screaming at night.)","shown": false, "type":"ending"}
 
     ],
 
@@ -608,7 +608,7 @@
         {"speaker" :"npc","text":"(... It's okay, take it easy. Just like the first time I walked the runway.)","shown": false},
         {"speaker" :"narrator","text":"(The car started up and drove out. The sunlight shone its comforting warmth on the steering wheel.)","shown": false},
         {"speaker" :"npc","text":"(The nightmares may not be gone)","shown": false},
-        {"speaker" :"npc","text":"(But for today, I have overcome it.)","shown": false}
+        {"speaker" :"npc","text":"(But for today, I have overcome it.)","shown": false,"type":"ending"}
      
     ]
   }
