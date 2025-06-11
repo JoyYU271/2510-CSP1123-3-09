@@ -9,11 +9,14 @@ pygame.init()
 #=======screen setting==========
 screen_width = 1280
 screen_height = 720
+
+world_width = 2488
+world_height = 720
+
 #set framerate
 FPS = 60
 #define background color
 BG = (255,255,255)
-
 
 def init_game():
     screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
@@ -27,7 +30,7 @@ def draw_bg(screen):
   screen.fill(BG)
 
 class doctor(pygame.sprite.Sprite):
-    def __init__(self,x,y,speed):
+    def __init__(self,x,y,speed, camera_group=None):
         super().__init__()   #auto find the sprite（pygame.sprite.Sprite）
         self.stand_img = pygame.image.load('picture/Character QQ/Doctor idle.png').convert_alpha()
         self.image =  self.stand_img
@@ -39,6 +42,7 @@ class doctor(pygame.sprite.Sprite):
         self.animation_list = []
         self.frame_index = 0
         self.update_time = pygame.time.get_ticks()
+        self.camera_group = camera_group
     
         for i in range(1,5):
             doctorwalk = pygame.image.load(f'picture/Doctor Walking/walk {i}.png').convert_alpha()
@@ -60,13 +64,18 @@ class doctor(pygame.sprite.Sprite):
     #update position
        self.rect.x += dx 
 
-    # let player cannot get out of screen
-       if self.rect.left < 0 :
-           self.rect.left = 0
-       if self.rect.right > screen_width:
-           self.rect.right = screen_width
+    # Clamp player to current room's size using camera_group's world size
+       if hasattr(self.camera_group, 'world_width') and hasattr(self.camera_group, 'world_height'):
+            self.rect.x = max(0, min(self.rect.x, self.camera_group.world_width - self.rect.width))
+            self.rect.y = max(0, min(self.rect.y, self.camera_group.world_height - self.rect.height))
+       else:
+            # fallback to screen limits
+            screen_width = pygame.display.get_surface().get_width()
+            screen_height = pygame.display.get_surface().get_height()
+            self.rect.x = max(0, min(self.rect.x, screen_width - self.rect.width))
+            self.rect.y = max(0, min(self.rect.y, screen_height - self.rect.height))
+
        return moving_left or moving_right
-    
 
     def update_animation(self,is_moving):
         if is_moving:
@@ -90,24 +99,27 @@ class doctor(pygame.sprite.Sprite):
     def draw(self,screen):
         screen.blit (pygame.transform.flip(self.image,self.flip,False),self.rect)
 
+def keyboard_input(events, moving_left, moving_right, run) :
+        for event in events:
+           if event.type == pygame.QUIT:
+                run = False
 
-def keyboard_input(moving_left, moving_right, run):
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-        moving_left = True
-    else:
-        moving_left = False
+        # Keyboard button pressed
+           if event.type == KEYDOWN :
+              if event.key == K_a:
+                    moving_left = True
+              if event.key == K_d:
+                    moving_right = True
 
-    if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-        moving_right = True
-    else:
-        moving_right = False
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-    return moving_left, moving_right, run
-
+        # keyboard button released
+           if event.type == KEYUP :
+               if event.key == K_a:
+                    moving_left = False
+               if event.key == K_d:
+                    moving_right = False
+               if event.key == K_ESCAPE:
+                    run = False
+        return moving_left,moving_right,run
 
 
 

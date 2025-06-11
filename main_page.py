@@ -4,6 +4,8 @@ import Dialogue1
 from Dialogue1 import run_dialogue
 from ui_components import Button, get_font
 from save_system import save_checkpoint, load_checkpoint
+import Intro1
+
  
 
 pygame.init() #initialize all import pygame modules
@@ -77,11 +79,27 @@ def main_menu():
                 if start_button.checkForInput(mouse_pos):
                     click_sound.play()
                     pygame.mixer.music.stop()
-                    run_dialogue(current_font_size, current_language, bgm_vol, sfx_vol)
 
+                    # 启动 Intro
+                    intro_game = Intro1.Game()
+
+                    def after_intro():
+                        print("✅ intro播完，跳转 level 场景")
+                        intro_game.gameStateManager.set_state('level')
+
+
+
+                    intro_game.intro.completed_callback = after_intro
+                    intro_game.intro.start("chapter_1", completed_callback=after_intro)
+                    intro_game.gameStateManager.set_state('intro')
+                    intro_game.run()
+
+
+                    # 回主菜单音乐
                     pygame.mixer.music.load("bgm/main page.mp3")
                     pygame.mixer.music.set_volume(bgm_vol)
                     pygame.mixer.music.play(-1)
+
                     
                 elif load_button.checkForInput(mouse_pos):
                     click_sound.play()

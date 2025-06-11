@@ -7,8 +7,8 @@ from ui_components import Button, get_font
 import os
 from save_system import save_checkpoint, load_checkpoint
 
-screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
-    
+screen = None
+
 current_text_size = 30
 click_sound = pygame.mixer.Sound("main page/click1.wav") 
 
@@ -33,7 +33,7 @@ flags = {}
 shown_dialogues = {}
 
 def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_from=None):
-    global current_dialogue_instance,save_message_timer
+    global screen,current_dialogue_instance,save_message_timer
 
     save_message_timer = 0
 
@@ -44,6 +44,7 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
 
     screen_width = 1280
     screen_height = 720
+    screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
 
     pygame.mixer.music.set_volume(bgm_vol)
     current_bgm = "bgm/intro.mp3"
@@ -200,7 +201,7 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
             # draw player
             player.draw(screen)
             # update movement position
-            moving_left,moving_right,run =  keyboard_input(moving_left, moving_right, run)
+            moving_left,moving_right,run =  keyboard_input(events,moving_left, moving_right, run)
             #get nearest NPC
             nearest_npc = npc_manager.get_nearest_npc(player)
 
