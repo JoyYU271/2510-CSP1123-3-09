@@ -80,11 +80,11 @@ def main_menu():
                     click_sound.play()
                     pygame.mixer.music.stop()
 
-                    # 启动 Intro
-                    intro_game = Intro1.Game()
+                    # run intro
+                    intro_game = Intro1.Game(language=current_language,text_size=current_font_size,bgm_vol=bgm_vol,sfx_vol=sfx_vol)
 
                     def after_intro():
-                        print("✅ intro播完，跳转 level 场景")
+                        print("after intro, enter level")
                         intro_game.gameStateManager.set_state('level')
 
 
@@ -95,7 +95,7 @@ def main_menu():
                     intro_game.run()
 
 
-                    # 回主菜单音乐
+                    # back main page music
                     pygame.mixer.music.load("bgm/main page.mp3")
                     pygame.mixer.music.set_volume(bgm_vol)
                     pygame.mixer.music.play(-1)
@@ -130,7 +130,6 @@ def load_screen():
         title_text = get_font(45).render("LOAD SCREEN", True, "White")
         screen.blit(title_text, title_text.get_rect(center=(640, 180)))
 
-        # 加载按钮
         continue_button = Button(
             image=None,
             pos=(640, 300),
@@ -194,7 +193,7 @@ def collections_screen():
     save_data = load_checkpoint()
     unlocked_endings = save_data.get("flags", {}) if save_data else {}
 
-    # 按角色组织结局
+    #group endings follow character
     grouped_endings = [
         ("Zheng's Endings", [
             ("The Routine Life", show_zheng_routine_life),
@@ -211,20 +210,20 @@ def collections_screen():
         ])
     ]
 
-    # 用于按钮排布的起始位置
+    #for buttons
     start_y = 70
-    section_spacing = 40  # 每组之间的间距
-    button_spacing = 50   # 同组按钮之间的间距
+    section_spacing = 40 
+    button_spacing = 50
 
     all_buttons = []
     y = start_y
 
     for section_title, endings in grouped_endings:
-        # 添加组标题
+        #add title
         title_text = get_font(36).render(section_title, True, "White")
         title_rect = title_text.get_rect(center=(640, y))
         all_buttons.append(("label", title_text, title_rect))
-        y += 40  # 标题高度
+        y += 40
 
         for text, action in endings:
             if action:
@@ -249,9 +248,9 @@ def collections_screen():
             y += button_spacing
 
 
-        y += section_spacing  # 组之间的空隙
+        y += section_spacing
 
-    # 添加返回按钮
+    #add back button
     back_button = Button(
         image=None,
         pos=(640, 650),
@@ -265,7 +264,7 @@ def collections_screen():
         screen.blit(collections_bg_img, (0, 0))
         mouse_pos = pygame.mouse.get_pos()
 
-        # 处理所有结局按钮和标题
+        # handle all ending buttons and titles
         for kind, *data in all_buttons:
             if kind == "label":
                 text_surface, rect = data
@@ -275,7 +274,7 @@ def collections_screen():
                 button.changeColor(mouse_pos)
                 button.update(screen)
 
-        # BACK 按钮
+        
         back_button.changeColor(mouse_pos)
         back_button.update(screen)
 
@@ -289,19 +288,18 @@ def collections_screen():
                     if kind == "button":
                         button, action = data
                         if button.checkForInput(mouse_pos):
-                            if action:  # ✅ 只有解锁了才调用
+                            if action:  # only can use when unlock
                                 click_sound.play()
                                 action()
-                                return
                             else:
-                                # 未解锁提示
+                                # not unlocked
                                 click_sound.play()
                                 warning_font = get_font(30)
                                 warning_text = warning_font.render("You haven't unlocked this ending yet.", True, "Red")
                                 screen.blit(warning_text, warning_text.get_rect(center=(640, 680)))
                                 pygame.display.update()
-                                pygame.time.delay(1000)  # 停顿显示提示
-                                break  # ✅ 避免同时点多个按钮
+                                pygame.time.delay(1000)  # pause to display prompts
+                                break  # avoid clicking multiple buttons at the same time
 
                 if back_button.checkForInput(mouse_pos):
                     click_sound.play()
@@ -336,7 +334,7 @@ def show_cg_gallery(image_paths):
         layout_positions = [(screen_width // 2 - thumbnail_size[0] // 2, 180)]
     elif num == 4:
         start_x = (screen_width - (2 * thumbnail_size[0] + spacing_x)) // 2
-        y1 = 150  # ✅ 原 100 → 150：稍微往下移
+        y1 = 150
         y2 = y1 + thumbnail_size[1] + spacing_y
         layout_positions = [
             (start_x, y1), (start_x + thumbnail_size[0] + spacing_x, y1),
@@ -356,7 +354,6 @@ def show_cg_gallery(image_paths):
         print("Unsupported number of CGs for layout.")
         return
 
-    # ✅ BACK 按钮放左下角
     back_button = Button(
         image=None,
         pos=(150, screen_height - 100),
@@ -392,7 +389,7 @@ def show_cg_gallery(image_paths):
 
                     if back_button.checkForInput(mouse_pos):
                         click_sound.play()
-                        return  # ✅ 返回上一级（collections_screen）
+                        return  # back to collections screen
 
         if viewing_fullscreen and selected_image:
             fullscreen = pygame.transform.scale(selected_image, (screen_width, screen_height))
@@ -406,9 +403,6 @@ def show_cg_gallery(image_paths):
             back_button.update(screen)
 
         pygame.display.update()
-
-
-
 
 
 
@@ -456,7 +450,6 @@ def show_player_rebirth():
         "picture/Ending/End3.4.png",
         "picture/Ending/End3.5.png",
     ])
-
 
 
 
