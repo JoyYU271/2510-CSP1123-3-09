@@ -32,10 +32,16 @@
   },
 
   "machine_dialogue": {
-    "start": {
+    "before_patient": {
       "text": [
         "(You should talk to the patient first.)"
       ]
+    },
+    "after_patient": {
+      "text": [
+        "(After you check that the machine is functinoal, you carefully place it on her head.)"
+      ], 
+      "event": "machine_exit"
     }
   }
 }

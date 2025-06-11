@@ -267,7 +267,7 @@
         {"speaker" :"npc","text":"I’ve read it. I’m willing to accept the risks. Just need to sign here, right?","shown": false},
         {"speaker" :"player","text":"Right. Once you sign, I’ll prepare the treatment.","shown": false},
         {"speaker" :"narrator","text":"(She signs without hesitation and returns the form to you.)","shown": false},
-        {"speaker" :"player","text":"(Alright, let’s begin.)","shown": false},
+        {"speaker" :"player","text":"(Alright, let’s begin.)","event": "patient_zheng_talked_to", "shown": false},
         {"next":"chapter_1_common"}
 
     ],

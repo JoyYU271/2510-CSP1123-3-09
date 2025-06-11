@@ -940,12 +940,17 @@ class Rooms:    # class Level in tutorial
         self.current_dialogue_ref = game_ref
 
         self.space_released = True
+        self.q_released = True
         self.cutscene_active = False
         self.dean_exiting = False
         self.last_npc_name = None
         self.last_story = None
         self.visited_doors = set()  #keep track of doors used
         self.current_room = "room01"
+
+        # --- NEW STATE VARIABLES ---
+        self.patient_zheng_talked_to = False # Flag to track if patient 'Zheng' has been talked to
+        self.next_room_after_transition = None    # Store the target room for fading transitions
         
         self.background = pygame.image.load("picture/Map Art/Map clinic.png").convert_alpha()
         camera_group.set_background(self.background)
@@ -982,6 +987,8 @@ class Rooms:    # class Level in tutorial
             self.player.rect.topleft = (1100, 420)
         elif room_name == "room01":
             self.background = pygame.image.load("picture/Map Art/Map clinic.png").convert_alpha()
+        elif room_name == "subc.Z_01":
+            self.background = pygame.image.load("picture/Map Art/P11.png").convert_alpha()
 
         camera_group.set_background(self.background)
     
