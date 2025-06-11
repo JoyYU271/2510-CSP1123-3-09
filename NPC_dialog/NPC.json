@@ -6,31 +6,32 @@
         {"speaker" :"narrator","text":"(After graduation, you were invited by your father——)","shown": false},
         {"speaker": "narrator","text":"(the dean of Mindscape Chamber, to work there.)","shown":false},
         {"speaker" :"narrator","text":"(Today is your first day on the job.)","shown": false},
+        {"speaker" :"narrator","text":"[Hint: Press W / D to move]","shown": false},
         {"speaker" :"narrator","text":"...........","shown": false}
         
     ],
     "chapter_2":[
-        {"speaker" :"narrator","text":"Today is a new day.","shown": false},
+        {"speaker" :"narrator","text":"(Today is a new day.)","shown": false},
         {"speaker" :"narrator","text":"(You arrived early today again, so there is almost no one in the clinic.)","shown": false},
         {"speaker" :"narrator","text":"......","shown": false}
 
     ],
     "chapter_3":[
-        {"speaker" :"player","text":"(I should really talk to my father. There's clearly something wrong with this ‘experiment’)","shown": false},
-        {"speaker" :"player","text":"(Ever since treating Ms. Emma, I’ve been hearing things occasionally...)","shown": false},
+        {"speaker" :"player","text":"(I should really talk to my father. There's clearly something wrong with this 'experiment')","shown": false},
+        {"speaker" :"player","text":"(Ever since treating Ms. Emma, I've been hearing things occasionally...)","shown": false},
         {"speaker" :"player","text":"(And having strange nightmares...)","shown": false},
         {"speaker" :"player","text":"(In the dreams, dad and mom argue again, but then the scene shifts—mother lies in a pool of blood...)","shown": false},
         {"speaker" :"player","text":"(Am I just too tired?)","shown": false},
         {"speaker" :"player","text":"(Maybe I should see a therapist too.)","shown": false},
-        {"speaker" :"narrator","text":"That wasn’t a nightmare.","shown": false},
+        {"speaker" :"narrator","text":"???: [That wasn't a nightmare.]","shown": false},
         {"speaker" :"player","text":"What do you mean?","shown": false},
-        {"speaker" :"narrator","text":"I mean it literally. You still haven’t remembered anything? Not even a little?","shown": false},
+        {"speaker" :"narrator","text":"???: [I mean it literally. You still haven't remembered anything? Not even a little?] ","shown": false},
         {"speaker" :"player","text":" What are you talking about?","shown": false},
-        {"speaker" :"narrator","text":"He killed Mother.","shown": false},
-        {"speaker" :"player","text":"？！","shown": false},
-        {"speaker" :"player","text":"Don’t joke about that.","shown": false},
-        {"speaker" :"narrator","text":" I know you won’t believe it. After all, you’ve forgotten everything—me included.","shown": false},
-        {"speaker" :"narrator","text":"......","shown": false}
+        {"speaker" :"narrator","text":"???: [He killed Mother.] ","shown": false},
+        {"speaker" :"player","text":"?!","shown": false},
+        {"speaker" :"player","text":"Don't joke about that.","shown": false},
+        {"speaker" :"narrator","text":"???: [I know you won't believe it. After all, you' ve forgotten everything—me included.] ","shown": false},
+        {"speaker" :"narrator","text":"??? : [......]","shown": false}
 
         
     ]
@@ -46,39 +47,39 @@
         ],"shown":false
         }
     ],
+
     "not_a_doctor" :[
 
-        {"speaker" :"player","text":"I am not.","shown": false},
+        {"speaker" :"player","text":"I am not.","bgm": "bgm/selection_no.mp3","shown": false},
         {"speaker":"npc","text":"Eh~ I thought such a handsome guy would be our new doctor!","shown": false},
         {"speaker":"npc","text":"Are you here to see the Dean? He just left for a meeting.","shown": false},
         {"speaker" :"player","text":".....Sorry, I was joking. Seems like my sense of humor needs work. ","shown": false},
         {"speaker" :"narrator","text":"(You see her pause, and then chuckle.) ","shown": false},
-    
-        {"speaker" :"npc","text":" Ha Ha, you are quite an interesting person.","shown": false},
-        {"next":"chapter_1_common","shown": false},
-
-        {"speaker" :"npc","text":" Ha Ha, you are a quite interesting person.","shown": false},
-        {"next":"chapter_1_common"}
-
+        {"speaker" :"npc","text":" Ha Ha, you are quite an interesting person.","bgm": "bgm/intro.mp3","shown": false},
+        {"next":"chapter_1_common","shown": false}
     ],
+
     "a_doctor":[
         {"speaker" :"player","text":"I am. Hello.","shown": false},
         {"speaker" :"narrator","text":"(You see her smile widen.)","shown": false},
-        {"speaker" :"npc","text":"The Dean mentioned that we had a new psychologist starting today, but I didn’t expect him to be so handsome!","shown": false},
+        {"speaker" :"npc","text":"The Dean mentioned that we had a new psychologist starting today, but I didn't expect him to be so handsome!","shown": false},
         {"speaker" :"narrator","text":"(Her compliment makes your ears turn red.)","shown": false},
         {"speaker" :"player","text":"......Thanks","shown": false},
         {"next":"chapter_1_common","shown":false}
     ],
 
     "chapter_1_common":[
-        {"speaker" :"npc","text":"I’m Nuva, the receptionist nurse. If you have any questions, feel free to ask me—your senior!","shown": false},
+
+        {"speaker" :"npc","text":"I'm Nuva, the receptionist nurse. If you have any questions, feel free to ask me—your senior!","shown": false},
+
         {"speaker" :"player","text":"Got it.","shown": false},
         {"speaker" :"npc","text":"Oh, by the way, already have a patient booked a session with you for today.","shown":false},
-        {"speaker" :"npc","text":"She is waiting in your office, you can head over when you are ready","shown":true}
+        {"speaker" :"npc","text":"She is waiting in your office, you can head over when you are ready","shown":false}
 
     ],
+
     "repeat_only":[
-        {"speaker":"npc","text":"She is waiting in your office, you can head over when you are ready","shown": false}
+        {"speaker":"npc","text":"She is waiting in your office, you can head over when you are ready"}
     ],
 
     "chapter_2":[
@@ -86,7 +87,6 @@
         {"speaker" :"player","text":"Yes. Good morning.","shown": false},
         {"speaker" :"player","text":"(Ms. Zheng and Father's relation... I'm still concerned about it.)","shown": false},
         {"speaker" :"player","text":" (Just what is the 'experiment' all about?)","shown": false},
-        {"speaker" :"player","text":"Is the Dean here today?","shown": false},
         {"speaker" :"npc","text":"Of course~ He's in his office right now.","shown": false},
         {"speaker" :"npc","text":"Are you looking for him?","shown": false},
         {"speaker" :"player","text":"Yes. There's something I need to discuss with him. Where is his office?","shown": false},
@@ -95,7 +95,6 @@
         {"speaker" :"player","text":"I see. Thank you. I'll take my leave then.","shown": false},
         {"speaker" :"npc","text":"Alright~ Bye bye~!","shown": false},
         {"speaker" :"npc","text":"Dean's office is next to yours~"}
-        
     ],
 
     "chapter_3":[
@@ -114,31 +113,31 @@
 
   "Dean":{
     "chapter_1":[
-        {"speaker" :"player","text":"(So this is the clinic…...)","bgm": "bgm/talk_with_dean.mp3","shown": false},
+        {"speaker" :"player","text":"(So this is the clinic......)","bgm": "bgm/talk_with_dean.mp3","shown": false},
         {"speaker" :"npc","text":"It is 8:10 a.m. You're 50 minutes early.","shown": false},
         {"speaker" :"player","text":"I just wanted to familiarize myself with the environment...Father.","shown": false},
         {"speaker" :"narrator","text":"(When you called him 'Father' you notice his brow furrow slightly.)","shown": false},
-        {"speaker" :"npc","text":"In the clinic, we are considered superior and subordinate. Try not to call me ‘Father’ here.","shown": false},
-        {"speaker" :"npc","text":"I should go now, I have a meeting to attend. Feel free to look around your own.", "shown": false},
-        {"speaker" :"narrator","text":"(He exits the clinic.)", "event": "dean_exits", "shown": false},
+        {"speaker" :"npc","text":"In the clinic, we are considered superior and subordinate. Try not to call me 'Father' here.","shown": false},
+        {"speaker" :"npc","text":"I should go now, I have a meeting to attend. Feel free to look around your own.","shown": false},
+        {"speaker" :"narrator","text":"(He exits the clinic.)", "event": "dean_exit_cutscene", "sound": "footsteps","shown": false},
         {"speaker" :"player","text":"(Before exploring, I should send a message to mom.)","shown": false},
         {"speaker" :"player","text":"(You take out your phone and open the chat with your mother.)","shown": false},
         {"speaker" :"narrator","text":"(However,the chat is filled with your own messages.She doesn't read or reply to them.) ","shown": false},
         {"speaker" :"narrator","text":"(You have had been in the habit of updating her ever since your father said she left home.)","shown": false},
         {"speaker" :"narrator","text":"(From what you ate for lunch, to the friends you've made or your choice of major—every little story is in this chat.)","shown": false},
         {"speaker" :"narrator","text":"(What you truly hope for, is her response, and maybe an explanation, nothing more.)","shown": false},
-        {"speaker" :"narrator","text":"(You type in the chat box:)","shown": false},
-        {"speaker" :"player","text":"Today is my first day at work.","shown": false},
+        {"speaker" :"narrator","text":"(You type in the chat box)","shown": false},
+        {"speaker" :"player","text":"Today is my first day at work.","sound": "phone_typing","shown": false},
         {"speaker" :"player","text":"Finally, I've become a doctor, like Father.","shown": false},
         {"speaker" :"player","text":"Would you be proud of me, Mom?","shown": false},
-        {"speaker" :"narrator","text":"(......)","shown": false},
+        {"speaker" :"narrator","text":"(......)","sound_stop": true,"shown": false},
         {"speaker" :"narrator","text":"(You stare at the unanswered chat for a few seconds then put your phone back to pocket.)","shown": false},
-        {"speaker" :"player","text":"Maybe I should walk around clinic first.","shown": false}
+        {"speaker" :"player","text":"Maybe I should walk around clinic first.","bgm": "bgm/intro.mp3","shown": false}
 
     ],
 
     "chapter_2":[
-        {"speaker" :"npc","text":"Is there a problem?","shown": false},
+        {"speaker" :"npc","text":"Is there a problem?","bgm": "bgm/dean_chapter_2.mp3","shown": false},
         {"speaker" :"player","text":"There's something I need to discuss with you.","shown": false},
         {"speaker" :"player","text":"(Should I play it by ear, or just get straight to the point?)","shown": false},
         {"choice":[
@@ -157,8 +156,9 @@
         {"speaker" :"narrator","text":"(The Dean suddenly coughs, interrupting you.)","shown": false},
         {"speaker" :"npc","text":"That is the patient's private matter. Do not simply bring this up on your own accord.......","shown": false},
         {"speaker" :"player","text":"(......)","shown": false},
-        {"speaker" :"player","text":"(I should go.......)"}
+        {"speaker" :"player","text":"(I should go.......)","bgm": "bgm/intro.mp3"}
     ],
+
     "experiment":[
         {"speaker" :"player","text":"Have you ever been involved in experiments before?","shown": false},
         {"speaker" :"player","text":"(You notice his eyes turn sharp at the word 'experiments'. The room was warm but you felt a chill in your bones.)","shown": false},
@@ -173,23 +173,28 @@
         {"speaker" :"npc","text":"You should focus more on treating the patient, not talking about their private matters like you've uncovered some conspiracy.","shown": false},
         {"speaker" :"npc","text":"If there's nothing else, do see yourself out.","shown": false},
         {"speaker" :"player","text":"(......)","shown": false},
-        {"speaker" :"player","text":"(I should go.......)"}
+        {"speaker" :"player","text":"(I should go.......)","bgm": "bgm/intro.mp3"}
     ],
+    
+    "repeat_only":[
+        {"speaker":"player","text":"(I should go.......)"}
+    ],
+
 
     "chapter_3":[
         {"speaker" :"npc","text":"...So you've come.","shown": false},
         {"speaker" :"narrator","text":"(He does not look surprised at your sudden appearance.)","shown": false},
-        {"speaker" :"player","text":"This is where the 'experiment' happens...? You wouldn’t be careless, so is you let me find this place?","shown": false},
+        {"speaker" :"player","text":"This is where the 'experiment' happens...? You wouldn't be careless, so is you let me find this place?","shown": false},
         {"speaker" :"npc","text":"Correct. You already know too much.","shown": false},
         {"speaker" :"npc","text":" So, what is your conclusion?","shown": false},
         {"speaker" :"player","text":"...Your hypnosis therapy—it's a pyramid built on the trauma of others.","shown": false},
         {"speaker" :"npc","text":" Thats call 'underperformed'.","shown": false},
         {"speaker" :"player","text":"But their pain is real!","shown": false},
-        {"speaker" :"player","text":" Miss Emma was one of them… She said she didn’t know why the nightmares kept happening more and more. ","shown": false},
-        {"speaker" :"player","text":"That was from a failed session, wasn’t it?","shown": false},
-        {"speaker" :"npc","text":"I don’t deny that. But not all cases fail.","shown": false},
-        {"speaker" :"player","text":" ...You mean Ms. Zheng? I don’t understand how she accepted it.","shown": false},
-        {"speaker" :"npc","text":"She couldn’t handle the truth. When she saw the failed cases in the reports, she began to doubt herself.","shown": false},
+        {"speaker" :"player","text":" Miss Emma was one of them… She said she didn't know why the nightmares kept happening more and more. ","shown": false},
+        {"speaker" :"player","text":"That was from a failed session, wasn't it?","shown": false},
+        {"speaker" :"npc","text":"I don't deny that. But not all cases fail.","shown": false},
+        {"speaker" :"player","text":" ...You mean Ms. Zheng? I don't understand how she accepted it.","shown": false},
+        {"speaker" :"npc","text":"She couldn't handle the truth. When she saw the failed cases in the reports, she began to doubt herself.","shown": false},
         {"speaker" :"npc","text":"So I had to hypnotize her to make her forget everything.","shown": false},
         {"speaker" :"npc","text":"Fortunately, it went very well.","shown": false},
         {"speaker" :"player","text":"......","shown": false},
@@ -202,22 +207,153 @@
             {"option":"Pull the lever and sacrifice one ","next":"Ship_of_Theseus"},
             {"option":"Do nothing and sacrifice five","next":"Justice_Served"},
             {"option":"Don't give me that philosophical nonsense","next":"Rebirth_of_the_Dual_Soul"}
-        ],"shown":false
+        ]
         }
         
         
     ],
 
     "Ship_of_Theseus":[
+        {"cg":["picture/Ending/black screen.png"]},
+        {"speaker" :"player","text":"...If I must choose, I'll pull the lever","bgm": "bgm/ship.mp3"},
+        {"speaker" :"narrator","text":"(He smiles, pleased.)"},
+        {"speaker" :"npc","text":"Good. You understand."},
+        {"speaker" :"npc","text":"Science requires trade-offs. My research will save more in the end."},
+        {"speaker" :"npc","text":" Now, will you join me? Together, we can perfect this therapy."},
+        {"cg":["picture/Ending/End1.1.png"]},
+        {"speaker" :"narrator","text":"(A few months later.)"},
+        {"speaker" :"narrator","text":"(The clinic's lights remain bright.)"},
+        {"speaker" :"narrator","text":"(By day, you treat patients with the machine. By night, you refine the 'therapy' in the basement.)"},
+        {"speaker" :"narrator","text":"(At first, you hesitated. Paused at failed reports.)"},
+        {"speaker" :"narrator","text":"(Now, you calmly record data, analyze errors, and adjust the next experiment's parameters.)"},
+        {"cg":["picture/Ending/End1.2.png"]},
+        {"speaker" :"player","text":"(No sacrifice, no salvation.)"},
+        {"speaker" :"player","text":"(I must keep going.)"},
+        {"cg":["picture/Ending/End1.3.png"]},
+        {"speaker" :"narrator","text":"(One year later—a research conference.)"},
+        {"speaker" :"narrator","text":"(Spotlights flash. You stand at the podium before a dark sea of faces.)"},
+        {"speaker" :"player","text":"Our research proves that the human brain is not an immutable hard drive."},
+        {"speaker" :"player","text":"With precise hypnosis, we can strip away trauma and rebuild a healthy psyche."},
+        {"speaker" :"narrator","text":"(Applause erupts.)","sound": "claps"},
+        {"speaker" :"narrator","text":"(You continue your speech and return to your father's side after)"},
+        {"cg":["picture/Ending/End1.4.png"]},
+        {"speaker" :"narrator","text":"(He hands you a glass of champagne. Reflected on the surface are your two faces—same white coat, same calm gaze.)"},
+        {"speaker" :"narrator","text":"(He raises his glass.)"},
+        {"speaker" :"narrator","text":"(Glasses clink, crisp and icy.)","sound": "wine_glass"},
+        {"speaker" :"player","text":"To the future."},
+        {"speaker" :"narrator","text":"???: [You gradually inherited his will, like a ship with its planks replaced one by one.] "},
+        {"speaker" :"narrator","text":"???: [Do you still think you're the same person you once were?] ","type":"ending"}
 
     ],
 
     "Justice_Served":[
+        {"cg":["picture/Ending/black screen.png"]},
+        {"speaker" :"player","text":" I won't pull the lever... Every life deserves an equal chance.","bgm": "bgm/justice.mp3"},
+        {"speaker" :"npc","text":"Naïve. Still clinging to morals"},
+        {"speaker" :"player","text":"...I can't accept your ideals, Father."},
+        {"speaker" :"player","text":"And I won't let this continue."},
+        {"cg":["picture/Ending/End2.1.png"]},
+        {"speaker" :"narrator","text":"(A few weeks later.)"},
+        {"speaker" :"narrator","text":"(You sit on the couch, staring blankly at the newspaper....... "},
+        {"speaker" :"narrator","text":"the headline reads: “Famed Psychologist Under Investigation for Illegal Human Experimentation”.)"},
+        {"speaker" :"narrator","text":"(The image shows your father being escorted away by police—his lab coat neat, expression detached.)"},
+        {"speaker" :"narrator","text":"(You chose justice that night in the basement—you called the police)"},
+        {"speaker" :"narrator","text":"(The TV reports: “The clinic has been shut down. Authorities uncovered large volumes of unauthorized hypnosis records...”) "},
+        {"speaker" :"narrator","text":"(You turn off the TV. The room is eerily silent except for the ticking clock.)"},
+        {"cg":["picture/Ending/End2.4.png"]},
+        {"speaker" :"narrator","text":"(Flashback—the night you called the police.)"},
+        {"speaker" :"npc","text":"Do you really want to do this?"},
+        {"speaker" :"player","text":"Your 'patients' had families too."},
+        {"speaker" :"npc","text":"Science needs sacrifice."},
+        {"speaker" :"narrator","text":"(He says it like stating a fact)"},
+        {"speaker" :"player","text":"…No."},
+        {"speaker" :"player","text":" Science requires ethics, not blood."},
+        {"speaker" :"narrator","text":"(His expression cracks—not rage, but a cold, almost disappointed indifference.)"},
+        {"speaker" :"npc","text":"What a pity."},
+        {"speaker" :"narrator","text":"(You press the call button.)"},
+        {"cg":["picture/Ending/End2.2.png"]},
+        {"speaker" :"narrator","text":"(Now, in court.)"},
+        {"speaker" :"narrator","text":"(The gavel falls.)","sound": "gavel"},
+        {"speaker" :"narrator","text":"Judge:Defendant, do you have anything to say?"},
+        {"speaker" :"narrator","text":"(Your father stands in the defendant’s box. His gaze sweeps across the courtroom and lands on you.)"},
+        {"cg":["picture/Ending/End2.3.png"]},
+        {"speaker" :"npc","text":"My only regret is failing to teach my son..."},
+        {"speaker" :"npc","text":"That science has no room for mercy.","type":"ending"}
+    
 
     ],
 
     "Rebirth_of_the_Dual_Soul":[
-
+        {"cg":["picture/Ending/black screen.png"]},
+        {"speaker" :"player","text":" Don't give me that philosophical nonsense. Stop trying to justify yourself!","bgm": "bgm/rebirth.mp3"},
+        {"speaker" :"npc","text":"Too emotional. Like your mother."},
+        {"speaker" :"player","text":"Don't bring her up now. If you hadn't fought her so much, she wouldn't have left home—"},
+        {"speaker" :"player","text":"I even hear voices in my head saying you killed her—what a joke..."},
+        {"cg":["picture/Ending/End3.1.png"]},
+        {"speaker" :"narrator","text":"(You see his face twist: shock, shameful anger, and a trace of sorrow.)"},
+        {"speaker" :"npc","text":"……"},
+        {"speaker" :"player","text":"Is it true?"},
+        {"speaker" :"npc","text":"……"},
+        {"speaker" :"narrator","text":"(His silence is a blade, slicing through years of lies.)"},
+        {"speaker" :"narrator","text":"(A sound—glass shattering. Not in the room, but your mind.)"},
+        {"speaker" :"narrator","text":"('Crack')"},
+        {"speaker" :"narrator","text":"(Memory floods in.)"},
+        {"cg":["picture/Ending/End3.2.png"]},
+        {"speaker" :"narrator","text":"(Flashback)"},
+        {"speaker" :"narrator","text":"(An empty classroom. Equations still faintly on the blackboard)"},
+        {"speaker" :"narrator","text":"???: [Ugh. Rain again.]","sound": "rain"},
+        {"speaker" :"player","text":"Rain's peaceful."},
+        {"speaker" :"narrator","text":"???: [Not for me. Reminds me of their shouting this morning.] "},
+        {"speaker" :"player","text":" Forget that. I'm here. Let's go."},
+        {"speaker" :"narrator","text":"(He slowly packs up, grabs an umbrella, and walks out.)"},
+        {"speaker" :"narrator","text":"???: [Don't wanna go home...]"},
+        {"speaker" :"player","text":"There's cake in the fridge. That might cheer you up."},
+        {"speaker" :"narrator","text":"???: [I guess.]"},
+        {"speaker" :"narrator","text":"(He agrees, but doesn't speed up.)"},
+        {"speaker" :"narrator","text":"???:  [Sometimes I wish I could give you control of my body. You're stronger.] "},
+        {"speaker" :"player","text":"I'm here to protect you."},
+        {"speaker" :"narrator","text":"???: [Protected by my own alter...Pathetic.] "},
+        {"speaker" :"narrator","text":"(They arrive at home.)"},
+        {"speaker" :"player","text":"It's not pathetic. That's why you created me."},
+        {"speaker" :"narrator","text":"(He opens the door.)"},
+        {"cg":["picture/Ending/End3.3.png"]},
+        {"speaker" :"narrator","text":"(Blood—deep red blood—spreads to feet.)"},
+        {"speaker" :"narrator","text":"(In the center lies the woman who had always gently stroked his hair)"},
+        {"speaker" :"narrator","text":"???: [M...Mother?] "},
+        {"speaker" :"narrator","text":"(Her pupils are dilated, eyes still toward the door—as if even in death, she was worried her child would see this.)"},
+        {"speaker" :"narrator","text":"(At the top of the stairs stands Father. His lab coat hem drips with dark red.)"},
+        {"speaker" :"player","text":"DON'T LOOK!!!"},
+        {"speaker" :"narrator","text":"(Too late. He retreats, leaving you in control—just as pain explodes in your skull.)"},
+        {"speaker" :"narrator","text":"(You're knocked out cold.)"},
+        {"speaker" :"narrator","text":"(When you wake, a cold glint of a pocket watch is in your face.)"},
+        {"speaker" :"npc","text":" From today on, your mother just left home."},
+        {"speaker" :"npc","text":"You fainted from grief."},
+        {"speaker" :"npc","text":"Tomorrow, everything will be fine."},
+        {"speaker" :"narrator","text":"(Back to the present.)"},
+        {"cg":["picture/Ending/End3.4.png"]},
+        {"speaker" :"player","text":"...You bastard."},
+        {"speaker" :"npc","text":" You think I wanted this? She found the data—threatened to ruin my life's work——"},
+        {"speaker" :"narrator","text":"(You grab his collar, cutting him off.)"},
+        {"speaker" :"player","text":"I should kill you for her."},
+        {"speaker" :"narrator","text":"???: [Don't dirty your hands. Call the police.]"},
+        {"speaker" :"narrator","text":"???: [You still have a future.]"},
+        {"speaker" :"narrator","text":"(You breathe deeply and let go.)"},
+        {"speaker" :"player","text":"Save your excuses for the police."},
+        {"speaker" :"npc","text":"……"},
+        {"speaker" :"narrator","text":"(He says nothing more. He closes his eyes, like a criminal awaiting judgment.)"},
+        {"cg":["picture/Ending/black screen.png"]},
+        {"speaker":"narrator","text":"(after a few weeks..."},
+        {"speaker" :"narrator","text":"???: [Are you alright?] "},
+        {"speaker" :"player","text":"Shouldn't I be asking you? You're the original personality."},
+        {"speaker" :"narrator","text":"???: [Because I accepted the truth long ago. You haven't.] "},
+        {"speaker" :"player","text":"……"},
+        {"speaker" :"narrator","text":"???: [Do you think Father will regret it? In prison?] "},
+        {"speaker" :"player","text":"Maybe. Maybe not. I just wanted him punished."},
+        {"speaker" :"player","text":"...By the way, don't you want to take body control again?"},
+        {"speaker" :"narrator","text":"???: [ No. This is fine.] "},
+        {"cg":["picture/Ending/End3.5.png"]},
+        {"speaker" :"narrator","text":"???: [ This time, let me protect you.] ","type":"ending"}
+     
     ]
 
 
@@ -225,11 +361,13 @@
   },
   "Zheng":{
     "chapter_1":[
-        {"speaker" :"player","text":"Sorry for the wait. I’m your scheduled psychologist. You’re Ms. Zheng, right?","shown": false},
+
+        {"speaker" :"player","text":"Sorry for the wait. I'm your scheduled psychologist. You're Ms. Zheng, right?","bgm": "bgm/talk_with_patient.mp3","shown": false},
+
         {"speaker" :"narrator","text":"(You see she sitting upright and nod.)","shown": false},
         {"speaker" :"npc","text":"Yes, hello.","shown": false},
         {"speaker" :"player","text":"Alright, Ms. Zheng. First, we will start with getting to know you and understanding your situation.","shown": false},
-        {"speaker" :"player","text":"Feel free to talk about whatever has brought you here—there’s no need to hold back. Where would you like to start?","shown": false},
+        {"speaker" :"player","text":"Feel free to talk about whatever has brought you here—there's no need to hold back. Where would you like to start?","shown": false},
         {"speaker" :"narrator","text":"(She sighs, a mixture of resignation and relief.)","shown": false},
         {"speaker" :"npc","text":"......I've always felt like I have to do everything perfectly.","shown": false},
         {"speaker" :"npc","text":" So at work, I strive for perfection, but instead of improving outcomes, it just.....slows me down.","shown": false},
@@ -239,114 +377,101 @@
         {"speaker" :"npc","text":" I ended up staying up until early morning, which affected my performance at the meeting the next day.","shown": false},
         {"speaker" :"player","text":"Hmm. During that process, how do you feel? Was there any concerning reaction?","shown": false},
         {"speaker" :"npc","text":"......When during that time, my heart was racing, and my hands trembled uncontrollably. I felt an overwhelming tension.","shown": false},
-        {"speaker" :"player","text":"Did any specific thoughts cross your mind? Like, 'If I don’t make this perfect, then…'?","shown": false},
+        {"speaker" :"player","text":"Did any specific thoughts cross your mind? Like, 'If I don't make this perfect, then…'?","shown": false},
         {"speaker" :"narrator","text":"(She closes her eyes, brows slightly furrowed, as if resisting an admission. But after a pause, she nods.)","shown": false},
-        {"speaker" :"npc","text":"...…Yes. I thought, “If this proposal isn’t perfect and something goes wrong, it could stain my entire career.”","shown": false},
+        {"speaker" :"npc","text":"...…Yes. I thought, “If this proposal isn't perfect and something goes wrong, it could stain my entire career.”","shown": false},
         {"speaker" :"npc","text":" Just thinking about that will made me feel awful","shown": false},
         {"speaker" :"player","text":"(Perfectionism-induced anxiety. CBT (Cognitive Behavioral Therapy) might be an appropriate and effective approach here.)","shown": false},
-        {"speaker" :"narrator","text":"(Cognitive behavioral therapy (CBT) is a form of psychological treatment that has been demonstrated to be effective for a range of problems","shown": false},
-        {"speaker" :"narrator","text":" including depression, anxiety disorders, alcohol and drug use problems, marital problems, eating disorders, and severe mental illness. )","shown": false},
-        {"speaker" :"narrator","text":"(CBT treatment usually involves efforts to change thinking patterns. )","shown": false},
+        {"speaker" :"narrator","text":"(Cognitive behavioral therapy (CBT) is a form of psychological treatment","shown": false},
+        {"speaker" :"narrator","text":" that has been demonstrated to be effective for a range of problems","shown": false},
+        {"speaker" :"narrator","text":" including depression, anxiety disorders, alcohol and drug use problems, marital problems, eating disorders, and severe mental illness.)","shown": false},
+        {"speaker" :"narrator","text":"(CBT treatment usually involves efforts to change thinking patterns.)","shown": false},
         {"speaker" :"npc","text":"I heard that this clinic have some kind of machine here which can treat psychological problems. Can that fix mine directly?","shown": false},
-        {"speaker" :"player","text":"(Wait a minute—this isn’t where I expected the session to go. But…...I did forget about machine.)","shown": false},
+        {"speaker" :"player","text":"(Wait a minute—this isn't where I expected the session to go. But…...I did forget about machine.)","shown": false},
         {"speaker" :"player","text":"Yes, that 'helmet' on my desk is the machine. It can access to a person's subconscious and view past memories.","shown": false},
         {"speaker" :"npc","text":"All memories?","shown": false},
         {"speaker" :"player","text":"No, only those relevant to your anxiety.","shown": false},
         {"speaker" :"npc","text":"How does viewing memories relate to treatment?","shown": false},
-        {"speaker" :"player","text":"(Her tone makes me feel like I’m being interrogated by a superior......) ","shown": false},
+        {"speaker" :"player","text":"(Her tone makes me feel like I'm being interrogated by a superior......) ","shown": false},
         {"speaker" :"player","text":"The memories help identify the root cause. The actual treatment involves 'activities' within the subconscious.","shown": false},
-        {"speaker" :"player","text":"It’s a process of memory restructuring. By preserving or destroying emotional anchors, we can rapidly relieve symptoms.","shown": false},
+        {"speaker" :"player","text":"It's a process of memory restructuring. By preserving or destroying emotional anchors, we can rapidly relieve symptoms.","shown": false},
         {"speaker" :"player","text":"But also there is a chance of failure","shown": false},
-        {"speaker" :"player","text":"It’s not a conventional therapy method. Are you sure about this approach? I believe a gentler method might be more suitable.....","shown": false},
+        {"speaker" :"player","text":"It's not a conventional therapy method. Are you sure about this approach? I believe a gentler method might be more suitable.....","shown": false},
         {"speaker" :"npc","text":"No, I choose this one. I need a quick way to completely solve the problem.","shown": false},
         {"speaker" :"player","text":"......","shown": false},
         {"speaker" :"player","text":"I understand your desire to recover quickly. But please read this consent form carefully before making a final decision","shown": false},
         {"speaker" :"narrator","text":"(You hand her the consent form about machine.)","shown": false},
         {"speaker" :"narrator","text":"(She takes it, adjusts her glasses, and reads it intently.)","shown": false},
         {"speaker" :"narrator","text":"(After a moment, she looks up.)","shown": false},
-        {"speaker" :"npc","text":"I’ve read it. I’m willing to accept the risks. Just need to sign here, right?","shown": false},
-        {"speaker" :"player","text":"Right. Once you sign, I’ll prepare the treatment.","shown": false},
-        {"speaker" :"narrator","text":"(She signs without hesitation and returns the form to you.)","shown": false},
-        {"speaker" :"player","text":"(Alright, let’s begin.)","shown": false},
+        {"speaker" :"npc","text":"I've read it. I'm willing to accept the risks. Just need to sign here, right?","shown": false},
+        {"speaker" :"player","text":"Right. Once you sign, I'll prepare the treatment.","shown": false},
+        {"speaker" :"narrator","text":"(She signs without hesitation and returns the form to you.)","sound": "write_pen","shown": false},
+        {"speaker" :"player","text":"(Alright, let's begin.)","shown": false},
         {"next":"chapter_1_common"}
 
     ],
 
     "chapter_1_common":[
         {"speaker":"npc","text":"......"},
-        {"speaker" :"player","text":"(I’ve finished speaking with the patient. Time to begin treatment using the machine.)"}
+        {"speaker" :"player","text":"(I've finished speaking with the patient. Time to begin treatment using the machine.)"}
     ],
     "after_puzzle":[
         {"speaker" :"narrator","text":"(This memory is blurry—snatches of conversations and report writing. Words on the reports catch your eye.)","shown": false},
         {"speaker" :"player","text":"(Hypnotherapy Results......? Is this the “experiment”?)","shown": false},
         {"speaker" :"narrator","text":"(You read the report—overwhelming with technical terms.)","shown": false},
-        {"speaker" :"narrator","text":"(Reports pile up, dense with jargon. The first, the second, the third...)","shown": false},
-        {"speaker" :"narrator","text":"(All reports share one conclusion......)","shown": false},
+        {"speaker" :"narrator","text":"(Reports pile up, dense with jargon. The first, the second, the third... All share one conclusion)","shown": false},
         {"speaker" :"narrator","text":"(Failure)","shown": false},
         {"speaker" :"narrator","text":"(A sense of unease—and inexplicable familiarity—washes over you.)","shown": false},
         {"speaker" :"narrator","text":"(As the memory fades, you find something in your hand)","shown": false},
         {"speaker" :"narrator","text":"(A notebook. But no tidy lines, no neat notes, no highlights—just blank pages.)","shown": false},
         {"speaker" :"narrator","text":"(Perhaps emptiness, too, is a form of perfection.)","shown": false},
         {"speaker" :"narrator","text":"(But who defines perfection? Who enforces it?)","shown": false},
-        {"speaker" :"narrator","text":"You’re no philosopher. No need to dwell on that.","shown": false},
-        {"speaker" :"player","text":"(This is Ms. Zheng’s emotional anchor......)","shown": false},
+        {"speaker" :"narrator","text":"You're no philosopher. No need to dwell on that.","shown": false},
+        {"speaker" :"player","text":"(This is Ms. Zheng's emotional anchor......)","shown": false},
         {"speaker" :"player","text":"(Destroy it, and her symptoms vanish—but so do parts of her memory. Keep it, and the cure may be incomplete. What should I choose?)","shown": false},
         {"choice":[
-            {"option":"Destroy","next":"back_reality"},
-            {"option":"Keep","next":"back_reality"}
-        ]
-        }
-    ],
-    "back_reality":[
-        {"speaker" :"narrator","text":"(You remove the device from her head.)","shown": false},
-        {"speaker" :"narrator","text":"Treatment is complete. How do you feel? Any discomfort?","shown": false},
-        {"speaker" :"narrator","text":"......I’m fine.","shown": false},
-        {"speaker" :"narrator","text":"Great. Based on your subconscious, I made a treatment decision. You will recover soon.","shown": false},
-        {"speaker" :"narrator","text":"But please remember—don’t push yourself too hard. You’ve done very well, whether as a top student, an employee, or simply as yourself.","shown": false},
-        {"speaker" :"narrator","text":"......Thank you.","shown": false,"next":"check_sub_end"}
-    ],
-
-    "check_sub_end":[
-        {"speaker" :"player","text":"(Destroy it, and her symptoms vanish—but so do parts of her memory. Keep it, and the cure may be incomplete. What should I choose?)","shown": false},
-        {"choice":[
-            {"option":"Destroy","next":"Destroy_memory1"},
-            {"option":"Keep","next":"Keep_memory1"}
+            {"option":"Destroy","next":"back_reality_destroy1"},
+            {"option":"Keep","next":"back_reality_keep1"}
         ]
         }
     ],
 
-     "Destroy_memory1":[
+     "back_reality_destroy1":[
         {"speaker" :"narrator","text":"(You remove the device from her head.)","shown": false},
         {"speaker" :"player","text":" Treatment is complete. How do you feel? Any discomfort?","shown": false},
-        {"speaker" :"npc","text":"......I’m fine","shown": false},
+        {"speaker" :"npc","text":"......I'm fine","shown": false},
         {"speaker" :"player","text":"Great. Based on your subconscious, I made a treatment decision. You will recover soon.","shown": false},
-        {"speaker" :"player","text":"But please remember—don’t push yourself too hard. You’ve done very well, whether as a top student, an employee, or simply as yourself","shown": false},
+        {"speaker" :"player","text":"But please remember—don't push yourself too hard. You've done very well, whether as a top student, an employee, or simply as yourself","shown": false},
         {"speaker" :"npc","text":".....Thank you.","shown": false,"next":"sub_end_1"}
      ],
      "sub_end_1":[
-        {"speaker" :"npc","text":"(That doctor’s treatment really worked. I don’t get anxious over little things anymore.)","shown": false},
+        {"cg":"picture/P1 End1.png"},
+        {"speaker" :"npc","text":"(That doctor's treatment really worked. I don't get anxious over little things anymore.)","bgm": "bgm/zheng_destroyed.mp3","shown": false},
         {"speaker" :"npc","text":"(My boss even said I seem refreshed. Efficiency has improved.)","shown": false},
         {"speaker" :"npc","text":"(This stable routine is all I need...)","shown": false},
-        {"speaker" :"npc","text":" (...)","shown": false},
+        {"speaker" :"npc","text":"(...)","shown": false},
         {"speaker" :"npc","text":"(Is it, though?)","shown": false},
-        {"speaker" :"npc","text":"???: Zheng! Are you coming to the celebration party tonight? Boss is treating us for the successful proposal!","shown": false},
-        {"speaker" :"npc","text":"Yeah, I’ll be there.","shown": false},
+        {"speaker" :"narrator","text":"?: Zheng! Are you coming to the celebration party tonight? Boss is treating us for the successful proposal!","shown": false},
+        {"speaker" :"npc","text":"Yeah, I'll be there.","shown": false},
         {"speaker" :"npc","text":"(......Well. Maybe this is enough.)","shown": false}
      ],
 
-     "Keep_memory1":[
-         {"speaker" :"narrator","text":"(You remove the device from her head.)","shown": false},
+     "back_reality_keep1":[
+        {"speaker" :"narrator","text":"(You remove the device from her head.)","shown": false},
         {"speaker" :"player","text":" Treatment is complete. How do you feel? Any discomfort?","shown": false},
-        {"speaker" :"npc","text":"......I’m fine","shown": false},
+        {"speaker" :"npc","text":"......I'm fine","shown": false},
         {"speaker" :"player","text":"Great. Based on your subconscious, I made a treatment decision. You will recover soon.","shown": false},
-        {"speaker" :"player","text":"But please remember—don’t push yourself too hard. You’ve done very well, whether as a top student, an employee, or simply as yourself","shown": false},
+        {"speaker" :"player","text":"But please remember—don't push yourself too hard. You've done very well, whether as a top student, an employee, or simply as yourself","shown": false},
         {"speaker" :"npc","text":".....Thank you.","shown": false,"next":"sub_end_2"}
      ],
      "sub_end_2":[
-        {"speaker" :"npc","text":" (That doctor’s treatment really worked. I don’t get anxious over small things anymore.)","shown": false},
+        {"cg":"picture/P1 End2.png"},
+
+        {"speaker" :"npc","text":" (That doctor's treatment really worked. I don't get anxious over small things anymore.)","bgm": "bgm/zheng_preserved.mp3","shown": false},
+
         {"speaker" :"npc","text":" (More importantly, I remembered what I truly wanted.)","shown": false},
         {"speaker" :"npc","text":"(How could I have forgotten? My dream of studying psychology deeply (professionally?))","shown": false},
-        {"speaker" :"npc","text":"(But it’s not too late.)","shown": false},
+        {"speaker" :"npc","text":"(But it's not too late.)","shown": false},
         {"speaker" :"npc","text":"(This is a new beginning.)","shown": false}
      ]
   },
@@ -355,19 +480,19 @@
 
   "Emma":{
     "chapter_2":[
-        {"speaker" :"player","text":"Good morning, are you Ms. Emma?","shown": false},
+        {"speaker" :"player","text":"Good morning, are you Ms. Emma?","bgm": "bgm/talk_with_patient.mp3","shown": false},
         {"speaker" :"narrator","text":"(She nodded politely.)","shown": false},
         {"speaker" :"npc","text":"I am. Good morning to you too.","shown": false},
-        {"speaker" :"npc","text":"(Her voice is soft and delicate on the ears.)","shown": false},
-        {"speaker" :"npc","text":"(A very gentle voice...)","shown": false},
+        {"speaker" :"narrator","text":"(Her voice is soft and delicate on the ears.)","shown": false},
+        {"speaker" :"player","text":"(A very gentle voice...)","shown": false},
         {"speaker" :"player","text":"Okay then, Ms. Emma, is there something you'd like to talk to me about? Anything at all.","shown": false},
-        {"speaker" :"player","text":"Well, you see, some time ago, I had been caught in a... a car accident.","shown": false},
+        {"speaker" :"npc","text":"Well, you see, some time ago, I had been caught in a... a car accident.","shown": false},
         {"speaker" :"narrator","text":"(She lowered her head, but quickly picked it back up, giving you a faint smile.)","shown": false},
         {"speaker" :"npc","text":"Fortunately, I was not seriously injured and recovery was smooth.","shown": false},
         {"speaker" :"npc","text":"However, ever since, I've been having nightmares of the car accident. To the point it affects my sleep.","shown": false},
         {"speaker" :"npc","text":"At first, the nightmares happened occasionally, maybe twice a week, But for some reason, it's becoming more frequently lately.","shown": false},
         {"speaker" :"narrator","text":"(You noticed the dark rings under her eyes. It's clear she hasn't had a good night's sleep in a long time.)","shown": false},
-        {"speaker" :"player","text":"hank you for telling me this. Has there been anything else, besides the nightmares?","shown": false},
+        {"speaker" :"player","text":"Thank you for telling me this. Has there been anything else, besides the nightmares?","shown": false},
         {"speaker" :"npc","text":"Does being afraid of driving count? Even if I wasn't the one driving, I find that I have trouble breathing and my hands shake uncontrollably.","shown": false},
         {"speaker" :"npc","text":"Even the driver that sent me here worried about how pale I looked.","shown": false},
         {"speaker" :"narrator","text":"(When she said this, her hand gripped her skirt.)","shown": false},
@@ -390,7 +515,7 @@
         {"speaker" :"narrator","text":"(She listens carefully and nods from time to time)","shown": false},
         {"speaker" :"player","text":"... and that should be all. Here is the contract, along with a more detailed description. Take your time to read it through.","shown": false},
         {"speaker" :"narrator","text":"(You handed her the contract, and as she read it intently, you felt something flash through your mind.)","shown": false},
-        {"speaker" :"narrator","text":"???:[... The poor soul.]","shown": false},
+        {"speaker" :"narrator","text":"???: [... The poor soul.]","shown": false},
         {"speaker" :"narrator","text":"(This voice does not sound like yours or Emma's.)","shown": false},
         {"speaker" :"player","text":"Who !?","shown": false},
         {"speaker" :"narrator","text":"(But there is no one else, besides you and Emma.)","shown": false},
@@ -399,23 +524,100 @@
         {"speaker" :"player","text":"Very well then, please sign here...","shown": false},
         {"speaker" :"narrator","text":"???: [... Don't- Don't use the machine.]","shown": false},
         {"speaker" :"player","text":" (Seriously. Where am I hearing this from?)","shown": false},
-        {"speaker" :"narrator","text":"(You chose to ignore the voice for now.)","shown": false},
+        {"speaker" :"narrator","text":"(You choose to ignore the voice for now.)","shown": false},
         {"speaker" :"player","text":"Here's a pen.","shown": false},
-        {"speaker" :"narrator","text":"(After she signs, she hands the contract and pen back to you.)","shown": false},
-        {"speaker" :"narrator","text":"(We can start now.)","shown": false},
-        {"speaker" :"narrator","text":".......","shown": false},
-        {"speaker" :"player","text":"I’ve finished speaking with the patient. Time to begin treatment using the machine."}
+        {"speaker" :"narrator","text":"(After she signs, she hands the contract and pen back to you.)","sound": "write_pen","shown": false},
+        {"speaker" :"player","text":"(We can start now.)","shown": false},
+        {"speaker" :"narrator","text":"......."},
+        {"speaker" :"player","text":"I've finished speaking with the patient. Time to begin treatment using the machine."}
     ],
+
+
     "after_puzzle":[
+        {"speaker" :"narrator","text":"(She entered a clinic)","shown": false},
+        {"speaker" :"narrator","text":"(You find the place familiar)","shown": false},
+        {"speaker" :"narrator","text":"(Familiar notice board, familiar front desk, familiar structure...)","shown": false},
+        {"speaker" :"narrator","text":"(It's a little old-fashioned, and the person at the front desk is not a nurse you know, but this is definitely the clinic.) ","shown": false},
+        {"speaker" :"player","text":"(She's already been here before?)","shown": false},
+        {"speaker" :"narrator","text":"(She walked up to the counter.)","shown": false},
+        {"speaker" :"npc","text":"Hello... I booked an appointment at 1?","shown": false},
+        {"speaker" :"narrator","text":"nurse ? :Ah, right, head to the furthest door down this corridor. The doctor is waiting for you.","shown": false},
+        {"speaker" :"narrator","text":"(The scene shifts. You do not recognize this place.)","shown": false},
+        {"speaker" :"narrator","text":"(It's dark and small, was your first thought. Like some sort of basement.)","shown": false},
+        {"speaker" :"npc","text":"Doctor, will this really help me? I don't... I don't want to see that truck rushing towards me anymore, or feel like I'm suffocating, or... or","shown": false},
+        {"speaker" :"narrator","text":"(She paused when the other person raised their hand.)","shown": false},
+        {"speaker" :"npc","text":"Calm down, and try to focus on the now. See this pocket watch?","shown": false},
+        {"speaker" :"player","text":"(Father...)","shown": false},
+        {"speaker" :"npc","text":"Try and focus on its swinging... Yes, exactly like that.","shown": false},
+        {"speaker" :"player","text":"(Is this related to that 'experiment' as well?)","shown": false},
+        {"speaker" :"npc","text":"Imagine yourself standing in a long hallway... At the very end, there is a door, behind which is the memory you wish to forget.","shown": false},
+        {"speaker" :"npc","text":"Now, put your hand on the doorknob, and slowly push it open.","shown": false},
+        {"speaker" :"npc","text":"N-no! That- That truck is- It's coming towards me!","shown": false},
+        {"speaker" :"npc","text":"You are resisting too much. Hypnosis requires cooperation, not resistance.","shown": false},
+        {"speaker" :"narrator","text":"(As he said this, he wrote something on a piece of paper and put it aside.)","shown": false},
+        {"speaker" :"npc","text":"That's all for today. Remember to take your medicine on time.","shown": false},
+        {"speaker" :"narrator","text":"(Emma nodded, not looking at the paper. But you could read it, very very clearly)","shown": false},
+        {"speaker" :"narrator","text":"(It was an assessment of sorts. But what was written in the conclusion made your breath stutter.)","shown": false},
+        {"speaker" :"narrator","text":"?:  [... He was exactly like this to you. Do you still not remember?]","shown": false},
+        {"speaker" :"player","text":"(There's that voice again...)","shown": false},
+        {"speaker" :"narrator","text":"(As the memory fades, you find something in your hand)","shown": false},
+        {"speaker" :"narrator","text":"(It was a set of car keys.)","shown": false},
+        {"speaker" :"narrator","text":"(A convenient means of transportation in modern society, and the source of someone's nightmare.)","shown": false},
+        {"speaker" :"narrator","text":"(You already know the process. Time to choose.)","shown": false},
+        {"choice":[
+            {"option":"Destroy","next":"back_reality_destroy2"},
+            {"option":"Keep","next":"back_reality_keep2"}
+        ]
+        }
+
+    ],
+
+    "back_reality_destroy2":[
         {"speaker" :"narrator","text":"(You take the device off of her head)","shown": false},
-        {"speaker" :"narrator","text":"The treatment is done, how do you feel? Do you feel uncomfortable?","shown": false},
-        {"speaker" :"narrator","text":"I feel fine.","shown": false},
-        {"speaker" :"narrator","text":"That's good. I had made a treatment decision, so you should not have a problem with the nightmares anymore.","shown": false},
-        {"speaker" :"narrator","text":"Alright. Thank you very much, doctor.","shown": false},
-        {"speaker" :"narrator","text":".......","shown": false},
-        {"speaker" :"narrator","text":".......","shown": false}
+        {"speaker" :"player","text":"The treatment is done, how do you feel? Do you feel uncomfortable?","shown": false},
+        {"speaker" :"npc","text":"I feel fine.","shown": false},
+        {"speaker" :"player","text":"That's good. I had made a treatment decision, so you should not have a problem with the nightmares anymore.","shown": false},
+        {"speaker" :"npc","text":"Alright. Thank you very much, doctor.","shown": false},
+        {"speaker" :"narrator","text":".......","shown": false,"next":"sub_end_3"}
+    ],
 
+    "sub_end_3":[
+        {"cg":"picture/P2 End1.png"},
+        {"speaker" :"npc","text":" (The nightmares are really gone... and I am no longer afraid of getting into a car.)","bgm": "bgm/emma_destroyed.mp3","shown": false},
+        {"speaker" :"npc","text":"(It's great! I feel relieved, and I can work again)","shown": false},
+        {"speaker" :"npc","text":" (But... Why do I feel like something's missing?)","shown": false},
+        {"speaker" :"npc","text":" (The camera flashes that once made my heart race are now nothing more then just blinding lights)","shown": false},
+        {"speaker" :"npc","text":"(Walking the catwalk has become... forced. Precise but empty. Almost mechanical.)","shown": false},
+        {"speaker" :"npc","text":"(When I look back at old photos of previous shows, the girl in them smiled, so confident and dazzling, but now, I no longer remember how she felt at that time.)","shown": false},
+        {"speaker" :"narrator","text":"?: Emma, there's an upcoming press conference that you'll be attending.","shown": false},
+        {"speaker" :"npc","text":"Alright, tell me the details.","shown": false},
+        {"speaker" :"npc","text":" (This is fine.)","shown": false},
+        {"speaker" :"npc","text":"(It was worth it to no longer wake up screaming at night.)","shown": false}
 
+    ],
+
+    "back_reality_keep2":[
+        {"speaker" :"narrator","text":"(You take the device off of her head)","shown": false},
+        {"speaker" :"player","text":"The treatment is done, how do you feel? Do you feel uncomfortable?","shown": false},
+        {"speaker" :"npc","text":"I feel fine.","shown": false},
+        {"speaker" :"player","text":"That's good. I had made a treatment decision, so you should not have a problem with the nightmares anymore.","shown": false},
+        {"speaker" :"npc","text":"Alright. Thank you very much, doctor.","shown": false},
+        {"speaker" :"narrator","text":".......","shown": false,"next":"sub_end_3"}
+    ],
+
+    "sub_end_4":[
+        {"cg":"picture/P2 End2.png"},
+        {"speaker" :"npc","text":"(... I dreamt that nightmare again.)","bgm": "bgm/emma_preserved.mp3","shown": false},
+        {"speaker" :"npc","text":" (It was all very clear... but I was unexpectedly calm)","shown": false},
+        {"speaker" :"npc","text":"(The treatment had really helped. I'm no longer as scared as before.)","shown": false},
+        {"speaker" :"npc","text":"(... I should get ready for work soon)","shown": false},
+        {"speaker" :"narrator","text":"(After a shower, a change of clothes, some breakfast, I walked up to my car.)","shown": false},
+        {"speaker" :"narrator","text":"(It did not start even after I got in.)","shown": false},
+        {"speaker" :"npc","text":"(... It's okay, take it easy. Just like the first time I walked the runway.)","shown": false},
+        {"speaker" :"narrator","text":"(The car started up and drove out. The sunlight shone its comforting warmth on the steering wheel.)","shown": false},
+        {"speaker" :"npc","text":"(The nightmares may not be gone)","shown": false},
+        {"speaker" :"npc","text":"(But for today, I have overcome it.)","shown": false}
+     
     ]
   }
 }
