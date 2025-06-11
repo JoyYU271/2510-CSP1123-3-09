@@ -10,24 +10,5 @@
     "start":{
       "text": "Your office."
     }
-  },
-
-  "door02_dialogue":{
-    "start":{
-      "text": [
-        "The Dean's office.",
-        "It's locked."
-    ]
-    }
-  },
-
-  "board_dialogue": {
-    "start": {
-      "text": [
-        "(You look at the bulletin board.)",
-        "(Clinic hours, honor certificates, mental health tips, job hiring...)",
-        "(A flyer on Hypnotherapy... This is the therapy Father has been practicing and promoting his whole life.)"
-      ]
-    }
   }
 }

@@ -5,8 +5,7 @@
     "image": "Table",
     "dialogue_id": "table_dialogue",
     "start_node": "start",
-    "active": true,
-    "rooms": ["room01"]
+    "active": true
   },
 
   "door01":{
@@ -16,43 +15,10 @@
     "dialogue_id": "door01_dialogue",
     "start_node": "start",
     "active": true,
-    "rooms": ["room01"],
 
     "next_room": "Player_room",
     "first_time_text": [
       {"node": "start"}
     ]
-  },
-
-  "door02": {
-    "name": "Dean's room",
-    "position": [1750, 263],
-    "image": "Door01",
-    "dialogue_id": "door02_dialogue",
-    "start_node": "start",
-    "active": true,
-    "unlocked": false,
-    "next_room": "Dean_room"
-  },
-  
-  "board":{
-    "name": "Notice board",
-    "position": [300, 200],
-    "image": "Board",
-    "dialogue_id": "board_dialogue",
-    "start_node": "start",
-    "active": true,
-    "rooms": ["room01"]
-  },
-
-  "machine": {
-    "name": "Machine",
-    "position": [100, 200],
-    "image": "Machine",
-    "dialogue_id": "machine_dialogue",
-    "start_node": "start",
-    "active": true,
-    "next_room": "subc.Z_01",
-    "rooms": ["Player_room"]
   }
 }
