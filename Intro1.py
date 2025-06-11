@@ -1126,9 +1126,11 @@ class GameStateManager:
     def set_state(self, state):
         self.currentState = state
 
-if __name__== '__main__':
-    game = Game()
-    game.run()
+# if __name__ == '__main__':
+#     game = Game()
+#     game.run()
+
+
 
 
 #     #thisdict = {
