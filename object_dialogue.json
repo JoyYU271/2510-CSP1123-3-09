@@ -29,5 +29,13 @@
         "(A flyer on Hypnotherapy... This is the therapy Father has been practicing and promoting his whole life.)"
       ]
     }
+  },
+
+  "machine_dialogue": {
+    "start": {
+      "text": [
+        "(You should talk to the patient first.)"
+      ]
+    }
   }
 }
