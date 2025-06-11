@@ -99,7 +99,6 @@ class doctor(pygame.sprite.Sprite):
     def draw(self,screen):
         screen.blit (pygame.transform.flip(self.image,self.flip,False),self.rect)
 
-<<<<<<< HEAD
 def keyboard_input(events, moving_left, moving_right, run) :
         for event in events:
            if event.type == pygame.QUIT:
@@ -121,26 +120,6 @@ def keyboard_input(events, moving_left, moving_right, run) :
                if event.key == K_ESCAPE:
                     run = False
         return moving_left,moving_right,run
-=======
-
-def keyboard_input(moving_left, moving_right, run):
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-        moving_left = True
-    else:
-        moving_left = False
-
-    if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-        moving_right = True
-    else:
-        moving_right = False
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-    return moving_left, moving_right, run
-
->>>>>>> ec8cc1466175a0e20e906fd5703c5ca1daeb3f57
 
 
 

@@ -424,12 +424,6 @@ class NPCManager:
                     nearest_npc = npc
         return nearest_npc
 
-
-
-
-
-
-
 class SimpleChapterIntro:
     def __init__(self, display, gameStateManager):
         self.display = display
@@ -601,8 +595,9 @@ class SimpleChapterIntro:
 
     def run(self):
         keys = pygame.key.get_pressed()
-        self.update(keys)
+        is_running = self.update(keys)
         self.draw(self.display)
+
 
 npc_manager = NPCManager()
      
@@ -627,8 +622,8 @@ def start_chapter_1():
 
 # Create intro object
 showing_intro = True
-chapter_intro = SimpleChapterIntro()
-chapter_intro.start("chapter_1",completed_callback=start_chapter_1)
+#chapter_intro = SimpleChapterIntro()
+#chapter_intro.start("chapter_1",completed_callback=start_chapter_1)
 
 player = character_movement.doctor(100,521,4.5) 
 player.name = "You" # remember to put in class doctor
@@ -852,7 +847,7 @@ class Game:
         self.start = Start(self.screen, self.gameStateManager, self.intro)
         self.level = Rooms(self.screen, self.gameStateManager, self.player, self.npc_manager, self.screen, self)
         
-        self.intro.completed_callback = lambda: self.gameStateManager.set_state('level')
+        #self.intro.completed_callback = lambda: self.gameStateManager.set_state('level')
 
         self.states = {'intro':self.intro, 'start':self.start, 'level':self.level}
     
@@ -1126,9 +1121,17 @@ class GameStateManager:
     def set_state(self, state):
         self.currentState = state
 
-# if __name__ == '__main__':
-#     game = Game()
-#     game.run()
+if __name__ == '__main__':
+    game = Game()
+
+    # ✅ 你原本要播放的 intro 和 callback
+    def start_chapter_1():
+        print("✅ Intro 播放完毕，进入主线")
+
+    game.intro.completed_callback = start_chapter_1
+    game.intro.start("chapter_1")
+    game.run()
+
 
 
 

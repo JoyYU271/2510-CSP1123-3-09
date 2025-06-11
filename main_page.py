@@ -83,13 +83,16 @@ def main_menu():
                     # 启动 Intro
                     intro_game = Intro1.Game()
 
-                    # 设置 callback，Intro 播完后再调用 Dialogue1
                     def after_intro():
-                        run_dialogue(current_font_size, current_language, bgm_vol, sfx_vol)
+                        print("✅ intro播完，跳转 level 场景")
+                        intro_game.gameStateManager.set_state('level')
+
+
 
                     intro_game.intro.completed_callback = after_intro
-                    intro_game.gameStateManager.set_state('intro')  # 切换状态
-                    intro_game.run()  # 开始 Intro1 的 event loop
+                    intro_game.intro.start("chapter_1", completed_callback=after_intro)
+                    intro_game.gameStateManager.set_state('intro')
+                    intro_game.run()
 
 
                     # 回主菜单音乐
