@@ -12,9 +12,14 @@ screen = None
 current_text_size = 30
 click_sound = pygame.mixer.Sound("main page/click1.wav") 
 
+
+
 current_dialogue_instance = None
 shown_dialogues = {}
 selected_options = {}
+
+
+game_chapter = 1 # default chapter
 
 def fade_to_main(surface ,speed = 5):
     fade = pygame.Surface((screen_width,screen_height))
@@ -327,7 +332,7 @@ class dialog:
         self.npc_data = self.all_dialogues.get(self.npc_name)
 
          #dialogue state variacbles
-        self.current_story = "chapter_3" #default chapter
+        self.current_story = f"chapter_{game_chapter}" 
         self.story_data = self.npc_data.get(self.current_story,[])
         self.step = 0 # present current sentence
         global shown_dialogues
@@ -482,7 +487,22 @@ class dialog:
 
         if isinstance(self.entry,dict) and self.entry.get("type") == "ending":
             self.chapter_end = True    
-            self.ready_to_quit = True
+
+            global game_chapter
+            # final chapter 
+            if game_chapter >= 3:   
+               self.ready_to_quit = True
+            else:
+                # next chapter
+                self.fade(screen , fade_in=True)
+                game_chapter += 1
+                self.step = 0 
+                self.talking = False
+                self.chapter_end = False
+                self.current_story = f"chapter_{game_chapter}"
+                self.story_data = self.npc.get(self.current_story)
+                
+            
                 
             ending_key = self.current_story 
             flags[f"ending_unlocked_{ending_key}"] = True
