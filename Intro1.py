@@ -18,12 +18,20 @@ current_dialogue_instance = None
 shown_dialogues = {}
 selected_options = {}
 
+
+
+BG =(255,255,255)
+
+def draw_bg(screen):
+    screen.fill(BG)
+
+
 def fade_to_main(surface ,speed = 5):
     fade = pygame.Surface((screen_width,screen_height))
     fade.fill((0,0,0))
     for alpha in range(0,255,speed):
         fade.set_alpha(alpha)
-        #draw_bg(surface)
+        draw_bg(surface)
         surface.blit(fade,(0,0))
         pygame.display.update()
         pygame.time.delay(30)
@@ -1273,11 +1281,15 @@ class Game:
             # handle input once for everyone
             moving_left, moving_right, run = character_movement.keyboard_input(events, moving_left, moving_right, run)
 
+            if not run:
+                running = False
+
             currentState = self.gameStateManager.get_state()
 
             for event in events:
                 if event.type == pygame.QUIT:
                     running = False
+                    pygame.quit()
                     sys.exit()
 
                 if event.type == pygame.VIDEORESIZE:
@@ -1304,9 +1316,17 @@ class Game:
                                 self.current_dialogue.start()
 
             if currentState == 'level':
-                self.states['level'].run(moving_left, moving_right, run)
+                # 修改這裡：將 `events` 列表傳遞給 self.states['level'].run
+                should_continue = self.states['level'].run(moving_left, moving_right, run, events)
+                if should_continue is False:
+                    # 當 Rooms.run 返回 False 時，Game.run 也返回，從而退出到 main_page.py
+                    return  
             else:
-                self.states[currentState].run()
+                # 其他狀態也需要事件來響應，例如 intro 中的 space 按鍵
+                self.states[currentState].run() # 您可能需要更新其他 state 的 run 方法以接受 events
+
+
+
 
             # for obj in interactable_objects:
             #     obj.draw(self.screen, camera_group.offset)
@@ -1400,6 +1420,11 @@ class Rooms:    # class Level in tutorial
         self.fading = False
         self.fade_alpha = 0
 
+        self.backmain_img = pygame.image.load("backmain.png").convert_alpha()
+
+        self.backmain_button = Button(image=self.backmain_img, pos=(1100, 80), scale=0.2)
+
+
     def load_room(self, room_name, facing="left"):
         if facing == "left":
             self.player.flip = True
@@ -1483,9 +1508,25 @@ class Rooms:    # class Level in tutorial
             # self.npc_manager.add_npc(new_npc)
             # camera_group.add(new_npc)
 
-    def run(self, moving_left, moving_right, run):
+    def run(self, moving_left, moving_right, run,events):
         entry = {}
         keys = pygame.key.get_pressed()
+
+        mouse_pos = pygame.mouse.get_pos()
+
+        for event in events:
+            
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left mouse button
+                if self.backmain_button.checkForInput(mouse_pos):
+                    print("Back to main menu clicked!")
+                    click_sound.play()
+                    pygame.mixer.music.stop()
+                    #self.gameStateManager.set_state('start')
+                    return False  # This will exit the level loop
 
         # --- Movement ---
         if not self.current_dialogue_ref.current_dialogue or not self.current_dialogue_ref.current_dialogue.talking:
@@ -1545,7 +1586,7 @@ class Rooms:    # class Level in tutorial
                 else:
                     entry = self.story_data[self.step]
             else:
-                # 👇 This runs for ObjectDialogue — we don't use npc/story/step
+                # This runs for ObjectDialogue — we don't use npc/story/step
                 if not self.current_dialogue_ref.current_dialogue.talking:
                     self.current_dialogue_ref.current_dialogue = None
                     entry = {}
@@ -1558,8 +1599,11 @@ class Rooms:    # class Level in tutorial
         
         camera_group.custom_draw(self.player)
 
+        self.backmain_button.draw(self.display)
+
         padded_rect = player.rect.inflate(10,10)
         near_obj = check_object_interaction(padded_rect, interactable_objects)
+
         if near_obj:
             font = pygame.font.Font(None, 24)
             text_surf = font.render("Press Q to interact", True, (0, 0, 0), (255, 255, 255))
@@ -1571,8 +1615,7 @@ class Rooms:    # class Level in tutorial
 
         # --- Draw dialogue if active ---
         if self.current_dialogue_ref.current_dialogue:
-            
-            events = pygame.event.get()
+
             if isinstance(self.current_dialogue_ref.current_dialogue, dialog):
                 self.current_dialogue_ref.current_dialogue.update(events)
             else:
