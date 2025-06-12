@@ -29,5 +29,19 @@
         "(A flyer on Hypnotherapy... This is the therapy Father has been practicing and promoting his whole life.)"
       ]
     }
+  },
+
+  "machine_dialogue": {
+    "before_patient": {
+      "text": [
+        "(You should talk to the patient first.)"
+      ]
+    },
+    "after_patient": {
+      "text": [
+        "(After you check that the machine is functinoal, you carefully place it on her head.)"
+      ], 
+      "event": "machine_exit"
+    }
   }
 }
