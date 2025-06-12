@@ -39,9 +39,21 @@
     },
     "after_patient": {
       "text": [
-        "(After you check that the machine is functinoal, you carefully place it on her head.)"
+        "(After you check that the machine is functinal, you carefully place it on her head.)"
       ], 
       "event": "machine_exit"
     }
+  },
+
+  "exitZ01_dialogue": {
+    "text": [
+      "Something about perfectionism..."
+    ]
+  },
+
+  "exitZ02_dialogue": {
+    "text": [
+      "Something, something, wow your notes are so neat!"
+    ]
   }
 }

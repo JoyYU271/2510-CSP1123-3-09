@@ -21,8 +21,8 @@ class CameraGroup(pygame.sprite.Group):
         
         # New: Create separate groups for different drawing layers if needed
         # For simple foreground/background objects, just a list of "background" objects
-        self.background_objects = []
-        self.foreground_objects = []
+        # self.background_objects = []
+        # self.foreground_objects = []
 
         # camera offset
         self.offset = pygame.math.Vector2()
@@ -90,7 +90,7 @@ class CameraGroup(pygame.sprite.Group):
 
         # 2. Draw 'background' objects (objects the player/NPC stands IN FRONT OF)
         #    Sort these by y-coordinate too if they can overlap
-        for sprite in sorted(self.background_objects, key=lambda spr: spr.rect.centery):
+        for sprite in sorted(self.background_layer_sprites.sprites(), key=lambda spr: spr.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             if hasattr(sprite, 'image') and sprite.image and hasattr(sprite, 'rect') and sprite.rect:
                 flipped_image = pygame.transform.flip(sprite.image, sprite.flip, False) if hasattr(sprite, 'flip') else sprite.image
@@ -109,7 +109,7 @@ class CameraGroup(pygame.sprite.Group):
 
         all_draw_sprites = []
         for sprite in self.sprites():
-            if sprite not in self.background_objects: # Don't draw if already drawn as background_object
+            if sprite not in self.background_layer_sprites: # Don't draw if already drawn as background_object
                 all_draw_sprites.append(sprite)
 
         for sprite in sorted(all_draw_sprites, key=lambda spr: spr.rect.centery): # No special player sorting needed yet
