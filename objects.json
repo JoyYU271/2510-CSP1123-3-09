@@ -6,7 +6,8 @@
     "dialogue_id": "table_dialogue",
     "start_node": "start",
     "active": true,
-    "rooms": ["room01"]
+    "rooms": ["room01"],
+    "draw_layer": "background"
   },
 
   "door01":{
@@ -17,11 +18,9 @@
     "start_node": "start",
     "active": true,
     "rooms": ["room01"],
+    "draw_layer": "background",
 
-    "next_room": "Player_room",
-    "first_time_text": [
-      {"node": "start"}
-    ]
+    "next_room": "Player_room"
   },
 
   "door02": {
@@ -32,27 +31,32 @@
     "start_node": "start",
     "active": true,
     "unlocked": false,
-    "next_room": "Dean_room"
+    "next_room": "Dean_room",
+    "rooms": ["room01"],
+    "draw_layer": "background"
   },
   
   "board":{
     "name": "Notice board",
-    "position": [300, 200],
+    "position": [200, 200],
     "image": "Board",
     "dialogue_id": "board_dialogue",
     "start_node": "start",
     "active": true,
-    "rooms": ["room01"]
+    "rooms": ["room01"],
+    "draw_layer": "background"
   },
 
   "machine": {
     "name": "Machine",
-    "position": [100, 200],
+    "position": [1000, 300],
     "image": "Machine",
     "dialogue_id": "machine_dialogue",
-    "start_node": "start",
+    "start_node": "before_patient",
     "active": true,
-    "next_room": "subc.Z_01",
-    "rooms": ["Player_room"]
+    "rooms": ["Player_room"],
+    "draw_layer": "background",
+
+    "next_room": "subc.Z_01"
   }
 }

@@ -70,7 +70,7 @@ cutscene_speed = 3 #pixel per frame
 
 #============ Dialogue System =============
 class dialog:
-    def __init__(self,npc,player,all_dialogues,bgm_vol=0.5,sfx_vol=0.5, shown_dialogues=None, npc_manager=None):
+    def __init__(self,npc,player,all_dialogues,bgm_vol=0.5,sfx_vol=0.5, text_size=30, shown_dialogues=None, npc_manager=None):
         super().__init__()
         
         self.sounds = {
@@ -164,6 +164,8 @@ class dialog:
         self.bgm_volume = bgm_vol
 
         self.npc_manager = npc_manager
+
+        self.text_size = text_size
     
 
     def change_bgm(self, bgm_path):
@@ -376,7 +378,7 @@ class dialog:
                      option_y =  dialog_y+ 60 + i * 45
 
                      if option_y < screen.get_height() - 15: #ensure option is on screen
-                        draw_text(screen, option["option"],30,color,dialog_center_x,option_y,center= True)
+                        draw_text(screen, option["option"],self.text_size,color,dialog_center_x,option_y,center= True)
 
              key_hint_font = pygame.font.SysFont('Comic Sans MS', 20)
              key_hint_text1 = key_hint_font.render("Press W/S to select,",True,(0,0,0))
@@ -388,7 +390,7 @@ class dialog:
              screen.blit(key_hint_text2,key_hint_rect2)
           
            # draw dialogue text 
-           draw_text(screen,self.displayed_text,30,(0,0,0),dialog_x + self.dialog_box_img.get_width()//2  ,dialog_y + self.dialog_box_img.get_height()//2 - 38,center = True,max_width=text_max_width)
+           draw_text(screen,self.displayed_text,self.text_size,(0,0,0),dialog_x + self.dialog_box_img.get_width()//2  ,dialog_y + self.dialog_box_img.get_height()//2 - 38,center = True,max_width=text_max_width)
 
            #only show space hint if no options are present 
            if not self.options:
@@ -816,11 +818,18 @@ class SimpleChapterIntro:
         
         # Get dialogue from JSON
         if self.language == "CN":
-                dialogue_file = "NPC_dialog/NPC_CN.json"
+            dialogue_file = "NPC_dialog/NPC_CN.json"
         else:
-                dialogue_file = "NPC_dialog/NPC.json"
+            dialogue_file = "NPC_dialog/NPC.json"
 
-        self.dialogue = all_dialogues.get("intro", {}).get(chapter, [])
+        try:
+            with open(dialogue_file, 'r', encoding='utf-8') as f:
+                language_dialogues = json.load(f)
+                self.dialogue = language_dialogues.get("intro", {}).get(chapter, [])
+        except Exception as e:
+            print(f"Error loading dialogue file {dialogue_file}: {e}")
+            self.dialogue = []
+
         if not self.dialogue:
             self.dialogue = [{"speaker": "narrator", "text": f"Chapter {chapter} begins..."}]
        
@@ -940,7 +949,7 @@ class SimpleChapterIntro:
            screen.blit(dialog_box_img,(dialog_x,dialog_y))
            text_max_width = dialog_box_img.get_width() - 80
 
-           draw_text(screen,self.displayed_text,30,
+           draw_text(screen,self.displayed_text, self.text_size or 30,
                 (0, 0, 0),  # Black text
                 dialog_x + dialog_box_img.get_width()//2,
                 dialog_y + dialog_box_img.get_height()//2,
@@ -995,7 +1004,7 @@ shared.camera_group = camera_group
 player.camera_group = camera_group
 
 #patient1 = NPC(1000,500,"Zheng")
-#patient2 = NPC(400,500,"Emma")
+#patient2 = NPC(400,500,"Emma")l
 
 #current_dialogue = None
 
@@ -1026,23 +1035,23 @@ class InteractableObject(pygame.sprite.Sprite):
         
         self.unlocked = unlocked
 
-        print(f"Initializing object: {name} at {position} with image: {image_path}")
+    #     print(f"Initializing object: {name} at {position} with image: {image_path}")
 
-    def draw(self, surface, offset):
-        if self.image:
-            offset_rect = self.rect.move(-offset[0], -offset[1])
-            surface.blit(self.image, offset_rect)
-            pygame.draw.rect(surface, (0, 255, 0), offset_rect, 2) 
+    # def draw(self, surface, offset):
+    #     if self.image:
+    #         offset_rect = self.rect.move(-offset[0], -offset[1])
+    #         surface.blit(self.image, offset_rect)
+    #         pygame.draw.rect(surface, (0, 255, 0), offset_rect, 2) 
         
-            padded_rect = player.rect.inflate(10,10)
-            near_obj = check_object_interaction(padded_rect, interactable_objects)
-            if near_obj:
-                font = pygame.font.Font(None, 24)
-                text = font.render("Press Q to interact", True, (0, 0, 0), (255, 255, 255))
-                for obj in near_obj:
-                    screen_pos = obj.rect.move(-offset[0], -offset[1])
-                    surface.blit(text, (screen_pos.centerx - text.get_width() // 2, screen_pos.top - 20))
-        print(f"Drawing {self.name} at {self.rect.topleft} with offset {offset}. Image exists: {self.image is not None}")
+    #         padded_rect = player.rect.inflate(10,10)
+    #         near_obj = check_object_interaction(padded_rect, interactable_objects)
+    #         if near_obj:
+    #             font = pygame.font.Font(None, 24)
+    #             text = font.render("Press Q to interact", True, (0, 0, 0), (255, 255, 255))
+    #             for obj in near_obj:
+    #                 screen_pos = obj.rect.move(-offset[0], -offset[1])
+    #                 surface.blit(text, (screen_pos.centerx - text.get_width() // 2, screen_pos.top - 20))
+    #     print(f"Drawing {self.name} at {self.rect.topleft} with offset {offset}. Image exists: {self.image is not None}")
                     
     def interaction(self):
         if self.dialogue_id:
@@ -1057,21 +1066,6 @@ class InteractableObject(pygame.sprite.Sprite):
             print(f"You see {self.name}.")
 
 interactable_objects = []
-
-#for obj_id, obj_info in object_data.items():
-#     name=obj_info["name"]
-#     pos = obj_info["position"]
-#     image = obj_info.get("image")
-#     image_path_str=image_path.get(image, None)
-#     dialogue_id=obj_info["dialogue_id"]
-#     start_node=obj_info["start_node"]
-#     active=obj_info.get("active", True)
-#     text = obj_info.get("text")
-#     next_room = obj_info.get("next_room")
-#     unlocked=obj_info.get("unlocked", True)
-
-#     obj = InteractableObject(name, pos, dialogue_id, start_node, image_path=image_path_str, active=active, text=text, next_room=next_room, unlocked=unlocked)
-#     interactable_objects.append(obj)
 
 def check_object_interaction(player_rect, interactable_objects):
     return [obj for obj in interactable_objects if obj.active and player_rect.colliderect(obj.rect)]
@@ -1136,7 +1130,7 @@ class ObjectDialogue:
             text_y = y + 60
             max_text_width = self.dialogue_box_img.get_width() - 200  # 40 padding on each side
 
-            draw_text(screen, self.displayed_text, size=30, color=(0, 0, 0), x=text_x, y=text_y, center=False, max_width=max_text_width)
+            draw_text(screen, self.displayed_text, size=self.text_size or 30, color=(0, 0, 0), x=text_x, y=text_y, center=False, max_width=max_text_width)
 
     def handle_space(self):
         node = self.dialogue_data[self.current_node]
@@ -1207,7 +1201,7 @@ class Game:
     def __init__(self,text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_from=None):
         pygame.init()
         self.clock = pygame.time.Clock()
-        self.screen = pygame.display.set_mode((screen_width, screen_height))
+        self.screen = screen
         self.player = player
         self.npc_manager = NPCManager()
         self.current_dialogue = None
@@ -1221,13 +1215,17 @@ class Game:
         self.bgm_vol = bgm_vol
         self.sfx_vol = sfx_vol
 
+        self.current_dialogue_ref = self  # or an empty helper class if preferred
+        self.current_dialogue = None
+
+
         self.gameStateManager = GameStateManager('start')
         self.intro = SimpleChapterIntro(self.screen, self.gameStateManager,language=language,
                                         text_size=text_size,
                                         bgm_vol=bgm_vol,
                                         sfx_vol=sfx_vol)
         self.start = Start(self.screen, self.gameStateManager, self.intro,language = language,text_size = text_size,bgm_vol = bgm_vol,sfx_vol = sfx_vol)
-        self.level = Rooms(self.screen, self.gameStateManager, self.player, self.npc_manager, self.screen, self,
+        self.level = Rooms(self.screen, self.gameStateManager, self.player, self.npc_manager, self, self.screen, self.current_dialogue_ref,
                            language=self.language,
                            text_size=self.text_size,
                            bgm_vol=self.bgm_vol,
@@ -1283,9 +1281,12 @@ class Game:
                     sys.exit()
 
                 if event.type == pygame.VIDEORESIZE:
+                    global screen_width, screen_height  # Update global constants?
                     screen_width, screen_height = event.w, event.h
+                    self.screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)  #Re-set screen
+                    
                     # Optional: tell the camera group about the new size
-                    camera_group.display_surface = screen
+                    camera_group.display_surface = self.screen
                     camera_group.half_w = screen_width // 2
                     camera_group.half_h = screen_height // 2
 
@@ -1296,7 +1297,7 @@ class Game:
                             if isinstance(self.current_dialogue, ObjectDialogue):
                                 self.current_dialogue.handle_space()
                         else:
-                            interacted_obj = check_object_interaction(player.rect, interactable_objects)
+                            interacted_obj = check_object_interaction(self.player.rect, interactable_objects)
                             if interacted_obj:
                                 obj = interacted_obj[0]
                                 self.current_dialogue = ObjectDialogue(obj, self)
@@ -1307,14 +1308,19 @@ class Game:
             else:
                 self.states[currentState].run()
 
-            for obj in interactable_objects:
-                obj.draw(self.screen, camera_group.offset)
+            # for obj in interactable_objects:
+            #     obj.draw(self.screen, camera_group.offset)
 
             screen_pos = player.rect.move(-camera_group.offset.x, -camera_group.offset.y)
             pygame.draw.rect(self.screen, (255, 0, 0), screen_pos, 2)  # red box = player
 
             if self.current_dialogue:
-                self.current_dialogue.update(events)
+
+                if isinstance(self.current_dialogue, dialog):
+                    self.current_dialogue.update(events)
+                else:
+                    self.current_dialogue.update()
+
                 self.current_dialogue.draw(self.screen)
 
             if self._fading:
@@ -1347,11 +1353,9 @@ class Start:    #try to call back SimpleChapterIntro
 #make plan to change by colliderect/position of player.rect
 
 class Rooms:    # class Level in tutorial
-    def __init__(self, display, gameStateManager, player, npc_manager, screen, current_dialogue_ref, language="EN", text_size=None, bgm_vol=0.5, sfx_vol=0.5):
+    def __init__(self, display, gameStateManager, player, npc_manager, game_ref,screen, current_dialogue_ref, language="EN", text_size=None, bgm_vol=0.5, sfx_vol=0.5):
         self.display = display
         self.gameStateManager = gameStateManager
-        self.background = pygame.image.load("picture/Map Art/Map clinic.png").convert_alpha()
-        camera_group.set_background(self.background)
 
         self.player = player
         self.npc_manager = npc_manager
@@ -1374,22 +1378,29 @@ class Rooms:    # class Level in tutorial
 
         self.shown_dialogues = {}    
 
+        self.current_dialogue_ref = game_ref
 
         self.space_released = True
+        self.q_released = True
         self.cutscene_active = False
-
         self.dean_exiting = False
-
         self.last_npc_name = None
         self.last_story = None
-
         self.visited_doors = set()  #keep track of doors used
         self.current_room = "room01"
+
+        # --- NEW STATE VARIABLES ---
+        self.patient_zheng_talked_to = False # Flag to track if patient 'Zheng' has been talked to
+        self.next_room_after_transition = None    # Store the target room for fading transitions
+        
+        self.background = pygame.image.load("picture/Map Art/Map clinic.png").convert_alpha()
+        camera_group.set_background(self.background)
+        self.load_room(self.current_room)
+
         self.fading = False
         self.fade_alpha = 0
 
     def load_room(self, room_name, facing="left"):
-        print(f"Loading room: {room_name}")
         if facing == "left":
             self.player.flip = True
             self.player.direction = -1
@@ -1397,45 +1408,68 @@ class Rooms:    # class Level in tutorial
             self.player.flip = False
             self.player.direction = 1
 
+        print(f"Loading room: {room_name}")
+        self.current_room = room_name   #Update current_room
+
         # Remove NPCs from both npc_manager and camera_group
         for npc in self.npc_manager.npcs:
             camera_group.remove(npc)
         self.npc_manager.npcs.clear()
 
+        for obj in interactable_objects:
+            camera_group.remove(obj)
+            camera_group.background_layer_sprites.remove(obj)
+            camera_group.foreground_layer_sprites.remove(obj)
         interactable_objects.clear()
 
+        # Load background for new room
         if room_name == "Player_room":
             self.background = pygame.image.load("picture/Map Art/Player room.png").convert_alpha()
+            self.player.rect.topleft = (1100, 420)
         elif room_name == "room01":
             self.background = pygame.image.load("picture/Map Art/Map clinic.png").convert_alpha()
+        elif room_name == "subc.Z_01":
+            self.background = pygame.image.load("picture/Map Art/P11.png").convert_alpha()
 
         camera_group.set_background(self.background)
     
-        
-        print(f"Object data: {object_data}")
-
         for obj_id, obj_info in object_data.items():
-            print(f"Checking object: {obj_id} with rooms: {obj_info.get('rooms', [])} for room: {room_name}")
             if room_name in obj_info.get("rooms", []):
-                print(f"Loaded object: {obj_info['name']} at {obj_info['position']}")
                 name = obj_info["name"]
                 pos = obj_info["position"]
-                image = obj_info.get("image")
-                image_path_str=image_path.get(image, None)
+                image_key = obj_info.get("image")
+                image_path_str=image_path.get(image_key, None)
                 dialogue_id=obj_info["dialogue_id"]
                 start_node=obj_info["start_node"]
                 active=obj_info.get("active", True)
                 text = obj_info.get("text")
                 next_room = obj_info.get("next_room")
                 unlocked=obj_info.get("unlocked", True)
+                draw_layer = obj_info.get("draw_layer", "mid_layer")
 
-                obj = InteractableObject(name, pos, dialogue_id, start_node, image_path=image_path_str, active=active, text=text, next_room=next_room, unlocked=unlocked)
-                interactable_objects.append(obj)
+                if image_path_str:
+                    obj = InteractableObject(name, pos, dialogue_id, start_node, image_path=image_path_str, active=active, text=text, next_room=next_room, unlocked=unlocked)
+                    interactable_objects.append(obj)
+                    
+                # --- NEW: Add to the correct CameraGroup layer ---
+                    if draw_layer == "background":
+                        camera_group.background_layer_sprites.add(obj)
+                        print(f"Added {name} to background layer.")
+                    elif draw_layer == "foreground":
+                        camera_group.foreground_layer_sprites.add(obj)
+                        print(f"Added {name} to foreground layer.")
+                    else: # Default or "mid_layer"
+                        camera_group.add(obj) # Add to the main camera group for Y-sorting with characters
+                        print(f"Added {name} to mid layer (main group).")
+                else:
+                    print(f"Warning: No image path found for object '{name}' (image_key: {image_key}). Not adding to game.")
+
+
                 print(f"SUCCESS: Loaded object: {name} for room: {room_name}")
+        
         print(f"Total interactable objects loaded for {room_name}: {len(interactable_objects)}")
+        
         if room_name == "Player_room":
-            self.player.rect.topleft = (1100, 420)  # reset player position
-
             patient1 = NPC(800,550,"Zheng")
             self.npc_manager.add_npc(patient1)
             camera_group.add(patient1)
@@ -1455,9 +1489,9 @@ class Rooms:    # class Level in tutorial
 
         # --- Movement ---
         if not self.current_dialogue_ref.current_dialogue or not self.current_dialogue_ref.current_dialogue.talking:
-              is_moving = self.player.move(moving_left,moving_right)
+            is_moving = self.player.move(moving_left,moving_right)
         else:
-              is_moving = False
+            is_moving = False
         self.player.update_animation(is_moving)
           
         # --- Dialogue logic ---
@@ -1473,7 +1507,8 @@ class Rooms:    # class Level in tutorial
                                 bgm_vol=self.bgm_vol,
                                 sfx_vol=self.sfx_vol,
                                 npc_manager=self.npc_manager,
-                                shown_dialogues=self.shown_dialogues)
+                                shown_dialogues=self.shown_dialogues,
+                                text_size=self.text_size)
                 elif isinstance(self.current_dialogue_ref.current_dialogue, ObjectDialogue):
                     pass
             
@@ -1523,9 +1558,26 @@ class Rooms:    # class Level in tutorial
         
         camera_group.custom_draw(self.player)
 
+        padded_rect = player.rect.inflate(10,10)
+        near_obj = check_object_interaction(padded_rect, interactable_objects)
+        if near_obj:
+            font = pygame.font.Font(None, 24)
+            text_surf = font.render("Press Q to interact", True, (0, 0, 0), (255, 255, 255))
+            for obj in near_obj:
+                # Calculate screen position based on camera offset
+                screen_pos = obj.rect.topleft - camera_group.offset # Use camera_group.offset
+                self.display.blit(text_surf, (screen_pos.x - text_surf.get_width() // 2, screen_pos.y - 20))
+        
+
         # --- Draw dialogue if active ---
         if self.current_dialogue_ref.current_dialogue:
-            self.current_dialogue_ref.current_dialogue.update(pygame.event.get())
+            
+            events = pygame.event.get()
+            if isinstance(self.current_dialogue_ref.current_dialogue, dialog):
+                self.current_dialogue_ref.current_dialogue.update(events)
+            else:
+                self.current_dialogue_ref.current_dialogue.update()
+
             self.current_dialogue_ref.current_dialogue.draw(self.display)
     
         # --- Handle fade-to-black transition ---
