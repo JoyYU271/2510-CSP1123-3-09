@@ -12,15 +12,11 @@ screen = None
 current_text_size = 30
 click_sound = pygame.mixer.Sound("main page/click1.wav") 
 
-
-
 current_dialogue_instance = None
 shown_dialogues = {}
 selected_options = {}
 
-
-game_chapter = 1 # default chapter
-
+game_chapter = 1
 def fade_to_main(surface ,speed = 5):
     fade = pygame.Surface((screen_width,screen_height))
     fade.fill((0,0,0))
@@ -37,7 +33,7 @@ flags = {}
 
 shown_dialogues = {}
 
-def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_from=None):
+def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_from=None,force_chapter = None):
     global screen,current_dialogue_instance,save_message_timer
 
     save_message_timer = 0
@@ -108,14 +104,21 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
     cg_image = None
     cg_loaded = False
 
-
-        
-    if resume_from:
-        npc_state, player_choices, resume_flags, resume_shown_dialogues = resume_from
+    if force_chapter:
+        npc_state = {}
+        flags = {}
+        player_choices = {}
+        shown_dialogues = {}
+        global game_chapter
+        game_chapter = force_chapter
+    elif resume_from:
+        npc_state,player_choices, resume_flags,resume_shown_dialogues = resume_from
         flags = resume_flags
         shown_dialogues = resume_shown_dialogues
     else:
         npc_state = {}
+
+
         previous_save = load_checkpoint()
 
         if previous_save:
@@ -130,22 +133,23 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
         for npc in npc_manager.npcs:
             if npc.name in npc_state:
                 state = npc_state[npc.name]
-                chapter = state["chapter"]
-                step = state["step"]
+                chapter = f"chapter_{game_chapter}"
+                step = 0
 
                 if npc.name == "Nuva" and chapter == "repeat_only":
                     d = dialog(npc, player, all_dialogues, bgm_vol, sfx_vol, 
                             cutscene_speed=3, npc_manager=npc_manager,
                             shown_dialogues=shown_dialogues)
-                    d.load_dialogue(npc.name, chapter, start_step=0) 
+                    d.load_dialogue(npc.name, chapter, start_step=step) 
                     d.talking = False
                     npc_dialog_state[npc.name] = d
                     current_dialogue = d
                 else:
+                    #fresh NPC initialization
                     d = dialog(npc, player, all_dialogues, bgm_vol, sfx_vol,
                             cutscene_speed=3, npc_manager=npc_manager,
                             shown_dialogues=shown_dialogues)
-                    d.load_dialogue(npc.name, chapter, start_step=step)
+                    d.load_dialogue(npc.name, f"chapter_{game_chapter}", start_step=0)
                     d.talking = False
                     npc_dialog_state[npc.name] = d
 
@@ -157,6 +161,7 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
 
                 if npc.name == npc_state.get("last_talking_npc", ""):
                     current_dialogue = d
+
 
     run = True
     while run:
@@ -332,7 +337,7 @@ class dialog:
         self.npc_data = self.all_dialogues.get(self.npc_name)
 
          #dialogue state variacbles
-        self.current_story = f"chapter_{game_chapter}" 
+        self.current_story =  f"chapter_{game_chapter}" 
         self.story_data = self.npc_data.get(self.current_story,[])
         self.step = 0 # present current sentence
         global shown_dialogues
@@ -500,9 +505,7 @@ class dialog:
                 self.talking = False
                 self.chapter_end = False
                 self.current_story = f"chapter_{game_chapter}"
-                self.story_data = self.npc.get(self.current_story)
-                
-            
+                self.story_data = self.npc_data.get(self.current_story)
                 
             ending_key = self.current_story 
             flags[f"ending_unlocked_{ending_key}"] = True

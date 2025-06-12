@@ -1,6 +1,7 @@
 import pygame
 import sys
 import Dialogue1
+import character_movement
 from Dialogue1 import run_dialogue
 from ui_components import Button, get_font
 from save_system import save_checkpoint, load_checkpoint
@@ -78,14 +79,18 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if start_button.checkForInput(mouse_pos):
                     click_sound.play()
+                    
                     pygame.mixer.music.stop()
 
                     # run intro
                     intro_game = Intro1.Game(language=current_language,text_size=current_font_size,bgm_vol=bgm_vol,sfx_vol=sfx_vol)
+                    
 
                     def after_intro():
                         print("after intro, enter level")
                         intro_game.gameStateManager.set_state('level')
+                        # Force chapter 1 when starting new game
+                        run_dialogue( text_size=current_font_size,language=current_language,bgm_vol=bgm_vol,sfx_vol=sfx_vol,force_chapter=1 )
 
 
 
