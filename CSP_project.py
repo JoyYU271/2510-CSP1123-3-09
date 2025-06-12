@@ -74,18 +74,6 @@ class DraggableObjects:
         darkened.fill((0,0,0,100), special_flags=pygame.BLEND_RGBA_SUB)
         return darkened
     
-class ChoicesScreen:
-    def __init__(self,player,minigame_data):
-        self.player = player 
-
-        self.dialog_box_img = pygame.image.load("picture/Character Dialogue/dialog boxxx.png").convert_alpha()
-        self.dialog_box_img.set_alpha(200)
-        self.player_portrait = pygame.image.load("picture/Character Dialogue/Doctor.png").convert_alpha()
-
-        self.story_content = minigame_data.get("after_puzzle",[])
-
-        self.story_content 
-
 
 
 objects = [DraggableObjects("minigame 1/binder_clip(small).png", (100, 100), (200, 100)), 
