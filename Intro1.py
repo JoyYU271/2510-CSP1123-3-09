@@ -207,8 +207,8 @@ class dialog:
 
          #dialogue state variacbles
        # self.current_story = f"chapter_{game_chapter}" #default chapter
-       # self.story_data = self.npc_data.get(self.current_story,[])
-       # self.step = 0 # present current sentence
+        self.story_data = []
+        self.step = 0 # present current sentence
 
        # self.shown_dialogues = shown_dialogues #track dialogues that have been shown
 
@@ -396,7 +396,11 @@ class dialog:
             #         self.letter_index += 1
             #         self.last_time = current_time
 
-    def update(self): 
+    def update(self,events=None): 
+
+        if events is None:
+            events = []
+
         if not self.talking or self.choices_active: # Don't update text animation if choices are active
             return
 
@@ -677,12 +681,12 @@ class dialog:
 
 
          #process current dialogue step
-         if self.step <len(self.story_data):
-              entry = self.story_data[self.step]
-              text = entry.get("text","")
+        # if self.step <len(self.story_data):
+        #      entry = self.story_data[self.step]
+        #      text = entry.get("text","")
 
-              dialogue_id = f"{self.npc_name}_{self.current_story}_{self.step}"
-              self.shown_dialogues[dialogue_id] = True
+        #      dialogue_id = f"{self.npc_name}_{self.current_story}_{self.step}"
+        #      self.shown_dialogues[dialogue_id] = True
 
 
 
@@ -1409,7 +1413,7 @@ class ObjectDialogue:  # very confused
             self.current_text_display = ""
             # The handle_space method will then detect the end of the node list and transition/end dialogue.
 
-    def update(self):
+    def update(self, events=None):
         if not self.talking or self.rooms_instance.fading: # Don't update if not talking or fading
             return
         
@@ -1683,8 +1687,6 @@ class Game:
 
             currentState = self.gameStateManager.get_state()
 
-            
-
             for event in events:
                 if event.type == pygame.QUIT:
                     running = False
@@ -1729,14 +1731,12 @@ class Game:
             screen_pos = player.rect.move(-camera_group.offset.x, -camera_group.offset.y)
             pygame.draw.rect(self.screen, (255, 0, 0), screen_pos, 2)  # red box = player
 
-            if self.current_dialogue:
-
-                if isinstance(self.current_dialogue, dialog):
-                    self.current_dialogue.update(events)
-                else:
-                    self.current_dialogue.update()
-
-                self.current_dialogue.draw(self.screen)
+            if self.current_dialogue_ref.current_dialogue:
+                # Update the current dialogue
+                if isinstance(self.current_dialogue_ref.current_dialogue, dialog):
+                    self.current_dialogue_ref.current_dialogue.update(events)
+                else:  # For ObjectDialogue
+                    self.current_dialogue_ref.current_dialogue.update()
 
             if self._fading:
                 self._do_fade_and_switch()
