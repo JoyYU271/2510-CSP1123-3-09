@@ -621,10 +621,19 @@ image_path = {
             "Board": "Object_image/Board.png",
             "Machine": "Object_image/Machine.png",
             "Computer": "Object_image/exit_Z01.png",
-            "Trash_bin": "Object_image/exit_Z02.png",
+            "Whiteboard": "Object_image/exit_Z02.png",
             "Office_door": "Object_image/exit_Z03.png",
             "Boxes?": "Object_image/exit_Z04.png",
-            "intro_to_clinic": "Object_image/temp_enter.png"
+            "intro_to_clinic": "Object_image/temp_enter.png",
+            "Office_comps": "Object_image/Z01_Key1.png",
+            "Printer": "Object_image/Z01_Lock.png",
+            "Water_cooler": "Object_image/Z01_Random.png",
+            "Student_desk": "Object_image/Z02_Key1.png",
+            "Trash_bin": "Object_image/Z02_Key2.png",
+            "Window_sill": "Object_image/Z03_Key1.png",
+            "Trophies": "OBject_image/Z03_Key2.png",
+            "Drawer": "Object_image/Z03_Lock.png",
+            "Monitor": "Object_image/Z04_Random.png"
         }
 
 class InteractableObject(pygame.sprite.Sprite):
@@ -981,7 +990,7 @@ class Start:    #try to call back SimpleChapterIntro
 
 
 class Rooms:    # class Level in tutorial
-    def __init__(self, display, gameStateManager, player, npc_manager, game_ref):   # Added game_ref for current_dialogue_ref
+    def __init__(self, display, gameStateManager, player, npc_manager, game_ref, all_dialogues_data):   # Added game_ref for current_dialogue_ref
         self.display = display
         self.gameStateManager = gameStateManager
 
@@ -990,19 +999,23 @@ class Rooms:    # class Level in tutorial
         self.camera_group = CameraGroup(self.player, self.npc_manager, display)
         self.camera_group.add(self.player)
         self.current_dialogue_ref = game_ref
+        self.all_dialogues = all_dialogues_data
 
         self.space_released = True
         self.q_released = True
+        self.enter_released = True  # New: for choice selection confitmation
         self.cutscene_active = False
         self.dean_exiting = False
         self.last_npc_name = None
         self.last_story = None
         self.visited_doors = set()  #keep track of doors used
-        self.current_room = "room01"
 
-        # --- NEW STATE VARIABLES ---
-        self.patient_zheng_talked_to = False # Flag to track if patient 'Zheng' has been talked to
+        self.current_room = "room01"
+        self.current_day = 1    #Initialize the current day (Chapter 1)
+
+        self.patient_zheng_talked_to = False # Flag for machine unlock
         self.next_room_after_transition = None    # Store the target room for fading transitions
+        
         
         self.background = pygame.image.load("picture/Map Art/Map clinic.png").convert_alpha()
         camera_group.set_background(self.background)
@@ -1011,6 +1024,13 @@ class Rooms:    # class Level in tutorial
         self.fading = False
         self.fade_alpha = 0
 
+    def advance_day(self):
+        # Increments the current day and performs day-change actions
+        self.current_day += 1
+        print(f"--- Advancing to Day {self.current_day} (Chapter {self.current_day})---")
+        # Reset NPC position and quest flags? here 
+        # self.load_room(self.current_room) # To reload the room to refresh objects/NPC
+
     def load_room(self, room_name, facing="left"):
         self.camera_group.empty()
         self.camera_group.background_layer_sprites.empty()
@@ -1018,7 +1038,7 @@ class Rooms:    # class Level in tutorial
 
         self.camera_group.add(self.player)
         self.screen = screen
-
+    
         if facing == "left":
             self.player.flip = True
             self.player.direction = -1
@@ -1116,7 +1136,7 @@ class Rooms:    # class Level in tutorial
         if event_name == "patient_zheng_talked_to":
             self.patient_zheng_talked_to = True
             print("Patient Zheng's dialogue completed. Machine dialogue unlocked!")
-        elif event_name == "machine_exit":
+        elif event_name == "machine_enter":
             self.fading = True
             self.fade_alpha = 0 # Ensure fade starts from 0
             self.next_room_after_transition = "Subchapter_Room_01" # Define your target room here

@@ -34,14 +34,14 @@
   "machine_dialogue": {
     "before_patient": {
       "text": [
-        "(You should talk to the patient first.)"
-      ]
+        "(You should talk to the patient first.)"],
+        "next_node": "end"
     },
     "after_patient": {
       "text": [
         "(After you check that the machine is functinal, you carefully place it on her head.)"
       ], 
-      "event": "machine_exit"
+      "event": "machine_enter"
     }
   },
 
