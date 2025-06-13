@@ -1,49 +1,42 @@
 {
   "table_dialogue":{
-    "start":{
-      "text": "The receptionist's counter."
-    }
+    "start":[
+      {"text": "The receptionist's counter."}
+  ]
 
   },
 
   "door01_dialogue":{
-    "start":{
-      "text": "Your office.",
-      "event": "open_door_event"
-    }
+    "start":[
+      {"text": "Your office."},
+      {"event": "open_door_event"}
+    ]
   },
 
   "door02_dialogue":{
-    "start":{
-      "text": [
-        "The Dean's office.",
-        "It's locked."
+    "start":[
+      {"text": "The Dean's office."},
+      {"text": "It's locked."}
     ]
-    }
   },
 
   "board_dialogue": {
-    "start": {
-      "text": [
-        "(You look at the bulletin board.)",
-        "(Clinic hours, honor certificates, mental health tips, job hiring...)",
-        "(A flyer on Hypnotherapy... This is the therapy Father has been practicing and promoting his whole life.)"
-      ]
-    }
+    "start": [
+      {"text": "(You look at the bulletin board.)"},
+      {"text": "(Clinic hours, honor certificates, mental health tips, job hiring...)"},
+      {"text": "(A flyer on Hypnotherapy... This is the therapy Father has been practicing and promoting his whole life.)"}
+    ]
   },
 
   "machine_dialogue": {
-    "locked_machine_node": {
-      "text": [
-        "(You should talk to the patient first.)"],
-        "next_node": "end"
-    },
-    "unlocked_machine_node": {
-      "text": [
-        "(After you check that the machine is functinal, you carefully place it on her head.)"
-      ], 
-      "event": "machine_enter"
-    }
+    "locked_machine_node": [
+      {"text": "(You should talk to the patient first.)"},
+      {"next_node": "end"}
+    ],
+    "unlocked_machine_node": [
+      {"text": "(After you check that the machine is functinal, you carefully place it on her head.)"}, 
+      {"event": "machine_enter"}
+    ]
   },
 
   "exitZ01_dialogue": {
@@ -54,15 +47,24 @@
   },
 
   "exitZ02_dialogue": {
-    "text": [
-      "Something, something, wow your notes are so neat!"
+    "start": [
+      {"text": "Something, something, wow your notes are so neat!", "shown": false},
+      {"event": "machine_enter"}
+    ]
+    
+  },
+
+  "exitZ03_dialogue": {
+    "start": [
+      {"text": "...! Hi dad!", "shown": false},
+      {"event": "machine_enter"}
     ]
   },
 
   "exitZ04_dialogue": {
-    "text": [
-      "Memory 4: Failure"
-    ],
-    "event": "puzzle_complete"
+    "start": [
+    {"text": "Memory 4: Failure"},
+    {"event": "puzzle_complete"}
+  ]
   }
 }

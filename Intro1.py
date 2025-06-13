@@ -97,6 +97,7 @@ class dialog:
         self.current_dialogue_list = self._get_dialogue_list_from_node_id(self.current_node_id)
 
         self.current_line_index = 0
+        #self.current_line_data = {}
         self.talking = True
         self.typing_complete = False
         self.text_display_timer = 0
@@ -130,33 +131,6 @@ class dialog:
 
         self.player_portrait = pygame.image.load("picture/Character Dialogue/Doctor.png").convert_alpha()
 
-        
-
-        # #get NPC's dialogue data from Json
-        # self.npc_data = all_dialogues.get(self.npc_name)
-
-        #  #dialogue state variacbles
-        # self.current_story = "chapter_1" #default chapter
-        # self.story_data = self.npc_data.get(self.current_story,[])
-        # self.step = 0 # present current sentence
-        # self.shown_dialogues = {} #track dialogues that have been shown
-        
-        
-
-        # # sentences typing effect
-        # self.displayed_text = "" #display current word
-        # self.letter_index = 0  #current letter position in text
-        # self.last_time = pygame.time.get_ticks() #time tracking for typing speed
-        # self.letter_delay = 45
-
-        # self.options = [] #dialogue options when choices present
-        # self.option_selected = 0 #current selected option index
-        # self.talking = False # is it talking
-
-        # self.key_w_released = True
-        # self.key_s_released = True
-        # self.key_e_released = True
-
         if not self.current_dialogue_list:
             print(f"Error: Initial dialogue list for node '{self.current_node_id}' not found. Ending dialogue.")
             self.talking = False
@@ -185,26 +159,6 @@ class dialog:
         self.text_display_timer = 0    
 
     def update(self): 
-        #only update if in dialogue n not at the end
-    #     if self.talking and self.step < len(self.story_data):
-    #          entry = self.story_data[self.step] # current dialogue entry
-
-    #          text = entry.get("text","") #get text
-             
-    #          #check if this is a choice entry
-    #          if "choice" in entry :
-    #           self.options = entry.get("choice",[])
-    #          else:
-    #              self.options = []
-
-    #          # text typing effect
-    #          current_time = pygame.time.get_ticks()
-    #          if self.letter_index < len(text):
-    #             if current_time - self.last_time > self.letter_delay:
-    #                  self.displayed_text += text[self.letter_index]
-    #                  self.letter_index += 1
-    #                  self.last_time = current_time
-
         if not self.talking or self.choices_active: # Don't update text animation if choices are active
             return
 
@@ -271,11 +225,12 @@ class dialog:
             if "event" in next_entry_data:
                 event_name = next_entry_data["event"]
                 print(f"Triggering event: {event_name}")
-                self.rooms_instance.handle_dialogue_event(event_name) # Assuming event doesn't need extra data
                 
-                # Events typically end dialogue or transition
+                # --- CRITICAL FIX START (same as ObjectDialogue) ---
+                self.rooms_instance.handle_dialogue_event(event_name) # Assuming event doesn't need extra data
                 self.talking = False 
-                self.rooms_instance.current_dialogue_ref.current_dialogue = None # Clear reference
+                print("NPC Dialogue: Event handled, this dialogue instance is stopping.")
+                # --- CRITICAL FIX END ---
                 return
 
             # If it's a regular text line, reset for typing
@@ -284,121 +239,7 @@ class dialog:
         else: # End of current dialogue list
             # If we reached the end and didn't jump to 'next' or trigger an 'event'
             self.talking = False
-            self.rooms_instance.current_dialogue_ref.current_dialogue = None
-            print("NPC Dialogue ended.")
-
-    # def handle_option_selection(self,keys):
-
-    #     # only handle if in dialogue with options n text is full displayed
-    #     if (self.talking and self.options and self.step <len(self.story_data) and self.letter_index >= len(self.story_data[self.step].get("text",""))):
-                  
-    #                # move up in options list with W key
-    #                if keys[pygame.K_w] and self.key_w_released:
-    #                   self.option_selected = (self.option_selected - 1) % len(self.options)
-    #                   self.key_w_released = False
-    #                if not keys[pygame.K_w]:
-    #                    self.key_w_released = True
-                    
-    #                 #Move down in options list with S key
-    #                if keys[pygame.K_s] and self.key_s_released:
-    #                   self.option_selected = (self.option_selected + 1) % len(self.options)
-    #                   self.key_s_released = False
-    #                if not keys[pygame.K_s]:
-    #                    self.key_s_released = True
-                       
-    #                 # comfirm selection with E Key
-    #                if keys[pygame.K_e] and self.key_e_released:
-    #                   selected_option = self.options[self.option_selected]
-    #                   next_target = selected_option["next"]
-
-    #                   #handle value jumps n chapter change
-    #                   if isinstance(next_target,int):
-    #                      self.step = next_target
-    #                   else:
-    #                      self.load_dialogue(self.npc_name, next_target)
-
-    #                   self.options =[]
-    #                   self.reset_typing()
-    #                   self.key_e_released = False
-    #                if not keys[pygame.K_e]:
-    #                    self.key_e_released = True
-                       
-
-    # def handle_space(self, keys):
-        #  #start dialogue if not talked
-        #  if not self.talking:
-        #       self.talking = True
-        #       self.load_dialogue(self.npc_name,self.current_story)
-        #       return
-         
-        #  #process current dialogue step
-        #  if self.step <len(self.story_data):
-        #       entry = self.story_data[self.step]
-        #       text = entry.get("text","")
-
-        #       #mark dialogue as shown if needed
-        #       if "shown" in entry and entry["shown"] == False:
-        #           dialogue_id = f"{self.npc_name}_{self.current_story}_{self.step}"
-        #           self.shown_dialogues[dialogue_id] = True
-
-        #       if "chapter_ending" in entry:
-        #      #save which ending was chosen
-        #           global player_choices, showing_chapter_ending, ending_start_time, ending_complete_callback
-        #           player_choices["chapter_1_ending"] = entry["chapter_ending"]
-
-        #      #set up the ending screen
-        #           showing_chapter_ending = True
-        #           ending_start_time = pygame.time.get_ticks()
-
-        #      #set next chapter after ending
-        #           next_chapter = entry["next_chapter"]
-
-        #      #run when ending screen done
-        #           def ending_complete():
-        #               global start_chapter 
-        #               start_chapter(next_chapter, True)
-
-        #           ending_complete_callback = ending_complete
-
-        #           self.talking = False
-        #           return
-
-        #       # if test is typing, complete it immdiately
-        #       if self.letter_index <len (text):
-        #            self.letter_index = len(text)
-        #            self.displayed_text = text
-        #       else:
-                   
-        #            #if have options ,nothing to do( option selection is at other part of code)
-        #            if self.options:
-        #              pass
-                  
-        #            else:
-        #             if "next" in entry:
-        #               next_target = entry["next"]
-
-        #               if isinstance(next_target,int):
-                          
-        #                   #if next_target = integer, jump to that step within same chapter
-        #                   self.step = next_target
-        #               else:
-        #                  #if next_target = string,it's the name of new chapter to load
-        #                   self.current_story = next_target
-        #                   self.story_data = self.npc_data.get(next_target,[])
-        #                   self.step = 0
-        #                   self.load_dialogue(self.npc_name, next_target)
-        #                   self.reset_typing()
-
-        #             else:
-        #                 #if there is no "next",proceed to the next dialogue step
-        #                 self.step += 1
-        #                 if self.step >= len(self.story_data):
-        #                     #end the dialogue if reached the end
-        #                     self.talking = False
-        #                     self.step = 0
-        #                 else:
-        #                    #reset typing effect for the next dialogue entry
-        #                    self.reset_typing()
+            print("NPC Dialogue ended (natural end of node).")
 
     def _transition_to_node(self, node_id):
         new_dialogue_list = self._get_dialogue_list_from_node_id(node_id)
@@ -431,23 +272,22 @@ class dialog:
 
     def draw(self,screen):
         if not self.talking:
+            print("DEBUG (dialog.draw): Not talking, returning early.")
             return
-        # #only draw when in talking mode n not finished talk
-        # if self.talking and self.step < len(self.story_data):
-        #    entry = self.story_data[self.step]
 
-        #    text = entry.get("text","")
-        #    speaker = entry.get("speaker","npc") # default speaker is NPc
-                
-           #let the dialog box on the center and put below
+        #let the dialog box on the center and put below
         dialog_x = screen.get_width()//2 - self.dialog_box_img.get_width() // 2
         dialog_y = screen.get_height() - self.dialog_box_img.get_height() - 20
         screen.blit(self.dialog_box_img, (dialog_x, dialog_y))
 
         #calculate text width with limit for wrapping
         text_max_width = self.dialog_box_img.get_width() - 300 #pixel padding each side
+        
+        print(f"DEBUG (dialog.draw): Drawing at dialog_x={dialog_x}, dialog_y={dialog_y}. Screen size: {screen.get_size()}")
 
         current_line_data = self.get_current_line_data()
+        print(f"DEBUG (dialog.draw): current_line_data: {current_line_data}")
+
         if current_line_data:
             speaker_type = current_line_data.get("speaker", "narrator")
 
@@ -473,13 +313,15 @@ class dialog:
             if portrait: # Only blit if a portrait image exists
                 screen.blit(portrait, portrait_pos)
             screen.blit(self.dialog_box_img, (dialog_x, dialog_y))
+            print(f"DEBUG (dialog.draw): Dialog box blitted. Position: ({dialog_x}, {dialog_y})")
 
             # --- Draw speaker name ---
             # You had dialog_x + 200 for speaker name
             draw_text(screen, name_to_display, 40, (0, 0, 0), dialog_x + 200, dialog_y + 10, center=False) # Black text
-
+            print(f"DEBUG (dialog.draw): Speaker name '{name_to_display}' blitted.")
 
             if self.choices_active:
+                print(f"DEBUG (dialog.draw): Choices are active. Selected index: {self.selected_choice_index}")
                 # --- Draw choice options if present ---
                 max_options_display = 3 # display at most 3 options (from your old code)
                 dialog_center_x = dialog_x + self.dialog_box_img.get_width() // 2
@@ -496,49 +338,17 @@ class dialog:
                         draw_text(screen, option["option"], 30, color, dialog_center_x, option_y, center=True)
             else: # --- Draw normal dialogue text ---
                 text_to_display = self.current_text_display
-                
+                print(f"DEBUG (dialog.draw): Drawing normal text: '{text_to_display}', Typing complete: {self.typing_complete}")
+
                 # Draw dialogue text, centered in the dialogue box (from your old code)
                 draw_text(screen, text_to_display, 30, (0, 0, 0), 
                           dialog_x + self.dialog_box_img.get_width() // 2, 
                           dialog_y + self.dialog_box_img.get_height() // 2 - 15, 
                           center=True, max_width=text_max_width)
+        else:
+            print("DEBUG (dialog.draw): current_line_data is None. Skipping text/choice drawing.")
+
                 
-                # print(f"Drawing dialogue: [{speaker}] {text_to_display}") # Debug print
-        #    # choose portrait n position based on speaker
-        #    if speaker == "npc":
-        #         portrait = self.portrait
-        #         name_to_display = self.npc.name
-        #         portrait_pos =(dialog_x + 800,dialog_y - 400) #right side
-        #    else:
-        #         portrait = self.player_portrait
-        #         name_to_display = "You"
-        #         portrait_pos = (dialog_x +20,dialog_y - 400) #left side
-
-        #     #draw Character portraits n dialog box
-        #    screen.blit(portrait,portrait_pos)
-        #    screen.blit(self.dialog_box_img, (dialog_x, dialog_y))
-
-        #    #draw speaker name
-        #    name_to_display if speaker == "npc" else self.player.name #change here
-        #    draw_text(screen,name_to_display,40,(0,0,0),dialog_x + 200, dialog_y + 10)
-
-        #    #draw choice options if present
-        #    if "choice" in entry:
-        #      max_options_display = 3 #display at most 3 options
-
-        #      dialog_center_x = dialog_x + self.dialog_box_img.get_width()// 2
-
-        #      for i , option in enumerate(entry["choice"][:max_options_display]):
-        #              # red for selected option, black for others
-        #              color = (255,0,0) if i == self.option_selected else (0,0,0)
-        #              option_y =  dialog_y+ 60 + i * 60
-
-        #              if option_y < screen.get_height() - 40: #ensure option is on screen
-        #                 draw_text(screen, option["option"],30,color,dialog_center_x,option_y,center= True)
-          
-        # draw dialogue text 
-        # draw_text(screen,self.displayed_text,30,(0,0,0),dialog_x + self.dialog_box_img.get_width()//2  ,dialog_y + self.dialog_box_img.get_height()//2 - 15 ,center = True,max_width=text_max_width)
-
     def load_dialogue(self,npc_name,chapter):
         #update NPC detials
         self.npc_name = npc_name
@@ -938,19 +748,22 @@ interactable_objects = []
 def check_object_interaction(player_rect, interactable_objects):
     return [obj for obj in interactable_objects if obj.active and player_rect.colliderect(obj.rect)]
 
-class ObjectDialogue:  # very confused
+class ObjectDialogue: 
     def __init__(self, obj_info, current_dialogue_ref, rooms_instance, start_node_id="start"):
         self.obj_info = obj_info
         self.current_dialogue_ref = current_dialogue_ref
         self.rooms_instance = rooms_instance
         self.dialogue_id = obj_info.dialogue_id
+
         self.dialogue_data = object_dialogue.get(self.dialogue_id, {})
+        
         self.current_node_id = start_node_id
-        self.current_node = self.dialogue_data.get(self.current_node_id, {})
-        self.talking = False
+        self.current_node = self.dialogue_data.get(self.current_node_id, [])
         
         # --- ADDED: Initialization for typing animation variables ---
         self.current_text_index = 0 # Index for the current line within a node's text list
+        self.current_line_data = {}
+
         self.talking = True # Dialogue starts talking immediately
         self.current_text_display = "" # The text currently displayed characters by characters
         self.typing_speed = 3 # Characters per frame, adjust as needed
@@ -961,105 +774,151 @@ class ObjectDialogue:  # very confused
         self.dialogue_box_img.set_alpha(200)
 
         self.reset_typing()
-        # self.lines = []
+
+    def _get_current_line_data(self):
+        # Helper to get the dictionary for the current line in the current_dialogue_list.
+        if self.current_text_index < len(self.current_node):
+            return self.current_node[self.current_text_index]
+        return None
 
     def reset_typing(self):
         # This method is crucial to set up the typing animation for a new line/node
         self.text_display_timer = 0
         self.typing_complete = False
         self.current_text_display = ""
-        # Ensure we have a valid text list and current index
-        node_text_list = self.current_node.get("text", [""])
-        if not isinstance(node_text_list, list): # Ensure it's always a list for indexing
-            node_text_list = [node_text_list]
-        if self.current_text_index >= len(node_text_list):
-            self.typing_complete = True
-
-    # def start(self):
-    #     self.talking = True
-    #     self.current_node = self.start_node
-    #     self.current_line = 0
-    #     self.displayed_text = ""
-    #     self.letter_index = 0
-    #     self.last_time = pygame.time.get_ticks()
         
-    def update(self):
-        if self.talking and not self.rooms_instance.fading:
-            # Get the current full text for the line we are displaying
-            node_text_list = self.current_node.get("text", [""])
-            if not isinstance(node_text_list, list): # Ensure it's always a list
-                node_text_list = [node_text_list]
+        # Get the data for the current line's dictionary
+        self.current_line_data = self._get_current_line_data()
 
-            # Check if current_text_index is valid for the current node's text
-            if self.current_text_index >= len(node_text_list):
-                self.typing_complete = True
+        if self.current_line_data:
+            # If the current line has text, prepare for typing. Otherwise, it's an event/choice, so skip typing.
+            text_content = self.current_line_data.get("text", "")
+            if not text_content: 
+                self.typing_complete = True # Mark as complete instantly if no text
                 self.current_text_display = ""
-                return # Nothing to type if no text
-            
-            current_full_text = node_text_list[self.current_text_index]
+        else: 
+            # This means the current_line_index is out of bounds for current_dialogue_list
+            self.typing_complete = True # Signal completion
+            self.current_text_display = ""
+            # The handle_space method will then detect the end of the node list and transition/end dialogue.
 
-            if not self.typing_complete:
-                self.text_display_timer += 1
-                chars_to_display = self.text_display_timer // self.typing_speed
-                # Ensure we don't try to display more characters than available
-                if chars_to_display > len(current_full_text):
-                    chars_to_display = len(current_full_text)
-                
-                self.current_text_display = current_full_text[:chars_to_display]
-                
-                if chars_to_display >= len(current_full_text):
-                    self.typing_complete = True
+    def update(self):
+        if not self.talking or self.rooms_instance.fading: # Don't update if not talking or fading
+            return
+        
+        if self.current_line_data is None: # No valid line data to display
+            self.typing_complete = True
+            self.current_text_display = ""
+            return
+
+        text_to_type = self.current_line_data.get("text", "")
             
+        if not self.typing_complete:
+            self.text_display_timer += 1
+            chars_to_display = self.text_display_timer // self.typing_speed
+            # Ensure we don't try to display more characters than available
+            if chars_to_display > len(text_to_type):
+                chars_to_display = len(text_to_type)
+            
+            self.current_text_display = text_to_type[:chars_to_display]
+            
+            if chars_to_display >= len(text_to_type):
+                self.typing_complete = True
+    
+    def _transition_to_node(self, node_id):
+        #Transitions dialogue to a new specified node ID within object_dialogue.
+        new_current_node = self.dialogue_data.get(node_id, [])
+        
+        if new_current_node:
+            self.current_node_id = node_id
+            self.current_node = new_current_node
+            self.current_text_index = 0
+            self.reset_typing() # Reset typing for the new node's first line
+            print(f"ObjectDialogue: Transitioned to new dialogue node: {self.current_node_id}")
+        else:
+            print(f"Warning: ObjectDialogue: Next node '{node_id}' not found or invalid format. Ending dialogue.")
+            self.talking = False
+            self.rooms_instance.current_dialogue_ref.current_dialogue = None # Clear reference
+
+    def handle_space(self):
+        #Handles spacebar input to advance dialogue or complete typing.
+        if not self.talking:
+            return
+
+        if not self.typing_complete:
+            # If text is still typing, complete it instantly
+            if self.current_line_data: # Ensure current_line_data is valid
+                self.current_text_display = self.current_line_data.get("text", "")
+            self.typing_complete = True
+            return
+
+        # Typing is complete, advance to the next line or handle node transition/event
+        self.current_text_index += 1
+        self.current_line_data = self._get_current_line_data() # Get the data for the next line
+
+        if self.current_line_data: # If there's a next line in the current node list
+            # Check for 'next' node jump or 'event' within this line's dictionary
+            if "next" in self.current_line_data:
+                next_node_id = self.current_line_data["next"]
+                self._transition_to_node(next_node_id)
+                return
+
+            if "event" in self.current_line_data:
+                event_name = self.current_line_data["event"]
+                event_data = {}
+                # If the object has a 'next_room' property, pass it with the event
+                if hasattr(self.obj_info, 'next_room') and self.obj_info.next_room:
+                    event_data["target_room"] = self.obj_info.next_room
+                
+                print(f"ObjectDialogue: Triggering event: {event_name} with data: {event_data}")
+                # --- CRITICAL FIX START ---
+                # This dialogue object simply tells Rooms to handle the event.
+                # Rooms will then decide if a new dialogue is set.
+                self.rooms_instance.handle_dialogue_event(event_name, event_data)
+                # After the event, check if the global dialogue reference has changed.
+                # If it has changed (meaning the event started a new dialogue),
+                # this old dialogue should stop talking but NOT clear the new reference.
+                self.talking = False # Simply stop this dialogue
+                print("ObjectDialogue: Event created a new dialogue. This ObjectDialogue is stopping without clearing the new reference.")
+                return
+
+            # If it's a regular text line (and no next/event), reset for typing the new line
+            self.reset_typing()
+
+        else: # End of current dialogue list for this node
+            self.talking = False # End dialogue
+            print("ObjectDialogue ended (natural end of node).")
+
     def draw(self, screen):
         if not self.talking: return
 
-        x = screen.get_width() // 2 - self.dialogue_box_img.get_width() // 2
-        y = screen.get_height() - self.dialogue_box_img.get_height() - 20
-        screen.blit(self.dialogue_box_img, (x, y))
+        dialog_x = screen.get_width() // 2 - self.dialogue_box_img.get_width() // 2
+        dialog_y = screen.get_height() - self.dialogue_box_img.get_height() - 20
+        screen.blit(self.dialogue_box_img, (dialog_x, dialog_y))
 
         # Padding inside the dialogue box
-        text_x = x + 150
-        text_y = y + 60
+        text_x = dialog_x + 150
+        text_y = dialog_y + 60
         max_text_width = self.dialogue_box_img.get_width() - 200  # 40 padding on each side
 
-        draw_text(screen, self.current_text_display, size=30, color=(0, 0, 0), x=text_x, y=text_y, center=False, max_width=max_text_width)
+        # Get speaker and text from current_line_data (which is the current line's dictionary)
+        # speaker = self.current_line_data.get("speaker", "narrator")
+        text_to_display = self.current_text_display
 
-    def handle_space(self):
-        if not self.typing_complete:
-            node_text_list = self.current_node.get("text", [""])
-            if not isinstance(node_text_list, list): node_text_list = [node_text_list]
-            if self.current_text_index < len(node_text_list):
-                self.current_text_display = node_text_list[self.current_text_index]
-            self.typing_complete = True
-            return
-        node_text_list = self.current_node.get("text", [""])
-        if not isinstance(node_text_list, list): node_text_list = [node_text_list]
-        if self.current_text_index + 1 < len(node_text_list):
-            self.current_text_index += 1
-            self.reset_typing()
-            return
-        next_node_id = self.current_node.get("next_node")
-        event_name = self.current_node.get("event")
-        if event_name:
-            event_data = {}
-            if hasattr(self.obj_info, 'next_room') and self.obj_info.next_room: # Pass next_room if it exists on the object
-                event_data["target_room"] = self.obj_info.next_room
-            self.rooms_instance.handle_dialogue_event(event_name, event_data)
-            self.talking = False
-            return
-        if next_node_id == "end" or not next_node_id:
-            self.talking = False
-        else:
-            self.current_node_id = next_node_id
-            self.current_node = self.dialogue_data.get(self.current_node_id, {})
-            if not self.current_node:
-                print(f"Warning: next_node '{self.current_node_id}' not found. Ending dialogue.")
-                self.talking = False
-                return
-            self.current_text_index = 0
-            self.reset_typing()
-        if not self.talking:
-            self.current_dialogue_ref.current_dialogue = None
+        # speaker_color = (200, 200, 255) # Light blue for speaker
+        text_color = (0, 0, 0)    # White for main dialogue text
+
+        # speaker_x = dialog_x + 50
+        # speaker_y = dialog_y + 20 
+
+        text_x = dialog_x + self.dialogue_box_img.get_width() // 2
+        text_y = dialog_y + self.dialogue_box_img.get_height() // 2 - 15
+
+        # draw_text(screen, self.current_text_display, size=30, color=(0, 0, 0), x=text_x, y=text_y, center=False, max_width=max_text_width)
+        # Draw dialogue text
+        draw_text(screen, text_to_display, size=30, color=text_color, 
+                    x=text_x, y=text_y, center=True, max_width=max_text_width)
+
         # node = self.current_node    # self.dialogue_data[self.current_node]
 
         # raw_text = node.get("text", "")
@@ -1141,8 +1000,6 @@ class Game:
         self._pending_room = None
         self._fading = False
         self._fade_alpha = 0
-
-        # self.all_dialogues_data = all_dialogues
 
         self.gameStateManager = GameStateManager('start')
         self.gameStateManager.game_instance = self
@@ -1418,28 +1275,10 @@ class Rooms:    # class Level in tutorial
                 self.npc_manager.add_npc(npc)
                 camera_group.add(npc) 
                 print(f"SUCCESS: Added NPC: {name} ({dialogue_id}) to room {room_name}.")    
-        # if room_name == "Player_room":
-        #     # Assuming you get Zheng's position from `object_data` or have it hardcoded.
-        #     # If using object_data, it would look up "zheng_npc_id"
-        #     zheng_data = self.object_data.get("zheng_npc_id") # Get Zheng's data from object_data.json
-            
-        #     if zheng_data and room_name in zheng_data.get("rooms", []): # Make sure Zheng is configured for this room
-        #         # patient1 = NPC(800, 550, "Zheng") <-- OLD
-        #         # Now, pass the dialogue_id as "Zheng"
-        #         patient1 = NPC(zheng_data["position"][0], zheng_data["position"][1], 
-        #                        zheng_data["name"], 
-        #                        "Zheng") # <--- Explicitly pass "Zheng" as the dialogue_id
-        #     self.npc_manager.add_npc(patient1)
-        #     camera_group.add(patient1)
         
         room_width, room_height = self.background.get_size()
         camera_group.set_limits(room_width, room_height)
         
-        # if room_name == "...":
-            # new_npc = NPC(300, 500, "Someone")
-            # self.npc_manager.add_npc(new_npc)
-            # camera_group.add(new_npc)
-
     # --- METHOD TO HANDLE DIALOGUE EVENTS ---
     def handle_dialogue_event(self, event_name, event_data=None):
         event_data = event_data if event_data is not None else {}
@@ -1472,25 +1311,41 @@ class Rooms:    # class Level in tutorial
             print("Event: Puzzle completed. Triggering 'after_puzzle' narrative.")
             # Initiate the "after_puzzle_sequence" dialogue.
             # Create a simple dummy object/NPC for System_Narrative dialogue.
-            class NarratorDummy:
-                def __init__(self, name="narrator", dialogue_id="System_Narrative"):
+            class ZhengNarrativeDummy:
+                def __init__(self, name="Zheng", dialogue_id="Zheng"):
                     self.name = name
                     self.dialogue_id = dialogue_id
                     self.rect = pygame.Rect(0,0,1,1) # Dummy rect for consistency if 'dialog' needs it
 
-            narrator_dummy_obj = NarratorDummy()
-            system_narrative_tree = self.all_dialogues.get(narrator_dummy_obj.dialogue_id)
-            if system_narrative_tree:
+            zheng_narrative_obj = ZhengNarrativeDummy()
+
+            # # --- DEBUG PRINTS ---
+            print(f"DEBUG (Rooms.handle_dialogue_event): Global all_dialogues keys: {list(all_dialogues.keys())}")
+            zheng_narrative_tree = all_dialogues.get(zheng_narrative_obj.dialogue_id)
+            print(f"DEBUG (Rooms.handle_dialogue_event): Fetched system_narrative_tree type: {type(zheng_narrative_tree)}")
+            if isinstance(zheng_narrative_tree, dict):
+                print(f"DEBUG (Rooms.handle_dialogue_event): Keys in zheng_narrative_tree: {list(zheng_narrative_tree.keys())}")
+                if "after_puzzle_sequence" in zheng_narrative_tree:
+                    seq_data = zheng_narrative_tree["after_puzzle_sequence"]
+                    print(f"DEBUG (Rooms.handle_dialogue_event): 'after_puzzle_sequence' found. Type: {type(seq_data)}, Length: {len(seq_data) if isinstance(seq_data, list) else 'N/A'}")
+                    print(f"DEBUG (Rooms.handle_dialogue_event): First few items: {seq_data[:2] if isinstance(seq_data, list) else 'Not a list'}")
+                else:
+                    print(f"ERROR (Rooms.handle_dialogue_event): 'after_puzzle_sequence' NOT found in System_Narrative data.")
+            else:
+                print(f"ERROR (Rooms.handle_dialogue_event): zheng_narrative_tree is not a dictionary. Value: {zheng_narrative_tree}")
+            # --- END DEBUG PRINTS ---
+
+            if zheng_narrative_tree:
                 self.current_dialogue_ref.current_dialogue = dialog(
-                    narrator_dummy_obj, # Pass the dummy object
+                    zheng_narrative_obj, # Pass the dummy object
                     self.player,
-                    self.all_dialogues.get(narrator_dummy_obj.dialogue_id), # Pass the whole System_Narrative tree
+                    all_dialogues.get(zheng_narrative_obj.dialogue_id), # Pass the whole System_Narrative tree
                     start_node_id="after_puzzle_sequence", # Start the specific sequence
                     rooms_instance=self
                 )
                 self.current_dialogue_ref.current_dialogue.talking = True # Ensure it begins talking
             else:
-                print(f"Error: 'System_Narrative' dialogue data not found for event '{event_name}'.")
+                print(f"Error: 'Zheng_Narrative' dialogue data not found for event '{event_name}'.")
 
         # NEW EVENT: Triggered at the end of the 'back_reality' dialogue
         elif event_name == "day_end_and_intro_next_day":
@@ -1527,24 +1382,6 @@ class Rooms:    # class Level in tutorial
         # --- Dialogue logic ---
         nearest_npc = self.npc_manager.get_nearest_npc(self.player)
         near_obj = check_object_interaction(self.player.rect.inflate(10,10), interactable_objects)
-        # #=====space======
-        # if nearest_npc or self.current_dialogue_ref.current_dialogue:
-        #     if nearest_npc: 
-        #         if self.current_dialogue_ref.current_dialogue is None or isinstance(self.current_dialogue_ref.current_dialogue, ObjectDialogue):     #not self.current_dialogue_ref.current_dialogue.talking:
-        #             self.current_dialogue_ref.current_dialogue = dialog(nearest_npc,self.player)
-        #         elif isinstance(self.current_dialogue_ref.current_dialogue, ObjectDialogue):
-        #             pass
-
-        #     if keys[pygame.K_SPACE] and self.space_released: # Only consider space to start new NPC dialogue
-        #         self.space_released = False # Debounce
-        #         if self.current_dialogue_ref.current_dialogue:
-        #         #     print(f"Starting NPC dialogue with {nearest_npc.name}")
-        #             dialogue = self.current_dialogue_ref.current_dialogue
-
-        #             if isinstance(dialogue, ObjectDialogue):
-        #                 dialogue.handle_space()
-        #             else:
-        #                 dialogue.handle_space(keys)
 
         # 1. Handle Object Interaction (Q key)
         if keys[pygame.K_q] and self.q_released:
@@ -1625,46 +1462,11 @@ class Rooms:    # class Level in tutorial
                 else:
                     print(f"Warning: No dialogue data found for NPC '{nearest_npc.dialogue_id}'.")
 
-                    # if obj_to_interact.name == "Machine":
-                    #     # Dynamically choose start node for Machine dialogue based on patient_zheng_talked_to
-                    #     if not self.patient_zheng_talked_to:
-                    #         chosen_start_node = "before_patient"
-                    #     else:
-                    #         chosen_start_node = "after_patient"
-                            
-                    #     # Pass 'self' (the Rooms instance) to ObjectDialogue so it can trigger events
-                    #     self.current_dialogue_ref.current_dialogue = ObjectDialogue(obj_to_interact, self.current_dialogue_ref, self, initial_start_node_id=chosen_start_node)
-                    #     print(f"Interacting with Machine. Start node: {chosen_start_node}")
-
-                    # elif obj_to_interact.next_room: # Handle doors (if they have next_room defined)
-                    #     if obj_to_interact.unlocked:
-                    #         self.next_room_after_transition = obj_to_interact.next_room
-                    #         self.fading = True
-                    #         print(f"Door '{obj_to_interact.name}' triggered fade to {obj_to_interact.next_room}")
-                    #     else: # Door is locked, maybe show a dialogue
-                    #         # Assuming locked doors also have dialogue set up in object_data
-                    #         self.current_dialogue_ref.current_dialogue = ObjectDialogue(obj_to_interact, self.current_dialogue_ref, self)
-                    #         print(f"Door '{obj_to_interact.name}' is locked or has other dialogue.")
-                    
-                    # elif obj_to_interact.active: # General object with dialogue
-                    #     self.current_dialogue_ref.current_dialogue = ObjectDialogue(obj_to_interact, self.current_dialogue_ref, self)
-                    #     print(f"Interacting with general object: {obj_to_interact.name}")
-
-        # if keys[pygame.K_SPACE] and self.space_released:
-        #     self.space_released = False
-        #     if self.current_dialogue_ref.current_dialogue:
-        #         dialogue = self.current_dialogue_ref.current_dialogue
-        #         if isinstance(dialogue, ObjectDialogue):
-        #             dialogue.handle_space()
-        #         else:
-        #             dialogue.handle_space(keys)
-
-        # if isinstance(self.current_dialogue_ref.current_dialogue, dialog):
-        #     self.current_dialogue_ref.current_dialogue.handle_option_selection(keys)
-    
         # --- Dialogue State Update and Input Handling (Unified) ---
         if self.current_dialogue_ref.current_dialogue:
             dialogue = self.current_dialogue_ref.current_dialogue
+
+            dialogue.update()
             
             # Handle input specific to dialogue choices
             if isinstance(dialogue, dialog) and dialogue.choices_active:
@@ -1681,76 +1483,25 @@ class Rooms:    # class Level in tutorial
                     dialogue.select_choice(dialogue.selected_choice_index)
                     print(f"Confirmed choice: {dialogue.selected_choice_index}")
             else: # Only update and handle space if choices are NOT active
-                dialogue.update()
-                
-                # SPACE key logic for advancing regular dialogue
                 if keys[pygame.K_SPACE] and self.space_released:
                     self.space_released = False
-                    # if dialogue: # Check again if dialogue exists (it should, due to outer if)
                     if isinstance(dialogue, ObjectDialogue):
                         dialogue.handle_space()
-                    elif isinstance(dialogue, dialog):# Assuming this is your 'dialog' class
-                        dialogue.handle_space(keys) # Pass keys if dialog.handle_space needs it
+                    elif isinstance(dialogue, dialog):
+                        dialogue.handle_space(keys)
 
-            # Check if dialogue has just finished
+            # Check if dialogue has just finished (important for clearing reference)
             if not dialogue.talking:
-                self.current_dialogue_ref.current_dialogue = None # Clear global reference to dialogue
+                self.current_dialogue_ref.current_dialogue = None 
                 print("Rooms: Current dialogue reference cleared.")
-                # You might need to reset 'entry' here if it's used for display after dialogue ends
-                # entry = {} 
-            #     # If NPC dialogue finished
-            #     if isinstance(dialogue, dialog):
-            #         # Check if the last node of the NPC dialogue had an event and trigger it
-            #         npc_dialogue_data = all_dialogues.get(dialogue.npc.name, {}).get(dialogue.current_story, [])
-            #         if dialogue.step < len(npc_dialogue_data): # Ensure step is valid
-            #             last_node_data = npc_dialogue_data[dialogue.step]
-            #             if "event" in last_node_data:
-            #                 self.handle_dialogue_event(last_node_data["event"])
-            #     # Dialogue finished, clear reference
-            #     self.current_dialogue_ref.current_dialogue = None
-            #     entry = {} # Reset entry for display
-            # else: # Dialogue is still talking
-            #     # For NPC dialogue, update entry for display
-            #     if isinstance(self.current_dialogue_ref.current_dialogue, dialog):
-            #         self.npc_name = self.current_dialogue_ref.current_dialogue.npc.name
-            #         self.current_story = getattr(self.current_dialogue_ref.current_dialogue, "current_story", "start")  # Might have problem here
 
-            #         self.npc_data = all_dialogues.get(self.npc_name, {})
-            #         self.story_data = self.npc_data.get(self.current_story, [])
+            # --- DRAW THE ACTIVE DIALOGUE ---
+            # This should be the only place where the dialogue's draw method is called.
+            if self.current_dialogue_ref.current_dialogue: # Check again if dialogue is still active after handling input/events
+                dialogue.draw(self.display)
+            else:
+                print("DEBUG (Rooms.run): Dialogue just ended, will not draw this frame.")
 
-            #         self.step = dialogue.step
-            #         entry = self.story_data[self.step]
-            #     else:
-                    # entry = {} # ObjectDialogue doesn't use npc/story/step in the same way
-
-        # else: # No current dialogue active
-        #     entry = {} # Ensure entry is always defined if no dialogue is active
-        
-
-        
-        #     # Only update story_data if the NPC or story changed
-        #     if (self.last_npc_name != self.npc_name) or (self.last_story != self.current_story):
-        #         self.npc_data = all_dialogues.get(self.npc_name, {})
-        #         self.story_data = self.npc_data.get(self.current_story, [])
-        #         self.last_npc_name = self.npc_name
-        #         self.last_story = self.current_story
-
-        #     self.step = self.current_dialogue_ref.current_dialogue.step
-
-        #     if not self.current_dialogue_ref.current_dialogue.talking:
-        #         self.current_dialogue_ref.current_dialogue = None
-        #         entry = {}
-        #     else:
-        #         entry = self.story_data[self.step]
-        # else:
-        #     # 👇 This runs for ObjectDialogue — we don't use npc/story/step
-        #     if not self.current_dialogue_ref.current_dialogue.talking:
-        #         self.current_dialogue_ref.current_dialogue = None
-        #         entry = {}
-        #     else:
-        #         entry = {}
-
-        
         camera_group.custom_draw(self.player)
         
         # --- Display "Press Q to interact" text ---
@@ -1795,12 +1546,12 @@ class Rooms:    # class Level in tutorial
 
                     # Trigger the intro dialogue for the new day/chapter
                     narrator_dummy_obj = NarratorDummy() # Use the same dummy narrator
-                    system_narrative_tree = self.all_dialogues.get(narrator_dummy_obj.dialogue_id)
+                    system_narrative_tree = all_dialogues.get(narrator_dummy_obj.dialogue_id)
                     if system_narrative_tree:
                         self.current_dialogue_ref.current_dialogue = dialog(
                             narrator_dummy_obj,
                             self.player,
-                            self.all_dialogues.get(narrator_dummy_obj.dialogue_id),
+                            all_dialogues.get(narrator_dummy_obj.dialogue_id),
                             start_node_id="intro", # This will now select chapter_X based on current_day
                             rooms_instance=self
                         )
@@ -1849,7 +1600,7 @@ class GameStateManager:
     def get_state(self):
         return self.currentState
     def set_state(self, state):
-        self.currentState = state
+        self.currentState  = state
 
 if __name__== '__main__':
     game = Game()
