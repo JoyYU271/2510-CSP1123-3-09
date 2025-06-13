@@ -1,39 +1,4 @@
 {
-<<<<<<< HEAD
-  "intro":{
-    "chapter_1":[
-        {"speaker" :"narrator","text":"(2025, April 15)","shown": false},
-        {"speaker" :"narrator","text":"(You are a psychologist.)","shown": false},
-        {"speaker" :"narrator","text":"(After graduation, you were invited by your father——)","shown": false},
-        {"speaker": "narrator","text":"(the dean of Mindscape Chamber, to work there.)","shown":false},
-        {"speaker" :"narrator","text":"(Today is your first day on the job.)","shown": false},
-        {"speaker" :"narrator","text":"[Hint: Press W / D to move]","shown": false},
-        {"speaker" :"narrator","text":"...........","shown": false}
-        
-    ],
-    "chapter_2":[
-        {"speaker" :"narrator","text":"(Today is a new day.)","shown": false},
-        {"speaker" :"narrator","text":"(You arrived early today again, so there is almost no one in the clinic.)","shown": false},
-        {"speaker" :"narrator","text":"......","shown": false}
-
-    ],
-    "chapter_3":[
-        {"speaker" :"player","text":"(I should really talk to my father. There's clearly something wrong with this 'experiment')","shown": false},
-        {"speaker" :"player","text":"(Ever since treating Ms. Emma, I've been hearing things occasionally...)","shown": false},
-        {"speaker" :"player","text":"(And having strange nightmares...)","shown": false},
-        {"speaker" :"player","text":"(In the dreams, dad and mom argue again, but then the scene shifts—mother lies in a pool of blood...)","shown": false},
-        {"speaker" :"player","text":"(Am I just too tired?)","shown": false},
-        {"speaker" :"player","text":"(Maybe I should see a therapist too.)","shown": false},
-        {"speaker" :"narrator","text":"???: [That wasn't a nightmare.]","shown": false},
-        {"speaker" :"player","text":"What do you mean?","shown": false},
-        {"speaker" :"narrator","text":"???: [I mean it literally. You still haven't remembered anything? Not even a little?] ","shown": false},
-        {"speaker" :"player","text":" What are you talking about?","shown": false},
-        {"speaker" :"narrator","text":"???: [He killed Mother.] ","shown": false},
-        {"speaker" :"player","text":"?!","shown": false},
-        {"speaker" :"player","text":"Don't joke about that.","shown": false},
-        {"speaker" :"narrator","text":"???: [I know you won't believe it. After all, you' ve forgotten everything—me included.] ","shown": false},
-        {"speaker" :"narrator","text":"??? : [......]","shown": false}
-=======
   "System_Narrative": {
     "intro":{
       "chapter_1":[
@@ -53,21 +18,20 @@
       ],
       "chapter_3":[
           {"speaker" :"player","text":"(I should really talk to my father. There's clearly something wrong with this ‘experiment’)","shown": false},
-          {"speaker" :"player","text":"(Ever since treating Ms. Emma, I’ve been hearing things occasionally...)","shown": false},
+          {"speaker" :"player","text":"(Ever since treating Ms. Emma, I've been hearing things occasionally...)","shown": false},
           {"speaker" :"player","text":"(And having strange nightmares...)","shown": false},
           {"speaker" :"player","text":"(In the dreams, dad and mom argue again, but then the scene shifts—mother lies in a pool of blood...)","shown": false},
           {"speaker" :"player","text":"(Am I just too tired?)","shown": false},
           {"speaker" :"player","text":"(Maybe I should see a therapist too.)","shown": false},
-          {"speaker" :"narrator","text":"That wasn’t a nightmare.","shown": false},
+          {"speaker" :"narrator","text":"???: [That wasn't a nightmare.]","shown": false},
           {"speaker" :"player","text":"What do you mean?","shown": false},
-          {"speaker" :"narrator","text":"I mean it literally. You still haven’t remembered anything? Not even a little?","shown": false},
+          {"speaker" :"narrator","text": "???: [I mean it literally. You still haven't remembered anything? Not even a little?]","shown": false},
           {"speaker" :"player","text":" What are you talking about?","shown": false},
-          {"speaker" :"narrator","text":"He killed Mother.","shown": false},
-          {"speaker" :"player","text":"？！","shown": false},
-          {"speaker" :"player","text":"Don’t joke about that.","shown": false},
-          {"speaker" :"narrator","text":" I know you won’t believe it. After all, you’ve forgotten everything—me included.","shown": false},
-          {"speaker" :"narrator","text":"......","shown": false}
->>>>>>> origin/Lai11
+          {"speaker" :"narrator","text":"???: [He killed Mother.]","shown": false},
+          {"speaker" :"player","text":"?!","shown": false},
+          {"speaker" :"player","text":"Don't joke about that.","shown": false},
+          {"speaker" :"narrator","text":" ???: [I know you won't believe it. After all, you' ve forgotten everything—me included.] ","shown": false},
+          {"speaker" :"narrator","text":"??? : [......]","shown": false}
 
         
       ]
@@ -484,16 +448,10 @@
         {"speaker" :"npc","text":"(This stable routine is all I need...)","shown": false},
         {"speaker" :"npc","text":"(...)","shown": false},
         {"speaker" :"npc","text":"(Is it, though?)","shown": false},
-<<<<<<< HEAD
-        {"speaker" :"narrator","text":"?: Zheng! Are you coming to the celebration party tonight? Boss is treating us for the successful proposal!","shown": false},
+        {"speaker" :"npc","text":"?: Zheng! Are you coming to the celebration party tonight? Boss is treating us for the successful proposal!","shown": false},
         {"speaker" :"npc","text":"Yeah, I'll be there.","shown": false},
-        {"speaker" :"npc","text":"(......Well. Maybe this is enough.)","shown": false}
-=======
-        {"speaker" :"npc","text":"???: Zheng! Are you coming to the celebration party tonight? Boss is treating us for the successful proposal!","shown": false},
-        {"speaker" :"npc","text":"Yeah, I’ll be there.","shown": false},
         {"speaker" :"npc","text":"(......Well. Maybe this is enough.)","shown": false},
         {"event": "day_end_and_intro_next_day"}
->>>>>>> origin/Lai11
      ],
 
      "back_reality_keep1":[
@@ -511,14 +469,9 @@
 
         {"speaker" :"npc","text":" (More importantly, I remembered what I truly wanted.)","shown": false},
         {"speaker" :"npc","text":"(How could I have forgotten? My dream of studying psychology deeply (professionally?))","shown": false},
-<<<<<<< HEAD
         {"speaker" :"npc","text":"(But it's not too late.)","shown": false},
-        {"speaker" :"npc","text":"(This is a new beginning.)","shown": false}
-=======
-        {"speaker" :"npc","text":"(But it’s not too late.)","shown": false},
         {"speaker" :"npc","text":"(This is a new beginning.)","shown": false},
         {"event": "day_end_and_intro_next_day"}
->>>>>>> origin/Lai11
      ]
   },
 
