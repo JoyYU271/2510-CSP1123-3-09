@@ -79,7 +79,7 @@ print("-------------------------------------------\n")
 with open("objects.json", "r") as f:
     object_data = json.load(f)
 
-with open("object_dialogue.json") as f:
+with open("object_dialogue.json", "r", encoding="utf-8") as f:
     object_dialogue = json.load(f)
 
 with open("NPC_data.json") as f:
