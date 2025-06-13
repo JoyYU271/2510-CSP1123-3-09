@@ -1,0 +1,9 @@
+{
+  "zheng_npc_id": {
+    "name": "Zheng",
+    "position": [800, 550], 
+    "dialogue_id": "Zheng",             
+    "rooms": ["Player_room"],           
+    "draw_layer": "mid_layer"           
+  }
+}

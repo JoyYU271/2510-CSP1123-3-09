@@ -16,7 +16,8 @@ current_dialogue_instance = None
 shown_dialogues = {}
 selected_options = {}
 
-game_chapter = 1
+
+
 def fade_to_main(surface ,speed = 5):
     fade = pygame.Surface((screen_width,screen_height))
     fade.fill((0,0,0))
@@ -27,14 +28,14 @@ def fade_to_main(surface ,speed = 5):
         pygame.display.update()
         pygame.time.delay(30)
 
-player_choices = {}
-
-flags = {}
-
 shown_dialogues = {}
+player_choices = {}
+flags = {}
+game_chapter = 1
 
 def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_from=None,new_game = False):
     global screen,current_dialogue_instance,save_message_timer
+    global shown_dialogues,player_choices,flags, game_chapter
 
     save_message_timer = 0
 
@@ -99,26 +100,12 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
     npc_manager.add_npc(patient1)
     npc_manager.add_npc(patient2)
 
-    npc_dialog_state = {}
-    for npc in npc_manager.npcs:
-       npc_dialog_state[npc.name] = dialog(
-        npc, player, all_dialogues, bgm_vol, sfx_vol,
-        cutscene_speed=3, npc_manager=npc_manager,
-        shown_dialogues=shown_dialogues)
-
-    current_dialogue = None
-    show_cg = False
-    cg_image = None
-    cg_loaded = False
-
-
     if new_game:
         game_chapter = 1
         player_choices = {}
         flags = {}
         shown_dialogues = {}
         npc_state = {}
-
     elif resume_from:
         npc_state, player_choices, resume_flags, resume_shown_dialogues = resume_from
         flags = resume_flags
@@ -134,12 +121,28 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
         else:
             flags = {}
             game_chapter = 1
+            player_choices = {}
+            shown_dialogues = {}
 
-        player_choices = {}
+
+    npc_dialog_state = {}
+    for npc in npc_manager.npcs:
+       npc_dialog_state[npc.name] = dialog(
+        npc, player, all_dialogues, bgm_vol, sfx_vol,text_size=current_text_size,
+        cutscene_speed=3, npc_manager=npc_manager,
+        shown_dialogues=shown_dialogues)
+    
+    if "shown_dialogues" not in globals():
         shown_dialogues = {}
 
+    current_dialogue = None
+    show_cg = False
+    cg_image = None
+    cg_loaded = False
 
-        for npc in npc_manager.npcs:
+
+
+    for npc in npc_manager.npcs:
             if npc.name in npc_state:
                 state = npc_state[npc.name]
                 chapter = state["chapter"]
@@ -172,7 +175,7 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
 
     run = True
     while run:
-            frame_start = pygame.time.get_ticks()
+          
 
             draw_bg(screen)
             backmain_button.draw(screen)   
@@ -297,7 +300,7 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
 #============ Dialogue System =============
 class dialog:
 
-    def __init__(self,npc,player,all_dialogues,bgm_vol=0.5,sfx_vol=0.5):
+    def __init__(self,npc,player,all_dialogues,bgm_vol=0.5,sfx_vol=0.5,shown_dialogues=None, npc_manager=None, cutscene_speed=3):
         super().__init__()
         
         self.sounds = {
@@ -341,7 +344,8 @@ class dialog:
         self.current_story = f"chapter_{game_chapter}" #default chapter
         self.story_data = self.npc_data.get(self.current_story,[])
         self.step = 0 # present current sentence
-        global shown_dialogues
+        self.cutscene_speed = cutscene_speed
+        self.npc_manager = npc_manager
         self.shown_dialogues = shown_dialogues #track dialogues that have been shown
 
         # sentences typing effect

@@ -1,59 +1,115 @@
 {
   "table_dialogue":{
-    "start":{
-      "text": "The receptionist's counter."
-    }
+    "start":[
+      {"text": "The receptionist's counter."}
+  ]
 
   },
 
   "door01_dialogue":{
-    "start":{
-      "text": "Your office."
-    }
+    "start":[
+      {"text": "Your office."},
+      {"event": "open_door_event"}
+    ]
   },
 
   "door02_dialogue":{
-    "start":{
-      "text": [
-        "The Dean's office.",
-        "It's locked."
+    "start":[
+      {"text": "The Dean's office."},
+      {"text": "It's locked."}
     ]
-    }
   },
 
   "board_dialogue": {
-    "start": {
-      "text": [
-        "(You look at the bulletin board.)",
-        "(Clinic hours, honor certificates, mental health tips, job hiring...)",
-        "(A flyer on Hypnotherapy... This is the therapy Father has been practicing and promoting his whole life.)"
-      ]
-    }
+    "start": [
+      {"text": "(You look at the bulletin board.)"},
+      {"text": "(Clinic hours, honor certificates, mental health tips, job hiring...)"},
+      {"text": "(A flyer on Hypnotherapy... This is the therapy Father has been practicing and promoting his whole life.)"}
+    ]
   },
 
   "machine_dialogue": {
-    "before_patient": {
-      "text": [
-        "(You should talk to the patient first.)"
-      ]
-    },
-    "after_patient": {
-      "text": [
-        "(After you check that the machine is functinal, you carefully place it on her head.)"
-      ], 
-      "event": "machine_exit"
-    }
+    "locked_machine_node": [
+      {"text": "(You should talk to the patient first.)"},
+      {"next_node": "end"}
+    ],
+    "unlocked_machine_node": [
+      {"text": "(After you check that the machine is functinal, you carefully place it on her head.)"}, 
+      {"event": "machine_enter"}
+    ]
   },
 
   "exitZ01_dialogue": {
-    "text": [
-      "Something about perfectionism..."
+    "start": [
+    {"speaker": "narrator", "text": "(Upon contact, fragmented images flash before you—an office, a computer screen. ", "shown": false},
+    {"speaker": "narrator", "text": "You witness her endlessly revising the proposal, her earlier account now visceral in first-person. The relentless edits radiate palpable distress. ", "shown": false},
+    {"speaker": "player", "text": "(......Experiencing her perspective is overwhelming.)", "shown": false},
+    {"event": "machine_enter"} 
     ]
   },
 
   "exitZ02_dialogue": {
-    "text": [
-      "Something, something, wow your notes are so neat!"
+    "start": [
+      {"speaker": "narrator","text": "(The scene shifts to a classroom. )", "shown": false},
+      {"speaker": "narrator","text": " (The classroom was abuzz with talk, seizing the moment while the teacher was away.)", "shown" : false},
+      {"speaker": "narrator","text": "(Lowering the gaze reveals impeccably organized notes—neat lines, elegant handwriting, clear highlights. A model of perfection.)", "shown": false},
+      {"speaker": "player","text": "(Her perfectionism traces back to high school......?)", "shown": false},
+      {"speaker": "narrator","text": "(A voice interrupts.)", "shown": false},
+      {"speaker": "narrator","text": "??: Zheng! Can I borrow your notes? ", "shown": false},
+      {"speaker": "narrator","text": "(The views shift left—to her deskmate.)", "shown": false},
+      {"speaker": "narrator","text": "(Zheng moves her hand, which had obscured part of the page, to reveal the pristine notes.)", "shown": false},
+      {"speaker": "narrator","text": "??: As perfect as always! No wonder you’re our top student.", "shown": false},
+      {"speaker": "Zheng","text": "......It’s just what I should do.", "shown": false},
+      {"speaker": "narrator","text": "??: I’ll borrow them, thanks!", "shown": false},
+      {"event": "machine_enter"}
     ]
+    
+  },
+
+  "exitZ03_dialogue": {
+    "start": [
+      {"speaker": "narrator","text": "(The scene is an office again—but not her workplace.)", "shown": false},
+      {"speaker": "player","text": " (Another office? Whose is this?)", "shown": false},
+      {"speaker": "narrator","text": "(A male voice is heard.)", "shown": false},
+      {"speaker": "narrator","text": "?:  Thanks for waiting.", "shown": false},
+      {"speaker": "player","text": "(This voice......)", "shown": false},
+      {"speaker": "narrator","text": "(Her view turns, revealing a face you know.)", "shown": false},
+      {"speaker": "player","text": "(Father?!)", "shown": false},
+      {"speaker": "player","text": "(Why is he in her memory?)", "shown": false},
+      {"speaker": "Zheng","text": "Good afternoon, Professor.", "shown": false},
+      {"speaker": "Dean","text": "Good afternoon. I called you here to propose something.", "shown": false},
+      {"speaker": "Dean","text": "I’m running a psychology experiment, but I’m short on staff.", "shown": false},
+      {"speaker": "Dean","text": "Your diligence and precision are exactly what this experiment needs.", "shown": false},
+      {"speaker": "Dean","text": " I know your ideal is achieve something in psychology, right? This could be your first step.", "shown": false},
+      {"speaker": "player","text": "(She studied under him? What a coincidence......)", "shown": false},
+      {"speaker": "Zheng","text": "Of course, it would be my honor, Professor.", "shown": false},
+      {"event": "machine_enter"}
+    ]
+  },
+
+  "exitZ04_dialogue": {
+    "start": [
+    {"speaker": "narrator","text": "(This memory is blurry—snatches of conversations and report writing. Words on the reports catch your eye.)", "shown": false},
+    {"speaker": "player","text": "(Hypnotherapy Results......? Is this the “experiment”?)", "shown": false},
+    {"speaker": "narrator","text": "(You read the report—overwhelming with technical terms.)", "shown": false},
+    {"speaker": "narrator","text": "(Reports pile up, dense with jargon. The first, the second, the third... All share one conclusion:)", "shown": false},
+    {"speaker": "narrator","text": "(Failure)", "shown": false},
+    {"speaker": "narrator","text": "(A sense of unease—and inexplicable familiarity—washes over you.)", "shown": false},
+    {"speaker": "narrator","text": "(As the memory fades, you find something in your hand)", "shown": false},
+    {"speaker": "narrator","text": "(A notebook. But no tidy lines, no neat notes, no highlights—just blank pages.)", "shown": false},
+    {"speaker": "narrator","text": "(Perhaps emptiness, too, is a form of perfection.)", "shown": false},
+    {"speaker": "narrator","text": "(But who defines perfection? Who enforces it?)", "shown": false},
+    {"speaker": "narrator","text": "You’re no philosopher. No need to dwell on that.", "shown": false},
+    {"speaker": "player","text": "(This is Ms. Zheng’s emotional anchor......)", "shown": false},
+    {"speaker": "player","text": "Destroy it, and her symptoms vanish—but so do parts of her memory. ", "shown": false},
+    {"speaker": "player","text": "Keep it, and the cure may be incomplete. What should I choose?)", "shown": false},
+    {"choice":[
+            {"option":"Destroy","next":"back_reality_destroy1"},
+            {"option":"Keep","next":"back_reality_keep1"}
+        ]
+        },
+
+    {"event": "puzzle_complete"}
+  ]
   }
 }
