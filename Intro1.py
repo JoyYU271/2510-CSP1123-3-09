@@ -18,7 +18,7 @@ current_dialogue_instance = None
 shown_dialogues = {}
 selected_options = {}
 
-
+game_chapter = 3
 
 BG =(255,255,255)
 
@@ -130,7 +130,7 @@ class dialog:
         self.npc_data = self.all_dialogues.get(self.npc_name)
 
          #dialogue state variacbles
-        self.current_story = "chapter_3" #default chapter
+        self.current_story = f"chapter_{game_chapter}" #default chapter
         self.story_data = self.npc_data.get(self.current_story,[])
         self.step = 0 # present current sentence
 
@@ -174,6 +174,8 @@ class dialog:
         self.npc_manager = npc_manager
 
         self.text_size = text_size
+
+    
     
 
     def change_bgm(self, bgm_path):
@@ -288,8 +290,23 @@ class dialog:
                      self.last_time = current_time
 
         if isinstance(self.entry,dict) and self.entry.get("type") == "ending":
-            self.chapter_end = True    
-            self.ready_to_quit = True
+            self.chapter_end = True   
+
+            global game_chapter
+            # final chapter 
+            if game_chapter >= 3:   
+                self.ready_to_quit = True
+                print(f"Main ending reached! ready_to_quit set to True") 
+            else:
+                # next chapter
+                self.fade(screen , fade_in=True)
+                game_chapter += 1
+                self.step = 0 
+                self.talking = False
+                self.chapter_end = False
+                self.current_story = f"chapter_{game_chapter}"
+                self.story_data = self.npc_data.get(self.current_story,[])
+                print(f"Moving to chapter {game_chapter}") 
                 
             ending_key = self.current_story 
             flags[f"ending_unlocked_{ending_key}"] = True
@@ -1286,6 +1303,8 @@ class Game:
 
             currentState = self.gameStateManager.get_state()
 
+            
+
             for event in events:
                 if event.type == pygame.QUIT:
                     running = False
@@ -1314,6 +1333,7 @@ class Game:
                                 obj = interacted_obj[0]
                                 self.current_dialogue = ObjectDialogue(obj, self)
                                 self.current_dialogue.start()
+            
 
             if currentState == 'level':
                 # 修改這裡：將 `events` 列表傳遞給 self.states['level'].run
@@ -1538,6 +1558,8 @@ class Rooms:    # class Level in tutorial
         # --- Dialogue logic ---
         nearest_npc = self.npc_manager.get_nearest_npc(self.player)
 
+        
+
         #=====space======
         if nearest_npc or self.current_dialogue_ref.current_dialogue:
             if nearest_npc: 
@@ -1593,6 +1615,12 @@ class Rooms:    # class Level in tutorial
                 else:
                     entry = {}
 
+            if self.current_dialogue_ref.current_dialogue and self.current_dialogue_ref.current_dialogue.ready_to_quit:
+                fade_to_main(screen)
+                pygame.mixer.music.stop()
+                return 
+
+        
         
         if not keys[pygame.K_SPACE]:
             self.space_released = True
