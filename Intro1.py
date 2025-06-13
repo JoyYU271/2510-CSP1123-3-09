@@ -18,7 +18,7 @@ current_dialogue_instance = None
 shown_dialogues = {}
 selected_options = {}
 
-game_chapter = 3
+game_chapter = 1
 
 BG =(255,255,255)
 
@@ -1102,6 +1102,11 @@ def check_object_interaction(player_rect, interactable_objects):
 
 class ObjectDialogue:  # very confused
     def __init__(self, obj_info, game_ref, rooms_instance, initial_start_node_id=None):
+        
+        self.displayed_text = ""
+        self.letter_index = 0
+
+        
         self.obj_info = obj_info
         self.game_ref = game_ref
         self.rooms_instance = rooms_instance
@@ -1186,7 +1191,7 @@ class ObjectDialogue:  # very confused
             text_y = y + 60
             max_text_width = self.dialogue_box_img.get_width() - 200  # 40 padding on each side
 
-            draw_text(screen, self.displayed_text, size=self.text_size or 30, color=(0, 0, 0), x=text_x, y=text_y, center=False, max_width=max_text_width)
+            draw_text(screen, self.current_text_display, size=self.text_size or 30, color=(0, 0, 0), x=text_x, y=text_y, center=False, max_width=max_text_width)
            
     def reset_typing(self):
         # This method is crucial to set up the typing animation for a new line/node
@@ -1477,6 +1482,9 @@ class Rooms:    # class Level in tutorial
         self.space_released = True
         self.q_released = True
         self.cutscene_active = False
+
+        self.cutscene_speed = 3
+
         self.dean_exiting = False
         self.last_npc_name = None
         self.last_story = None
@@ -1773,7 +1781,7 @@ class Rooms:    # class Level in tutorial
             dialogue = self.current_dialogue_ref.current_dialogue
             
             # Update dialogue (e.g., character portraits, text progression)
-            dialogue.update()
+            dialogue.update(events)
 
             # Check if dialogue has just finished
             if not dialogue.talking:
