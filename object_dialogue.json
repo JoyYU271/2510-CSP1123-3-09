@@ -8,7 +8,8 @@
 
   "door01_dialogue":{
     "start":{
-      "text": "Your office."
+      "text": "Your office.",
+      "event": "open_door_event"
     }
   },
 
@@ -32,22 +33,23 @@
   },
 
   "machine_dialogue": {
-    "before_patient": {
+    "locked_machine_node": {
       "text": [
-        "(You should talk to the patient first.)"
-      ]
+        "(You should talk to the patient first.)"],
+        "next_node": "end"
     },
-    "after_patient": {
+    "unlocked_machine_node": {
       "text": [
         "(After you check that the machine is functinal, you carefully place it on her head.)"
       ], 
-      "event": "machine_exit"
+      "event": "machine_enter"
     }
   },
 
   "exitZ01_dialogue": {
-    "text": [
-      "Something about perfectionism..."
+    "start": [
+    {"speaker": "narrator", "text": "Something about perfectionism...", "shown": false},
+    {"event": "machine_enter"} 
     ]
   },
 
@@ -55,5 +57,12 @@
     "text": [
       "Something, something, wow your notes are so neat!"
     ]
+  },
+
+  "exitZ04_dialogue": {
+    "text": [
+      "Memory 4: Failure"
+    ],
+    "event": "puzzle_complete"
   }
 }
