@@ -176,6 +176,8 @@ class dialog:
 
         self.text_size = text_size
 
+        self.cutscene_speed = 3
+
     
     
 
