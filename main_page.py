@@ -359,7 +359,7 @@ def show_cg_gallery(image_paths):
             (start_x, y1), (start_x + thumbnail_size[0] + spacing_x, y1),
             (start_x, y2), (start_x + thumbnail_size[0] + spacing_x, y2),
             (screen_width // 2 - thumbnail_size[0] // 2, y3)
-         ]
+          ]
     else:
         print("Unsupported number of CGs for layout.")
         return
