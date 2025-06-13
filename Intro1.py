@@ -9,6 +9,7 @@ import os
 from ui_components import Button, get_font
 from save_system import save_checkpoint, load_checkpoint
 
+
 screen = None
 
 current_text_size = 30
@@ -1101,8 +1102,13 @@ def check_object_interaction(player_rect, interactable_objects):
     return [obj for obj in interactable_objects if obj.active and player_rect.colliderect(obj.rect)]
 
 class ObjectDialogue:  # very confused
-    def __init__(self, obj_info, game_ref, rooms_instance, initial_start_node_id=None):
-        
+    def __init__(self, obj_info, game_ref, rooms_instance, initial_start_node_id=None, text_size=30, language="EN"):
+
+        self.ready_to_quit = False
+
+        self.text_size = text_size
+        self.language = language
+
         self.displayed_text = ""
         self.letter_index = 0
 
@@ -1781,7 +1787,13 @@ class Rooms:    # class Level in tutorial
             dialogue = self.current_dialogue_ref.current_dialogue
             
             # Update dialogue (e.g., character portraits, text progression)
-            dialogue.update(events)
+            dialogue = self.current_dialogue_ref.current_dialogue
+
+            if isinstance(dialogue, dialog): 
+                dialogue.update(events)
+            else:
+                dialogue.update()
+
 
             # Check if dialogue has just finished
             if not dialogue.talking:
