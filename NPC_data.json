@@ -5,5 +5,32 @@
     "dialogue_id": "Zheng",             
     "rooms": ["Player_room"],           
     "draw_layer": "mid_layer"           
+  },
+
+  "dean_npc_id":{
+    "name":"Dean",
+    "position" : [400,520],
+    "dialogue_id" :"Dean",
+    "rooms" :["room01" ],
+    "draw_layer":"mid_layer" 
+
+  },
+
+  "nuva_npc_id":{
+    "name":"Nuva",
+    "position":[840,520],
+    "dialogue_id" : "Nuva",
+    "rooms":["room01"],
+    "draw_layer":"mid_layer"
+  },
+
+  "emma_npc_id":{
+    "name":"Emma",
+    "position":[800, 550],
+    "dialogue_id" : "Emma",
+    "rooms":["Player_room"],
+    "draw_layer": "mid_layer"  
   }
+
+  
 }

@@ -103,7 +103,7 @@ room_settings = {
     },
     "room01": {
         "background_path": "picture/Map Art/Map clinic.png",
-        "player_start_pos": (640, 420) # Default player start pos for room01
+        "player_start_pos": (200, 420) # Default player start pos for room01
     },
     "subc.Z_01": {
         "background_path": "picture/Map Art/P11.png",
