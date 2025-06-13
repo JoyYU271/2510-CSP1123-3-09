@@ -79,7 +79,7 @@ print("-------------------------------------------\n")
 with open("objects.json", "r") as f:
     object_data = json.load(f)
 
-with open("object_dialogue.json") as f:
+with open("object_dialogue.json", "r", encoding="utf-8") as f:
     object_dialogue = json.load(f)
 
 with open("NPC_data.json") as f:
@@ -1003,7 +1003,7 @@ class SimpleChapterIntro:
         try:
             with open(dialogue_file, 'r', encoding='utf-8') as f:
                 language_dialogues = json.load(f)
-                self.dialogue = language_dialogues.get("System_Narrative", {}).get(chapter, [])
+                self.dialogue = language_dialogues.get("System_Narrative", {}).get("intro", []).get(chapter, [])
         except Exception as e:
             print(f"Error loading dialogue file {dialogue_file}: {e}")
             self.dialogue = []
