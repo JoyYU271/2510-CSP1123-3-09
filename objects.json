@@ -52,11 +52,75 @@
     "position": [1000, 300],
     "image": "Machine",
     "dialogue_id": "machine_dialogue",
-    "start_node": "before_patient",
+    "start_node": "initial",
+    "conditional_dialogue_flag": "patient_zheng_talked_to",
+    "node_if_locked": "locked_machine_node",
+    "node_if_unlocked": "unlocked_machine_node",
     "active": true,
     "rooms": ["Player_room"],
     "draw_layer": "background",
 
     "next_room": "subc.Z_01"
+  },
+
+  "computer": {
+    "name":"Zheng's desk",
+    "position": [100, 400],
+    "image": "Computer",
+    "dialogue_id": "exitZ01_dialogue",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["subc.Z_01"],
+    "draw_layer": "background",
+
+    "next_room": "subc.Z_02"
+  },
+
+  "trash_bin": {
+    "name": "Trash bin",
+    "position": [700, 500],
+    "image": "Trash_bin",
+    "dialogue_id": "exitZ02_dialogue",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["subc.Z_02"],
+    "draw_layer": "background",
+    "next_room": "subc.Z_03"
+  },
+
+  "office_door": {
+    "name": "Office door",
+    "position": [900, 300],
+    "image": "Office_door",
+    "dialogue_id": "exitZ03_dialogue",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["subc.Z_03"],
+    "draw_layer": "background",
+    "next_room": "subc.Z_04"
+  },
+
+  "boxes?": {
+    "name": "Boxes?",
+    "position":[1000, 310],
+    "image": "Boxes?",
+    "dialogue_id": "exitZ04_dialogue",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["subc.Z_04"],
+    "draw_layer": "background",
+    "next_room": "out_clinic"
+  },
+
+  "to_loop_back": {
+    "name": "Temporary entry from intro",
+    "position": [500, 300],
+    "image": "intro_to_clinic",
+    "dialogue_id": "temp.placement",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["out_clinic"],
+    "draw_layer": "background",
+    "next_room": "room01"
   }
 }

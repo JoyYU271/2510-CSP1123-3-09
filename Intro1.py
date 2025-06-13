@@ -35,6 +35,14 @@ def fade_to_main(surface ,speed = 5):
         surface.blit(fade,(0,0))
         pygame.display.update()
         pygame.time.delay(30)
+    pygame.quit()
+    import subprocess
+    import sys
+    subprocess.Popen([sys.executable,"main_page.py"])
+    
+
+    
+        
 
 player_choices = {}
 
