@@ -36,6 +36,14 @@ def fade_to_main(surface ,speed = 5):
         surface.blit(fade,(0,0))
         pygame.display.update()
         pygame.time.delay(30)
+    pygame.quit()
+    import subprocess
+    import sys
+    subprocess.Popen([sys.executable,"main_page.py"])
+    
+
+    
+        
 
 player_choices = {}
 
@@ -178,6 +186,9 @@ class dialog:
 
         self.cutscene_speed = 3
 
+        self.dean_cutscene_triggered = False
+
+
     
     
 
@@ -263,26 +274,25 @@ class dialog:
 
              if "event" in entry:
                 if entry["event"] == "dean_exit_cutscene":
-                   flags["dean_cutscene_played"] = True
-                   # change cutscene to end state
-                   cutscene_active = False
+                    flags["dean_cutscene_played"] = True
+                    self.dean_cutscene_triggered = True  
 
                     # save
-                   save_checkpoint(
-                    npc_name=self.npc_name,
-                    chapter=self.current_story,
-                    step=self.step,
-                    player_choices=player_choices,
-                    flags=flags,
-                    shown_dialogues=self.shown_dialogues
-                )
+                    save_checkpoint(
+                        npc_name=self.npc_name,
+                        chapter=self.current_story,
+                        step=self.step,
+                        player_choices=player_choices,
+                        flags=flags,
+                        shown_dialogues=self.shown_dialogues
+                    )
 
 
-                   if self.npc_manager:
-                    for npc in self.npc_manager.npcs:
-                        if npc.name == "Dean":
-                           npc.rect.x -= self.cutscene_speed
-                           break
+                #   if self.npc_manager:
+                #    for npc in self.npc_manager.npcs:
+                #        if npc.name == "Dean":
+                #           npc.rect.x -= self.cutscene_speed
+                #           break
 
              # text typing effect
              current_time = pygame.time.get_ticks()
@@ -771,6 +781,7 @@ class NPC(pygame.sprite.Sprite):
         self.shown_options = {}
 
         self.flip = False 
+        
 
 # to manage multiples NPCs
 class NPCManager:
@@ -1043,12 +1054,7 @@ image_path = {
             "Table": "Object_image/Table.png",
             "Door01": "Object_image/Door01.png",
             "Board": "Object_image/Board.png",
-            "Machine": "Object_image/Machine.png",
-            "Computer": "Object_image/exit_Z01.png",
-            "Trash_bin": "Object_image/exit_Z02.png",
-            "Office_door": "Object_image/exit_Z03.png",
-            "Boxes?": "Object_image/exit_Z04.png",
-            "intro_to_clinic": "Object_image/temp_enter.png"
+            "Machine": "Object_image/Machine.png"
         }
 
 class InteractableObject(pygame.sprite.Sprite):
@@ -1116,37 +1122,22 @@ class ObjectDialogue:  # very confused
 
         
         self.obj_info = obj_info
-        self.game_ref = game_ref
-        self.rooms_instance = rooms_instance
-
         self.dialogue_id = obj_info.dialogue_id
-
-        # self.start_node = obj_info.start_node
-        self.current_node_id = initial_start_node_id if initial_start_node_id else obj_info.start_node
+        self.start_node = obj_info.start_node
+        self.current_node = obj_info.start_node
         self.dialogue_data = object_dialogue.get(self.dialogue_id, {})
-        self.current_node = self.dialogue_data.get(self.current_node_id, {"text": ["Error: Dialogue node not found!"], "end_dialogue": True})
-        
         self.talking = False
-
-        # --- ADDED: Initialization for typing animation variables ---
-        self.current_text_index = 0 # Index for the current line within a node's text list
-        self.talking = True # Dialogue starts talking immediately
-        self.current_text_display = "" # The text currently displayed characters by characters
-        self.typing_speed = 3 # Characters per frame, adjust as needed
-        self.text_display_timer = 0
-        self.typing_complete = False # Flag indicating if the current line has finished typing
-
-        # # Old typing variables
-        # self.displayed_text = ""
-        # self.letter_index = 0
-        # self.last_time = pygame.time.get_ticks()
-        # self.letter_delay = 45
+        self.game_ref = game_ref
 
         self.dialogue_box_img = pygame.image.load("picture/Character Dialogue/dialog boxxx.png").convert_alpha()
         self.dialogue_box_img.set_alpha(200)
 
-        # self.current_line = 0
-        self.reset_typing()
+        self.displayed_text = ""
+        self.letter_index = 0
+        self.last_time = pygame.time.get_ticks()
+        self.letter_delay = 45
+
+        self.current_line = 0
         self.lines = []
 
     def start(self):
@@ -1159,35 +1150,24 @@ class ObjectDialogue:  # very confused
         
     def update(self):
         if self.talking and not self.game_ref._fading:
-            # Get the current full text for the line we are displaying
-            node_text_list = self.current_node.get("text", [""])
-            if not isinstance(node_text_list, list): # Ensure it's always a list
-                node_text_list = [node_text_list]
+            node = self.dialogue_data.get(self.current_node, {})
+            # text = node.get("text", [])
+            # if not text:
+            #     text = [node.get("text", "")]
+            raw_text = node.get("text", "")
+            if isinstance(raw_text, list):
+                text = raw_text
+            else:
+                text = [raw_text]
+            current_text = text[self.current_line]
 
-            # current_time = pygame.time.get_ticks()
+            current_time = pygame.time.get_ticks()
+            if self.letter_index < len(current_text):
+                if current_time - self.last_time > self.letter_delay:
+                    self.displayed_text += current_text[self.letter_index]
+                    self.letter_index += 1
+                    self.last_time = current_time
 
-            # Check if current_text_index is valid for the current node's text
-            if self.current_text_index >= len(node_text_list):
-                # This should ideally not happen if dialogue flow is correct
-                # But as a safeguard, mark typing complete if somehow out of bounds
-                self.typing_complete = True
-                self.current_text_display = ""
-                return # Nothing to type if no text
-            
-            current_full_text = node_text_list[self.current_text_index]
-
-            if not self.typing_complete:
-                self.text_display_timer += 1
-                chars_to_display = self.text_display_timer // self.typing_speed
-                 # Ensure we don't try to display more characters than available
-                if chars_to_display > len(current_full_text):
-                    chars_to_display = len(current_full_text)
-                
-                self.current_text_display = current_full_text[:chars_to_display]
-                
-                if chars_to_display >= len(current_full_text):
-                    self.typing_complete = True
-            
     def draw(self, screen):
         if self.talking and not self.game_ref._fading:
             x = screen.get_width() // 2 - self.dialogue_box_img.get_width() // 2
@@ -1217,73 +1197,67 @@ class ObjectDialogue:  # very confused
             pass
 
     def handle_space(self):
-        node = self.current_node    # self.dialogue_data[self.current_node]
-
+        node = self.dialogue_data[self.current_node]
+        # text = node.get("text", [])
+        # if not text:
+        #     text = [node.get("text", "")]
         raw_text = node.get("text", "")
-
-        if not isinstance(raw_text, list):
-            text_lines_in_node = [raw_text]
+        if isinstance(raw_text, list):
+            text = raw_text
         else:
-            text_lines_in_node = raw_text
+            text = [raw_text]
 
-        # full_text = node.get("text", "")
+        full_text = node.get("text", "")
 
         # 1) complete typing if in middle
-        if not self.typing_complete:
-            self.typing_complete = True
-            # Force the display to show full text for the current line
-            self.current_text_display = text_lines_in_node[self.current_text_index]
-            return # Don't advance dialogue yet, just complete typing
+        if self.letter_index < len(full_text):
+            self.displayed_text = full_text
+            self.letter_index = len(full_text)
+            return
         
         # Go to next line
-        if self.current_text_index + 1 < len(text_lines_in_node):
-            self.current_text_index += 1
-            self.reset_typing()
+        if self.current_line + 1 < len(text):
+            self.current_line += 1
+            self.displayed_text = ""
+            self.letter_index = 0
+            self.last_time = pygame.time.get_ticks()
             return
         
         # 2) if there's a "next" in JSON, go there
-        next_node_id = node.get("next")
-        if next_node_id:
-            # Update current node ID and retrieve the new node's data
-            self.current_node_id = next_node_id
-            self.current_node = self.dialogue_data.get(self.current_node_id, {"text": ["Error: Node not found!"], "end_dialogue": True})
-            self.current_text_index = 0
-            self.reset_typing()
-            return
-      
+        next_node = node.get("next")
+        if next_node:
+            self.current_node = next_node
+            self.current_line = 0
+            self.displayed_text = ""
+            self.letter_index = 0
+            self.last_time = pygame.time.get_ticks()
+            #return
+        else:
+            self.talking = False
+        
         # Special case for locked door
         if self.obj_info.name == "Dean_room":
                 if not self.obj_info.unlocked:
                     self.dialogue_data = {
-                       "locked":{"text": "It's locked.", "end_dialogue": True}
+                       "locked":{"text": "It's locked."}
                     }
-                    self.current_node_id = "locked"
-                    self.current_node = self.dialogue_data["locked"]
-                    self.current_text_index = 0
-                    self.reset_typing()
+                    self.current_node = "locked"
+                    self.displayed_text = "" 
+                    self.letter_index = 0
                     self.talking = True
                     return
 
         # 3) otherwise, we've reached the end of the dialogue
         self.talking = False
-        self.current_text_display = ""
 
         # 4) now trigger transition, if any
         next_room = self.obj_info.next_room
         if next_room and self.obj_info.unlocked:
             # Start fade whether it's first time or not
-            self.rooms_instance.next_room_after_transition = next_room
-            self.rooms_instance.fading = True
-            # self.game_ref.start_fade_to(next_room)
+            self.game_ref.start_fade_to(next_room)
             
             # Optional: record door visit so next time you can skip the dialogue entirely
-            # self.game_ref.visited_doors.add(self.dialogue_id)
-
-        # --- Trigger event in Rooms if defined in the current node ---
-        if "event" in self.current_node:
-            # Pass the event name to the Rooms instance's handler
-            self.rooms_instance.handle_dialogue_event(self.current_node["event"])
-
+            self.game_ref.visited_doors.add(self.dialogue_id)
         
 
 
@@ -1456,6 +1430,8 @@ class Start:    #try to call back SimpleChapterIntro
         if keys[pygame.K_l]:
             self.gameStateManager.set_state('level')
 
+            
+#make plan to change by colliderect/position of player.rect
 
 class Rooms:    # class Level in tutorial
     def __init__(self, display, gameStateManager, player, npc_manager, game_ref,screen, current_dialogue_ref, language="EN", text_size=None, bgm_vol=0.5, sfx_vol=0.5):
@@ -1485,6 +1461,7 @@ class Rooms:    # class Level in tutorial
 
         self.camera_group = CameraGroup(self.player, self.npc_manager, display)
         self.camera_group.add(self.player)
+        
         self.current_dialogue_ref = game_ref
 
         self.space_released = True
@@ -1516,13 +1493,6 @@ class Rooms:    # class Level in tutorial
 
 
     def load_room(self, room_name, facing="left"):
-        self.camera_group.empty()
-        self.camera_group.background_layer_sprites.empty()
-        self.camera_group.foreground_layer_sprites.empty()
-
-        self.camera_group.add(self.player)
-        self.screen = screen
-
         if facing == "left":
             self.player.flip = True
             self.player.direction = -1
@@ -1552,20 +1522,9 @@ class Rooms:    # class Level in tutorial
             self.background = pygame.image.load("picture/Map Art/Map clinic.png").convert_alpha()
         elif room_name == "subc.Z_01":
             self.background = pygame.image.load("picture/Map Art/P11.png").convert_alpha()
-            self.player.rect.topleft = (640, 420)
-        elif room_name == "subc.Z_02":
-            self.background = pygame.image.load("picture/Map Art/P12.png").convert_alpha()
-            self.player.rect.topleft = (640, 420)
-        elif room_name == "subc.Z_03":
-            self.background = pygame.image.load("picture/Map Art/P13.png").convert_alpha()
-            self.player.rect.topleft = (640, 400)
-        elif room_name == "subc.Z_04":
-            self.background = pygame.image.load("picture/Map Art/P14.png").convert_alpha()
-        elif room_name == "out_clinic":
-            self.background = pygame.image.load("picture/Map Art/Outside.png").convert_alpha()
 
         camera_group.set_background(self.background)
-
+    
         for obj_id, obj_info in object_data.items():
             if room_name in obj_info.get("rooms", []):
                 name = obj_info["name"]
@@ -1584,6 +1543,7 @@ class Rooms:    # class Level in tutorial
                     obj = InteractableObject(name, pos, dialogue_id, start_node, image_path=image_path_str, active=active, text=text, next_room=next_room, unlocked=unlocked)
                     interactable_objects.append(obj)
                     
+                # --- NEW: Add to the correct CameraGroup layer ---
                     if draw_layer == "background":
                         camera_group.background_layer_sprites.add(obj)
                         print(f"Added {name} to background layer.")
@@ -1595,6 +1555,8 @@ class Rooms:    # class Level in tutorial
                         print(f"Added {name} to mid layer (main group).")
                 else:
                     print(f"Warning: No image path found for object '{name}' (image_key: {image_key}). Not adding to game.")
+
+
                 print(f"SUCCESS: Loaded object: {name} for room: {room_name}")
         
         print(f"Total interactable objects loaded for {room_name}: {len(interactable_objects)}")
@@ -1607,7 +1569,6 @@ class Rooms:    # class Level in tutorial
         room_width, room_height = self.background.get_size()
         camera_group.set_limits(room_width, room_height)
 
-        
         if room_name == "subc.Z_01":
             pass
             # new_npc = NPC(300, 500, "Someone")
@@ -1675,13 +1636,12 @@ class Rooms:    # class Level in tutorial
                                 text_size=self.text_size)
                 elif isinstance(self.current_dialogue_ref.current_dialogue, ObjectDialogue):
                     pass
-
-            if keys[pygame.K_SPACE] and self.space_released: # Only consider space to start new NPC dialogue
-                self.space_released = False # Debounce
+            
+            if keys[pygame.K_SPACE] and self.space_released:
+                self.space_released = False
                 if self.current_dialogue_ref.current_dialogue:
-                #     print(f"Starting NPC dialogue with {nearest_npc.name}")
                     dialogue = self.current_dialogue_ref.current_dialogue
-
+                    
                     if isinstance(dialogue, ObjectDialogue):
                         dialogue.handle_space()
                     else:
@@ -1867,6 +1827,7 @@ class Rooms:    # class Level in tutorial
                 # Calculate screen position based on camera offset
                 screen_pos = obj.rect.topleft - camera_group.offset # Use camera_group.offset
                 self.display.blit(text_surf, (screen_pos.x - text_surf.get_width() // 2, screen_pos.y - 20))
+        
 
         # --- Draw dialogue if active ---
         if self.current_dialogue_ref.current_dialogue:
@@ -1889,29 +1850,30 @@ class Rooms:    # class Level in tutorial
 
             if self.fade_alpha >= 255:
                 # Transition complete — change room state
-                if self.next_room_after_transition:
-                    target_room = self.next_room_after_transition
-                    self.next_room_after_transition = None # Reset after use
-                else:
-                    print("Warning: Fading complete but next_room_after_transition was not set.")
-                    target_room = "room01" # Default or error state
-                                            # self.current_room = "room2"   # e.g., swap to room2
-                self.load_room(target_room)       # call a method to load new map/positions
+                self.current_room = "room2"   # e.g., swap to room2
+                self.load_room("room2")       # call a method to load new map/positions
                 self.fading = False
                 self.fade_alpha = 0
 
         # --- Trigger cutscene --- 
         if self.current_dialogue_ref.current_dialogue and self.current_dialogue_ref.current_dialogue.talking:
+            
             if isinstance(self.current_dialogue_ref.current_dialogue, dialog):
                 current_npc_name = self.current_dialogue_ref.current_dialogue.npc.name
+
                 if current_npc_name == "Dean":
                     if not self.cutscene_active:
                         self.cutscene_active = True
+
                 else:
                     self.cutscene_active = False
     
-        if self.cutscene_active and entry.get("event") == "dean_exits":
-            self.dean_exiting = True
+        if self.cutscene_active:
+            # Check if current dialogue has triggered the cutscene event
+            if isinstance(self.current_dialogue_ref.current_dialogue, dialog):
+                if self.current_dialogue_ref.current_dialogue.dean_cutscene_triggered:
+                    self.dean_exiting = True
+
         
         if self.dean_exiting:
             dean = next((npc for npc in self.npc_manager.npcs if npc.name == "Dean"), None)
@@ -1929,7 +1891,6 @@ class Rooms:    # class Level in tutorial
 class GameStateManager:
     def __init__(self, currentState):
         self.currentState = currentState
-        self.game_instance = None
     def get_state(self):
         return self.currentState
     def set_state(self, state):

@@ -2,7 +2,7 @@
     "npc_state": {
         "Dean": {
             "chapter": "chapter_1",
-            "step": 20
+            "step": 6
         },
         "Nuva": {
             "chapter": "repeat_only",
@@ -10,20 +10,16 @@
         }
     },
     "player_choices": {},
-    "flags": {},
+    "flags": {
+        "dean_cutscene_played": true
+    },
     "shown_dialogues": {
-        "Nuva_chapter_1_0": true,
-        "Nuva_chapter_1_1": true,
-        "Nuva_not_a_doctor_0": true,
-        "Nuva_not_a_doctor_1": true,
-        "Nuva_not_a_doctor_2": true,
-        "Nuva_not_a_doctor_3": true,
-        "Nuva_not_a_doctor_4": true,
-        "Nuva_not_a_doctor_5": true,
-        "Nuva_not_a_doctor_6": true,
-        "Nuva_chapter_1_common_0": true,
-        "Nuva_chapter_1_common_1": true,
-        "Nuva_chapter_1_common_2": true,
-        "Nuva_chapter_1_common_3": true
+        "Dean_chapter_1_0": true,
+        "Dean_chapter_1_1": true,
+        "Dean_chapter_1_2": true,
+        "Dean_chapter_1_3": true,
+        "Dean_chapter_1_4": true,
+        "Dean_chapter_1_5": true,
+        "Dean_chapter_1_6": true
     }
 }
