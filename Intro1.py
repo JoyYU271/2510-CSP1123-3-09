@@ -161,6 +161,8 @@ class dialog:
         self.current_node_id = start_node_id # e.g., "chapter_1", "not_a_doctor", "after_puzzle_sequence", "intro"
         self.current_dialogue_list = self._get_dialogue_list_from_node_id(self.current_node_id)
 
+        self.current_story = f"chapter_{rooms_instance.current_day}"
+
         self.current_line_index = 0
         self.talking = True
         self.typing_complete = False
@@ -305,7 +307,11 @@ class dialog:
     
     
 
-    def update(self,events): 
+    def update(self,events=None): 
+
+        if events is None:
+            events = []
+
         if self.showing_cg:
            for event in events:
                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
@@ -2317,6 +2323,9 @@ class Rooms:    # class Level in tutorial
             
             # Handle input specific to dialogue choices
             if isinstance(dialogue, dialog) and dialogue.choices_active:
+
+                dialogue.update(events) 
+
                 if keys[pygame.K_UP] and self.space_released: # Reusing space_released for debounce, consider a new flag
                     self.space_released = False
                     dialogue.selected_choice_index = max(0, dialogue.selected_choice_index - 1)
