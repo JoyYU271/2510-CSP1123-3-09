@@ -631,7 +631,7 @@ class dialog:
             next_entry_data = self.current_dialogue_list[self.current_line_index]
 
          print(f"DEBUG (dialog.handle_space): Typing complete. Attempting to advance line from index: {self.current_line_index}")
-         self.current_line_index += 1
+         
          self.current_line_data = self.get_current_line_data()
         
          print(f"DEBUG (dialog.handle_space): New current_line_index: {self.current_line_index}")
