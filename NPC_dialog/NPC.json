@@ -404,7 +404,12 @@
         {"speaker" :"player","text":"Right. Once you sign, I'll prepare the treatment.","shown": false},
         {"speaker" :"narrator","text":"(She signs without hesitation and returns the form to you.)","sound": "write_pen","shown": false},
         {"speaker" :"player","text":"(Alright, let's begin.)","shown": false},
+
+        {"event":"patient_zheng_talked_to"},
+
         {"next":"chapter_1_common"}
+
+
 
     ],
 
