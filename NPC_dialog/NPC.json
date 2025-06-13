@@ -35,10 +35,9 @@
 
         
       ]
-    },
-
-
- "Nuva":{
+    }
+  },
+  "Nuva":{
     "chapter_1":[
         {"speaker":"npc","text":"Hello! Are you the new psychologist?","shown": false},
         {"choice":[
@@ -110,9 +109,7 @@
         {"speaker" :"player","text":"......","shown": false},
         {"speaker" :"player","text":"(... Let's go find Father.)"}
     ]
- },
-
-
+  },
   "Dean":{
     "chapter_1":[
         {"speaker" :"player","text":"(So this is the clinic…...)","bgm": "bgm/talk_with_dean.mp3","shown": false},
@@ -421,5 +418,4 @@
 
     ]
   }
-}
 }
