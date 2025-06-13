@@ -33,7 +33,7 @@ flags = {}
 
 shown_dialogues = {}
 
-def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_from=None,force_chapter = None):
+def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_from=None,new_game = False):
     global screen,current_dialogue_instance,save_message_timer
 
     save_message_timer = 0
@@ -99,32 +99,41 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
     npc_manager.add_npc(patient1)
     npc_manager.add_npc(patient2)
 
+    npc_dialog_state = {}
+    for npc in npc_manager.npcs:
+       npc_dialog_state[npc.name] = dialog(
+        npc, player, all_dialogues, bgm_vol, sfx_vol,
+        cutscene_speed=3, npc_manager=npc_manager,
+        shown_dialogues=shown_dialogues)
+
     current_dialogue = None
     show_cg = False
     cg_image = None
     cg_loaded = False
 
-    if force_chapter:
-        npc_state = {}
-        flags = {}
+
+    if new_game:
+        game_chapter = 1
         player_choices = {}
+        flags = {}
         shown_dialogues = {}
-        global game_chapter
-        game_chapter = force_chapter
+        npc_state = {}
+
     elif resume_from:
-        npc_state,player_choices, resume_flags,resume_shown_dialogues = resume_from
+        npc_state, player_choices, resume_flags, resume_shown_dialogues = resume_from
         flags = resume_flags
         shown_dialogues = resume_shown_dialogues
     else:
         npc_state = {}
-
-
         previous_save = load_checkpoint()
 
         if previous_save:
             flags = previous_save.get("flags", {}).copy()
+            player_choices = previous_save.get("player_choices", {}).copy()
+            shown_dialogues = previous_save.get("shown_dialogues", {}).copy()
         else:
             flags = {}
+            game_chapter = 1
 
         player_choices = {}
         shown_dialogues = {}
@@ -133,23 +142,22 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
         for npc in npc_manager.npcs:
             if npc.name in npc_state:
                 state = npc_state[npc.name]
-                chapter = f"chapter_{game_chapter}"
-                step = 0
+                chapter = state["chapter"]
+                step = state["step"]
 
                 if npc.name == "Nuva" and chapter == "repeat_only":
                     d = dialog(npc, player, all_dialogues, bgm_vol, sfx_vol, 
                             cutscene_speed=3, npc_manager=npc_manager,
                             shown_dialogues=shown_dialogues)
-                    d.load_dialogue(npc.name, chapter, start_step=step) 
+                    d.load_dialogue(npc.name, chapter, start_step=0) 
                     d.talking = False
                     npc_dialog_state[npc.name] = d
                     current_dialogue = d
                 else:
-                    #fresh NPC initialization
                     d = dialog(npc, player, all_dialogues, bgm_vol, sfx_vol,
                             cutscene_speed=3, npc_manager=npc_manager,
                             shown_dialogues=shown_dialogues)
-                    d.load_dialogue(npc.name, f"chapter_{game_chapter}", start_step=0)
+                    d.load_dialogue(npc.name, chapter, start_step=step)
                     d.talking = False
                     npc_dialog_state[npc.name] = d
 
@@ -162,9 +170,9 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
                 if npc.name == npc_state.get("last_talking_npc", ""):
                     current_dialogue = d
 
-
     run = True
     while run:
+            frame_start = pygame.time.get_ticks()
 
             draw_bg(screen)
             backmain_button.draw(screen)   
@@ -190,6 +198,7 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
               player.update_animation(is_moving)
           
             # draw Npc n interact hint 
+         
             for npc in npc_manager.npcs:
               screen.blit(npc.image,npc.rect)
               player_pos = pygame.Vector2(player.rect.center)
@@ -204,6 +213,7 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
               if npc.dialog:
                   npc.dialog.draw(screen)
             
+            
             # draw player
             player.draw(screen)
             # update movement position
@@ -213,31 +223,44 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
 
             # key space n dialogue logic
             keys = pygame.key.get_pressed()
-            if nearest_npc or (current_dialogue and current_dialogue.talking):
-                if nearest_npc and (current_dialogue is None or current_dialogue.npc != nearest_npc):
-                    current_dialogue = dialog(nearest_npc, player, all_dialogues, bgm_vol, sfx_vol)
-                    current_dialogue_instance = current_dialogue
+
+            #Main Ending finished jump to main Menu (with fade effect)
+            if current_dialogue and current_dialogue.ready_to_quit:
                 
-                if keys[pygame.K_SPACE] and space_released:
-                    space_released = False
-                    if current_dialogue:
-                        current_dialogue.handle_space(keys)
+                   fade_to_main(screen)
+                   pygame.mixer.music.stop()
+                   return
+                
+            if nearest_npc and keys[pygame.K_SPACE] and space_released:
+                if nearest_npc.name not in npc_dialog_state:
+                     new_dialogue = dialog(nearest_npc,player,all_dialogues,bgm_vol,sfx_vol)
+                     npc_dialog_state[nearest_npc.name] = new_dialogue
+     
+            space_released = False
+                    
+            current_dialogue = npc_dialog_state[nearest_npc.name]
+            current_dialogue_instance = current_dialogue
+            current_dialogue.handle_space(keys)
 
-                if current_dialogue:
-                    current_dialogue.handle_option_selection(keys)
+            if current_dialogue:
+                current_dialogue.handle_option_selection(keys)
 
-                if not keys[pygame.K_SPACE]:
-                    space_released = True
+            if not keys[pygame.K_SPACE]:
+                space_released = True
 
-            elif current_dialogue:
-                current_dialogue.talking = False
-                current_dialogue.options = []
+            #elif current_dialogue:
+                #current_dialogue.talking = False
+                #current_dialogue.options = []
             
             # update n draw cuurent dialogue
             if current_dialogue and current_dialogue.talking:
                 current_dialogue.update(events)
+                if current_dialogue.ready_to_quit:
+                    fade_to_main(screen)
+                    pygame.mixer.mixer_music.stop()
+                    return
                 current_dialogue.draw(screen)
-
+          
             # chapter Ending n CG load display
             if current_dialogue and current_dialogue.chapter_end and not cg_loaded :
               if "cg" in current_dialogue.entry:
@@ -258,36 +281,13 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
                         print("Dean has exited the screen.")
                         
 
-            if nearest_npc and (current_dialogue is None or current_dialogue.npc != nearest_npc):
-                if nearest_npc and (current_dialogue is None or current_dialogue.npc != nearest_npc):
-                    if nearest_npc.name in npc_dialog_state:
-                        current_dialogue = npc_dialog_state[nearest_npc.name] 
-                    else:
-                        current_dialogue = dialog(
-                            nearest_npc,
-                            player, 
-                            all_dialogues, 
-                            bgm_vol, 
-                            sfx_vol, 
-                            cutscene_speed=3, 
-                            npc_manager=npc_manager,
-                            shown_dialogues=shown_dialogues
-                        )
-                        npc_dialog_state[nearest_npc.name] = current_dialogue 
-
+            
             if save_message_timer > 0:
                 save_message_timer -= 1
                 font = pygame.font.SysFont('Arial', 40)
                 save_text = font.render("Game Saved", True, (0, 255, 0)) 
                 screen.blit(save_text, (50, screen.get_height() - 700))
 
-
-            
-            #Main Ending finished jump to main Menu (with fade effect)
-            if current_dialogue and current_dialogue.ready_to_quit:
-                fade_to_main(screen)
-                pygame.mixer.music.stop()
-                return
 
             pygame.display.update()
             clock.tick(FPS)
@@ -296,6 +296,7 @@ def run_dialogue(text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_fro
 
 #============ Dialogue System =============
 class dialog:
+
     def __init__(self,npc,player,all_dialogues,bgm_vol=0.5,sfx_vol=0.5):
         super().__init__()
         
@@ -337,7 +338,7 @@ class dialog:
         self.npc_data = self.all_dialogues.get(self.npc_name)
 
          #dialogue state variacbles
-        self.current_story =  f"chapter_{game_chapter}" 
+        self.current_story = f"chapter_{game_chapter}" #default chapter
         self.story_data = self.npc_data.get(self.current_story,[])
         self.step = 0 # present current sentence
         global shown_dialogues
@@ -363,6 +364,7 @@ class dialog:
         self.finished = True
 
         self.cg_shown = False
+
         self.ready_to_quit = False
        
 
@@ -472,8 +474,7 @@ class dialog:
                     step=self.step,
                     player_choices=player_choices,
                     flags=flags,
-                    shown_dialogues=self.shown_dialogues
-                )
+                    shown_dialogues=self.shown_dialogues)
 
 
                    if self.npc_manager:
@@ -489,14 +490,17 @@ class dialog:
                      self.displayed_text += text[self.letter_index]
                      self.letter_index += 1
                      self.last_time = current_time
-
+        
+        print(f"Checking if entry is ending type...")
+        print("ENDING DETECTED!")
         if isinstance(self.entry,dict) and self.entry.get("type") == "ending":
-            self.chapter_end = True    
+            self.chapter_end = True   
 
             global game_chapter
             # final chapter 
             if game_chapter >= 3:   
-               self.ready_to_quit = True
+                self.ready_to_quit = True
+                print(f"Main ending reached! ready_to_quit set to True") 
             else:
                 # next chapter
                 self.fade(screen , fade_in=True)
@@ -505,7 +509,8 @@ class dialog:
                 self.talking = False
                 self.chapter_end = False
                 self.current_story = f"chapter_{game_chapter}"
-                self.story_data = self.npc_data.get(self.current_story)
+                self.story_data = self.npc_data.get(self.current_story,[])
+                print(f"Moving to chapter {game_chapter}") 
                 
             ending_key = self.current_story 
             flags[f"ending_unlocked_{ending_key}"] = True

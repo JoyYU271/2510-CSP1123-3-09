@@ -2,7 +2,8 @@ import pygame
 import sys
 import Dialogue1
 import character_movement
-from Dialogue1 import run_dialogue
+from Dialogue1 import run_dialogue  
+from Dialogue1 import game_chapter
 from ui_components import Button, get_font
 from save_system import save_checkpoint, load_checkpoint
 import Intro1
@@ -81,6 +82,11 @@ def main_menu():
                     click_sound.play()
                     
                     pygame.mixer.music.stop()
+                    global game_chapter
+                    game_chapter = 1
+                    Dialogue1.player_choices = {}
+                    Dialogue1.flags = {}
+                    Dialogue1.shown_dialogues = {}
 
                     # run intro
                     intro_game = Intro1.Game(language=current_language,text_size=current_font_size,bgm_vol=bgm_vol,sfx_vol=sfx_vol)
@@ -89,11 +95,8 @@ def main_menu():
                     def after_intro():
                         print("after intro, enter level")
                         intro_game.gameStateManager.set_state('level')
-                        # Force chapter 1 when starting new game
-                        run_dialogue( text_size=current_font_size,language=current_language,bgm_vol=bgm_vol,sfx_vol=sfx_vol,force_chapter=1 )
-
-
-
+                       
+                        
                     intro_game.intro.completed_callback = after_intro
                     intro_game.intro.start("chapter_1", completed_callback=after_intro)
                     intro_game.gameStateManager.set_state('intro')
