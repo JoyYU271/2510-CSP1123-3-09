@@ -1722,7 +1722,9 @@ class Game:
                            language=self.language,
                            text_size=self.text_size,
                            bgm_vol=self.bgm_vol,
-                           sfx_vol=self.sfx_vol)
+                           sfx_vol=self.sfx_vol
+                           )
+        
         
         #self.intro.completed_callback = lambda: self.gameStateManager.set_state('level')
 
@@ -1842,6 +1844,7 @@ class Start:    #try to call back SimpleChapterIntro
         self.text_size = text_size
         self.bgm_vol = bgm_vol
         self.sfx_vol = sfx_vol
+        
 
     def run(self):
         self.display.fill('blue')
@@ -1870,6 +1873,10 @@ class Rooms:    # class Level in tutorial
         self.text_size = text_size
         self.bgm_vol = bgm_vol
         self.sfx_vol = sfx_vol
+        
+        self.backmain_img = pygame.image.load("backmain.png").convert_alpha()
+        self.backmain_button = Button(image=self.backmain_img, pos=(1100, 80), scale=0.2)
+        
 
         if self.language == "CN":
             dialogue_file = "NPC_dialog/NPC_CN.json"
@@ -2394,6 +2401,8 @@ class Rooms:    # class Level in tutorial
 
         
         camera_group.custom_draw(self.player)
+
+        self.backmain_button.draw(self.display)
         
         # --- Display "Press Q to interact" text ---
         if near_obj:
