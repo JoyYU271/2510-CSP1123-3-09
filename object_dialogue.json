@@ -14,9 +14,17 @@
   },
 
   "door02_dialogue":{
-    "locked":[
-      {"text": "The Dean's office."},
+    "door02_locked_dialogue":[
       {"text": "It's locked."}
+    ],
+    "door02_unlocked_dialogue": [
+      {"text": "(You gave a light knock and the door moved open.)"},
+      {"speaker": "player", "text": "(It's not closed?!)"},
+      {"text": "There's no one inside."},
+      {"text": "It was a bit intrusive to enter someone's room without permission,"},
+      {"text": "but the higher-dimensional existence wanted you to step in and advance the plot,"},
+      {"text": "so you went in."},
+      {"event": "open_door_event"}
     ]
   },
 
@@ -397,6 +405,35 @@
     "start": [
       {"text": "A stiff bed."},
       {"text": "(... It's familiar?)"}
+    ]
+  },
+
+  "dean_desk_dialogue": {
+    "start": [
+      {"text": "A stack of papers on the table catches your attention)"},
+      {"text": "You recognized the papers immediately--"},
+      {"speaker": "player", "text": "(The reports from Ms. Zheng's memory!)"},
+      {"text": "You have read through most of them already, which were all past reports of hypnosis therapy results."},
+      {"text": "But one report catches your eye—the patient section bears a familiar name: Zheng."},
+      {"text": "Unlike the other reports that were all marked as failures, hers is listed as a success."},
+      {"speaker": "player", "text": "(Wasn't Ms. Zheng just an assistant? She was involved too?)"},
+      {"text": "You shuffled through the stack and found reports with the most recent dates."},
+      {"speaker": "player", "text": "(This experiment... is still ongoing.)"},
+      {"text": "The results of these reports seem better than previous ones. But even if not all ended in failure, the consequences described were frightening."},
+      {"speaker": "player", "text": "(Is it still called a 'therapy' if it causes harm to the patients?"},
+      {"text": "You rubbed your forehead and looked away."},
+      {"text": "Your eyes land on the bookshelves in the room and you notice a small gap in between them."},
+      {"speaker": "player", "text": "(... It's not like there's some 'secret room' behind there right?)"}
+    ]
+  },
+
+  "bookshelves_dialogue": {
+    "start": [
+      {"text": "You push against the bookshelves, and gradually, the gap widens."},
+      {"text": "Within the gap is, what appears to be, a staircase, going downwards into the darkness below."},
+      {"speaker": "player", "text": "..."},
+      {"text": "(... Guess we're doing this.)"},
+      {"event": "open_door_event"}
     ]
   }
 }

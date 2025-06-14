@@ -538,7 +538,7 @@
     ],
 
 
-    "after_puzzle":[
+    "after_puzzle_sequence":[
         {"speaker" :"narrator","text":"(She entered a clinic)","shown": false},
         {"speaker" :"narrator","text":"(You find the place familiar)","shown": false},
         {"speaker" :"narrator","text":"(Familiar notice board, familiar front desk, familiar structure...)","shown": false},
@@ -597,8 +597,8 @@
         {"speaker" :"narrator","text":"?: Emma, there's an upcoming press conference that you'll be attending.","shown": false},
         {"speaker" :"npc","text":"Alright, tell me the details.","shown": false},
         {"speaker" :"npc","text":" (This is fine.)","shown": false},
-        {"speaker" :"npc","text":"(It was worth it to no longer wake up screaming at night.)","shown": false}
-
+        {"speaker" :"npc","text":"(It was worth it to no longer wake up screaming at night.)","shown": false},
+        {"event": "day_end_and_intro_next_day"}
     ],
 
     "back_reality_keep2":[
@@ -621,8 +621,8 @@
         {"speaker" :"npc","text":"(... It's okay, take it easy. Just like the first time I walked the runway.)","shown": false},
         {"speaker" :"narrator","text":"(The car started up and drove out. The sunlight shone its comforting warmth on the steering wheel.)","shown": false},
         {"speaker" :"npc","text":"(The nightmares may not be gone)","shown": false},
-        {"speaker" :"npc","text":"(But for today, I have overcome it.)","shown": false}
-     
+        {"speaker" :"npc","text":"(But for today, I have overcome it.)","shown": false},
+        {"event": "day_end_and_intro_next_day"}
     ]
   }
 }
