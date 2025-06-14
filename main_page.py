@@ -14,7 +14,7 @@ pygame.init() #initialize all import pygame modules
 pygame.mixer.init()
 
 screen_width = 1280
-screen_height = 720
+screen_height = 720 
 
 screen = pygame.display.set_mode((screen_width, screen_height))#pygame.FULLSCREEN)
 pygame.display.set_caption("main page test")
@@ -24,7 +24,7 @@ bg_img = pygame.image.load("main page/Menu Page.png").convert() #converts is for
 bg_img = pygame.transform.scale(bg_img, (screen_width, screen_height))
 
 #button image
-start_img = pygame.image.load('main page/start.png').convert_alpha() #alpha is use to keep transparent background
+start_img = pygame.image.load('main page/start.png'). convert_alpha() #alpha is use to keep transparent background
 load_img = pygame.image.load('main page/load.png').convert_alpha()
 collections_img = pygame.image.load('main page/collections.png').convert_alpha()
 settings_img = pygame.image.load('main page/settings.png').convert_alpha()
@@ -91,7 +91,7 @@ def main_menu():
                     # run intro
                     intro_game = Intro1.Game(language=current_language,text_size=current_font_size,bgm_vol=bgm_vol,sfx_vol=sfx_vol)
                     
-
+ 
                     def after_intro():
                         print("after intro, enter level")
                         intro_game.gameStateManager.set_state('level')
@@ -102,6 +102,8 @@ def main_menu():
                     intro_game.gameStateManager.set_state('intro')
                     intro_game.run()
 
+                    
+ 
 
                     # back main page music
                     pygame.mixer.music.load("bgm/main page.mp3")
@@ -204,12 +206,12 @@ def collections_screen():
     #group endings follow character
     grouped_endings = [
         ("Zheng's Endings", [
-            ("The Routine Life", show_zheng_routine_life if unlocked_endings.get("unlocked_zheng_routine") else None),
-            ("Rediscovered Dreams", show_zheng_dreams if unlocked_endings.get("unlocked_zheng_dreams") else None)
+            ("The Routine Life", show_zheng_routine_life),
+            ("Rediscovered Dreams", show_zheng_dreams)
         ]),
         ("Emma's Endings", [
-            ("Blissful Emptiness", show_emma_bliss if unlocked_endings.get("unlocked_emma_bliss") else None),
-            ("Living Despite Fear", show_emma_fear if unlocked_endings.get("unlocked_emma_fear") else None)
+            ("Blissful Emptiness", show_emma_bliss),
+            ("Living Despite Fear", show_emma_fear)
         ]),
         ("Player's Endings", [
             ("Ship of Theseus", show_player_ship if unlocked_endings.get("ending_unlocked_Ship_of_Theseus") else None),
@@ -357,7 +359,7 @@ def show_cg_gallery(image_paths):
             (start_x, y1), (start_x + thumbnail_size[0] + spacing_x, y1),
             (start_x, y2), (start_x + thumbnail_size[0] + spacing_x, y2),
             (screen_width // 2 - thumbnail_size[0] // 2, y3)
-        ]
+          ]
     else:
         print("Unsupported number of CGs for layout.")
         return
@@ -588,6 +590,7 @@ def settings_screen():
         pygame.display.update()
 
 main_menu()
+
 
 
 
