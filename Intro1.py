@@ -82,8 +82,10 @@ print("-------------------------------------------\n")
 with open("objects.json", "r") as f:
     object_data = json.load(f)
 
-with open("object_dialogue.json", "r", encoding="utf-8") as f:
-    object_dialogue = json.load(f)
+# placeholder: will be reassigned inside Game class based on language
+object_dialogue = {}
+
+
 
 with open("NPC_data.json") as f:
     npc_data = json.load(f)
@@ -1530,6 +1532,16 @@ class ObjectDialogue:  # very confused
 class Game:
     def __init__(self,text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_from=None):
         pygame.init()
+
+        self.language = language
+        self.text_size = text_size
+        self.bgm_vol = bgm_vol
+        self.sfx_vol = sfx_vol
+        
+        object_dialogue_path = "object_dialogue_cn.json" if self.language == "CN" else "object_dialogue.json"
+        with open(object_dialogue_path, "r", encoding="utf-8") as f:
+            self.object_dialogue = json.load(f)
+
         self.clock = pygame.time.Clock()
         self.screen = screen
         self.player = player
@@ -1539,11 +1551,6 @@ class Game:
         self._pending_room = None
         self._fading = False
         self._fade_alpha = 0
-
-        self.language = language
-        self.text_size = text_size
-        self.bgm_vol = bgm_vol
-        self.sfx_vol = sfx_vol
 
         self.current_dialogue_ref = self  # or an empty helper class if preferred
         self.current_dialogue = None
