@@ -1,0 +1,40 @@
+{
+  "zheng_npc_id": {
+    "name": "Zheng",
+    "position": [800, 550], 
+    "dialogue_id": "Zheng",             
+    "rooms": ["Player_room"],           
+    "draw_layer": "mid_layer",
+    "days": [1]           
+  },
+
+  "dean_npc_id":{
+    "name":"Dean",
+    "position" : [400,520],
+    "dialogue_id" :"Dean",
+    "draw_layer":"mid_layer",
+    "days": [1, 2, 3],
+    "day_specific_locations" : {
+      "1": {"room": "room01", "position": [400, 520]},
+      "2": {"room": "Dean_room", "position": [400, 520]},
+      "3": {"room": "basement", "position": [800, 520]}
+    } 
+  },
+
+  "nuva_npc_id":{
+    "name":"Nuva",
+    "position":[840,520],
+    "dialogue_id" : "Nuva",
+    "rooms":["room01"],
+    "draw_layer":"mid_layer"
+  },
+
+  "emma_npc_id":{
+    "name":"Emma",
+    "position":[],
+    "dialogue_id" : "Emma",
+    "rooms":["Player_room"],
+    "draw_layer": "mid_layer",
+    "days": [2]  
+  }
+}
