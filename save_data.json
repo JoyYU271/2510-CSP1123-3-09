@@ -1,0 +1,15 @@
+{
+    "npc_state": {
+        "Dean": {
+            "chapter": "chapter_3",
+            "step": 6
+        },
+        "Zheng": {
+            "chapter": "chapter_3",
+            "step": 9
+        }
+    },
+    "player_choices": {},
+    "flags": {},
+    "shown_dialogues": {}
+}

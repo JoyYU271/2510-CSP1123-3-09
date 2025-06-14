@@ -204,12 +204,12 @@ def collections_screen():
     #group endings follow character
     grouped_endings = [
         ("Zheng's Endings", [
-            ("The Routine Life", show_zheng_routine_life),
-            ("Rediscovered Dreams", show_zheng_dreams)
+            ("The Routine Life", show_zheng_routine_life if unlocked_endings.get("unlocked_zheng_routine") else None),
+            ("Rediscovered Dreams", show_zheng_dreams if unlocked_endings.get("unlocked_zheng_dreams") else None)
         ]),
         ("Emma's Endings", [
-            ("Blissful Emptiness", show_emma_bliss),
-            ("Living Despite Fear", show_emma_fear)
+            ("Blissful Emptiness", show_emma_bliss if unlocked_endings.get("unlocked_emma_bliss") else None),
+            ("Living Despite Fear", show_emma_fear if unlocked_endings.get("unlocked_emma_fear") else None)
         ]),
         ("Player's Endings", [
             ("Ship of Theseus", show_player_ship if unlocked_endings.get("ending_unlocked_Ship_of_Theseus") else None),
@@ -588,7 +588,6 @@ def settings_screen():
         pygame.display.update()
 
 main_menu()
-
 
 
 

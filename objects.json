@@ -28,16 +28,12 @@
     "position": [1750, 263],
     "image": "Door01",
     "dialogue_id": "door02_dialogue",
-    "start_node": "door_locked",
-    "rooms": ["room01"],
-    "draw_layer": "background",
+    "start_node": "start",
     "active": true,
     "unlocked": false,
-    "unloakd_day": 3,
-    "node_if_locked": "door02_locked_dialogue",
-    "node_if_unlocked": "door02_unlocked_dialogue",
     "next_room": "Dean_room",
-    "has_dialogue": true
+    "rooms": ["room01"],
+    "draw_layer": "background"
   },
   
   "board":{
@@ -57,18 +53,14 @@
     "image": "Machine",
     "dialogue_id": "machine_dialogue",
     "start_node": "initial",
-    "rooms": ["Player_room"],
-    "draw_layer": "background",
-    "next_room": "subc.DEFAULT_ROOM",
-    "day_specific_next_room": {
-      "1": "subc.Z_01",
-      "2": "subc.E_01"
-    },
     "conditional_dialogue_flag": "patient_zheng_talked_to",
     "node_if_locked": "locked_machine_node",
     "node_if_unlocked": "unlocked_machine_node",
     "active": true,
-    "has_dialogue": true
+    "rooms": ["Player_room"],
+    "draw_layer": "background",
+
+    "next_room": "subc.Z_01"
   },
 
   "computer": {
@@ -229,188 +221,5 @@
     "rooms": ["out_clinic"],
     "draw_layer": "background",
     "next_room": "room01"
-  },
-
-  "chest": {
-    "name": "Clothes chest",
-    "position": [500, 500],
-    "image": "Chest",
-    "dialogue_id": "exitE01_dialogue",
-    "start_node": "start",
-    "active": true,
-    "rooms": ["subc.E_01"],
-    "draw_layer": "mid_layer",
-    "next_room": "subc.E_02"
-  },
-
-  "poster": {
-    "name": "Wall advertisement",
-    "position": [640, 10],
-    "image": "Poster",
-    "dialogue_id": "poster_dialogue",
-    "start_node": "start",
-    "active": true,
-    "rooms": ["subc.E_01"],
-    "draw_layer": "background"
-  },
-
-  "dresser": {
-    "name": "Makeup Dresser",
-    "position": [1000, 300],
-    "image": "Dresser",
-    "dialogue_id": "dresser_dialogue",
-    "start_node": "start",
-    "active": true,
-    "rooms": ["subc.E_01"],
-    "draw_layer": "background"
-  },
-
-  "paint_roller": {
-    "name": "Paint roller",
-    "position": [50, 500],
-    "image": "Paint_roller",
-    "dialogue_id": "paint_roll_dialogue",
-    "start_node": "start",
-    "active": true,
-    "rooms": ["subc.E_01"],
-    "draw_layer": "background"
-  },
-
-  "curtains": {
-    "name": "Stage curtains",
-    "position": [1000, 500],
-    "image": "Curtains",
-    "dialogue_id": "exitE02_dialogue",
-    "start_node": "start",
-    "active": true,
-    "rooms": ["subc.E_02"],
-    "draw_layer": "background",
-    "next_room": "subc.E_03.1"
-  },
-
-  "dress": {
-    "name": "Tailored dress",
-    "position": [600, 400],
-    "image": "Torn_dress",
-    "dialogue_id": "dress_dialogue",
-    "start_node": "start",
-    "rooms": ["subc.E_02"],
-    "draw_layer": "background"
-  },
-
-  "vanity01": {
-    "name": "Vanity (Right)",
-    "position": [200, 400],
-    "image": "Vanity01",
-    "dialogue_id": "vanity01_dialogue",
-    "start_node": "start",
-    "active": true,
-    "rooms": ["subc.E_02"],
-    "draw_layer": "background"
-  },
-
-  "vanity02": {
-    "name": "Vanity (Left)",
-    "position": [100, 400],
-    "image": "Vanity02",
-    "dialogue_id": "vanity)2_dialogue",
-    "start_node": "start",
-    "active": true,
-    "rooms": ["subc.E_02"],
-    "draw_layer": "background"
-  },
-
-  "car": {
-    "name": "Fancy car",
-    "position": [1000, 420],
-    "image": "Car",
-    "dialogue_id": "exitE03.1_dialogue",
-    "start_node": "start",
-    "active": true,
-    "rooms": ["subc.E_03.1"],
-    "draw_layer": "background",
-    "next_room": "subc.E_04"
-  },
-
-  "welcome_mat": {
-    "name": "Welcome mat",
-    "position": [60,500],
-    "image": "Welcome_mat",
-    "dialogue_id": "exitE03.1_dialogue",
-    "start_node": "none",
-    "has_dialogue": false,
-    "active": true,
-    "rooms": ["subc.E_03.1"],
-    "draw_layer": "background",
-    "next_room": "subc.E_03.2"
-  },
-
-  "house_mat": {
-    "name": "House mat",
-    "position": [1000, 500],
-    "image": "House_mat",
-    "dialogue_id": "none",
-    "start_node": "none",
-    "has_dialogue": false,
-    "active": true,
-    "rooms": ["subc.E_03.2"],
-    "draw_layer": "background",
-    "next_room": "subc.E_03.1"
-  },
-
-  "clothes_rack": {
-    "name": "Clothes rack",
-    "position": [600, 500],
-    "image": "Clothes_rack",
-    "dialogue_id": "clothes_r_dialogue",
-    "start_node": "start",
-    "active": true,
-    "rooms": ["subc.E_03.2"],
-    "draw_layer": "background"
-  },
-
-  "piano": {
-    "name": "Wall piano",
-    "position": [400, 500],
-    "image": "Piano",
-    "dialogue_id": "piano_dialogue",
-    "start_node": "start",
-    "active": true,
-    "rooms": ["subc.E_03.2"],
-    "draw_layer": "background"
-  },
-
-  "dream_door": {
-    "name": "Bedroom door",
-    "position": [400, 500],
-    "image": "Dream_door",
-    "dialogue_id": "beddoor_dialogue",
-    "start_node": "start",
-    "active": true,
-    "rooms": ["subc.E_04"],
-    "draw_layer": "background",
-    "next_room": "subc.E_05"
-  },
-
-  "pill_bottle": {
-    "name": "Pill bottle",
-    "position": [500, 700],
-    "image": "Pill_bottle",
-    "dialogue_id": "pillb_dialogue",
-    "start_node": "start",
-    "active": true,
-    "rooms": ["subc.E_04"],
-    "draw_layer": "background"
-  },
-
-  "coat": {
-    "name": "Coat",
-    "position": [100, 400],
-    "image": "Coat",
-    "dialogue_id": "coat_dialogue",
-    "start_node": "start",
-    "active": true,
-    "rooms": ["subc.E_04"],
-    "draw_layer": "background"
   }
 }

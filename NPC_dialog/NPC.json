@@ -12,7 +12,7 @@
         
       ],
       "chapter_2":[
-          {"speaker" :"narrator","text":"Today is a new day.","shown": false},
+          {"speaker" :"narrator","text":"Today is a new day.","bgm": "bgm/intro.mp3","shown": false},
           {"speaker" :"narrator","text":"(You arrived early today again, so there is almost no one in the clinic.)","shown": false},
           {"speaker" :"narrator","text":"......","shown": false}
 

@@ -8,6 +8,8 @@ from shared import CameraGroup
 import os
 from ui_components import Button, get_font
 from save_system import save_checkpoint, load_checkpoint
+#from main_page import main_menu
+import Dialogue1
 
 
 screen = None
@@ -393,6 +395,19 @@ class Dialog:
             if "event" in self.current_line_data:
                 event_name = self.current_line_data["event"]
                 # Handle specific events
+
+                if event_name == "day_end_and_intro_next_day":
+                    save_checkpoint(
+                        npc_name=self.npc_name,
+                        chapter=f"chapter_{game_chapter}",
+                        step=self.current_line_index,
+                        player_choices=player_choices,
+                        flags=flags,
+                        shown_dialogues=self.shown_dialogues
+                    )
+
+
+
                 if event_name == "dean_exit_cutscene":
                     flags["dean_cutscene_played"] = True
                     self.dean_cutscene_triggered = True 
@@ -413,6 +428,30 @@ class Dialog:
             # Handle "ending" type directly in handle_space
             if self.current_line_data.get("type") == "ending":
                 self.chapter_end = True   
+
+                ending_key = self.current_node_id
+
+                # Detect ending from known sub_end nodes
+                if ending_key in ["sub_end_1"]:
+                    flags["unlocked_zheng_dreams"] = True
+                elif ending_key in ["sub_end_2"]:
+                    flags["unlocked_zheng_routine"] = True
+                elif ending_key == "zheng_destroy":
+                    flags["unlocked_zheng_dreams"] = True
+                elif ending_key == "zheng_preserve":
+                    flags["unlocked_zheng_routine"] = True
+                elif ending_key == "emma_destroy":
+                    flags["unlocked_emma_fear"] = True
+                elif ending_key == "emma_preserve":
+                    flags["unlocked_emma_bliss"] = True
+                elif ending_key == "Justice_Served":
+                    flags["ending_unlocked_Justice_Served"] = True
+                elif ending_key == "Ship_of_Theseus":
+                    flags["ending_unlocked_Ship_of_Theseus"] = True
+                elif ending_key == "Rebirth_of_the_Dual_Soul":
+                    flags["ending_unlocked_Rebirth_of_the_Dual_Soul"] = True
+
+
 
                 global current_day
                 if current_day >= 3:   
@@ -1571,7 +1610,8 @@ class Game:
                            language=self.language,
                            text_size=self.text_size,
                            bgm_vol=self.bgm_vol,
-                           sfx_vol=self.sfx_vol
+                           sfx_vol=self.sfx_vol,
+                           npc_name=self.current_npc_name,
                            )
         
         
@@ -1722,7 +1762,9 @@ class Game:
             self.clock.tick(FPS)
 
 class Start:    #try to call back SimpleChapterIntro
-    def __init__(self, display, gameStateManager, intro, language="EN", text_size=None, bgm_vol=0.5, sfx_vol=0.5):
+    def __init__(self, display, gameStateManager, intro, npc_name,language="EN", text_size=None, bgm_vol=0.5, sfx_vol=0.5):
+        self.npc_name = npc_name
+        
         self.display = display
         self.gameStateManager = gameStateManager
         self.intro = intro
@@ -2074,11 +2116,25 @@ class Rooms:    # class Level in tutorial
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left mouse button
                 if self.backmain_button.checkForInput(mouse_pos):
-                    print("Back to main menu clicked!")
-                    click_sound.play()
-                    pygame.mixer.music.stop()
-                    fade_to_main(screen)  # 这是你定义好的函数，真正做了退出章节并重开 main_page.py
-                    return
+                        from save_system import save_checkpoint
+                        import Dialogue1
+
+                        save_checkpoint(
+                            npc_name=self.npc_name,
+                            chapter=f"chapter_{game_chapter}",
+                            step=0,
+                            player_choices=Dialogue1.player_choices,
+                            flags=Dialogue1.flags,
+                            shown_dialogues=Dialogue1.shown_dialogues
+                        )
+
+                    
+                        pygame.mixer.music.stop()
+
+                        self.gameStateManager.set_state("start")
+                       # pygame.display.quit()
+
+                     #   main_menu()
 
         if not keys[pygame.K_SPACE]:
             self.space_released = True
