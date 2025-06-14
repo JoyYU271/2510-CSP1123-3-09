@@ -1315,7 +1315,8 @@ image_path = {
             "Mirror": "Object_image/exit_E05.png",
             "Medbed": "Object_image/E05_Random.png",
             "Dean_desk": "Object_image/D_Key.png",
-            "Bookshelves": "Object_image/D_Lock.png"
+            "Bookshelves": "Object_image/D_Lock.png",
+            "Player_door": "Object_image/P_path.png"
         }
 
 class InteractableObject(pygame.sprite.Sprite):
@@ -1665,14 +1666,25 @@ class Game:
                                         text_size=text_size,
                                         bgm_vol=bgm_vol,
                                         sfx_vol=sfx_vol)
+     
+ 
         self.start = Start(self.screen, self.gameStateManager, self.intro,language = language,text_size = text_size,bgm_vol = bgm_vol,sfx_vol = sfx_vol)
-        self.level = Rooms(self.screen, self.gameStateManager, self.player, self.npc_manager, self, self.screen, self.current_dialogue_ref,
-                           language=self.language,
-                           text_size=self.text_size,
-                           bgm_vol=self.bgm_vol,
-                           sfx_vol=self.sfx_vol
-                           )
         
+        self.current_dialogue_ref = self
+
+        self.level = Rooms(
+            self.screen,
+            self.gameStateManager,
+            self.player,
+            self.npc_manager,
+            self,                           
+            self.screen,
+            self.current_dialogue_ref,      
+            language=self.language,
+            text_size=self.text_size,
+            bgm_vol=self.bgm_vol,
+            sfx_vol=self.sfx_vol
+        )
         
         #self.intro.completed_callback = lambda: self.gameStateManager.set_state('level')
 
@@ -1846,12 +1858,17 @@ class Start:    #try to call back SimpleChapterIntro
 
 class Rooms:    # class Level in tutorial
     def __init__(self, display, gameStateManager, player, npc_manager, game_ref,screen, current_dialogue_ref, language="EN", text_size=None, bgm_vol=0.5, sfx_vol=0.5):
+        
+        self.current_dialogue_ref = current_dialogue_ref 
+
         self.display = display
         self.gameStateManager = gameStateManager
 
         self.player = player
         self.npc_manager = npc_manager
         self.screen = screen
+        
+        self.game_instance = game_ref 
         
         self.current_dialogue_ref = current_dialogue_ref
 
@@ -1876,7 +1893,7 @@ class Rooms:    # class Level in tutorial
         camera_group = CameraGroup(self.player, self.npc_manager, display)
         camera_group.add(self.player)
         
-        self.current_dialogue_ref = None
+      #  self.current_dialogue_ref = None
 
         self.space_released = True
         self.q_released = True
@@ -1914,6 +1931,8 @@ class Rooms:    # class Level in tutorial
         
         npc_manager.npcs.clear()
         self.load_room(self.current_room)
+
+
 
 
     def advance_day(self):
@@ -2078,7 +2097,9 @@ class Rooms:    # class Level in tutorial
                 location_data = day_specific_locations[current_day_str]
                 target_room_for_today = location_data.get("room")
                 effective_position = location_data.get("position")
-
+                print(f"DEBUG ROOM COMPARE: current_room_name='{room_name}', target_room_for_today='{target_room_for_today}'")
+                print(f"DEBUG ROOM COMPARE: types: current_room_name={type(room_name)}, target_room_for_today={type(target_room_for_today)}")
+                
                 if room_name == target_room_for_today:
                     npc_appears_in_current_room_today = True
                     print(f"DEBUG: {name} has day-specific location for Day {self.current_day}: Room={target_room_for_today}, Pos={effective_position}")
@@ -2273,7 +2294,12 @@ class Rooms:    # class Level in tutorial
         
 
         # --- Movement ---
-        if  self.current_dialogue_ref is None or not self.current_dialogue_ref.talking:
+        if (
+            self.current_dialogue_ref is None or
+            self.current_dialogue_ref.current_dialogue is None or
+            not self.current_dialogue_ref.current_dialogue.talking
+        ):
+
             is_moving = self.player.move(moving_left,moving_right)
         else:
             is_moving = False
@@ -2298,7 +2324,7 @@ class Rooms:    # class Level in tutorial
 
                 # Check if the object has dialogue before creating ObjectDialogue ---
                 if obj_to_interact.has_dialogue:
-                    if self.current_dialogue_ref.current_dialogue is None or not self.current_dialogue_ref.current_dialogue.talking:
+                    if self.game_instance.current_dialogue is None or not self.current_dialogue_ref.current_dialogue.talking:
                         # --- FIX: Let ObjectDialogue determine its start node ---
                         temp_obj_dialogue = ObjectDialogue(
                             obj_to_interact, 
@@ -2367,7 +2393,8 @@ class Rooms:    # class Level in tutorial
         # This is the dialogue instance that will be updated and have its input handled.
         dialogue_instance_at_frame_start = None
         if self.current_dialogue_ref is not None:
-            dialogue_instance_at_frame_start = self.current_dialogue_ref
+            dialogue_instance_at_frame_start = self.current_dialogue_ref.current_dialogue
+
         
         if dialogue_instance_at_frame_start and dialogue_instance_at_frame_start.talking:
             pass
@@ -2456,7 +2483,12 @@ class Rooms:    # class Level in tutorial
              #   self.current_dialogue_ref.current_dialogue.update()
 
 
-            self.current_dialogue_ref.draw(self.display)
+            if (
+                self.current_dialogue_ref is not None and
+                self.current_dialogue_ref.current_dialogue is not None
+            ):
+                self.current_dialogue_ref.current_dialogue.draw(self.display)
+
     
         # --- Handle fade-to-black transition ---
         if self.fading:
@@ -2515,10 +2547,20 @@ class Rooms:    # class Level in tutorial
         # --- Draw dialogue if active ---
         if self.current_dialogue_ref:
             #self.current_dialogue_ref.current_dialogue.update()
-            self.current_dialogue_ref.draw(self.display)
+            if (
+                self.current_dialogue_ref is not None and
+                self.current_dialogue_ref.current_dialogue is not None
+            ):
+                self.current_dialogue_ref.current_dialogue.draw(self.display)
+
 
         # --- Trigger cutscene --- 
-        if self.current_dialogue_ref and self.current_dialogue_ref.talking:
+        if (
+            self.current_dialogue_ref and
+            self.current_dialogue_ref.current_dialogue and
+            self.current_dialogue_ref.current_dialogue.talking
+        ):
+
             
             if isinstance(self.current_dialogue_ref, dialog):
                 current_npc_name = self.current_dialogue_ref.npc.name

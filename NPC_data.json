@@ -15,9 +15,9 @@
     "draw_layer":"mid_layer",
     "days": [1, 2, 3],
     "day_specific_locations" : {
-      "1": {"rooms": "room01", "position": [400, 520]},
-      "2": {"rooms": "Dean_room", "position": [400, 520]},
-      "3": {"rooms": "basement", "position": [800, 520]}
+      "1": {"room": "room01", "position": [400, 520]},
+      "2": {"room": "Dean_room", "position": [400, 520]},
+      "3": {"room": "basement", "position": [800, 520]}
     } 
   },
 

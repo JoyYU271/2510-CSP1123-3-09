@@ -3,13 +3,11 @@
         "Dean": {
             "chapter": "chapter_3",
             "step": 6
-        },
-        "Zheng": {
-            "chapter": "chapter_3",
-            "step": 9
         }
     },
     "player_choices": {},
-    "flags": {},
+    "flags": {
+        "dean_cutscene_played": true
+    },
     "shown_dialogues": {}
 }
