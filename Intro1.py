@@ -64,9 +64,9 @@ FPS = 60
 with open('NPC_dialog/NPC.json', 'r', encoding='utf-8') as f:
         all_dialogues = json.load(f)
 
-print("\n--- DEBUG: After loading all_dialogues ---")
-print(f"Type of all_dialogues: {type(all_dialogues)}")
-print(f"Keys in all_dialogues: {list(all_dialogues.keys())}") # See what top-level keys actually exist
+# print("\n--- DEBUG: After loading all_dialogues ---")
+# print(f"Type of all_dialogues: {type(all_dialogues)}")
+# print(f"Keys in all_dialogues: {list(all_dialogues.keys())}") # See what top-level keys actually exist
 
 if "Zheng" in all_dialogues:
     print("SUCCESS: 'Zheng' key found in all_dialogues.")
@@ -515,7 +515,7 @@ class dialog:
         
         # --- Drawing Logic: Branch based on whether choices are active or normal text ---
         if self.choices_active: # THIS IS THE CRITICAL IF FOR CHOICES
-            print(f"DEBUG (dialog.draw): Choices are ACTIVE. Selected index: {self.selected_choice_index}. (Inside choices_active branch)")
+            # print(f"DEBUG (dialog.draw): Choices are ACTIVE. Selected index: {self.selected_choice_index}. (Inside choices_active branch)")
 
             # Draw speaker name for choice prompt (e.g., "You Decide")
             name_to_display = "You Decide" 
@@ -531,7 +531,7 @@ class dialog:
                 if option_y < screen_surface.get_height() - 40: 
                     draw_text(screen_surface, option["option"], 30, color, dialog_center_x, option_y, center=True)
         else: # This is the branch for NORMAL TEXT DIALOGUE
-            print(f"DEBUG (dialog.draw): Choices are NOT active. (Inside normal text branch)")
+            # print(f"DEBUG (dialog.draw): Choices are NOT active. (Inside normal text branch)")
             current_line_data = self.current_line_data # Use the pre-fetched current_line_data
             
             if current_line_data: # Only proceed if there's valid text line data
@@ -1986,11 +1986,13 @@ class Rooms:    # class Level in tutorial
                     self.enter_released = False
                     dialogue_instance_at_frame_start.select_choice(dialogue_instance_at_frame_start.selected_choice_index)
             else: # Handle SPACE key for advancing regular dialogue (when choices are NOT active)
-                if keys[pygame.K_SPACE] and self.space_released:
+                if keys[pygame.K_q] and self.space_released:
                     self.space_released = False
                     if isinstance(dialogue_instance_at_frame_start, ObjectDialogue):
                         dialogue_instance_at_frame_start.handle_space()
-                    elif isinstance(dialogue_instance_at_frame_start, dialog):
+                if keys[pygame.K_SPACE] and self.space_released:
+                    self.space_released = False
+                    if isinstance(dialogue_instance_at_frame_start, dialog):
                         dialogue_instance_at_frame_start.handle_space(self.display, keys)
 
             # --- CRITICAL FIX: Dialogue Reference Management ---
@@ -2018,7 +2020,7 @@ class Rooms:    # class Level in tutorial
             # points to *after* all event handling and potential replacements within this frame.
             if self.current_dialogue_ref.current_dialogue: # Check the global reference AGAIN right before drawing
                 self.current_dialogue_ref.current_dialogue.draw(self.display)
-                print(f"DEBUG (Rooms.run): Drawing active dialogue: {type(self.current_dialogue_ref.current_dialogue).__name__}")
+                # print(f"DEBUG (Rooms.run): Drawing active dialogue: {type(self.current_dialogue_ref.current_dialogue).__name__}")
             else:
                 print("DEBUG (Rooms.run): No active dialogue to draw this frame (it might have just ended or been replaced by None).")
         # End of 'if dialogue_instance_at_frame_start' block
@@ -2034,7 +2036,7 @@ class Rooms:    # class Level in tutorial
             for obj in near_obj:
                 # Calculate screen position based on camera offset
                 screen_pos = obj.rect.topleft - camera_group.offset # Use camera_group.offset
-                self.display.blit(text_surf, (screen_pos.x - text_surf.get_width() // 2, screen_pos.y - 20))
+                self.display.blit(text_surf, (screen_pos.x + text_surf.get_width() // 2, screen_pos.y - 20))
         
 
         # --- Draw dialogue if active ---
