@@ -242,6 +242,9 @@ class dialog:
     def update(self, events=None):
         if not self.talking or self.choices_active:
             return
+        
+        #if self.rooms_instance.cutscene_active and self.rooms_instance.dean_exiting:
+        #    return
 
         # Handle CG showing separately from normal dialogue progression
         if self.showing_cg:
@@ -351,7 +354,7 @@ class dialog:
                         shown_dialogues=self.shown_dialogues
                     )
                 self.rooms_instance.handle_dialogue_event(event_name)
-                self.talking = False
+                self.reset_typing()     
                 return
             
             # Handle "ending" type directly in handle_space
@@ -664,7 +667,7 @@ class dialog:
                 print(f"DEBUG (dialog.handle_space): Next line triggers event '{self.current_line_data['event']}'.")
                 event_name = self.current_line_data["event"]
                 self.rooms_instance.handle_dialogue_event(event_name) # Pass any event_data if needed
-                self.talking = False
+                # self.talking = False
                 print("NPC Dialogue: Event handled, this dialogue instance is stopping.")
                 return
             
@@ -2016,8 +2019,8 @@ class Rooms:    # class Level in tutorial
                     print("Back to main menu clicked!")
                     click_sound.play()
                     pygame.mixer.music.stop()
-                    #self.gameStateManager.set_state('start')
-                    return False  # This will exit the level loop
+                    fade_to_main(screen)  # 这是你定义好的函数，真正做了退出章节并重开 main_page.py
+                    return
 
         if not keys[pygame.K_SPACE]:
             self.space_released = True
