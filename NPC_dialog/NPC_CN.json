@@ -1,40 +1,42 @@
 {
-  "intro":{
-    "chapter_1":[
-        {"speaker" :"narrator","text":"(2025年，4月15日)","shown": false},
-        {"speaker" :"narrator","text":"(你是一个心理医生。)","shown": false},
-        {"speaker" :"narrator","text":"(毕业后，你被身为诊所院长的父亲邀请过去他的诊所工作。)","shown": false},
-        {"speaker": "narrator","text":"(“Mindscape Chamber”,这是诊所的名字。)","shown":false},
-        {"speaker" :"narrator","text":"(今天，是你上班的第一天。)","shown": false},
-        {"speaker" :"narrator","text":"[提示: 按 W / D 键 来移动角色]","shown": false},
-        {"speaker" :"narrator","text":"...........","shown": false}
-        
-    ],
-    "chapter_2":[
-        {"speaker" :"narrator","text":"(今天也是新一天。)","shown": false},
-        {"speaker" :"narrator","text":"(今天你也选择了早到，诊所内几乎没什么人)","shown": false},
-        {"speaker" :"narrator","text":"......","shown": false}
+  "System_Narrative":{
+    "intro":{
+        "chapter_1":[
+            {"speaker" :"narrator","text":"(2025年，4月15日)","shown": false},
+            {"speaker" :"narrator","text":"(你是一个心理医生。)","shown": false},
+            {"speaker" :"narrator","text":"(毕业后，你被身为诊所院长的父亲邀请过去他的诊所工作。)","shown": false},
+            {"speaker": "narrator","text":"(“Mindscape Chamber”,这是诊所的名字。)","shown":false},
+            {"speaker" :"narrator","text":"(今天，是你上班的第一天。)","shown": false},
+            {"speaker" :"narrator","text":"[提示: 按 W / D 键 来移动角色]","shown": false},
+            {"speaker" :"narrator","text":"...........","shown": false}
+            
+        ],
+        "chapter_2":[
+            {"speaker" :"narrator","text":"(今天也是新一天。)","shown": false},
+            {"speaker" :"narrator","text":"(今天你也选择了早到，诊所内几乎没什么人)","shown": false},
+            {"speaker" :"narrator","text":"......","shown": false}
 
-    ],
-    "chapter_3":[
-        {"speaker" :"player","text":"(我该找父亲谈谈，这个‘实验’显然有问题。)","shown": false},
-        {"speaker" :"player","text":"(话说自从治疗Emma小姐之后，我就偶尔会出现幻听的症状。)","shown": false},
-        {"speaker" :"player","text":"(还有一直梦见奇怪的噩梦……)","shown": false},
-        {"speaker" :"player","text":"(梦里，父母亲又再次争吵，但画面一转母亲就倒在血泊里……)","shown": false},
-        {"speaker" :"player","text":"(是我太累了吗)","shown": false},
-        {"speaker" :"player","text":"(可能我也该看心理医生了。)","shown": false},
-        {"speaker" :"narrator","text":"???: [那不是噩梦。]","shown": false},
-        {"speaker" :"player","text":"什么意思？","shown": false},
-        {"speaker" :"narrator","text":"???: [字面意思。你还是没能记起来吗？哪怕是一小点？]","shown": false},
-        {"speaker" :"player","text":"你到底在说什么？","shown": false},
-        {"speaker" :"narrator","text":"???: [他杀了母亲。]","shown": false},
-        {"speaker" :"player","text":"？！","shown": false},
-        {"speaker" :"player","text":"少开玩笑了。","shown": false},
-        {"speaker" :"narrator","text":"???: [我知道你不会信，毕竟你已把我和一切都遗忘。]","shown": false},
-        {"speaker" :"narrator","text":"......","shown": false}
+        ],
+        "chapter_3":[
+            {"speaker" :"player","text":"(我该找父亲谈谈，这个‘实验’显然有问题。)","shown": false},
+            {"speaker" :"player","text":"(话说自从治疗Emma小姐之后，我就偶尔会出现幻听的症状。)","shown": false},
+            {"speaker" :"player","text":"(还有一直梦见奇怪的噩梦……)","shown": false},
+            {"speaker" :"player","text":"(梦里，父母亲又再次争吵，但画面一转母亲就倒在血泊里……)","shown": false},
+            {"speaker" :"player","text":"(是我太累了吗)","shown": false},
+            {"speaker" :"player","text":"(可能我也该看心理医生了。)","shown": false},
+            {"speaker" :"narrator","text":"???: [那不是噩梦。]","shown": false},
+            {"speaker" :"player","text":"什么意思？","shown": false},
+            {"speaker" :"narrator","text":"???: [字面意思。你还是没能记起来吗？哪怕是一小点？]","shown": false},
+            {"speaker" :"player","text":"你到底在说什么？","shown": false},
+            {"speaker" :"narrator","text":"???: [他杀了母亲。]","shown": false},
+            {"speaker" :"player","text":"？！","shown": false},
+            {"speaker" :"player","text":"少开玩笑了。","shown": false},
+            {"speaker" :"narrator","text":"???: [我知道你不会信，毕竟你已把我和一切都遗忘。]","shown": false},
+            {"speaker" :"narrator","text":"......","shown": false}
 
-    ]
-  },
+        ]
+    }      
+    },
   
 
 
