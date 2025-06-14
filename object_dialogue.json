@@ -89,27 +89,17 @@
 
   "exitZ04_dialogue": {
     "start": [
-    {"speaker": "narrator","text": "(This memory is blurry—snatches of conversations and report writing. Words on the reports catch your eye.)", "shown": false},
-    {"speaker": "player","text": "(Hypnotherapy Results......? Is this the “experiment”?)", "shown": false},
-    {"speaker": "narrator","text": "(You read the report—overwhelming with technical terms.)", "shown": false},
-    {"speaker": "narrator","text": "(Reports pile up, dense with jargon. The first, the second, the third... All share one conclusion:)", "shown": false},
-    {"speaker": "narrator","text": "(Failure)", "shown": false},
-    {"speaker": "narrator","text": "(A sense of unease—and inexplicable familiarity—washes over you.)", "shown": false},
-    {"speaker": "narrator","text": "(As the memory fades, you find something in your hand)", "shown": false},
-    {"speaker": "narrator","text": "(A notebook. But no tidy lines, no neat notes, no highlights—just blank pages.)", "shown": false},
-    {"speaker": "narrator","text": "(Perhaps emptiness, too, is a form of perfection.)", "shown": false},
-    {"speaker": "narrator","text": "(But who defines perfection? Who enforces it?)", "shown": false},
-    {"speaker": "narrator","text": "You're no philosopher. No need to dwell on that.", "shown": false},
-    {"speaker": "player","text": "(This is Ms. Zheng's emotional anchor......)", "shown": false},
-    {"speaker": "player","text": "Destroy it, and her symptoms vanish—but so do parts of her memory. ", "shown": false},
-    {"speaker": "player","text": "Keep it, and the cure may be incomplete. What should I choose?)", "shown": false},
-    {"choice":[
-            {"option":"Destroy","next":"back_reality_destroy1"},
-            {"option":"Keep","next":"back_reality_keep1"}
-        ]
-        },
-
+    {"speaker": "narrator","text": "(You find a portfolio. The patient's picture is on it.)", "shown": false},
+    {"speaker": "player","text": "Everything else is blurred out, except got a few lines.", "shown": false},
+    {"speaker": "narrator","text": "Diagnosis: Work stress)", "shown": false},
+    {"speaker": "narrator","text": "Treatment: Post-hypnotic amnesia", "shown": false},
+    {"next_node": "end"},
+    {"speaker": "narrator","text": "(You find a journal. The patient's name is on it.)", "shown": false},
+    {"speaker": "narrator","text": "(You turn to the latest entry.)", "shown": false},
+    {"speaker": "narrator","text": "('When I was offered this opportunity, I was estatic.')", "shown": false},
+    {"speaker": "narrator","text": "('I'm finally a step closer to achieving my dream...')", "shown": false},
+    {"speaker": "narrator","text": "('But... What is my dream?')", "shown": false},
     {"event": "puzzle_complete"}
-  ]
+      ]
+    }
   }
-}

@@ -157,6 +157,8 @@ class dialog:
         self.npc = npc
         self.full_dialogue_tree = full_dialogue_tree 
         self.rooms_instance = rooms_instance
+        self.shown_dialogues = shown_dialogues if shown_dialogues is not None else {}
+        self.npc_manager = npc_manager
 
         # --- Initialize these attributes BEFORE calling other methods ---
         self.talking = True
@@ -172,6 +174,7 @@ class dialog:
         self.text_display_timer = 0
         self.typing_speed = 2 
         self.current_text_display = ""
+
         self.current_choices = []
         self.selected_choice_index = 0
 
@@ -196,21 +199,16 @@ class dialog:
         self.current_bgm = None
         self.bgm_volume = bgm_vol
         self.text_size = text_size
+
+
         self.dean_cutscene_triggered = False # For cutscene logic
-
-        self.reset_typing()
-
-        # Attributes for chapter ending and CGs, initialized here
         self.chapter_end = False
         self.ready_to_quit = False
         self.showing_cg = False
         self.cg_images = []
         self.cg_index = 0
-        self.story_data = npc_data.get(f"chapter_{game_chapter}", []) # Assuming npc_data is accessible and contains story data
-        self.current_story = f"chapter_{game_chapter}"
-        self.shown_dialogues = shown_dialogues if shown_dialogues is not None else {}
-        self.npc_manager = npc_manager
 
+        self.reset_typing()
 
         if not self.current_dialogue_list:
             print(f"Error: Initial dialogue list for node '{self.current_node_id}' not found. Ending dialogue.")
@@ -237,9 +235,17 @@ class dialog:
         self.typing_complete = False
         self.text_display_timer = 0
         self.sound_played_for_current_step = False
-        self.current_line_data = self.get_current_line_data() # Update current line data
+        
+        if self.current_line_data: # Make sure there's valid data
+            text_content = self.current_line_data.get("text", "")
+            if not text_content: # If the current line has no 'text' key (e.g., it's a choice or event), complete typing instantly.
+                self.typing_complete = True
+                self.current_text_display = ""
+        else: # If current_line_data somehow became None, also instantly complete.
+            self.typing_complete = True
+            self.current_text_display = ""
 
-    def update(self, events=None):
+    def update(self):
         if not self.talking or self.choices_active:
             return
 
@@ -282,9 +288,11 @@ class dialog:
             if chars_to_display >= len(text_to_display):
                 self.typing_complete = True
 
-    def handle_space(self, keys=None):
-        global screen # Assuming 'screen' is globally accessible or passed
-
+    def handle_space(self, screen, keys=None):
+        global game_chapter
+        global flags # Assuming 'flags' is also a global variable modified here
+        global player_choices # Assuming 'player_choices' is also a global variable modified here
+        
         if self.showing_cg:
             # If a CG is showing, space advances the CG
             self.cg_index += 1
@@ -297,7 +305,7 @@ class dialog:
                 # This will be handled by the normal dialogue advancement below
             else:
                 # Fade to the next CG
-                self.fade(screen, fade_in=True, cg_list=[self.cg_images[self.cg_index]])
+                self.fade(screen, cg_list=[self.cg_images[self.cg_index]], fade_in=True)
                 return # Consume space and don't advance dialogue yet
 
         if not self.talking or self.choices_active:
@@ -305,9 +313,8 @@ class dialog:
 
         if not self.typing_complete:
             # Instantly complete the text of the current line
-            if self.current_line_index < len(self.current_dialogue_list):
-                current_line_data = self.current_dialogue_list[self.current_line_index]
-                self.current_text_display = current_line_data.get("text", "")
+            if self.current_line_data: # Ensure current_line_data is valid
+                self.current_text_display = self.current_line_data.get("text", "")
             self.typing_complete = True
             return
 
@@ -318,34 +325,39 @@ class dialog:
         if self.current_line_data:
             # Handle CG trigger if present
             if "cg" in self.current_line_data:
-                self.cg_images = [pygame.image.load(path).convert_alpha() for path in self.current_line_data["cg"]]
+                cg_paths = self.current_line_data["cg"] if isinstance(self.current_line_data["cg"], list) else [self.current_line_data["cg"]]
+                self.cg_images = [pygame.image.load(path).convert_alpha() for path in cg_paths]
                 self.cg_index = 0
                 self.showing_cg = True
-                self.fade(screen, fade_in=True, cg_list=[self.cg_images[self.cg_index]])
+                self.fade(screen, cg_list=[self.cg_images[self.cg_index]], fade_in=True)
                 self.reset_typing() # Reset typing for the next potential dialogue after CG
-                return # Consume space, and CG will be handled
+                return # Consume space, CG will be handled
+
 
             if "choice" in self.current_line_data:
                 self.current_choices = self.current_line_data["choice"]
                 self.choices_active = True
                 self.selected_choice_index = 0
-                self.reset_typing() # Resets display for choices
+                self.reset_typing()
                 return
+            
             if "next" in self.current_line_data:
                 next_node_id = self.current_line_data["next"]
                 self._transition_to_node(next_node_id)
                 return
+            
             if "event" in self.current_line_data:
                 event_name = self.current_line_data["event"]
                 # Handle specific events
                 if event_name == "dean_exit_cutscene":
                     flags["dean_cutscene_played"] = True
-                    self.dean_cutscene_triggered = True  
+                    self.dean_cutscene_triggered = True 
+
                     # Save checkpoint
                     save_checkpoint(
                         npc_name=self.npc_name,
-                        chapter=self.current_story,
-                        step=self.current_line_index, # Use current_line_index as step
+                        chapter=f"chapter_{game_chapter}", # Use current global game_chapter
+                        step=self.current_line_index,
                         player_choices=player_choices,
                         flags=flags,
                         shown_dialogues=self.shown_dialogues
@@ -357,37 +369,30 @@ class dialog:
             # Handle "ending" type directly in handle_space
             if self.current_line_data.get("type") == "ending":
                 self.chapter_end = True   
-                global game_chapter
                 if game_chapter >= 3:   
                     self.ready_to_quit = True
                     print(f"Main ending reached! ready_to_quit set to True") 
                 else:
-                    self.fade(screen , fade_in=True) # Assuming 'screen' is accessible here
+                    self.fade(screen , fade_in=True, cg_list=[]) # Assuming 'screen' is accessible here
                     game_chapter += 1
                     # Reset dialogue state for next chapter
                     self.current_line_index = 0 
                     self.talking = False # End current dialogue
                     self.chapter_end = False
-                    self.current_story = f"chapter_{game_chapter}"
-                    # Update story_data to reflect the new chapter's dialogue
-                    self.story_data = npc_data.get(self.current_story,[]) 
-                    # Re-initialize current_dialogue_list based on the new chapter's start node
-                    # You might need a new mechanism to get the start_node_id for the next chapter
-                    # For now, assuming it will be handled by the Rooms class transitioning to a new room/dialogue
                     print(f"Moving to chapter {game_chapter}") 
                     
-                ending_key = self.current_story 
+                ending_key = f"chapter_{game_chapter}" # This ensures it's updated for saving
                 flags[f"ending_unlocked_{ending_key}"] = True
 
                 # save unlocked state
                 save_checkpoint(
                     npc_name=self.npc_name,
-                    chapter=self.current_story,
+                    chapter=f"chapter_{game_chapter}", # Use updated global chapter
                     step=self.current_line_index,
                     player_choices=player_choices,
                     flags=flags,
                     shown_dialogues=self.shown_dialogues
-                ) 
+                )
                 return # Consume space after handling ending
 
             # If it's just another line of text, reset typing for it
@@ -395,6 +400,7 @@ class dialog:
         else:
             # Reached the end of the dialogue list for this node
             self.talking = False
+            print("NPC Dialogue ended (natural end of node).")
 
     def select_choice(self, choice_index):
         if self.choices_active and 0 <= choice_index < len(self.current_choices):
@@ -407,63 +413,95 @@ class dialog:
 
     def _transition_to_node(self, node_id):
         new_dialogue_list = self._get_dialogue_list_from_node_id(node_id)
+        
         if new_dialogue_list:
             self.current_node_id = node_id
             self.current_dialogue_list = new_dialogue_list
             self.current_line_index = 0
             self.choices_active = False
             self.selected_choice_index = 0
+            self.current_line_data = self.get_current_line_data() # Get data for the new line
             self.reset_typing()
         else:
             print(f"Warning: Next node '{node_id}' not found or invalid format. Ending dialogue.")
             self.talking = False
 
     def draw(self, screen):
-        if self.showing_cg and self.cg_images and self.cg_index < len(self.cg_images):
-            # Draw current CG image, scaled to screen size
-            current_cg = pygame.transform.scale(self.cg_images[self.cg_index], (screen.get_width(), screen.get_height()))
-            screen.blit(current_cg, (0, 0))
-            return # Don't draw dialogue box if CG is showing
-
+        # Draws the dialogue box, portraits, speaker names, text, and choices.
         if not self.talking:
             return
 
         dialog_x = screen.get_width() // 2 - self.dialog_box_img.get_width() // 2
         dialog_y = screen.get_height() - self.dialog_box_img.get_height() - 20
-        screen.blit(self.dialog_box_img, (dialog_x, dialog_y))
-        
         text_max_width = self.dialog_box_img.get_width() - 300
 
-        if self.current_line_data:
-            speaker_type = self.current_line_data.get("speaker", "narrator")
-            portrait, name_to_display, portrait_pos = None, "", (0, 0)
+        # Always blit the dialog box first, regardless of choices or text
+        screen.blit(self.dialog_box_img, (dialog_x, dialog_y))
+        print(f"DEBUG (dialog.draw): Drawing at dialog_x={dialog_x}, dialog_y={dialog_y}. Screen size: {screen.get_size()}")
 
-            if speaker_type == "npc":
-                portrait, name_to_display = self.portrait, self.npc.name
-                portrait_pos = (dialog_x + 800, dialog_y - 400)
-            elif speaker_type == "player":
-                portrait, name_to_display = self.player_portrait, "You"
-                portrait_pos = (dialog_x + 20, dialog_y - 400)
-            else:
-                name_to_display = "Narrator"
-            
-            if portrait:
-                screen.blit(portrait, portrait_pos)
+        # --- Handle drawing based on dialogue type (choices vs. normal text) ---
+        # THIS IS THE CRITICAL IF-ELSE BRANCH
+        if self.choices_active: # <--- THIS MUST BE THE PRIMARY CHECK FOR CHOICES
+            print(f"DEBUG (dialog.draw): Choices are ACTIVE. Selected index: {self.selected_choice_index}")
 
+            # Draw speaker name for choices (e.g., "You Decide")
+            name_to_display = "" # Or customize this
             draw_text(screen, name_to_display, 40, (0, 0, 0), dialog_x + 200, dialog_y + 10, center=False)
 
-            if self.choices_active:
-                dialog_center_x = dialog_x + self.dialog_box_img.get_width() // 2
-                for i, option in enumerate(self.current_choices):
-                    color = (255, 0, 0) if i == self.selected_choice_index else (0, 0, 0)
-                    option_y = dialog_y + 60 + i * 60
+            max_options_display = 3
+            dialog_center_x = dialog_x + self.dialog_box_img.get_width() // 2
+
+            for i, option in enumerate(self.current_choices[:max_options_display]):
+                color = (255, 0, 0) if i == self.selected_choice_index else (0, 0, 0)
+                option_y = dialog_y + 60 + i * 60
+
+                if option_y < screen.get_height() - 40:
                     draw_text(screen, option["option"], 30, color, dialog_center_x, option_y, center=True)
-            else:
-                draw_text(screen, self.current_text_display, self.text_size, (0, 0, 0),
+                    print(f"DEBUG (dialog.draw): Choice {i}: '{option['option']}' blitted.") # Enable if needed
+        else: # <--- THIS IS THE BRANCH FOR NORMAL TEXT DIALOGUE
+            # Only fetch current_line_data if it's NOT a choice scene
+            print(f"DEBUG (dialog.draw): Choices are NOT active. (Inside normal text branch)")
+            current_line_data = self.current_line_data
+            print(f"DEBUG (dialog.draw): current_line_data (normal text branch): {current_line_data}")
+
+            if current_line_data: # Only draw normal text if current_line_data is valid
+                speaker_type = current_line_data.get("speaker", "narrator")
+
+                # --- Choose portrait and position based on speaker ---
+                portrait = None
+                name_to_display = ""
+                portrait_pos = (0, 0)
+
+                if speaker_type == "npc":
+                    portrait = self.portrait
+                    name_to_display = self.npc.name
+                    portrait_pos = (dialog_x + 800, dialog_y - 400)
+                elif speaker_type == "player":
+                    portrait = self.player_portrait
+                    name_to_display = "You"
+                    portrait_pos = (dialog_x + 20, dialog_y - 400)
+                else: # narrator
+                    portrait = None
+                    name_to_display = ""
+
+                if portrait:
+                    screen.blit(portrait, portrait_pos)
+
+                # --- Draw speaker name ---
+                draw_text(screen, name_to_display, 40, (0, 0, 0), dialog_x + 200, dialog_y + 10, center=False)
+
+                text_to_display = self.current_text_display
+                print(f"DEBUG (dialog.draw): Drawing normal text: '{text_to_display}', Typing complete: {self.typing_complete}")
+
+                draw_text(screen, text_to_display, 30, (0, 0, 0),
                           dialog_x + self.dialog_box_img.get_width() // 2,
                           dialog_y + self.dialog_box_img.get_height() // 2 - 15,
                           center=True, max_width=text_max_width)
-
+            else:
+                # This print will appear if current_line_data somehow becomes None
+                # when choices_active is False, indicating a problem with dialogue flow.
+                print("DEBUG (dialog.draw): current_line_data is None for non-choice dialogue. Skipping drawing.")    
+                
     def get_current_line_data(self):
         if self.talking and self.current_line_index < len(self.current_dialogue_list):
             return self.current_dialogue_list[self.current_line_index]
@@ -490,356 +528,107 @@ class dialog:
             sound.stop()
         self.currently_playing_sfx = None
 
-    def fade ( self, screen, cg_list, fade_in =True ):
+    def fade (self, screen, cg_list, fade_in =True):
         fade = pygame.Surface((screen.get_width(),screen.get_height()))
         fade.fill((0,0,0))
-        for original_image in cg_list:
-            cg_image = pygame.transform.scale(original_image ,(screen.get_width(),screen.get_height())).convert_alpha()
-            if fade_in:
-                #fade in
-                for alpha in range (0,255,10):
-                    fade.set_alpha(alpha)
-                    screen.blit(cg_image, (0,0))
-                    screen.blit(fade,(0,0))
-                    pygame.display.update()
-                    pygame.time.delay(30)
-            else:
-                #fade out
-                for alpha in range (255,0,-10):
-                    fade.set_alpha(alpha)
-                    screen.blit(cg_image, (0,0))
-                    screen.blit(fade,(0,0))
-                    pygame.display.update()
-                    pygame.time.delay(30)
+
+        if cg_list:
+            original_image = cg_list[0]
+            cg_image_scaled = pygame.transform.scale(original_image ,(screen.get_width(),screen.get_height())).convert_alpha()
+        else:
+            cg_image_scaled = None
+
+        if fade_in:
+            #fade in
+            for alpha in range (0,255,10):
+                fade.set_alpha(alpha)
+                screen.fill((0,0,0))
+                if cg_image_scaled:
+                    screen.blit(cg_image_scaled, (0,0))
+                screen.blit(fade,(0,0))
+                pygame.display.update()
+                pygame.time.delay(30)
+        else:
+            #fade out
+            for alpha in range (255,-1,-10):
+                screen.fill((0,0,0))
+                fade.set_alpha(alpha)
+                if cg_image_scaled:
+                    screen.blit(cg_image_scaled, (0,0))
+                screen.blit(fade,(0,0))
+                pygame.display.update()
+                pygame.time.delay(30)
 
     def get_current_cg(self):
-        path = self.cg_images[self.cg_index]
-        image = pygame.image.load(path).convert()
-        return pygame.transform.scale(image,(screen.get_width(),screen.get_height(  )))
-
-        
-
-    def handle_option_selection(self,keys):
-
-        # only handle if in dialogue with options n text is full displayed
-        if (self.talking and self.options and self.step <len(self.story_data) and self.letter_index >= len(self.story_data[self.step].get("text",""))):
-                  
-                   # move up in options list with W key
-                   if keys[pygame.K_w] and self.key_w_released:
-                      self.option_selected = (self.option_selected - 1) % len(self.options)
-                      self.key_w_released = False
-                   if not keys[pygame.K_w]:
-                       self.key_w_released = True
-                    
-                    #Move down in options list with S key
-                   if keys[pygame.K_s] and self.key_s_released:
-                      self.option_selected = (self.option_selected + 1) % len(self.options)
-                      self.key_s_released = False
-                   if not keys[pygame.K_s]:
-                       self.key_s_released = True
-                       
-                    # comfirm selection with E Key
-                   if keys[pygame.K_e] and self.key_e_released:
-                      selected_option = self.options[self.option_selected]
-                      self.npc.shown_options[self.current_story] = True
-                      next_target = selected_option["next"]
-
-                      #======not really function========
-                      if next_target == "back_reality":
-                          self.load_back_reality()
-                      elif next_target == "check_sub_end":
-                          self.check_sub_end_conditions()
-                      elif next_target.startswith("sub_end_"):
-                          self.load_sub_ending(next_target) #display sub ending
-                      elif next_target.startswith("end_"):
-                          self.load_ending(next_target) #display main ending
-                      else:
-                          self.load_dialogue(self.npc_name,next_target)
-
-                      self.options =[]
-                      self.reset_typing()
-                      self.key_e_released = False
-                   if not keys[pygame.K_e]:
-                       self.key_e_released = True
-
-    # not really function , need to combine codes mini games n modify
-    def load_back_reality(self):
-        self.displayed_text = ""
-        self.letter_index = 0
-        self.check_sub_end_conditions()
-        pygame.display.update()
-
-
-    def handle_space(self,keys):
-         global save_message_timer  
-         #start dialogue if not talked
-         if not self.talking:
-              self.talking = True
-              self.load_dialogue(self.npc_name,self.current_story)
-              return
-         
-
-         if self.npc_name == "Nuva" and self.current_story == "repeat_only":
-            dialogue_id = f"{self.npc_name}_{self.current_story}_{self.step}"
-            if dialogue_id in self.shown_dialogues:
-                self.talking = False
-                return
-
-
-         #process current dialogue step
-        # if self.step <len(self.story_data):
-        #      entry = self.story_data[self.step]
-        #      text = entry.get("text","")
-
-        #      dialogue_id = f"{self.npc_name}_{self.current_story}_{self.step}"
-        #      self.shown_dialogues[dialogue_id] = True
-
-
-
-      #========not really fonction , need to combine others codes n modify======
-          #    if "chapter_ending" in entry:
-             #save which ending was chosen
-          #        global player_choices, showing_chapter_ending, ending_start_time, ending_complete_callback
-          #        player_choices["chapter_1_ending"] = entry["chapter_ending"]
-                  
-             #set up the ending screen
-          #        showing_chapter_ending = True
-          #        ending_start_time = pygame.time.get_ticks()
-            
-            
-
-         if not self.talking:
-            return
-
-         if self.choices_active:
-            # Choice selection handled by arrow keys + Enter, not space
-            print("Choices are active. Use arrow keys to select, Enter to confirm.")
-            return
-
-         if not self.typing_complete:
-            # If text is still typing, complete it instantly
-            if self.current_line_index < len(self.current_dialogue_list):
-                current_line_data = self.current_dialogue_list[self.current_line_index]
-                self.current_text_display = current_line_data.get("text", "")
-            self.typing_complete = True
-            return
-
-        # Typing is complete, advance to the next line or handle node transition/event
-         self.current_line_index += 1
-
-         if self.current_line_index < len(self.current_dialogue_list):
-            next_entry_data = self.current_dialogue_list[self.current_line_index]
-
-         print(f"DEBUG (dialog.handle_space): Typing complete. Attempting to advance line from index: {self.current_line_index}")
-         
-         self.current_line_data = self.get_current_line_data()
-        
-         print(f"DEBUG (dialog.handle_space): New current_line_index: {self.current_line_index}")
-         print(f"DEBUG (dialog.handle_space): New current_line_data (next line): {self.current_line_data}")
-
-        # if self.current_line_index < len(self.current_dialogue_list):
-        #     next_entry_data = self.current_dialogue_list[self.current_line_index]
-
-
-         if self.current_line_data: # If there's a next line in the current node list
-            if "choice" in self.current_line_data:
-                print("DEBUG (dialog.handle_space): Next line has choices. Activating choices.")
-                self.current_choices = self.current_line_data["choice"]
-                self.choices_active = True
-                self.selected_choice_index = 0
-                self.reset_typing() # Reset for choices (which don't type)
-                print(f"DEBUG (dialog.handle_space): Choices activated: {self.current_choices}")
-                return
-            if "next" in self.current_line_data:
-                print(f"DEBUG (dialog.handle_space): Next line triggers node transition to '{self.current_line_data['next']}'.")
-                next_node_id = self.current_line_data["next"]
-                self._transition_to_node(next_node_id)
-                return
-            if "event" in self.current_line_data:
-                print(f"DEBUG (dialog.handle_space): Next line triggers event '{self.current_line_data['event']}'.")
-                event_name = self.current_line_data["event"]
-                self.rooms_instance.handle_dialogue_event(event_name) # Pass any event_data if needed
-                self.talking = False
-                print("NPC Dialogue: Event handled, this dialogue instance is stopping.")
-                return
-            
-            # If it's a regular text line (and no next/event), reset for typing the new line
-            print("DEBUG (dialog.handle_space): Next line is regular text. Resetting typing for it.")
-            self.reset_typing()
-
-         else: # End of current dialogue list
-            # If we reached the end and didn't jump to 'next' or trigger an 'event'
-            print("DEBUG (dialog.handle_space): End of dialogue list reached. Stopping dialogue.")
-            self.talking = False
-            print("NPC Dialogue ended (natural end of node).")
-
-    def _transition_to_node(self, node_id):
-        new_dialogue_list = self._get_dialogue_list_from_node_id(node_id)
-        
-        if new_dialogue_list: # Check if the list is not empty
-            self.current_node_id = node_id
-            self.current_dialogue_list = new_dialogue_list
-            self.current_line_index = 0
-            self.reset_typing()
-            self.choices_active = False # Ensure choices are reset
-            self.selected_choice_index = 0
-        else:
-            print(f"Warning: Next node '{node_id}' not found or invalid format. Ending dialogue.")
-            self.talking = False
-            self.rooms_instance.current_dialogue_ref.current_dialogue = None
-
-    def select_choice(self, choice_index):
-        if self.choices_active and 0 <= choice_index < len(self.current_choices):
-            selected_option = self.current_choices[choice_index]
-            next_node_id = selected_option["next"]
-            self.choices_active = False
-            self._transition_to_node(next_node_id)
-        else:
-            print("Invalid choice selection or no choices active.")
-
-    def get_current_line_data(self):
-        if self.talking and not self.choices_active and self.current_line_index < len(self.current_dialogue_list):
-            return self.current_dialogue_list[self.current_line_index]
+        if self.cg_images and self.cg_index < len(self.cg_images):
+            # No need to load again, it's already a pygame.Surface
+            return self.cg_images[self.cg_index]
         return None
-
-    def draw(self,screen):
-        if not self.talking:
-            print("DEBUG (dialog.draw): Not talking, returning early.")
-            return
-
-        #let the dialog box on the center and put below
-        dialog_x = screen.get_width()//2 - self.dialog_box_img.get_width() // 2
-        dialog_y = screen.get_height() - self.dialog_box_img.get_height() - 20
-        screen.blit(self.dialog_box_img, (dialog_x, dialog_y))
-
-        #calculate text width with limit for wrapping
-        text_max_width = self.dialog_box_img.get_width() - 300 #pixel padding each side
+                 
+    # def load_dialogue(self,npc_name,chapter):
+    #     #update NPC detials
+    #     self.npc_name = npc_name
+    #     self.npc_data = self.all_dialogues.get(self.npc_name, {})
+    #     self.current_story = chapter
+    #     self.story_data = self.npc_data.get(self.current_story,[])
         
-        print(f"DEBUG (dialog.draw): Drawing at dialog_x={dialog_x}, dialog_y={dialog_y}. Screen size: {screen.get_size()}")
-
-        current_line_data = self.get_current_line_data()
-        print(f"DEBUG (dialog.draw): current_line_data: {current_line_data}")
-
-        if current_line_data:
-            speaker_type = current_line_data.get("speaker", "narrator")
-
-            # --- Choose portrait and position based on speaker ---
-            portrait = None
-            name_to_display = ""
-            portrait_pos = (0, 0)
-
-            if speaker_type == "npc":
-                portrait = self.portrait
-                name_to_display = self.npc.name # Use the name of the NPC object
-                portrait_pos = (dialog_x + 800, dialog_y - 400) # Right side
-            elif speaker_type == "player":
-                portrait = self.player_portrait
-                name_to_display = "You" # Player's name as 'You'
-                portrait_pos = (dialog_x + 20, dialog_y - 400) # Left side
-            else: # narrator (or any other speaker type without a portrait)
-                portrait = None # No portrait for narrator
-                name_to_display = "Narrator" # Default narrator name
-                portrait_pos = (0, 0) # Not used, but set for consistency
+    #     if self.npc_name == "Nuva" and self.current_story == "repeat_only":
+    #         self.story_data = self.npc_data.get("repeat_only", [])
+    #         self.step = 0
+    #         self.reset_typing()
+    #         return
             
-            # --- Draw Character portraits and dialog box ---
-            if portrait: # Only blit if a portrait image exists
-                screen.blit(portrait, portrait_pos)
-            screen.blit(self.dialog_box_img, (dialog_x, dialog_y))
-            print(f"DEBUG (dialog.draw): Dialog box blitted. Position: ({dialog_x}, {dialog_y})")
-
-            # --- Draw speaker name ---
-            # You had dialog_x + 200 for speaker name
-            draw_text(screen, name_to_display, 40, (0, 0, 0), dialog_x + 200, dialog_y + 10, center=False) # Black text
-            print(f"DEBUG (dialog.draw): Speaker name '{name_to_display}' blitted.")
-
-            if self.choices_active:
-                print(f"DEBUG (dialog.draw): Choices are active. Selected index: {self.selected_choice_index}")
-                # --- Draw choice options if present ---
-                max_options_display = 3 # display at most 3 options (from your old code)
-                dialog_center_x = dialog_x + self.dialog_box_img.get_width() // 2
-
-                for i, option in enumerate(self.current_choices[:max_options_display]):
-                    # Red for selected option, black for others (from your old code)
-                    color = (255, 0, 0) if i == self.selected_choice_index else (0, 0, 0)
-                    
-                    # Position choices relative to dialog box and center
-                    option_y = dialog_y + 60 + i * 60 # From your old code
-                    
-                    # Ensure option is on screen (from your old code)
-                    if option_y < screen.get_height() - 40: 
-                        draw_text(screen, option["option"], 30, color, dialog_center_x, option_y, center=True)
-            else: # --- Draw normal dialogue text ---
-                text_to_display = self.current_text_display
-                print(f"DEBUG (dialog.draw): Drawing normal text: '{text_to_display}', Typing complete: {self.typing_complete}")
-
-                # Draw dialogue text, centered in the dialogue box (from your old code)
-                draw_text(screen, text_to_display, 30, (0, 0, 0), 
-                          dialog_x + self.dialog_box_img.get_width() // 2, 
-                          dialog_y + self.dialog_box_img.get_height() // 2 - 15, 
-                          center=True, max_width=text_max_width)
-        else:
-            print("DEBUG (dialog.draw): current_line_data is None. Skipping text/choice drawing.")
-
-                
-    def load_dialogue(self,npc_name,chapter):
-        #update NPC detials
-        self.npc_name = npc_name
-        self.npc_data = self.all_dialogues.get(self.npc_name, {})
-        self.current_story = chapter
-        self.story_data = self.npc_data.get(self.current_story,[])
+    #     raw_story_data = self.npc_data.get(self.current_story, [])
+    #     filtered_story_data = []
+    #     self.step_map = []
         
-        if self.npc_name == "Nuva" and self.current_story == "repeat_only":
-            self.story_data = self.npc_data.get("repeat_only", [])
-            self.step = 0
-            self.reset_typing()
-            return
+    #     for i, entry in enumerate(raw_story_data):
+    #         dialogue_id = f"{self.npc_name}_{self.current_story}_{i}"
             
-        raw_story_data = self.npc_data.get(self.current_story, [])
-        filtered_story_data = []
-        self.step_map = []
-        
-        for i, entry in enumerate(raw_story_data):
-            dialogue_id = f"{self.npc_name}_{self.current_story}_{i}"
-            
-            if ("shown" not in entry or entry["shown"] != False) or (dialogue_id not in self.shown_dialogues):
-                filtered_story_data.append(entry)
+    #         if ("shown" not in entry or entry["shown"] != False) or (dialogue_id not in self.shown_dialogues):
+    #             filtered_story_data.append(entry)
 
-            elif self.npc_name == "Nuva" and self.current_story == "chapter_1_common" and entry.get("text") == "She is waiting in your office,you can head over when you are ready":
-                if dialogue_id not in self.shown_dialogues:
-                    filtered_story_data.append(entry)
+    #         elif self.npc_name == "Nuva" and self.current_story == "chapter_1_common" and entry.get("text") == "She is waiting in your office,you can head over when you are ready":
+    #             if dialogue_id not in self.shown_dialogues:
+    #                 filtered_story_data.append(entry)
    
-        # set filtered dialogue n reset state
-                self.step_map.append(i)
+    #     # set filtered dialogue n reset state
+    #             self.step_map.append(i)
         
-        self.story_data = filtered_story_data
+    #     self.story_data = filtered_story_data
         
-        # if start_step in self.step_map:
-        #    self.step = self.step_map.index(start_step)
-        # else:
-        #    self.step = 0
+    #     # if start_step in self.step_map:
+    #     #    self.step = self.step_map.index(start_step)
+    #     # else:
+    #     #    self.step = 0
         
-        self.reset_typing()
+    #     self.reset_typing()
 
 
-        if filtered_story_data:
-            first_entry = filtered_story_data[0]
+    #     if filtered_story_data:
+    #         first_entry = filtered_story_data[0]
 
-            if "cg" in first_entry:
-                paths = first_entry["cg"] if isinstance(first_entry["cg"], list) else [first_entry["cg"]]
-                self.cg_images = [pygame.image.load(path) for path in paths]
-                self.cg_index = 0
-                self.showing_cg = True
+    #         if "cg" in first_entry:
+    #             paths = first_entry["cg"] if isinstance(first_entry["cg"], list) else [first_entry["cg"]]
+    #             self.cg_images = [pygame.image.load(path) for path in paths]
+    #             self.cg_index = 0
+    #             self.showing_cg = True
              
 
-        self.sound_played_for_current_step = False 
+    #     self.sound_played_for_current_step = False 
 
     def update_font_size(self, new_size):
-        global current_font_size
-        current_font_size = new_size            
+        # Updates a global font size variable (if used by draw_text).
+        global current_font_size # Assuming 'current_font_size' is a global variable
+        if 'current_font_size' in globals(): # Safer check
+            current_font_size = new_size 
+        else:
+            print("Warning: global 'current_font_size' not found. Font size update may not apply.")
+            
 
 
 # =============text setting================
-def draw_text(surface, text, size=None, color=(0,0,0), x=0, y=0, center=False, max_width=None):
+def draw_text(surface, text, size=None, color=(0,0,0), x=0, y=0, center=False, max_width=None): 
     global current_text_size
     font_size = size if size is not None else current_text_size
     font = pygame.font.Font('fonts/NotoSansSC-Regular.ttf', font_size)
@@ -1644,7 +1433,7 @@ class Game:
             if self.current_dialogue_ref.current_dialogue:
                 # Update the current dialogue
                 if isinstance(self.current_dialogue_ref.current_dialogue, dialog):
-                    self.current_dialogue_ref.current_dialogue.update(events)
+                    self.current_dialogue_ref.current_dialogue.update()
                 else:  # For ObjectDialogue
                     self.current_dialogue_ref.current_dialogue.update()
 
@@ -2105,7 +1894,7 @@ class Rooms:    # class Level in tutorial
                     if isinstance(dialogue_instance_at_frame_start, ObjectDialogue):
                         dialogue_instance_at_frame_start.handle_space()
                     elif isinstance(dialogue_instance_at_frame_start, dialog):
-                        dialogue_instance_at_frame_start.handle_space(keys)
+                        dialogue_instance_at_frame_start.handle_space(self.display, keys)
 
             # --- CRITICAL FIX: Dialogue Reference Management ---
             # After `handle_space` or `select_choice` has run for `dialogue_instance_at_frame_start`:
@@ -2155,7 +1944,7 @@ class Rooms:    # class Level in tutorial
         if self.current_dialogue_ref.current_dialogue:
 
             if isinstance(self.current_dialogue_ref.current_dialogue, dialog):
-                self.current_dialogue_ref.current_dialogue.update(events)
+                self.current_dialogue_ref.current_dialogue.update()
             # else:
              #   self.current_dialogue_ref.current_dialogue.update()
 
