@@ -26,7 +26,7 @@
 
   "emma_npc_id":{
     "name":"Emma",
-    "position":[800, 550],
+    "position":[],
     "dialogue_id" : "Emma",
     "rooms":["Player_room"],
     "draw_layer": "mid_layer"  
