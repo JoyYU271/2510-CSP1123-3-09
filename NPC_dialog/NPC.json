@@ -7,6 +7,7 @@
           {"speaker" :"narrator","text":"(After graduation, you were invited by your father——)","shown": false},
           {"speaker": "narrator","text":"(the dean of Mindscape Chamber, to work there.)","shown":false},
           {"speaker" :"narrator","text":"(Today is your first day on the job.)","shown": false},
+          {"speaker" :"narrator","text":"[Press A/D to move AND SPACE to interact with NPC]","shown": false},
           {"speaker" :"narrator","text":"...........","shown": false}
         
       ],
@@ -78,7 +79,7 @@
     ],
 
     "repeat_only":[
-        {"speaker":"npc","text":"She is waiting in your office, you can head over when you are ready"}
+        {"speaker":"npc","text":"She is waiting in your office, you can head over when you are ready","next": "repeat_only"}
     ],
 
     "chapter_2":[
