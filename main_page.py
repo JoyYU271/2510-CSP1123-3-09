@@ -24,7 +24,7 @@ bg_img = pygame.image.load("main page/Menu Page.png").convert() #converts is for
 bg_img = pygame.transform.scale(bg_img, (screen_width, screen_height))
 
 #button image
-start_img = pygame.image.load('main page/start.png'). convert_alpha() #alpha is use to keep transparent background
+start_img = pygame.image.load('main page/start.png').convert_alpha() #alpha is use to keep transparent background
 load_img = pygame.image.load('main page/load.png').convert_alpha()
 collections_img = pygame.image.load('main page/collections.png').convert_alpha()
 settings_img = pygame.image.load('main page/settings.png').convert_alpha()
@@ -91,7 +91,7 @@ def main_menu():
                     # run intro
                     intro_game = Intro1.Game(language=current_language,text_size=current_font_size,bgm_vol=bgm_vol,sfx_vol=sfx_vol)
                     
- 
+
                     def after_intro():
                         print("after intro, enter level")
                         intro_game.gameStateManager.set_state('level')
@@ -103,7 +103,7 @@ def main_menu():
                     intro_game.run()
 
                     
- 
+
 
                     # back main page music
                     pygame.mixer.music.load("bgm/main page.mp3")

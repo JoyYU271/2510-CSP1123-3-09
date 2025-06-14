@@ -1699,6 +1699,9 @@ class Game:
         camera_group.add(nuva)
         camera_group.add(dean)
 
+
+
+
     def start_fade_to(self, room_name):
         self._pending_room = room_name
         self._fading = True
@@ -1931,7 +1934,13 @@ class Rooms:    # class Level in tutorial
         
         npc_manager.npcs.clear()
         self.load_room(self.current_room)
+    
 
+    def get_active_dialogue(self):
+        """返回当前正在运行的对话对象，无论它是 Game.current_dialogue 还是 dialog 本体"""
+        if hasattr(self.current_dialogue_ref, "current_dialogue"):
+            return self.current_dialogue_ref.current_dialogue
+        return self.current_dialogue_ref
 
 
 
@@ -2294,11 +2303,10 @@ class Rooms:    # class Level in tutorial
         
 
         # --- Movement ---
-        if (
-            self.current_dialogue_ref is None or
-            self.current_dialogue_ref.current_dialogue is None or
-            not self.current_dialogue_ref.current_dialogue.talking
-        ):
+        dialogue = self.get_active_dialogue()
+
+        if dialogue is None or not getattr(dialogue, "talking", False):
+
 
             is_moving = self.player.move(moving_left,moving_right)
         else:
@@ -2324,22 +2332,22 @@ class Rooms:    # class Level in tutorial
 
                 # Check if the object has dialogue before creating ObjectDialogue ---
                 if obj_to_interact.has_dialogue:
-                    if self.game_instance.current_dialogue is None or not self.current_dialogue_ref.current_dialogue.talking:
-                        # --- FIX: Let ObjectDialogue determine its start node ---
+                    dialogue = self.get_active_dialogue()
+                    if dialogue is None or not getattr(dialogue, "talking", False):
                         temp_obj_dialogue = ObjectDialogue(
-                            obj_to_interact, 
-                            self.current_dialogue_ref, 
-                            self, 
-                            start_node_id="dummy" # Pass a dummy for now, it will be overridden
+                            obj_to_interact,
+                            self.current_dialogue_ref,
+                            self,
+                            start_node_id="dummy"
                         )
                         chosen_start_node = temp_obj_dialogue.get_start_node_for_interaction()
-                        
-                        # Now create the actual ObjectDialogue with the determined start_node
-                        self.current_dialogue_ref.current_dialogue = ObjectDialogue(
-                            obj_to_interact, 
-                            self.current_dialogue_ref, 
-                            self, 
-                            start_node_id=chosen_start_node 
+
+                        # 设置当前的对话对象
+                        self.current_dialogue_ref = ObjectDialogue(
+                            obj_to_interact,
+                            self.current_dialogue_ref,
+                            self,
+                            start_node_id=chosen_start_node
                         )
                         print(f"Interacting with {obj_to_interact.name}. Dialogue started from node: {chosen_start_node}")
                     else:
@@ -2352,7 +2360,13 @@ class Rooms:    # class Level in tutorial
         # (meaning if an object dialogue is active, Space won't start an NPC dialogue unless it's finished or explicitly allowed)
         if nearest_npc and keys[pygame.K_SPACE] and self.space_released:
             # Check if there's no active dialogue or if the active one is an object dialogue (which should be cleared by now)
-            if self.current_dialogue_ref is None or not self.current_dialogue_ref.talking or isinstance(self.current_dialogue_ref, ObjectDialogue):
+            if (
+        self.current_dialogue_ref is None or
+        self.current_dialogue_ref.current_dialogue is None or
+        not self.current_dialogue_ref.current_dialogue.talking or
+        isinstance(self.current_dialogue_ref.current_dialogue, ObjectDialogue)
+            ):
+
                 self.space_released = False # Debounce
                 
                 # Get the base dialogue data for this NPC (e.g., the entire "Nuva" dictionary)
@@ -2393,11 +2407,24 @@ class Rooms:    # class Level in tutorial
         # This is the dialogue instance that will be updated and have its input handled.
         dialogue_instance_at_frame_start = None
         if self.current_dialogue_ref is not None:
-            dialogue_instance_at_frame_start = self.current_dialogue_ref.current_dialogue
+            dialogue_instance_at_frame_start = self.current_dialogue_ref
 
         
-        if dialogue_instance_at_frame_start and dialogue_instance_at_frame_start.talking:
-            pass
+        # 安全获取当前对话对象
+        dialogue_instance_at_frame_start = (
+            self.current_dialogue_ref.current_dialogue
+            if hasattr(self.current_dialogue_ref, "current_dialogue")
+            else self.current_dialogue_ref
+        )
+
+        # 安全判断是否正在说话
+        if (
+            dialogue_instance_at_frame_start and
+            hasattr(dialogue_instance_at_frame_start, "talking") and
+            dialogue_instance_at_frame_start.talking
+        ):
+
+           pass
         
         if dialogue_instance_at_frame_start:
             # 1. Always update the dialogue's internal state (typing, etc.)
@@ -2454,7 +2481,17 @@ class Rooms:    # class Level in tutorial
             # This is crucial. We draw whatever `self.current_dialogue_ref.current_dialogue`
             # points to *after* all event handling and potential replacements within this frame.
             if self.current_dialogue_ref: # Check the global reference AGAIN right before drawing
-                self.current_dialogue_ref.draw(self.display)
+                # 尝试从 current_dialogue_ref 中获取实际的对话对象
+                dialogue_obj = (
+                    self.current_dialogue_ref.current_dialogue
+                    if hasattr(self.current_dialogue_ref, "current_dialogue")
+                    else self.current_dialogue_ref
+                )
+
+                # 安全调用 draw（只有在对话对象存在且有 draw 方法时才调用）
+                if dialogue_obj and hasattr(dialogue_obj, "draw"):
+                    dialogue_obj.draw(self.display)
+
                 print(f"DEBUG (Rooms.run): Drawing active dialogue: {type(self.current_dialogue_ref).__name__}")
             else:
                 print("DEBUG (Rooms.run): No active dialogue to draw this frame (it might have just ended or been replaced by None).")
@@ -2485,9 +2522,17 @@ class Rooms:    # class Level in tutorial
 
             if (
                 self.current_dialogue_ref is not None and
-                self.current_dialogue_ref.current_dialogue is not None
+                self.current_dialogue_ref is not None
+
             ):
-                self.current_dialogue_ref.current_dialogue.draw(self.display)
+                if (
+                    self.current_dialogue_ref and
+                    hasattr(self.current_dialogue_ref, "current_dialogue") and
+                    self.current_dialogue_ref.current_dialogue and
+                    hasattr(self.current_dialogue_ref.current_dialogue, "draw")
+                ):
+                    self.current_dialogue_ref.current_dialogue.draw(self.display)
+
 
     
         # --- Handle fade-to-black transition ---
@@ -2549,17 +2594,29 @@ class Rooms:    # class Level in tutorial
             #self.current_dialogue_ref.current_dialogue.update()
             if (
                 self.current_dialogue_ref is not None and
-                self.current_dialogue_ref.current_dialogue is not None
+                self.current_dialogue_ref is not None
+
             ):
-                self.current_dialogue_ref.current_dialogue.draw(self.display)
+                # 尝试获取当前对话对象，不管是 Game 还是 dialog 本体
+                if self.current_dialogue_ref:
+                    dialogue_obj = (
+                        self.current_dialogue_ref.current_dialogue
+                        if hasattr(self.current_dialogue_ref, "current_dialogue")
+                        else self.current_dialogue_ref
+                    )
+
+                    if dialogue_obj and hasattr(dialogue_obj, "draw"):
+                        dialogue_obj.draw(self.display)
+
 
 
         # --- Trigger cutscene --- 
-        if (
-            self.current_dialogue_ref and
-            self.current_dialogue_ref.current_dialogue and
-            self.current_dialogue_ref.current_dialogue.talking
-        ):
+        if hasattr(self.current_dialogue_ref, "current_dialogue"):
+            dialogue_obj = self.current_dialogue_ref.current_dialogue
+        else:
+            dialogue_obj = self.current_dialogue_ref
+
+        if dialogue_obj and dialogue_obj.talking:
 
             
             if isinstance(self.current_dialogue_ref, dialog):
