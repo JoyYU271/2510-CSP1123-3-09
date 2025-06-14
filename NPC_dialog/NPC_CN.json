@@ -81,7 +81,7 @@
     ],
 
     "repeat_only":[
-       {"speaker":"npc","text":"她已经在你的办公室等候了，你准备好后可以随时过去。"}
+       {"speaker":"npc","text":"祝你今天过得愉快。"}
     ],
 
     "chapter_2":[
@@ -414,6 +414,9 @@
         {"next":"chapter_1_common"}
 
     ],
+    "repeat_only":[
+        {"speaker":"player","text":"(好了，那现在开始吧。)","next": "repeat_only"}
+    ],
 
     "chapter_1_common":[
         {"speaker":"player","text":"......"},
@@ -535,6 +538,10 @@
         {"speaker" :"player","text":".......","shown": false},
         {"speaker" :"player","text":"已经跟患者交谈完毕了，该使用仪器治疗了。"}
     ],
+    "repeat_only":[
+        {"speaker":"player","text":"(可以开始了。)","next": "repeat_only"}
+    ],
+
     "after_puzzle":[
         {"speaker" :"narrator","text":"(她来到了个诊所)","shown": false},
         {"speaker" :"narrator","text":"(很眼熟，你这样想着)","shown": false},

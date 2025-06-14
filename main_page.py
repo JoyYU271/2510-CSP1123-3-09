@@ -49,7 +49,7 @@ def main_menu():
     current_dialogue = None
 
     if not main_menu_bgm_played:
-        pygame.mixer.music.load("bgm/main page.mp3")
+        pygame.mixer.music.load("bgm/main_page.mp3")
         pygame.mixer.music.set_volume(bgm_vol)
         pygame.mixer.music.play(-1)
         main_menu_bgm_played = True
@@ -103,10 +103,8 @@ def main_menu():
                     intro_game.run()
 
                     
- 
-
                     # back main page music
-                    pygame.mixer.music.load("bgm/main page.mp3")
+                    pygame.mixer.music.load("bgm/main_page.mp3")
                     pygame.mixer.music.set_volume(bgm_vol)
                     pygame.mixer.music.play(-1)
 

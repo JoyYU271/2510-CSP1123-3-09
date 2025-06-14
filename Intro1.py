@@ -297,17 +297,63 @@ class Dialog:
         current_data = self.full_dialogue_tree
         
         # Check if the node is a dictionary (like "System_Narrative")
-        if node_id in current_data and isinstance(current_data[node_id], dict):
+    #    if node_id in current_data and isinstance(current_data[node_id], dict):
             # For nodes that branch by chapter (e.g., "intro" in System_Narrative)
-            chapter_key = f"chapter_{self.rooms_instance.current_day}"
-            dialogue_list = current_data[node_id].get(chapter_key)
-            if dialogue_list:
-                return dialogue_list
-            else:
-                print(f"Warning: No chapter dialogue '{chapter_key}' found for '{node_id}'.")
-                return []
+    #        chapter_key = f"chapter_{self.rooms_instance.current_day}"
+    #        dialogue_list = current_data[node_id].get(chapter_key)
+    #        if dialogue_list:
+    #            return dialogue_list
+    #        else:
+    #            print(f"Warning: No chapter dialogue '{chapter_key}' found for '{node_id}'.")
+    #            return []
         # For regular dialogue nodes that are directly lists (e.g., "Zheng"'s "after_puzzle_sequence")
-        return current_data.get(node_id, [])
+    #    return current_data.get(node_id, [])
+        raw_dialogue_list = []
+
+        if  node_id in current_data and isinstance(current_data[node_id], dict):
+            chapter_key = f"chapter_{self.rooms_instance.current_day}" if hasattr(self.rooms_instance, "current_day") else "default_chapter"
+            raw_dialogue_list = current_data[node_id].get(chapter_key, [])
+            print(f"DEBUG: Found {len(raw_dialogue_list)} lines in {chapter_key}")
+        else:
+            raw_dialogue_list = current_data.get(node_id, [])
+            print(f"DEBUG: Found {len(raw_dialogue_list)} lines in direct node")
+
+        # Debug: Print the raw dialogue and their shown status
+        print(f"DEBUG: Raw dialogue list for {node_id}:")
+        for i, line in enumerate(raw_dialogue_list):
+            if isinstance(line, dict):
+               shown_status = line.get("shown", False)
+               text_preview = line.get("text", "No text")[:30] + "..." if len(line.get("text", "")) > 30 else line.get("text", "No text")
+               print(f"  Line {i}: shown={shown_status}, text='{text_preview}'")
+            else:
+               print(f"  Line {i}: Not a dict - {line}")
+
+            # Filter out dialogue lines that have "shown": true
+        filtered_dialogue_list = []
+        for i, line_data in enumerate(raw_dialogue_list):
+            if isinstance(line_data, dict):
+               shown_status = line_data.get("shown", False)
+               if not shown_status:
+                  filtered_dialogue_list.append(line_data)
+                  print(f"DEBUG: Including line {i} (shown={shown_status})")
+               else:
+                  text_preview = line_data.get("text", "No text")[:50]
+                  print(f"DEBUG: Skipping line {i} (shown={shown_status}): {text_preview}")
+            else:
+              filtered_dialogue_list.append(line_data)
+              print(f"DEBUG: Including non-dict line {i}")
+
+              print(f"DEBUG: After filtering, {len(filtered_dialogue_list)} lines remain")
+    
+        if not filtered_dialogue_list and raw_dialogue_list:
+            print(f"WARNING: All dialogue in node '{node_id}' has been shown already.")
+        # Return the repeat_only dialogue if it exists
+            repeat_node = f"{node_id}_repeat" if f"{node_id}_repeat" in current_data else "repeat_only"
+            if repeat_node in current_data:
+               print(f"DEBUG: Using repeat dialogue from {repeat_node}")
+               return current_data.get(repeat_node, [])
+    
+        return filtered_dialogue_list
 
     def reset_typing(self):
         """
@@ -406,7 +452,7 @@ class Dialog:
        #         return # Consume space and don't advance dialogue yet
 
         if self.showing_cg:
-            # 如果还有下一张 CG，就继续淡入那一张
+            # If a CG is showing, space advances the CG
             if self.cg_index < len(self.cg_images) - 1:
                 self.cg_index += 1
                 self.fade(screen, cg_list=[self.cg_images[self.cg_index]], fade_in=True)
@@ -420,7 +466,12 @@ class Dialog:
             if self.current_line_data: 
                 self.current_text_display = self.current_line_data.get("text", "")
             self.typing_complete = True
-            return # Consume this space press; actual line advancement happens on the *next* space press
+            return
+        
+        # Mark current line as shown before advancing
+        if self.current_line_data and isinstance(self.current_line_data, dict):
+           self.current_line_data["shown"] = True
+           print(f"Marked as shown: {self.current_line_data.get('text', 'No text')[:50]}...")
 
         if self.current_line_data and "cg" in self.current_line_data and not self.showing_cg:
             cg_paths = (self.current_line_data["cg"]
@@ -549,13 +600,20 @@ class Dialog:
             self.talking = False
             print("NPC Dialogue ended (natural end of node).")
 
+    
+
     def select_choice(self, choice_index):
         """Handles choice selection (called by Rooms based on Enter key input)."""
         if self.choices_active and 0 <= choice_index < len(self.current_choices):
+
+            if self.current_line_data and isinstance(self.current_line_data, dict):
+                self.current_line_data["shown"] = True
+                print(f"Marked choice as shown: {self.current_line_data}")
+                
             selected_option = self.current_choices[choice_index]
             next_node_id = selected_option["next"]
             self.choices_active = False
-            self._transition_to_node(next_node_id)
+            
 
             if next_node_id == "back_reality":
                 self.talking = False
@@ -882,6 +940,42 @@ class Dialog:
         self.npc_data = self.all_dialogues.get(self.npc_name, {})
         self.current_story = chapter
         self.story_data = self.npc_data.get(self.current_story,[])
+
+    def get_dialogue_list_from_node_id(self,node_id):
+        current_data = self.full_dialogue_tree
+        raw_dialogue_list = []
+
+        if node_id in current_data and isinstance(current_data[node_id], dict):
+        # For System_Narrative (intro)
+           chapter_key = f"chapter_{self.rooms_instance.current_day}" if hasattr(self.rooms_instance, "current_day") else "default_chapter"
+           raw_dialogue_list = current_data[node_id].get(chapter_key, [])
+        else:
+        # For regular NPC dialogue nodes
+           raw_dialogue_list = current_data.get(node_id, [])
+
+        filtered_dialogue_list = []
+        for line_data in raw_dialogue_list:
+             if isinstance(line_data, dict):
+                 # Only include lines that haven't been shown yet
+                if not line_data.get("shown", False):
+                    filtered_dialogue_list.append(line_data)
+                else:
+                  print(f"Skipping already shown dialogue: {line_data.get('text', 'No text')[:50]}...")
+             else:
+            # If it's not a dict, include it (shouldn't happen in your structure)
+                filtered_dialogue_list.append(line_data)
+    
+        if not filtered_dialogue_list and raw_dialogue_list:
+           print(f"Warning: All dialogue in node '{node_id}' has been shown already.")
+    
+        return filtered_dialogue_list
+    
+
+
+     
+
+
+    
         
     #     for i, entry in enumerate(raw_story_data):
     #         dialogue_id = f"{self.npc_name}_{self.current_story}_{i}"
