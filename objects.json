@@ -33,7 +33,7 @@
     "draw_layer": "background",
     "active": true,
     "unlocked": false,
-    "unloakd_day": 3,
+    "unlocked_day": 3,
     "node_if_locked": "door02_locked_dialogue",
     "node_if_unlocked": "door02_unlocked_dialogue",
     "next_room": "Dean_room",
@@ -76,7 +76,7 @@
     "position": [113, 371],
     "image": "Computer",
     "dialogue_id": "exitZ01_dialogue",
-    "start_node": "start",
+    "start_node": "initial",
     "active": true,
     "rooms": ["subc.Z_01"],
     "draw_layer": "background",
@@ -86,10 +86,10 @@
 
   "office_computers": {
     "name": "Office computers",
-    "position": [1000, 371],
+    "position": [1100, 371],
     "image": "Office_comps",
     "dialogue_id": "offc_comp_dialogue",
-    "start_node": "start",
+    "start_node": "key",
     "active": true,
     "rooms": ["subc.Z_01"],
     "draw_layer": "background"
@@ -97,18 +97,21 @@
 
   "printer": {
     "name": "Office printer",
-    "position": [500, 371],
+    "position": [550, 371],
     "image": "Printer",
     "dialogue_id": "printer_dialogue",
-    "start_node": "start",
+    "start_node": "locked",
     "active": true,
     "rooms": ["subc.Z_01"],
+    "conditional_dialogue_flag": "patient_zheng_talked_to",
+    "node_if_locked": "locked_machine_node",
+    "node_if_unlocked": "unlocked_machine_node",
     "draw_layer": "background"
   },
 
   "Water_cool": {
     "name": "Office water cooler",
-    "position": [800, 371],
+    "position": [850, 371],
     "image": "Water_cooler",
     "dialogue_id": "water_cool_dialogue",
     "start_node": "start",
@@ -336,7 +339,7 @@
     "name": "Welcome mat",
     "position": [60,500],
     "image": "Welcome_mat",
-    "dialogue_id": "exitE03.1_dialogue",
+    "dialogue_id": "none",
     "start_node": "none",
     "has_dialogue": false,
     "active": true,
@@ -384,7 +387,7 @@
     "name": "Bedroom door",
     "position": [400, 500],
     "image": "Dream_door",
-    "dialogue_id": "beddoor_dialogue",
+    "dialogue_id": "exitE04_dialogue",
     "start_node": "start",
     "active": true,
     "rooms": ["subc.E_04"],
@@ -394,7 +397,7 @@
 
   "pill_bottle": {
     "name": "Pill bottle",
-    "position": [500, 700],
+    "position": [500, 500],
     "image": "Pill_bottle",
     "dialogue_id": "pillb_dialogue",
     "start_node": "start",
@@ -411,6 +414,29 @@
     "start_node": "start",
     "active": true,
     "rooms": ["subc.E_04"],
+    "draw_layer": "background"
+  },
+
+  "mirror": {
+    "name": "Self conscious mirror",
+    "position": [700, 300],
+    "image": "Mirror",
+    "dialogue_id": "exitE05_dialogue",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["subc.E_05"],
+    "draw_layer": "background",
+    "next_room": "room01"
+  },
+
+  "medbed": {
+    "name": "A medical bed?",
+    "position": [30, 600],
+    "image": "Medbed",
+    "dialogue_id": "medbed_dialogue",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["subc.E_05"],
     "draw_layer": "background"
   }
 }

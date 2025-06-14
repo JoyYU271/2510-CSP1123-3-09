@@ -12,9 +12,13 @@
     "name":"Dean",
     "position" : [400,520],
     "dialogue_id" :"Dean",
-    "rooms" :["room01" ],
     "draw_layer":"mid_layer",
-    "days": [1, 3] 
+    "days": [1, 2, 3],
+    "day_specific_locations" : {
+      "1": {"rooms": "room01", "position": [400, 520]},
+      "2": {"rooms": "Dean_room", "position": [400, 520]},
+      "3": {"rooms": "basement", "position": [800, 520]}
+    } 
   },
 
   "nuva_npc_id":{
@@ -22,7 +26,8 @@
     "position":[840,520],
     "dialogue_id" : "Nuva",
     "rooms":["room01"],
-    "draw_layer":"mid_layer"
+    "draw_layer":"mid_layer",
+    "days": [1, 2]
   },
 
   "emma_npc_id":{

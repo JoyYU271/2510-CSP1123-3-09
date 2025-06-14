@@ -14,7 +14,7 @@
   },
 
   "door02_dialogue":{
-    "start":[
+    "locked":[
       {"text": "The Dean's office."},
       {"text": "It's locked."}
     ]
@@ -22,29 +22,59 @@
 
   "board_dialogue": {
     "start": [
-      {"text": "(You look at the bulletin board.)"},
-      {"text": "(Clinic hours, honor certificates, mental health tips, job hiring...)"},
+      {"text": "You look at the bulletin board."},
+      {"text": "Clinic hours, honor certificates, mental health tips, job hiring..."},
       {"text": "(A flyer on Hypnotherapy... This is the therapy Father has been practicing and promoting his whole life.)"}
     ]
   },
 
   "machine_dialogue": {
     "locked_machine_node": [
-      {"text": "(You should talk to the patient first.)"},
-      {"next_node": "end"}
+      {"text": "(I should talk to the patient first.)"}
     ],
     "unlocked_machine_node": [
-      {"text": "(After you check that the machine is functinal, you carefully place it on her head.)"}, 
+      {"text": "After you check that the machine is functinal, you carefully place it on the patient's head."}, 
       {"event": "machine_enter"}
     ]
   },
 
   "exitZ01_dialogue": {
+    "locked_machine_node": [
+      {"text": "It shows a printer icon."},
+      {"text": "Do I... print something?"}
+    ],
+    "unlocked_machine_node": [
+      {"speaker": "narrator", "text": "Upon contact, fragmented images flash before you—an office, a computer screen.", "shown": false},
+      {"speaker": "narrator", "text": "You witness her endlessly revising the proposal, her earlier account now visceral in first-person. The relentless edits radiate palpable distress. ", "shown": false},
+      {"speaker": "narrator", "text": "(...Experiencing her perspective is overwhelming.)", "shown": false},
+      {"event": "machine_enter"} 
+    ]
+  },
+
+  "printer_dialogue": {
+    "locked": [
+      {"text": "(... Can't turn on?)"},
+      {"text": "You look under the table."},
+      {"text": "A plug head dangles upside down right below the printer."}
+    ],
+    "unlocked": [
+      {"text": "You plug the wire head into the extension cord."},
+      {"text": "The printer gave a sharp clack sound and started up."},
+      {"event": "set_flag", "event_data": {"flag_name": "lock_unlocked", "flag_value": true}}
+    ]
+  },
+
+  "water_cool_dialogue": {
     "start": [
-    {"speaker": "narrator", "text": "(Upon contact, fragmented images flash before you—an office, a computer screen. ", "shown": false},
-    {"speaker": "narrator", "text": "You witness her endlessly revising the proposal, her earlier account now visceral in first-person. The relentless edits radiate palpable distress. ", "shown": false},
-    {"speaker": "player", "text": "(......Experiencing her perspective is overwhelming.)", "shown": false},
-    {"event": "machine_enter"} 
+      {"text": "Has this been washed?"},
+      {"text": "(...Does it matter?"}
+    ]
+  },
+
+  "offc_comp_dialogue": {
+    "key": [
+      {"text": "Not in use. Don't need the plug for now."},
+      {"event": "set_flag", "event_data": {"flag_name": "key1_found", "flag_value": true}}
     ]
   },
 
@@ -90,56 +120,87 @@
   "exitZ04_dialogue": {
     "start": [
     {"speaker": "narrator","text": "(You find a portfolio. The patient's picture is on it.)", "shown": false},
-    {"speaker": "player","text": "Everything else is blurred out, except got a few lines.", "shown": false},
-    {"speaker": "narrator","text": "Diagnosis: Work stress)", "shown": false},
-    {"speaker": "narrator","text": "Treatment: Post-hypnotic amnesia", "shown": false},
+    {"speaker": "player","text": "(Everything else is blurred out, except got a few lines.)", "shown": false},
+    {"speaker": "narrator","text": "(Diagnosis: Work stress)", "shown": false},
+    {"speaker": "narrator","text": "(Treatment: Post-hypnotic amnesia)", "shown": false},
     {"next_node": "end"},
     {"speaker": "narrator","text": "(You find a journal. The patient's name is on it.)", "shown": false},
     {"speaker": "narrator","text": "(You turn to the latest entry.)", "shown": false},
     {"speaker": "narrator","text": "('When I was offered this opportunity, I was estatic.')", "shown": false},
     {"speaker": "narrator","text": "('I'm finally a step closer to achieving my dream...')", "shown": false},
     {"speaker": "narrator","text": "('But... What is my dream?')", "shown": false},
-    {"event": "puzzle_complete"}
+    {"event": "puzzle_complete", "event_data": {"puzzle_owner_dialogue_id": "Zheng"}}
       ]
     },
 
     "exitE01_dialogue": {
       "start": [
-        {"text": "(text here.)"},
+        {"speaker": "narrator","text": "(The first time had been a weird experience, but you couldn't help marveling at the scenes flashing by.)", "shown": false},
+        {"speaker": "narrator","text": "(You were starting to focus when all of a sudden you hear a 'kachak', followed by a bright, blinding white light.)", "shown": false},
+        {"speaker": "player","text": " (Ow! My eyes-)", "shown": false},
+        {"speaker": "?","text": "Miss Emma! Today's shooting is done, you can take a break now!", "shown": false},
+        {"speaker": "Emma","text": "Alright, good work everyone.", "shown": false}, 
+        {"speaker": "player","text": "(A photoshoot? Is Ms. Emma some sort of celebrity?)", "shown": false},
         {"event": "machine_enter"}
       ]
     },
 
     "exitE02_dialogue": {
       "start": [
-        {"text": "(text here.)"},
+        {"speaker": "narrator","text": "(A scene came into view, and the patient's face appears... Or more precisely, her face in the mirror.)", "shown": false},
+        {"speaker": "narrator","text": "(You see someone standing behind her in the mirror whose face you can't see clearly, combing her hair with a curling iron)", "shown": false},
+        {"speaker": "narrator","text": "(There's also someone next to her, holding a makeup brush and gently applying blush to her face.)", "shown": false},
+        {"speaker": "narrator","text": "(In the next moment, a stage appears. It's a catwalk.)", "shown": false},
+        {"speaker": "narrator","text": "(You feel the weight of attention, whether from the camera or from people)", "shown": false},
+        {"speaker": "narrator","text": "(The focus of all this attention walked forward, posing at the end of the catwalk with practiced ease.)", "shown": false},
+        {"speaker": "narrator","text": "(The clothes on her body shone with a brilliance.)", "shown": false},
+        {"speaker": "player","text": "(Oh, so she's a model...)", "shown": false},
         {"event": "machine_enter"}
       ]
     },
 
     "exitE03.1_dialogue": {
       "start": [
-        {"text": "(text here.)"},
-        {"event": "machine_enter"}
-      ]
-    },
-    "exitE03.2_dialogue": {
-      "start": [
-        {"text": "(text here.)"},
+        {"speaker": "narrator","text": "(There was a sudden loud 'crash!!!')", "shown": false},
+        {"speaker": "narrator","text": "(You were startled by the loud noise.)", "shown": false},
+        {"speaker": "narrator","text": "(Then the scene skewed to the left, and you felt your ribs jerk against the seat belt uncomfortably.)", "shown": false},
+        {"speaker": "narrator","text": "(The car window shatter into a spider web, hitting your face.)", "shown": false},
+        {"speaker": "narrator","text": "(At the last moment, there was a white something punching out, followed by a pungent smell, like gunpowder and something burning - It was the airbag.)", "shown": false},
+        {"speaker": "narrator","text": "(The scene gradually dims. The distant horn, the buzzing ambulance, the rapid breathing, all of it slowly leaves.)", "shown": false},
+        {"speaker": "narrator","text": "(And then, the world falls silent.)", "shown": false},
+        {"speaker": "player","text": "(...This must be the car accident)", "shown": false},
+         {"speaker": "narrator","text": "(You close your eyes and take a deep breath to try and calm yourself.)", "shown": false},
         {"event": "machine_enter"}
       ]
     },
     "exitE04_dialogue": {
       "start": [
-        {"text": "(text here.)"},
+        {"speaker": "narrator","text": "(There was a sudden, familiar, loud 'crash!!')", "shown": false},
+        {"speaker": "player","text": "(Again!?)", "shown": false},
+        {"speaker": "narrator","text": "(But this time, there was no labored breathing or pain. The scene shifts. You hear a scream and then a sudden gasp.)", "shown": false},
+        {"speaker": "Emma","text": "Haa... Haa...", "shown": false},
+        {"speaker": "Emma","text": "Why... Why did I dream about this again...", "shown": false},
+        {"speaker": "narrator","text": "(Her voice held a hint of despair)", "shown": false},
+        {"speaker": "Emma","text": "Hasn't it been some time already...", "shown": false},
+        {"speaker": "player","text": "......", "shown": false},
+        {"speaker": "narrator","text": "You feel like comforting her, or giving her a hug, but this was just a memory, you can't do anything here.", "shown": false},
         {"event": "machine_enter"}
       ]
     },
 
     "exitE05_dialogue": {
       "start": [
-        {"text": "(text here.)"},
-        {"event": "puzzle_complete"}
+        {"speaker": "narrator","text": "(... What's this?)", "shown": false},
+        {"speaker": "narrator","text": "(... Who's there?)", "shown": false},
+        {"speaker": "narrator","text": "A beautiful model stands tall and proud.", "shown": false},
+        {"speaker": "narrator","text": "You feel confident and really love your job.", "shown": false},
+        {"next_node": "end"},
+        {"speaker": "narrator","text": "The refelction ripples.", "shown": false},
+        {"speaker": "narrator","text": "A hunched, tired woman stands before you.", "shown": false},
+        {"speaker": "narrator","text": "You didn't used to feel this way...", "shown": false},
+        {"speaker": "narrator","text": "but you don't know how to solve it.", "shown": false},
+        {"speaker": "player","text": "......", "shown": false},
+        {"event": "puzzle_complete", "event_data": {"puzzle_owner_dialogue_id": "Emma"}}
       ]
     }
   }

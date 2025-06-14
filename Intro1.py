@@ -153,10 +153,13 @@ room_settings = {
 
 #============ Dialogue System =============
 class dialog:
-    def __init__(self,npc,player,full_dialogue_tree, start_node_id, rooms_instance,bgm_vol=0.5,sfx_vol=0.5, text_size=30, shown_dialogues=None, npc_manager=None):
-        super().__init__()
+    def __init__(self, npc, player, full_dialogue_tree, start_node_id, rooms_instance,
+                 bgm_vol=0.5, sfx_vol=0.5, text_size=30, shown_dialogues=None, npc_manager=None,
+                 screen_surface=None): # Added screen_surface parameter
         
+        # Sound Management
         self.sounds = {
+            # Make sure these paths are correct in your project
             "phone_typing": pygame.mixer.Sound("sfx/phone_typing.wav"),
             "footsteps": pygame.mixer.Sound("sfx/footsteps.wav"),
             "camera": pygame.mixer.Sound("sfx/camera.wav"),
@@ -171,113 +174,138 @@ class dialog:
             "wine_glass": pygame.mixer.Sound("sfx/wine_glass.wav"),
             "write_pen": pygame.mixer.Sound("sfx/write_pen.wav"),
         }
-
         self.sfx_vol = sfx_vol
         for sound in self.sounds.values():
             sound.set_volume(sfx_vol)
+        self.currently_playing_sfx = None
+        self.sound_played_for_current_step = False
 
+        self.current_bgm = None
+        self.bgm_volume = bgm_vol
+
+        # Core Game References
         self.player = player
-        self.npc_name = npc.name
-        self.npc = npc
+        self.npc = npc  # Store the actual NPC object
+        self.npc_name = npc.name # For convenience and portrait lookup
         self.full_dialogue_tree = full_dialogue_tree 
-        self.rooms_instance = rooms_instance
-        self.shown_dialogues = shown_dialogues if shown_dialogues is not None else {}
-        self.npc_manager = npc_manager
+        self.rooms_instance = rooms_instance # Reference to the Rooms instance for event handling
+        self.shown_dialogues = shown_dialogues if shown_dialogues is not None else {} # For tracking shown dialogues
+        self.npc_manager = npc_manager # For potential NPC management from dialogue events
+        self.screen_surface = screen_surface # Store the screen surface for drawing/fading
 
-        # --- Initialize these attributes BEFORE calling other methods ---
-        self.talking = True
-        self.choices_active = False
-        self.current_line_index = 0
-        self.current_node_id = start_node_id
+        # Dialogue Logic Attributes
+        self.talking = True # Starts talking when created
+        self.choices_active = False # Flag for when choices need to be displayed
+        self.current_line_index = 0 # Index of the current line in current_dialogue_list
+        self.current_node_id = start_node_id # ID of the current dialogue node (e.g., "chapter_1", "after_puzzle_sequence")
         
-        # This will now correctly use the current_day from the rooms_instance
+        # Get dialogue list based on the starting node and initialize current_line_data
         self.current_dialogue_list = self._get_dialogue_list_from_node_id(self.current_node_id)
         self.current_line_data = self.get_current_line_data()
         
-        self.typing_complete = False
+        # Typing Effect Attributes
+        self.typing_complete = False # True if current line is fully typed out
         self.text_display_timer = 0
-        self.typing_speed = 2 
-        self.current_text_display = ""
+        self.typing_speed = 2 # Characters per frame
+        self.current_text_display = "" # The text currently displayed (character by character for typing effect)
 
-        self.current_choices = []
-        self.selected_choice_index = 0
+        # Choice Selection Attributes
+        self.current_choices = [] # List of choice dictionaries (e.g., [{"option": "Destroy", "next": "node_id"}])
+        self.selected_choice_index = 0 # Index of the currently highlighted choice
 
-        self.dialog_box_img = pygame.image.load("picture/Character Dialogue/dialog boxxx.png").convert_alpha()
-        self.dialog_box_img.set_alpha(200)
+        # UI Elements (Dialogue Box Image)
+        try:
+            self.dialog_box_img = pygame.image.load("picture/Character Dialogue/dialog boxxx.png").convert_alpha()
+            self.dialog_box_img.set_alpha(200) # Semi-transparent
+        except pygame.error as e:
+            print(f"FATAL ERROR (dialog.__init__): Could not load dialog_box_img: {e}. Using dummy red square.")
+            self.dialog_box_img = pygame.Surface((800, 200)) 
+            self.dialog_box_img.fill((255, 0, 0)) 
+            self.dialog_box_img.set_alpha(255) 
 
-        # Character portrait selection
-        self.portrait = None
-        if npc.name == "Nuva":
+        # Character portrait loading (ensure paths are correct)
+        self.portrait = None # For NPC
+        if self.npc_name == "Nuva":
             self.portrait = pygame.image.load("picture/Character Dialogue/Nurse.png").convert_alpha()
-        elif npc.name == "Dean":
+        elif self.npc_name == "Dean":
             self.portrait = pygame.image.load("picture/Character Dialogue/Dean.png").convert_alpha()
-        elif npc.name == "Zheng":
+        elif self.npc_name == "Zheng":
             self.portrait = pygame.image.load("picture/Character Dialogue/Patient1.png").convert_alpha()
-        elif npc.name == "Emma":
+        elif self.npc_name == "Emma":
             self.portrait = pygame.image.load("picture/Character Dialogue/Patient2.png").convert_alpha()
-        
-        self.player_portrait = pygame.image.load("picture/Character Dialogue/Doctor.png").convert_alpha()
+        # Add more NPCs here as needed
 
-        self.currently_playing_sfx = None
-        self.sound_played_for_current_step = False
-        self.current_bgm = None
-        self.bgm_volume = bgm_vol
-        self.text_size = text_size
+        try:
+            self.player_portrait = pygame.image.load("picture/Character Dialogue/Doctor.png").convert_alpha()
+        except pygame.error as e:
+            print(f"ERROR: Could not load Player portrait: {e}. Using dummy surface.")
+            self.player_portrait = pygame.Surface((200, 200), pygame.SRCALPHA) # Transparent dummy
 
+        # Cutscene and Chapter Management Flags
+        self.dean_cutscene_triggered = False 
+        self.chapter_end = False 
+        self.ready_to_quit = False 
+        self.showing_cg = False 
+        self.cg_images = [] # Stores loaded pygame.Surface objects for CGs
+        self.cg_index = 0 # Index of the current CG being shown
 
-        self.dean_cutscene_triggered = False # For cutscene logic
-        self.chapter_end = False
-        self.ready_to_quit = False
-        self.showing_cg = False
-        self.cg_images = []
-        self.cg_index = 0
+        self.text_size = text_size # Font size for dialogue text
 
+        # Initial reset of typing state (important for the very first line of dialogue)
         self.reset_typing()
 
+        # Handle case where initial dialogue list might be empty (error)
         if not self.current_dialogue_list:
-            print(f"Error: Initial dialogue list for node '{self.current_node_id}' not found. Ending dialogue.")
+            print(f"Error: Initial dialogue list for node '{self.current_node_id}' not found or empty. Ending dialogue.")
             self.talking = False
-            self.current_text_display = "(Dialogue error or missing text)"
+            self.current_text_display = "(Dialogue error or missing text)" 
 
     def _get_dialogue_list_from_node_id(self, node_id):
-        # This function now correctly navigates the NPC.json structure
+        """
+        Retrieves the list of dialogue entries for a given node ID,
+        handling chapter-specific branches if the node is a dictionary.
+        """
         current_data = self.full_dialogue_tree
+        
+        # Check if the node is a dictionary (like "System_Narrative")
         if node_id in current_data and isinstance(current_data[node_id], dict):
-            # For System_Narrative (intro)
+            # For nodes that branch by chapter (e.g., "intro" in System_Narrative)
             chapter_key = f"chapter_{self.rooms_instance.current_day}"
             dialogue_list = current_data[node_id].get(chapter_key)
             if dialogue_list:
                 return dialogue_list
             else:
-                 print(f"Warning: No chapter dialogue '{chapter_key}' found for '{node_id}'.")
-                 return []
-        # For regular NPC dialogue nodes
+                print(f"Warning: No chapter dialogue '{chapter_key}' found for '{node_id}'.")
+                return []
+        # For regular dialogue nodes that are directly lists (e.g., "Zheng"'s "after_puzzle_sequence")
         return current_data.get(node_id, [])
 
     def reset_typing(self):
+        """
+        Resets the typing animation state for a new dialogue text line.
+        Ensures typing is instantly complete if the current line has no text (e.g., choices, events).
+        """
         self.current_text_display = ""
         self.typing_complete = False
         self.text_display_timer = 0
-        self.sound_played_for_current_step = False
+        self.sound_played_for_current_step = False 
         
-        if self.current_line_data: # Make sure there's valid data
+        # Check if the current line (self.current_line_data) has text to type.
+        if self.current_line_data:
             text_content = self.current_line_data.get("text", "")
-            if not text_content: # If the current line has no 'text' key (e.g., it's a choice or event), complete typing instantly.
+            if not text_content: # If no text content, instantly complete typing
                 self.typing_complete = True
                 self.current_text_display = ""
-        else: # If current_line_data somehow became None, also instantly complete.
+        else: # If self.current_line_data is None (error state or end of list), instantly complete.
             self.typing_complete = True
             self.current_text_display = ""
 
     def update(self):
-        if not self.talking or self.choices_active:
+        """Updates the dialogue state, including typing animation, BGM, and SFX."""
+        if not self.talking or self.choices_active or self.showing_cg:
             return
 
-        # Handle CG showing separately from normal dialogue progression
-        if self.showing_cg:
-            # CGs are advanced by handle_space, so no typing update needed here
-            return
-
+        # Check if we've reached the end of the current dialogue list
         if self.current_line_index >= len(self.current_dialogue_list):
             self.typing_complete = True
             return
@@ -301,236 +329,240 @@ class dialog:
                 self.currently_playing_sfx = sound_name
             self.sound_played_for_current_step = True
             
-        # Handle typing effect
-        text_to_display = current_line_data.get("text", "")
-        if not self.typing_complete:
+        # Handle typing effect (only if there's text to type)
+        text_to_type = current_line_data.get("text", "") 
+        if not self.typing_complete and text_to_type: 
             self.text_display_timer += 1
             chars_to_display = self.text_display_timer // self.typing_speed
-            if chars_to_display > len(text_to_display):
-                chars_to_display = len(text_to_display)
-            self.current_text_display = text_to_display[:chars_to_display]
-            if chars_to_display >= len(text_to_display):
+            chars_to_display = min(chars_to_display, len(text_to_type))
+            self.current_text_display = text_to_type[:chars_to_display]
+            if chars_to_display >= len(text_to_type):
                 self.typing_complete = True
+        elif not text_to_type: # If no text for this line (e.g., just an event trigger), mark as complete.
+            self.typing_complete = True
+            self.current_text_display = ""
 
-    def handle_space(self, screen, keys=None):
-        global game_chapter
-        global flags # Assuming 'flags' is also a global variable modified here
-        global player_choices # Assuming 'player_choices' is also a global variable modified here
-        
+    def handle_space(self, screen_surface, keys=None):
+        """
+        Handles spacebar input to advance dialogue, complete typing, or advance CGs.
+        Requires 'screen_surface' for CG transitions.
+        """
+        # Declare global variables at the very top of the function if they are modified here
+        global game_chapter, flags, player_choices, save_checkpoint 
+
+        # If showing CG, space advances the CG
         if self.showing_cg:
-            # If a CG is showing, space advances the CG
             self.cg_index += 1
             if self.cg_index >= len(self.cg_images):
-                # All CGs displayed, stop showing CGs and continue dialogue (if any)
+                # All CGs displayed, stop showing CGs
                 self.showing_cg = False
-                self.cg_images = [] # Clear images
+                self.cg_images = [] 
                 self.cg_index = 0
-                # Now check if there's more dialogue to proceed to after CGs
-                # This will be handled by the normal dialogue advancement below
             else:
-                # Fade to the next CG
-                self.fade(screen, cg_list=[self.cg_images[self.cg_index]], fade_in=True)
+                self.fade(screen_surface, cg_list=[self.cg_images[self.cg_index]], fade_in=True) 
                 return # Consume space and don't advance dialogue yet
-
+        
+        # If not talking or choices are active, spacebar won't advance dialogue (unless for CGs)
         if not self.talking or self.choices_active:
             return
 
+        # If typing is not complete for the current line, spacebar completes it instantly
         if not self.typing_complete:
-            # Instantly complete the text of the current line
-            if self.current_line_data: # Ensure current_line_data is valid
+            if self.current_line_data: 
                 self.current_text_display = self.current_line_data.get("text", "")
             self.typing_complete = True
-            return
+            return # Consume this space press; actual line advancement happens on the *next* space press
 
-        # Advance to the next line
+        # Typing is complete, so advance to the next line of dialogue
         self.current_line_index += 1
-        self.current_line_data = self.get_current_line_data()
+        self.current_line_data = self.get_current_line_data() # Get data for the newly advanced index
 
-        if self.current_line_data:
+        if self.current_line_data: # If there's a next line in the current node list
             # Handle CG trigger if present
             if "cg" in self.current_line_data:
                 cg_paths = self.current_line_data["cg"] if isinstance(self.current_line_data["cg"], list) else [self.current_line_data["cg"]]
                 self.cg_images = [pygame.image.load(path).convert_alpha() for path in cg_paths]
                 self.cg_index = 0
                 self.showing_cg = True
-                self.fade(screen, cg_list=[self.cg_images[self.cg_index]], fade_in=True)
-                self.reset_typing() # Reset typing for the next potential dialogue after CG
-                return # Consume space, CG will be handled
-
+                self.fade(screen_surface, cg_list=[self.cg_images[self.cg_index]], fade_in=True)
+                self.reset_typing() 
+                return 
 
             if "choice" in self.current_line_data:
                 self.current_choices = self.current_line_data["choice"]
-                self.choices_active = True
-                self.selected_choice_index = 0
-                self.reset_typing()
-                return
+                self.choices_active = True 
+                self.selected_choice_index = 0 
+                self.reset_typing() # Reset typing state for choice display (no text to type)
+                return 
             
             if "next" in self.current_line_data:
                 next_node_id = self.current_line_data["next"]
                 self._transition_to_node(next_node_id)
-                return
-            
+                return 
+
             if "event" in self.current_line_data:
                 event_name = self.current_line_data["event"]
-                # Handle specific events
+                # Handle specific events like Dean's cutscene trigger
                 if event_name == "dean_exit_cutscene":
                     flags["dean_cutscene_played"] = True
                     self.dean_cutscene_triggered = True 
+                    
+                    if 'save_checkpoint' in globals(): # Safe check if global exists
+                        save_checkpoint(
+                            npc_name=self.npc_name,
+                            chapter=f"chapter_{game_chapter}", 
+                            step=self.current_line_index,
+                            player_choices=player_choices,
+                            flags=flags,
+                            shown_dialogues=self.shown_dialogues
+                        )
+                # Pass event to rooms_instance for higher-level game state changes
+                self.rooms_instance.handle_dialogue_event(event_name)
+                self.talking = False # This dialogue instance finishes its job after triggering event
+                return 
 
-                    # Save checkpoint
+            # Handle "ending" type directly in handle_space
+            if self.current_line_data.get("type") == "ending":
+                self.chapter_end = True
+                if game_chapter >= 3: 
+                    self.ready_to_quit = True
+                    print(f"Main ending reached! ready_to_quit set to True")
+                else:
+                    self.fade(screen_surface , fade_in=True, cg_list=[]) # Fade to black
+                    game_chapter += 1 # Modify global game_chapter
+                    self.current_line_index = 0
+                    self.talking = False # End current dialogue
+                    self.chapter_end = False 
+                    print(f"Moving to chapter {game_chapter}")
+                    
+                ending_key = f"chapter_{game_chapter}" 
+                flags[f"ending_unlocked_{ending_key}"] = True 
+
+                if 'save_checkpoint' in globals(): # Safe check if global exists
                     save_checkpoint(
                         npc_name=self.npc_name,
-                        chapter=f"chapter_{game_chapter}", # Use current global game_chapter
+                        chapter=f"chapter_{game_chapter}", 
                         step=self.current_line_index,
                         player_choices=player_choices,
                         flags=flags,
                         shown_dialogues=self.shown_dialogues
                     )
-                self.rooms_instance.handle_dialogue_event(event_name)
-                self.talking = False
-                return
-            
-            # Handle "ending" type directly in handle_space
-            if self.current_line_data.get("type") == "ending":
-                self.chapter_end = True   
-                if game_chapter >= 3:   
-                    self.ready_to_quit = True
-                    print(f"Main ending reached! ready_to_quit set to True") 
-                else:
-                    self.fade(screen , fade_in=True, cg_list=[]) # Assuming 'screen' is accessible here
-                    game_chapter += 1
-                    # Reset dialogue state for next chapter
-                    self.current_line_index = 0 
-                    self.talking = False # End current dialogue
-                    self.chapter_end = False
-                    print(f"Moving to chapter {game_chapter}") 
-                    
-                ending_key = f"chapter_{game_chapter}" # This ensures it's updated for saving
-                flags[f"ending_unlocked_{ending_key}"] = True
+                return 
 
-                # save unlocked state
-                save_checkpoint(
-                    npc_name=self.npc_name,
-                    chapter=f"chapter_{game_chapter}", # Use updated global chapter
-                    step=self.current_line_index,
-                    player_choices=player_choices,
-                    flags=flags,
-                    shown_dialogues=self.shown_dialogues
-                )
-                return # Consume space after handling ending
+            # If it's a regular text line (and no next/event/CG/choice/ending), reset typing for it
+            self.reset_typing() 
 
-            # If it's just another line of text, reset typing for it
-            self.reset_typing()
-        else:
-            # Reached the end of the dialogue list for this node
+        else: # Reached the end of the current_dialogue_list for this node (natural end of dialogue)
             self.talking = False
             print("NPC Dialogue ended (natural end of node).")
 
     def select_choice(self, choice_index):
+        """Handles choice selection (called by Rooms based on Enter key input)."""
         if self.choices_active and 0 <= choice_index < len(self.current_choices):
             selected_option = self.current_choices[choice_index]
             next_node_id = selected_option["next"]
-            self.choices_active = False
-            self._transition_to_node(next_node_id)
+            self.choices_active = False 
+            self._transition_to_node(next_node_id) 
         else:
             print("Invalid choice selection or no choices active.")
 
     def _transition_to_node(self, node_id):
+        """Transitions the dialogue to a new specified node."""
         new_dialogue_list = self._get_dialogue_list_from_node_id(node_id)
         
-        if new_dialogue_list:
+        if new_dialogue_list: 
             self.current_node_id = node_id
             self.current_dialogue_list = new_dialogue_list
-            self.current_line_index = 0
-            self.choices_active = False
-            self.selected_choice_index = 0
-            self.current_line_data = self.get_current_line_data() # Get data for the new line
-            self.reset_typing()
+            self.current_line_index = 0 
+            self.choices_active = False 
+            self.selected_choice_index = 0 
+            self.current_line_data = self.get_current_line_data() # Get data for the first line of the new node
+            self.reset_typing() 
         else:
             print(f"Warning: Next node '{node_id}' not found or invalid format. Ending dialogue.")
             self.talking = False
 
-    def draw(self, screen):
-        # Draws the dialogue box, portraits, speaker names, text, and choices.
+    def get_current_line_data(self):
+        """Fetches the data dictionary for the current line of dialogue."""
+        if self.talking and self.current_line_index < len(self.current_dialogue_list):
+            return self.current_dialogue_list[self.current_line_index]
+        print(f"DEBUG (get_current_line_data): Returning None. talking={self.talking}, index={self.current_line_index}, list_len={len(self.current_dialogue_list) if hasattr(self, 'current_dialogue_list') else 'N/A'}")
+        return None
+    
+    def draw(self, screen_surface):
+        """
+        Draws the dialogue box, portraits, speaker names, text, and choices onto the screen.
+        This is the unified and corrected drawing method.
+        """
         if not self.talking:
             return
 
-        dialog_x = screen.get_width() // 2 - self.dialog_box_img.get_width() // 2
-        dialog_y = screen.get_height() - self.dialog_box_img.get_height() - 20
-        text_max_width = self.dialog_box_img.get_width() - 300
+        # Calculate dialogue box position (centered at bottom)
+        dialog_x = screen_surface.get_width() // 2 - self.dialog_box_img.get_width() // 2
+        dialog_y = screen_surface.get_height() - self.dialog_box_img.get_height() - 20
+        text_max_width = self.dialog_box_img.get_width() - 300 
 
-        # Always blit the dialog box first, regardless of choices or text
-        screen.blit(self.dialog_box_img, (dialog_x, dialog_y))
-        # print(f"DEBUG (dialog.draw): Drawing at dialog_x={dialog_x}, dialog_y={dialog_y}. Screen size: {screen.get_size()}")
+        # Always blit the dialog box background first
+        screen_surface.blit(self.dialog_box_img, (dialog_x, dialog_y))
+        
+        # --- Drawing Logic: Branch based on whether choices are active or normal text ---
+        if self.choices_active: # THIS IS THE CRITICAL IF FOR CHOICES
+            print(f"DEBUG (dialog.draw): Choices are ACTIVE. Selected index: {self.selected_choice_index}. (Inside choices_active branch)")
 
-        # --- Handle drawing based on dialogue type (choices vs. normal text) ---
-        # THIS IS THE CRITICAL IF-ELSE BRANCH
-        if self.choices_active: # <--- THIS MUST BE THE PRIMARY CHECK FOR CHOICES
-            # print(f"DEBUG (dialog.draw): Choices are ACTIVE. Selected index: {self.selected_choice_index}")
+            # Draw speaker name for choice prompt (e.g., "You Decide")
+            name_to_display = "You Decide" 
+            draw_text(screen_surface, name_to_display, 40, (0, 0, 0), dialog_x + 200, dialog_y + 10, center=False)
 
-            # Draw speaker name for choices (e.g., "You Decide")
-            name_to_display = "" # Or customize this
-            draw_text(screen, name_to_display, 40, (0, 0, 0), dialog_x + 200, dialog_y + 10, center=False)
-
-            max_options_display = 3
+            max_options_display = 3 
             dialog_center_x = dialog_x + self.dialog_box_img.get_width() // 2
 
             for i, option in enumerate(self.current_choices[:max_options_display]):
-                color = (255, 0, 0) if i == self.selected_choice_index else (0, 0, 0)
-                option_y = dialog_y + 60 + i * 60
+                color = (255, 0, 0) if i == self.selected_choice_index else (0, 0, 0) 
+                option_y = dialog_y + 60 + i * 60 
 
-                if option_y < screen.get_height() - 40:
-                    draw_text(screen, option["option"], 30, color, dialog_center_x, option_y, center=True)
-                    # print(f"DEBUG (dialog.draw): Choice {i}: '{option['option']}' blitted.") # Enable if needed
-        else: # <--- THIS IS THE BRANCH FOR NORMAL TEXT DIALOGUE
-            # Only fetch current_line_data if it's NOT a choice scene
-            # print(f"DEBUG (dialog.draw): Choices are NOT active. (Inside normal text branch)")
-            current_line_data = self.current_line_data
-            # print(f"DEBUG (dialog.draw): current_line_data (normal text branch): {current_line_data}")
-
-            if current_line_data: # Only draw normal text if current_line_data is valid
+                if option_y < screen_surface.get_height() - 40: 
+                    draw_text(screen_surface, option["option"], 30, color, dialog_center_x, option_y, center=True)
+        else: # This is the branch for NORMAL TEXT DIALOGUE
+            print(f"DEBUG (dialog.draw): Choices are NOT active. (Inside normal text branch)")
+            current_line_data = self.current_line_data # Use the pre-fetched current_line_data
+            
+            if current_line_data: # Only proceed if there's valid text line data
                 speaker_type = current_line_data.get("speaker", "narrator")
 
-                # --- Choose portrait and position based on speaker ---
+                # --- Choose portrait and position based on speaker type ---
                 portrait = None
                 name_to_display = ""
                 portrait_pos = (0, 0)
 
                 if speaker_type == "npc":
                     portrait = self.portrait
-                    name_to_display = self.npc.name
-                    portrait_pos = (dialog_x + 800, dialog_y - 400)
+                    name_to_display = self.npc_name 
+                    portrait_pos = (dialog_x + 800, dialog_y - 400) 
                 elif speaker_type == "player":
                     portrait = self.player_portrait
-                    name_to_display = "You"
-                    portrait_pos = (dialog_x + 20, dialog_y - 400)
-                else: # narrator
+                    name_to_display = "You" 
+                    portrait_pos = (dialog_x + 20, dialog_y - 400) 
+                else: # narrator or other (no specific portrait)
                     portrait = None
-                    name_to_display = ""
+                    name_to_display = "Narrator" 
 
-                if portrait:
-                    screen.blit(portrait, portrait_pos)
+                if portrait: 
+                    screen_surface.blit(portrait, portrait_pos)
 
                 # --- Draw speaker name ---
-                draw_text(screen, name_to_display, 40, (0, 0, 0), dialog_x + 200, dialog_y + 10, center=False)
+                draw_text(screen_surface, name_to_display, 40, (0, 0, 0), dialog_x + 200, dialog_y + 10, center=False)
 
+                # --- Draw dialogue text ---
                 text_to_display = self.current_text_display
-                # print(f"DEBUG (dialog.draw): Drawing normal text: '{text_to_display}', Typing complete: {self.typing_complete}")
-
-                draw_text(screen, text_to_display, 30, (0, 0, 0),
+                draw_text(screen_surface, text_to_display, 30, (0, 0, 0),
                           dialog_x + self.dialog_box_img.get_width() // 2,
                           dialog_y + self.dialog_box_img.get_height() // 2 - 15,
                           center=True, max_width=text_max_width)
             else:
-                # This print will appear if current_line_data somehow becomes None
-                # when choices_active is False, indicating a problem with dialogue flow.
-                print("DEBUG (dialog.draw): current_line_data is None for non-choice dialogue. Skipping drawing.")    
-                
-    def get_current_line_data(self):
-        if self.talking and self.current_line_index < len(self.current_dialogue_list):
-            return self.current_dialogue_list[self.current_line_index]
-        return None
-        
+                # This should ideally not be hit if 'talking' is True and 'choices_active' is False.
+                print("DEBUG (dialog.draw): current_line_data is None for non-choice dialogue. Skipping text drawing.")
+
+
     def change_bgm(self, bgm_path):
         if bgm_path != self.current_bgm:
             self.current_bgm = bgm_path
@@ -552,52 +584,52 @@ class dialog:
             sound.stop()
         self.currently_playing_sfx = None
 
-    def fade (self, screen, cg_list, fade_in =True):
-        fade = pygame.Surface((screen.get_width(),screen.get_height()))
-        fade.fill((0,0,0))
-
-        if cg_list:
-            original_image = cg_list[0]
-            cg_image_scaled = pygame.transform.scale(original_image ,(screen.get_width(),screen.get_height())).convert_alpha()
-        else:
-            cg_image_scaled = None
+    def fade(self, screen_surface, cg_list=None, fade_in=True):
+        """
+        Performs a fade in/out effect, optionally displaying a CG image during the fade.
+        :param screen_surface: The display surface to draw on.
+        :param cg_list: A list containing a single pygame.Surface image for CG, or empty list/None for fade to black.
+        :param fade_in: True for fade in, False for fade out.
+        """
+        fade_surface = pygame.Surface((screen_surface.get_width(), screen_surface.get_height()))
+        fade_surface.fill((0, 0, 0)) # Black for fade effect
+        
+        cg_image_to_display = None
+        if cg_list and len(cg_list) > 0 and isinstance(cg_list[0], pygame.Surface):
+            cg_image_to_display = pygame.transform.scale(cg_list[0], (screen_surface.get_width(), screen_surface.get_height())).convert_alpha()
 
         if fade_in:
-            #fade in
-            for alpha in range (0,255,10):
-                fade.set_alpha(alpha)
-                screen.fill((0,0,0))
-                if cg_image_scaled:
-                    screen.blit(cg_image_scaled, (0,0))
-                screen.blit(fade,(0,0))
+            for alpha in range(0, 256, 10): 
+                fade_surface.set_alpha(255 - alpha) 
+                screen_surface.fill((0,0,0)) 
+                if cg_image_to_display:
+                    screen_surface.blit(cg_image_to_display, (0,0))
+                screen_surface.blit(fade_surface,(0,0)) 
                 pygame.display.update()
                 pygame.time.delay(30)
         else:
-            #fade out
-            for alpha in range (255,-1,-10):
-                screen.fill((0,0,0))
-                fade.set_alpha(alpha)
-                if cg_image_scaled:
-                    screen.blit(cg_image_scaled, (0,0))
-                screen.blit(fade,(0,0))
+            for alpha in range(255, -1, -10): 
+                fade_surface.set_alpha(alpha) 
+                screen_surface.fill((0,0,0)) 
+                if cg_image_to_display:
+                    screen_surface.blit(cg_image_to_display, (0,0))
+                screen_surface.blit(fade_surface,(0,0)) 
                 pygame.display.update()
                 pygame.time.delay(30)
 
     def get_current_cg(self):
+        """Returns the current Pygame Surface object for the CG being displayed."""
         if self.cg_images and self.cg_index < len(self.cg_images):
-            # No need to load again, it's already a pygame.Surface
             return self.cg_images[self.cg_index]
         return None
-     
+
     def update_font_size(self, new_size):
-        # Updates a global font size variable (if used by draw_text).
+        """Updates a global font size variable (if used by draw_text)."""
         global current_font_size # Assuming 'current_font_size' is a global variable
         if 'current_font_size' in globals(): # Safer check
             current_font_size = new_size 
         else:
             print("Warning: global 'current_font_size' not found. Font size update may not apply.")
-            
-
 
 # =============text setting================
 def draw_text(surface, text, size=None, color=(0,0,0), x=0, y=0, center=False, max_width=None): 
@@ -984,7 +1016,9 @@ image_path = {
             "Piano": "Object_image/E03_Random.png",
             "Dream_door": "Object_image/exit_E04.png",
             "Pill_bottle": "Object_image/E04_Lock.png",
-            "Coat": "Object_image/E04_Key.png"
+            "Coat": "Object_image/E04_Key.png",
+            "Mirror": "Object_image/exit_E05.png",
+            "Medbed": "Object_image/E05_Random.png"
         }
 
 class InteractableObject(pygame.sprite.Sprite):
@@ -1150,16 +1184,20 @@ class ObjectDialogue:  # very confused
 
             if "event" in self.current_line_data:
                 event_name = self.current_line_data["event"]
-                event_data = {}
-                # If the object has a 'next_room' property, pass it with the event
+                      
+                # --- NEW: Get event_data from the current dialogue line itself ---
+                event_data_from_json = self.current_line_data.get("event_data", {}) # Get 'event_data' if it exists in the JSON line
+                event_data_to_pass = event_data_from_json.copy() # Make a copy to avoid modifying original JSON data
+                
+                # Add target_room if present in obj_info (this is specific to the ObjectDialogue's object)
+                # This ensures any 'next_room' on the object is also passed along with other event data
                 if hasattr(self.obj_info, 'next_room') and self.obj_info.next_room:
-                    event_data["target_room"] = self.obj_info.next_room
+                    event_data_to_pass["target_room"] = self.obj_info.next_room
                 
-                print(f"ObjectDialogue: Triggering event: {event_name} with data: {event_data}")
-                self.rooms_instance.handle_dialogue_event(event_name, event_data)
-                
-                self.talking = False # ONLY set this dialogue instance to not talking
-                print("ObjectDialogue: Event handled, this dialogue instance is stopping.") 
+                print(f"ObjectDialogue: Triggering event: {event_name} with data: {event_data_to_pass}")
+                self.rooms_instance.handle_dialogue_event(event_name, event_data_to_pass) # Pass the combined event_data
+                self.talking = False 
+                print("ObjectDialogue: Event handled, this dialogue instance is stopping.")
                 return
             
             self.reset_typing()
@@ -1502,7 +1540,7 @@ class Rooms:    # class Level in tutorial
             self.background = pygame.image.load("picture/Map Art/Map clinic.png").convert_alpha()
         
         camera_group.set_background(self.background)
-        print(f"DEBUG: Rooms __init__ finished. self.camera_group ID: {id(camera_group)}")
+        print(f"DEBUG: Rooms __init__ finished. camera_group ID: {id(camera_group)}")
         
         self.load_room(self.current_room)
 
@@ -1518,34 +1556,36 @@ class Rooms:    # class Level in tutorial
 
         self.backmain_button = Button(image=self.backmain_img, pos=(1100, 80), scale=0.2)
 
-
     def load_room(self, room_name, facing="left"):
         print(f"\n--- Entering load_room for {room_name} ---")
-        print(f"DEBUG: In load_room, self.camera_group ID: {id(camera_group)}")
-        print(f"DEBUG: Current Day: {self.current_day}") # Add this to verify the day
+        print(f"DEBUG: In load_room, camera_group ID: {id(camera_group)}") # Use self.camera_group
+        print(f"DEBUG: Current Day: {self.current_day}") 
 
-        camera_group.empty()
-        camera_group.background_layer_sprites.empty()
-        camera_group.foreground_layer_sprites.empty()
+        camera_group.empty() # Use self.camera_group
+        camera_group.background_layer_sprites.empty() # Use self.camera_group
+        camera_group.foreground_layer_sprites.empty() # Use self.camera_group
         print("DEBUG: All camera groups emptied.")
 
-        camera_group.add(self.player)
-        print(f"DEBUG: Player added to main camera_group. Current main group sprites: {[s.name if hasattr(s, 'name') else type(s).__name__ for s in camera_group.sprites()]}")
+        camera_group.add(self.player) # Use self.camera_group
+        print(f"DEBUG: Player added to main camera_group. Current main group sprites: {[s.name if hasattr(s, 'name') else type(s).__name__ for s in camera_group.sprites()]}") # Use self.camera_group
 
         # Remove NPCs from both npc_manager and camera_group
         for npc in self.npc_manager.npcs:
-            camera_group.remove(npc)
+            camera_group.remove(npc) # Use self.camera_group
         self.npc_manager.npcs.clear()
         print("DEBUG: NPC manager cleared.")
 
+        # Remove interactable objects
+        global interactable_objects 
         for obj in interactable_objects:
-            camera_group.remove(obj)
-            camera_group.background_layer_sprites.remove(obj)
-            camera_group.foreground_layer_sprites.remove(obj)
+            camera_group.remove(obj) # Use self.camera_group
+            camera_group.background_layer_sprites.remove(obj) # Use self.camera_group
+            camera_group.foreground_layer_sprites.remove(obj) # Use self.camera_group
         interactable_objects.clear()
+        print("DEBUG: Global interactable_objects list cleared and sprites removed from camera groups.")
     
         print(f"Loading room: {room_name}")
-        # --- Load background and set player position using room_settings dictionary ---
+        # --- Load background and set player position using global room_settings ---
         room_data = room_settings.get(room_name)
 
         if room_data:
@@ -1560,7 +1600,7 @@ class Rooms:    # class Level in tutorial
             self.background = pygame.image.load("picture/Map Art/Map clinic.png").convert_alpha() # Default fallback
             self.player.rect.topleft = (640, 420) # Default player pos for fallback
 
-        camera_group.set_background(self.background)
+        camera_group.set_background(self.background) # Use self.camera_group
 
         self.current_room = room_name
 
@@ -1571,36 +1611,35 @@ class Rooms:    # class Level in tutorial
             self.player.flip = False
             self.player.direction = 1
 
-        for obj_id, obj_info in object_data.items():
+        # --- Load and add interactable objects for the current room ---
+        for obj_id, obj_info in object_data.items(): # Access global object_data
             if room_name in obj_info.get("rooms", []):
                 name = obj_info["name"]
                 pos = obj_info["position"]
                 image_key = obj_info.get("image")
-                image_path_str=image_path.get(image_key, None)
-                dialogue_id=obj_info["dialogue_id"]
-                start_node=obj_info["start_node"]
-                active=obj_info.get("active", True)
+                image_path_str = image_path.get(image_key, None)
+                dialogue_id = obj_info["dialogue_id"]
+                start_node = obj_info["start_node"]
+                active = obj_info.get("active", True)
                 text = obj_info.get("text")
-
-                # Determine effective next_room based on current day ---
-                effective_next_room = obj_info.get("next_room") # Default to generic next_room
+                
+                # Determine effective next_room based on current day
+                effective_next_room = obj_info.get("next_room") 
                 day_specific_next_room_map = obj_info.get("day_specific_next_room")
                 if day_specific_next_room_map and str(self.current_day) in day_specific_next_room_map:
                     effective_next_room = day_specific_next_room_map[str(self.current_day)]
                     print(f"INFO: Object '{name}' using day-specific next_room for Day {self.current_day}: {effective_next_room}")
                 
-                # Determine effective 'unlocked' status based on current day ---
-                is_unlocked_today = obj_info.get("unlocked", True) # Default to initial unlocked status from JSON
+                # Determine effective 'unlocked' status based on current day
+                is_unlocked_today = obj_info.get("unlocked", True) 
                 unlocked_day_threshold = obj_info.get("unlocked_day")
                 
                 if unlocked_day_threshold is not None:
                     if self.current_day >= unlocked_day_threshold:
                         is_unlocked_today = True
-                        print(f"INFO: Object '{name}' is UNLOCKED for Day {self.current_day} (unlocked_day: {unlocked_day_threshold}).")
                     else:
                         is_unlocked_today = False
-                        print(f"INFO: Object '{name}' is LOCKED for Day {self.current_day} (unlocked_day: {unlocked_day_threshold}).")
-
+                
                 conditional_dialogue_flag = obj_info.get("conditional_dialogue_flag")
                 node_if_locked = obj_info.get("node_if_locked")
                 node_if_unlocked = obj_info.get("node_if_unlocked")
@@ -1608,60 +1647,88 @@ class Rooms:    # class Level in tutorial
                 
                 draw_layer = obj_info.get("draw_layer", "mid_layer")
 
-                has_dialogue = obj_info.get("has_dialogue", True)
+                has_dialogue = obj_info.get("has_dialogue", True) 
 
                 if image_path_str:
                     obj = InteractableObject(name, pos, dialogue_id, start_node, 
                                              image_path=image_path_str, active=active, 
-                                             text=text, next_room=effective_next_room, 
+                                             text=text, 
+                                             next_room=effective_next_room, 
                                              unlocked=is_unlocked_today, 
                                              conditional_dialogue_flag=conditional_dialogue_flag,
                                              node_if_locked=node_if_locked,
                                              node_if_unlocked=node_if_unlocked,
                                              day_specific_nodes=day_specific_nodes,
-                                             draw_layer=draw_layer, 
-                                             has_dialogue=has_dialogue)
+                                             draw_layer=draw_layer,
+                                             has_dialogue=has_dialogue) 
                     interactable_objects.append(obj)
                     
-                # --- NEW: Add to the correct CameraGroup layer ---
                     if draw_layer == "background":
-                        camera_group.background_layer_sprites.add(obj)
+                        camera_group.background_layer_sprites.add(obj) # Use self.camera_group
                     elif draw_layer == "foreground":
-                        camera_group.foreground_layer_sprites.add(obj)
-                    else: # Default or "mid_layer"
-                        camera_group.add(obj) # Add to the main camera group for Y-sorting with characters
-                        print(f"SUCCESS: Loaded object: {name} for room: {room_name}")
+                        camera_group.foreground_layer_sprites.add(obj) # Use self.camera_group
+                    else: 
+                        camera_group.add(obj) # Use self.camera_group
+                    print(f"SUCCESS: Loaded object: {name} for room: {room_name}")
                 else:
                     print(f"Warning: No image path found for object '{name}' (image_key: {image_key}). Not adding to game.")
-
+        
         print(f"Total interactable objects loaded for {room_name}: {len(interactable_objects)}")
         
         # --- Load and add NPCs for the current room using global npc_data ---
-        for npc_id, npc_info in npc_data.items(): # <-- Access global npc_data
+        for npc_id, npc_info in npc_data.items(): 
             name = npc_info["name"]
             dialogue_id = npc_info["dialogue_id"]
 
-            if room_name in npc_info.get("rooms", []):     
-                npc_days = npc_info.get("days")
-                
-                if npc_days is None or self.current_day in npc_days:
-                    pos = npc_info["position"]
-                    npc = NPC(pos[0], pos[1], name, dialogue_id=dialogue_id) # <--- Corrected: No image_path argument here
-                    
-                    self.npc_manager.add_npc(npc)
-                    camera_group.add(npc) 
-                    print(f"SUCCESS: Added NPC: {name} ({dialogue_id}) to room {room_name}.")    
+            # Step 1: Check if NPC is scheduled to appear on this day AT ALL
+            npc_days = npc_info.get("days")
+            if npc_days is not None and self.current_day not in npc_days:
+                print(f"INFO: NPC {name} (dialogue_id: {dialogue_id}) will NOT appear on Day {self.current_day} (not in days list).")
+                continue # Skip to next NPC if not scheduled for this day
+
+            # Step 2: Determine NPC's specific location for THIS day
+            current_day_str = str(self.current_day)
+            day_specific_locations = npc_info.get("day_specific_locations")
+            
+            npc_appears_in_current_room_today = False
+            effective_position = None
+
+            if day_specific_locations and current_day_str in day_specific_locations:
+                # If there's a day-specific location for today, use it
+                location_data = day_specific_locations[current_day_str]
+                target_room_for_today = location_data.get("room")
+                effective_position = location_data.get("position")
+
+                if room_name == target_room_for_today:
+                    npc_appears_in_current_room_today = True
+                    print(f"DEBUG: {name} has day-specific location for Day {self.current_day}: Room={target_room_for_today}, Pos={effective_position}")
                 else:
-                    print(f"INFO: NPC {npc_info['name']} (dialogue_id: {dialogue_id}) will NOT appear in {room_name} on Day {self.current_day} (not in days list).")
+                    print(f"INFO: NPC {name} (dialogue_id: {dialogue_id}) will NOT appear in {room_name} on Day {self.current_day} (day-specific room mismatch).")
             else:
-                print(f"INFO: NPC {npc_info['name']} (dialogue_id: {dialogue_id}) will NOT appear in {room_name} (not in room list).")
-        
+                # Fallback: use general 'rooms' list and 'position' if no day-specific location
+                general_rooms = npc_info.get("rooms", [])
+                if room_name in general_rooms:
+                    npc_appears_in_current_room_today = True
+                    effective_position = npc_info.get("position")
+                    print(f"DEBUG: {name} using general location for Day {self.current_day}: Room={general_rooms}, Pos={effective_position}")
+                else:
+                    print(f"INFO: NPC {name} (dialogue_id: {dialogue_id}) will NOT appear in {room_name} (not in general room list).")
+
+            # Step 3: Add NPC if determined to be in this room today
+            if npc_appears_in_current_room_today and effective_position:
+                npc = NPC(effective_position[0], effective_position[1], name, dialogue_id=dialogue_id) 
+                self.npc_manager.add_npc(npc)
+                camera_group.add(npc) 
+                print(f"SUCCESS: Added NPC: {name} ({dialogue_id}) to room {room_name} at {effective_position} for Day {self.current_day}.")
+            elif npc_appears_in_current_room_today and not effective_position:
+                 print(f"ERROR: NPC {name} ({dialogue_id}) is supposed to be in {room_name} on Day {self.current_day}, but no valid position was found. Not adding.")
+
         room_width, room_height = self.background.get_size()
-        camera_group.set_limits(room_width, room_height)
+        camera_group.set_limits(room_width, room_height) 
         print(f"DEBUG: After all additions in load_room:")
-        print(f"DEBUG:   Main camera_group sprites: {[s.name if hasattr(s, 'name') else type(s).__name__ for s in camera_group.sprites()]}")
-        print(f"DEBUG:   Background layer sprites: {[s.name if hasattr(s, 'name') else type(s).__name__ for s in camera_group.background_layer_sprites.sprites()]}")
-        print(f"DEBUG:   Foreground layer sprites: {[s.name if hasattr(s, 'name') else type(s).__name__ for s in camera_group.foreground_layer_sprites.sprites()]}")
+        print(f"DEBUG:   Main camera_group sprites: {[s.name if hasattr(s, 'name') else type(s).__name__ for s in camera_group.sprites()]}") 
+        print(f"DEBUG:   Background layer sprites: {[s.name if hasattr(s, 'name') else type(s).__name__ for s in camera_group.background_layer_sprites.sprites()]}") 
+        print(f"DEBUG:   Foreground layer sprites: {[s.name if hasattr(s, 'name') else type(s).__name__ for s in camera_group.foreground_layer_sprites.sprites()]}") 
         print(f"--- Exiting load_room for {room_name} ---")
 
     # --- METHOD TO HANDLE DIALOGUE EVENTS ---
@@ -1673,70 +1740,96 @@ class Rooms:    # class Level in tutorial
             global flags
             if 'flags' not in globals():
                 print("ERROR: Global 'flags' dictionary not found! Initializing an empty one.")
-                globals()['flags'] = {} # Initialize if not found (should be done once at game start)
+                globals()['flags'] = {} 
 
             flags["patient_zheng_talked_to"] = True
             print("Patient Zheng's dialogue completed. GLOBAL flag 'patient_zheng_talked_to' set to True!")
-        elif event_name == "machine_enter":
+        
+        elif event_name == "machine_enter" or event_name == "open_door_event": 
             target_room = event_data.get("target_room")
             if target_room:
                 self.fading = True
-                self.fade_alpha = 0 # Ensure fade starts from 0
-                self.next_room_after_transition = target_room # Use the passed target room
-                print(f"Machine triggered room transition to: {self.next_room_after_transition}")
+                self.fade_alpha = 0 
+                self.next_room_after_transition = target_room 
+                print(f"Room transition triggered to: {self.next_room_after_transition} by '{event_name}'.")
             else:
                 print(f"Warning: '{event_name}' triggered without 'target_room'. Cannot transition.")
-        elif event_name == "open_door_event": # For generic door transitions
-            target_room = event_data.get("target_room")
-            if target_room:
-                self.fading = True
-                self.fade_alpha = 0
-                self.next_room_after_transition = target_room
-                print(f"Door triggered room transition to: {self.next_room_after_transition}")
-            else:
-                print("Warning: 'open_door_event' triggered without 'target_room'. Cannot transition.")
         
-        # Triggered after the 'Machine' interaction (after puzzle completion)
         elif event_name == "puzzle_complete":
             print("Event: Puzzle completed. Triggering 'after_puzzle' narrative.")
-            # Initiate the "after_puzzle_sequence" dialogue.
-            # Create a simple dummy object/NPC for System_Narrative dialogue.
-            class ZhengNarrativeDummy:
-                def __init__(self, name="Zheng", dialogue_id="Zheng"):
+            
+            target_npc_dialogue_id = event_data.get("puzzle_owner_dialogue_id", "Zheng") 
+            print(f"DEBUG (Rooms.handle_dialogue_event): Target NPC for after_puzzle: {target_npc_dialogue_id}")
+
+            class DynamicNarrativeDummy:
+                def __init__(self, name="narrator", dialogue_id="System_Narrative"):
                     self.name = name
                     self.dialogue_id = dialogue_id
-                    self.rect = pygame.Rect(0,0,1,1) # Dummy rect for consistency if 'dialog' needs it
+                    self.rect = pygame.Rect(0,0,1,1)
 
-            zheng_narrative_obj = ZhengNarrativeDummy()
+            dummy_obj = DynamicNarrativeDummy()
+            dialogue_tree_to_load = None
 
-            # # --- DEBUG PRINTS ---
-            zheng_narrative_tree = all_dialogues.get(zheng_narrative_obj.dialogue_id)
-            
-            if zheng_narrative_tree:
-                self.current_dialogue_ref.current_dialogue = dialog(
-                    zheng_narrative_obj, # Pass the dummy object
-                    self.player,
-                    all_dialogues.get(zheng_narrative_obj.dialogue_id), # Pass the whole System_Narrative tree
-                    start_node_id="after_puzzle_sequence", # Start the specific sequence
-                    rooms_instance=self
-                )
-                self.current_dialogue_ref.current_dialogue.talking = True # Ensure it begins talking
+            if target_npc_dialogue_id in all_dialogues:
+                dummy_obj.name = target_npc_dialogue_id 
+                dummy_obj.dialogue_id = target_npc_dialogue_id 
+                dialogue_tree_to_load = all_dialogues.get(target_npc_dialogue_id)
             else:
-                print(f"Error: 'Zheng_Narrative' dialogue data not found for event '{event_name}'.")
+                print(f"Warning: Target NPC dialogue ID '{target_npc_dialogue_id}' not found in all_dialogues. Falling back to 'System_Narrative'.")
+                dummy_obj.name = "narrator"
+                dummy_obj.dialogue_id = "System_Narrative"
+                dialogue_tree_to_load = all_dialogues.get("System_Narrative")
 
-        # NEW EVENT: Triggered at the end of the 'back_reality' dialogue
+            if dialogue_tree_to_load:
+                self.current_dialogue_ref.current_dialogue = dialog(
+                    dummy_obj, 
+                    self.player,
+                    dialogue_tree_to_load, 
+                    start_node_id="after_puzzle_sequence", 
+                    rooms_instance=self,
+                    screen_surface=pygame.display.get_surface() 
+                )
+                self.current_dialogue_ref.current_dialogue.talking = True 
+                print(f"DEBUG: Initiated '{target_npc_dialogue_id}' 'after_puzzle_sequence' dialogue.")
+            else:
+                print(f"Error: Dialogue data for '{target_npc_dialogue_id}' (or System_Narrative) not found for puzzle_complete event.")
+
         elif event_name == "day_end_and_intro_next_day":
             print("Event: Day end sequence triggered. Advancing day and starting next intro.")
-            # Fade to black if not already fading
             if not self.fading:
                 self.fading = True
                 self.fade_alpha = 0
 
-            # Advance the game day
             self.advance_day()
-
-            self.start_intro_after_fade = True # New flag to tell the fade logic to start intro
+            self.next_room_after_transition = "room01"
+            self.start_intro_after_fade = True 
             print(f"Set to fade to {self.next_room_after_transition} and start intro for Day {self.current_day}.")
+
+            class NarratorDummy: 
+                def __init__(self, name="narrator", dialogue_id="System_Narrative"):
+                    self.name = name
+                    self.dialogue_id = dialogue_id
+                    self.rect = pygame.Rect(0,0,1,1)
+
+            narrator_dummy_obj = NarratorDummy()
+            system_narrative_tree = all_dialogues.get(narrator_dummy_obj.dialogue_id)
+            if system_narrative_tree:
+                self.current_dialogue_ref.current_dialogue = dialog(
+                    narrator_dummy_obj,
+                    self.player,
+                    system_narrative_tree,
+                    start_node_id="intro", 
+                    rooms_instance=self,
+                    screen_surface=pygame.display.get_surface() 
+                )
+                self.current_dialogue_ref.current_dialogue.talking = True 
+            else:
+                print("Error: 'System_Narrative' dialogue data not found for intro after fade.")
+            
+            # These lines are actually inside the fade-in logic within Rooms.run, 
+            # so they should not be explicitly set to False/0 here
+            # self.fading = False
+            # self.fade_alpha = 0
 
     def run(self, moving_left, moving_right,events):
         entry = {}
