@@ -446,7 +446,7 @@
     ],
 
      "back_reality_destroy1":[
-       
+        
         {"speaker" :"narrator","text":"(You remove the device from her head.)","shown": false},
         {"speaker" :"player","text":" Treatment is complete. How do you feel? Any discomfort?","shown": false},
         {"speaker" :"npc","text":"......I'm fine","shown": false},

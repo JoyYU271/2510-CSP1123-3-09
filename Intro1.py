@@ -268,15 +268,15 @@ class Dialog:
               filtered_dialogue_list.append(line_data)
               print(f"DEBUG: Including non-dict line {i}")
 
-        print(f"DEBUG: After filtering, {len(filtered_dialogue_list)} lines remain")
+              print(f"DEBUG: After filtering, {len(filtered_dialogue_list)} lines remain")
     
         if not filtered_dialogue_list and raw_dialogue_list:
-           print(f"WARNING: All dialogue in node '{node_id}' has been shown already.")
+            print(f"WARNING: All dialogue in node '{node_id}' has been shown already.")
         # Return the repeat_only dialogue if it exists
-           repeat_node = f"{node_id}_repeat" if f"{node_id}_repeat" in current_data else "repeat_only"
-           if repeat_node in current_data:
-              print(f"DEBUG: Using repeat dialogue from {repeat_node}")
-              return current_data.get(repeat_node, [])
+            repeat_node = f"{node_id}_repeat" if f"{node_id}_repeat" in current_data else "repeat_only"
+            if repeat_node in current_data:
+               print(f"DEBUG: Using repeat dialogue from {repeat_node}")
+               return current_data.get(repeat_node, [])
     
         return filtered_dialogue_list
 
@@ -387,15 +387,8 @@ class Dialog:
         
         # Mark current line as shown before advancing
         if self.current_line_data and isinstance(self.current_line_data, dict):
-           old_shown = self.current_line_data.get("shown", False)
            self.current_line_data["shown"] = True
-           text_preview = self.current_line_data.get("text", "No text")[:30]
-           print(f"DEBUG: Marked as shown (was {old_shown}): '{text_preview}'")
-
-           # Also save to shown_dialogues for persistence
-           line_key = f"{self.current_node_id}_{self.current_line_index}"
-           self.shown_dialogues[line_key] = True
-        print(f"DEBUG: Also saved to shown_dialogues: {line_key}")
+           print(f"Marked as shown: {self.current_line_data.get('text', 'No text')[:50]}...")
 
         if self.current_line_data and "cg" in self.current_line_data and not self.showing_cg:
             cg_paths = (self.current_line_data["cg"]
