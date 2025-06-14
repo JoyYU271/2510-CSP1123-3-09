@@ -39,15 +39,15 @@
   },
 
   "exitZ01_dialogue": {
-    "locked_machine_node": [
+    "initial": [
       {"text": "It shows a printer icon."},
       {"text": "Do I... print something?"}
     ],
-    "unlocked_machine_node": [
+    "unlocked_exit": [
       {"speaker": "narrator", "text": "Upon contact, fragmented images flash before you—an office, a computer screen.", "shown": false},
       {"speaker": "narrator", "text": "You witness her endlessly revising the proposal, her earlier account now visceral in first-person. The relentless edits radiate palpable distress. ", "shown": false},
       {"speaker": "narrator", "text": "(...Experiencing her perspective is overwhelming.)", "shown": false},
-      {"event": "machine_enter"} 
+      {"event": "machine_enter", "event_data": {"target_room": "subc.Z_02"}} 
     ]
   },
 

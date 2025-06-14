@@ -80,8 +80,9 @@
     "active": true,
     "rooms": ["subc.Z_01"],
     "draw_layer": "background",
-
-    "next_room": "subc.Z_02"
+    "conditional_dialogue_flag": "lock_unlocked", 
+    "node_if_locked": "initial",
+    "node_if_unlocked": "unlocked_exit"
   },
 
   "office_computers": {
@@ -92,21 +93,23 @@
     "start_node": "key",
     "active": true,
     "rooms": ["subc.Z_01"],
-    "draw_layer": "background"
+    "draw_layer": "background",
+    "conditional_dialogue_flag": "key1_found"
   },
 
   "printer": {
     "name": "Office printer",
-    "position": [550, 371],
+    "position": [560, 371],
     "image": "Printer",
     "dialogue_id": "printer_dialogue",
     "start_node": "locked",
     "active": true,
     "rooms": ["subc.Z_01"],
-    "conditional_dialogue_flag": "patient_zheng_talked_to",
-    "node_if_locked": "locked_machine_node",
-    "node_if_unlocked": "unlocked_machine_node",
-    "draw_layer": "background"
+    "draw_layer": "background",
+    "conditional_dialogue_flag": "composite_printer_check",
+    "node_if_locked": "locked", 
+    "node_if_unlocked": "unlocked"
+    
   },
 
   "Water_cool": {

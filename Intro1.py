@@ -1061,24 +1061,26 @@ interactable_objects = []
 def check_object_interaction(player_rect, interactable_objects):
     return [obj for obj in interactable_objects if obj.active and player_rect.colliderect(obj.rect)]
 
-class ObjectDialogue:  # very confused
-    def __init__(self, obj_info, current_dialogue_ref, rooms_instance, start_node_id="start",text_size=30, language="EN"):
-        self.obj_info = obj_info
-        self.current_dialogue_ref = current_dialogue_ref
-        self.rooms_instance = rooms_instance
-        self.dialogue_id = obj_info.dialogue_id
+class ObjectDialogue: 
+    def __init__(self, obj_info, current_dialogue_ref, rooms_instance, start_node_id="start", text_size=30, language="EN"):
+        self.obj_info = obj_info # The InteractableObject instance
+        self.current_dialogue_ref = current_dialogue_ref # Reference to Rooms' current_dialogue_ref
+        self.rooms_instance = rooms_instance # Reference to the Rooms instance
+        self.dialogue_id = obj_info.dialogue_id # ID to fetch dialogue data from object_dialogue.json
 
+        # Load all dialogue data for this object
         self.dialogue_data = object_dialogue.get(self.dialogue_id, {})
         
-        self.current_node_id = start_node_id
-        self.current_node = self.dialogue_data.get(self.current_node_id, [])
+        # The actual starting node for THIS instance of dialogue (determined by Rooms or get_start_node_for_interaction)
+        self.current_node_id = start_node_id 
+        self.current_node = self.dialogue_data.get(self.current_node_id, []) # The list of dialogue lines for the current node
         
-        # --- ADDED: Initialization for typing animation variables ---
-        self.current_text_index = 0 # Index for the current line within a node's text list
-        self.current_line_data = {}
+        # Typing animation variables
+        self.current_text_index = 0 # Index for the current line within current_node
+        self.current_line_data = {} # The dictionary for the current dialogue line
 
         self.talking = True # Dialogue starts talking immediately
-        self.current_text_display = "" # The text currently displayed characters by characters
+        self.current_text_display = "" # The text currently displayed (character by character)
         self.typing_speed = 3 # Characters per frame, adjust as needed
         self.text_display_timer = 0
         self.typing_complete = False # Flag indicating if the current line has finished typing
@@ -1086,58 +1088,72 @@ class ObjectDialogue:  # very confused
         self.text_size = text_size
         self.language = language
 
-        self.displayed_text = ""
-        self.letter_index = 0
+        # For dialogue box rendering
+        try:
+            self.dialogue_box_img = pygame.image.load("picture/Character Dialogue/dialog boxxx.png").convert_alpha()
+            self.dialogue_box_img.set_alpha(200) # Semi-transparent
+        except pygame.error as e:
+            print(f"FATAL ERROR (ObjectDialogue.__init__): Could not load dialog_box_img: {e}. Using dummy blue square.")
+            self.dialogue_box_img = pygame.Surface((800, 200)) 
+            self.dialogue_box_img.fill((0, 0, 255)) # Bright blue for error indication
+            self.dialogue_box_img.set_alpha(255) 
 
-        self.dialogue_box_img = pygame.image.load("picture/Character Dialogue/dialog boxxx.png").convert_alpha()
-        self.dialogue_box_img.set_alpha(200)
-
+        # Call reset_typing to prepare the first line
         self.reset_typing()
 
+        # Debugging: check if the initial node was found
+        if not self.current_node:
+            print(f"Warning: ObjectDialogue initialized with empty or missing node '{self.current_node_id}' for dialogue_id '{self.dialogue_id}'. Dialogue might end immediately.")
+        
     def _get_current_line_data(self):
-        # Helper to get the dictionary for the current line in the current_dialogue_list.
+        # """Helper to get the dictionary for the current line in the current_node list."""
         if self.current_text_index < len(self.current_node):
             return self.current_node[self.current_text_index]
         return None
 
     def reset_typing(self):
-        # This method is crucial to set up the typing animation for a new line/node
+        # """
+        # Resets the typing animation state for a new line of dialogue.
+        # Marks as complete instantly if the line contains no text (e.g., only an event or 'next' pointer).
+        # """
         self.text_display_timer = 0
         self.typing_complete = False
         self.current_text_display = ""
         
-        # Get the data for the current line's dictionary
+        # Get the data for the current line's dictionary AFTER index has been advanced/set
         self.current_line_data = self._get_current_line_data()
 
         if self.current_line_data:
-            # If the current line has text, prepare for typing. Otherwise, it's an event/choice, so skip typing.
+            # If the current line has text, prepare for typing. Otherwise, it's an event/next, so skip typing.
             text_content = self.current_line_data.get("text", "")
             if not text_content: 
                 self.typing_complete = True # Mark as complete instantly if no text
                 self.current_text_display = ""
         else: 
-            # This means the current_line_index is out of bounds for current_dialogue_list
-            self.typing_complete = True # Signal completion
+            # This means current_text_index is out of bounds for current_node, or current_node is empty.
+            # Signal completion, and handle_space will end the dialogue.
+            self.typing_complete = True 
             self.current_text_display = ""
-            # The handle_space method will then detect the end of the node list and transition/end dialogue.
+            print(f"DEBUG (ObjectDialogue.reset_typing): current_line_data is None. Setting typing_complete = True. Index: {self.current_text_index}, Node Length: {len(self.current_node)}")
+
 
     def update(self, events=None):
-        if not self.talking or self.rooms_instance.fading: # Don't update if not talking or fading
+        # """Updates the dialogue typing animation."""
+        if not self.talking or self.rooms_instance.fading: 
             return
         
-        if self.current_line_data is None: # No valid line data to display
+        # Check if current_line_data is valid before attempting to type
+        if self.current_line_data is None: 
             self.typing_complete = True
             self.current_text_display = ""
             return
 
         text_to_type = self.current_line_data.get("text", "")
-            
+        
         if not self.typing_complete:
             self.text_display_timer += 1
             chars_to_display = self.text_display_timer // self.typing_speed
-            # Ensure we don't try to display more characters than available
-            if chars_to_display > len(text_to_type):
-                chars_to_display = len(text_to_type)
+            chars_to_display = min(chars_to_display, len(text_to_type)) # Ensure no IndexError
             
             self.current_text_display = text_to_type[:chars_to_display]
             
@@ -1145,22 +1161,24 @@ class ObjectDialogue:  # very confused
                 self.typing_complete = True
     
     def _transition_to_node(self, node_id):
-        #Transitions dialogue to a new specified node ID within object_dialogue.
+        # """Transitions dialogue to a new specified node ID within object_dialogue."""
         new_current_node = self.dialogue_data.get(node_id, [])
         
         if new_current_node:
             self.current_node_id = node_id
             self.current_node = new_current_node
             self.current_text_index = 0
-            self.reset_typing() # Reset typing for the new node's first line
+            self.current_line_data = self._get_current_line_data() # Get the first line of the new node
+            self.reset_typing() 
             print(f"ObjectDialogue: Transitioned to new dialogue node: {self.current_node_id}")
         else:
             print(f"Warning: ObjectDialogue: Next node '{node_id}' not found or invalid format. Ending dialogue.")
             self.talking = False
-            self.rooms_instance.current_dialogue_ref.current_dialogue = None # Clear reference
+            # --- CRITICAL FIX: REMOVE THIS LINE ---
+            # self.rooms_instance.current_dialogue_ref.current_dialogue = None # This causes race conditions
 
     def handle_space(self):
-        #Handles spacebar input to advance dialogue or complete typing.
+        # """Handles spacebar input to advance dialogue or complete typing."""
         if not self.talking:
             return
 
@@ -1184,128 +1202,102 @@ class ObjectDialogue:  # very confused
 
             if "event" in self.current_line_data:
                 event_name = self.current_line_data["event"]
-                      
-                # --- NEW: Get event_data from the current dialogue line itself ---
-                event_data_from_json = self.current_line_data.get("event_data", {}) # Get 'event_data' if it exists in the JSON line
-                event_data_to_pass = event_data_from_json.copy() # Make a copy to avoid modifying original JSON data
+                
+                # Get event_data from the current dialogue line itself
+                event_data_from_json = self.current_line_data.get("event_data", {}) 
+                event_data_to_pass = event_data_from_json.copy() 
                 
                 # Add target_room if present in obj_info (this is specific to the ObjectDialogue's object)
-                # This ensures any 'next_room' on the object is also passed along with other event data
                 if hasattr(self.obj_info, 'next_room') and self.obj_info.next_room:
                     event_data_to_pass["target_room"] = self.obj_info.next_room
                 
                 print(f"ObjectDialogue: Triggering event: {event_name} with data: {event_data_to_pass}")
-                self.rooms_instance.handle_dialogue_event(event_name, event_data_to_pass) # Pass the combined event_data
-                self.talking = False 
+                self.rooms_instance.handle_dialogue_event(event_name, event_data_to_pass) 
+                self.talking = False # End this dialogue instance
+                # --- CRITICAL FIX: REMOVE THIS LINE ---
+                # self.rooms_instance.current_dialogue_ref.current_dialogue = None # This causes race conditions
                 print("ObjectDialogue: Event handled, this dialogue instance is stopping.")
                 return
             
-            self.reset_typing()
-        # ... (rest of method, similar logic for natural end of node)
+            # If it's a regular text line (and no next/event), reset typing for it
+            self.reset_typing() 
         else: # End of current dialogue list for this node (natural end of dialogue)
             self.talking = False
             print("ObjectDialogue ended (natural end of node).")
+            # --- CRITICAL FIX: REMOVE THIS LINE ---
+            # self.rooms_instance.current_dialogue_ref.current_dialogue = None # This causes race conditions
 
-            # If it's a regular text line (and no next/event), reset for typing the new line
-          
+    def get_start_node_for_interaction(self):
+        global flags
+        # Determines the correct starting node for the ObjectDialogue based on current flags,
+        # day-specific nodes, and object's locked/unlocked states.
+        # This method will be called by Rooms.run *before* ObjectDialogue is fully initialized.
+        chosen_node = self.obj_info.start_node # Default to the object's initial start_node
+
+        # 1. Check for day-specific nodes first (highest priority)
+        # Assumes day_specific_nodes is a dict like {"1": "node_id_day1", "2": "node_id_day2"}
+        day_specific_node_id = None
+        if self.obj_info.day_specific_nodes and isinstance(self.rooms_instance.current_day, (int, str)):
+            day_specific_node_id = self.obj_info.day_specific_nodes.get(str(self.rooms_instance.current_day))
+        
+        if day_specific_node_id:
+            print(f"DEBUG ({self.obj_info.name}): Using day-specific node: {day_specific_node_id}")
+            return day_specific_node_id
+
+        # 2. Handle specific composite logic for "Office printer"
+        # This checks if both 'computer_key_found' and 'cooler_key_found' are true
+        if self.obj_info.name == "Office printer": 
+            key1_found = flags.get("key1_found", False)
+            key2_found = flags.get("key2_found", False)
+            
+            if key1_found:
+                print(f"DEBUG ({self.obj_info.name}): Printer keys1 found. Directing to unlocked node.")
+                return self.obj_info.node_if_unlocked if self.obj_info.node_if_unlocked else chosen_node
+            elif key2_found:
+                return self.obj_info.node_if_unlocked if self.obj_info.node_if_unlocked else chosen_node
+            else:
+                print(f"DEBUG ({self.obj_info.name}): Printer keys missing. Directing to locked node.")
+                return self.obj_info.node_if_locked if self.obj_info.node_if_locked else chosen_node
+
+        # 3. Handle general conditional dialogue flags (e.g., for computer, water cooler, etc.)
+        # This applies if 'conditional_dialogue_flag' is set in obj_info (e.g., "computer_key_found")
+        elif self.obj_info.conditional_dialogue_flag:
+            condition_met = flags.get(self.obj_info.conditional_dialogue_flag, False)
+            if condition_met: 
+                print(f"DEBUG ({self.obj_info.name}): Conditional flag '{self.obj_info.conditional_dialogue_flag}' met. Directing to unlocked node.")
+                return self.obj_info.node_if_unlocked if self.obj_info.node_if_unlocked else chosen_node
+            else: 
+                print(f"DEBUG ({self.obj_info.name}): Conditional flag '{self.obj_info.conditional_dialogue_flag}' NOT met. Directing to locked node.")
+                return self.obj_info.node_if_locked if self.obj_info.node_if_locked else chosen_node
+
+        # 4. Handle object's inherent 'unlocked' status (e.g., Dean's door unlocks on Day 3)
+        # This will rely on the `unlocked` property of the `InteractableObject` itself,
+        # which is dynamically set in `Rooms.load_room` based on `unlocked_day`.
+        elif not self.obj_info.unlocked: 
+            # If the object is explicitly marked as locked (and no other conditional flags applied)
+            print(f"DEBUG ({self.obj_info.name}): Object explicitly locked by its 'unlocked' status. Directing to locked node.")
+            return self.obj_info.node_if_locked if self.obj_info.node_if_locked else chosen_node
+
+        print(f"DEBUG ({self.obj_info.name}): No special conditions met. Returning default start_node: {chosen_node}")
+        return chosen_node
+
     def draw(self, screen):
+        # Draws the dialogue box and text for the ObjectDialogue."""
         if not self.talking: return
 
         dialog_x = screen.get_width() // 2 - self.dialogue_box_img.get_width() // 2
         dialog_y = screen.get_height() - self.dialogue_box_img.get_height() - 20
         screen.blit(self.dialogue_box_img, (dialog_x, dialog_y))
 
-        # Padding inside the dialogue box
-        text_x = dialog_x + 150
-        text_y = dialog_y + 60
-        max_text_width = self.dialogue_box_img.get_width() - 200  # 40 padding on each side
-
-        # Get speaker and text from current_line_data (which is the current line's dictionary)
-        # speaker = self.current_line_data.get("speaker", "narrator")
-        text_to_display = self.current_text_display
-
-        # speaker_color = (200, 200, 255) # Light blue for speaker
-        text_color = (0, 0, 0)    # White for main dialogue text
-
-        # speaker_x = dialog_x + 50
-        # speaker_y = dialog_y + 20 
-
+        # Padding and text positioning
         text_x = dialog_x + self.dialogue_box_img.get_width() // 2
         text_y = dialog_y + self.dialogue_box_img.get_height() // 2 - 15
+        max_text_width = self.dialogue_box_img.get_width() - 200 # Padding on each side
+        text_color = (0, 0, 0) # Black text
 
-        # draw_text(screen, self.current_text_display, size=30, color=(0, 0, 0), x=text_x, y=text_y, center=False, max_width=max_text_width)
         # Draw dialogue text
-        draw_text(screen, text_to_display, size=30, color=text_color, 
+        draw_text(screen, self.current_text_display, size=self.text_size, color=text_color, 
                     x=text_x, y=text_y, center=True, max_width=max_text_width)
-
-        # node = self.current_node    # self.dialogue_data[self.current_node]
-
-        # raw_text = node.get("text", "")
-
-        # if not isinstance(raw_text, list):
-        #     text_lines_in_node = [raw_text]
-        # else:
-        #     text_lines_in_node = raw_text
-
-        # # full_text = node.get("text", "")
-
-        # # 1) complete typing if in middle
-        # if not self.typing_complete:
-        #     self.typing_complete = True
-        #     # Force the display to show full text for the current line
-        #     self.current_text_display = text_lines_in_node[self.current_text_index]
-        #     return # Don't advance dialogue yet, just complete typing
-        
-        # # Go to next line
-        # if self.current_text_index + 1 < len(text_lines_in_node):
-        #     self.current_text_index += 1
-        #     self.reset_typing()
-        #     return
-        
-        # # 2) if there's a "next" in JSON, go there
-        # next_node_id = node.get("next")
-        # if next_node_id:
-        #     # Update current node ID and retrieve the new node's data
-        #     self.current_node_id = next_node_id
-        #     self.current_node = self.dialogue_data.get(self.current_node_id, {"text": ["Error: Node not found!"], "end_dialogue": True})
-        #     self.current_text_index = 0
-        #     self.reset_typing()
-        #     return
-      
-        # # Special case for locked door
-        # if self.obj_info.name == "Dean_room":
-        #         if not self.obj_info.unlocked:
-        #             self.dialogue_data = {
-        #                "locked":{"text": "It's locked.", "end_dialogue": True}
-        #             }
-        #             self.current_node_id = "locked"
-        #             self.current_node = self.dialogue_data["locked"]
-        #             self.current_text_index = 0
-        #             self.reset_typing()
-        #             self.talking = True
-        #             return
-
-        # # 3) otherwise, we've reached the end of the dialogue
-        # self.talking = False
-        # self.current_text_display = ""
-
-        # # 4) now trigger transition, if any
-        # next_room = self.obj_info.next_room
-        # if next_room and self.obj_info.unlocked:
-        #     # Start fade whether it's first time or not
-        #     self.rooms_instance.next_room_after_transition = next_room
-        #     self.rooms_instance.fading = True
-        #     # self.game_ref.start_fade_to(next_room)
-            
-        #     # Optional: record door visit so next time you can skip the dialogue entirely
-        #     # self.game_ref.visited_doors.add(self.dialogue_id)
-
-        # # --- Trigger event in Rooms if defined in the current node ---
-        # if "event" in self.current_node:
-        #     # Pass the event name to the Rooms instance's handler
-        #     self.rooms_instance.handle_dialogue_event(self.current_node["event"])
-
-        
 
 
 class Game:
@@ -1733,11 +1725,11 @@ class Rooms:    # class Level in tutorial
 
     # --- METHOD TO HANDLE DIALOGUE EVENTS ---
     def handle_dialogue_event(self, event_name, event_data=None):
+        global flags
         event_data = event_data if event_data is not None else {}
         
         # Processes events triggered at the end of a dialogue node.
         if event_name == "patient_zheng_talked_to":
-            global flags
             if 'flags' not in globals():
                 print("ERROR: Global 'flags' dictionary not found! Initializing an empty one.")
                 globals()['flags'] = {} 
@@ -1826,10 +1818,18 @@ class Rooms:    # class Level in tutorial
             else:
                 print("Error: 'System_Narrative' dialogue data not found for intro after fade.")
             
-            # These lines are actually inside the fade-in logic within Rooms.run, 
-            # so they should not be explicitly set to False/0 here
-            # self.fading = False
-            # self.fade_alpha = 0
+        elif event_name == "set_flag": # Handle the "set_flag" event
+            flag_name = event_data.get("flag_name")
+            flag_value = event_data.get("flag_value", True) # Default to True if not specified
+            if flag_name:
+                if 'flags' not in globals():
+                    print("ERROR: Global 'flags' dictionary not found! Initializing an empty one.")
+                    globals()['flags'] = {}
+                flags[flag_name] = flag_value
+                print(f"Event: Flag '{flag_name}' set to {flag_value}.")
+            else:
+                print("Warning: 'set_flag' event triggered without 'flag_name' in event_data.")
+            
 
     def run(self, moving_left, moving_right,events):
         entry = {}
@@ -1875,35 +1875,26 @@ class Rooms:    # class Level in tutorial
             if near_obj:
                 obj_to_interact = near_obj[0] # Interact with the first detected object
 
-                # --- NEW LOGIC: Handle objects WITHOUT dialogue but with a next_room ---
+                # --- Handle objects WITHOUT dialogue but with a next_room ---
                 if not obj_to_interact.has_dialogue and obj_to_interact.next_room:
                     print(f"INFO: Object '{obj_to_interact.name}' has no dialogue but has a next_room. Triggering direct room transition.")
                     # Trigger the room transition directly, similar to how ObjectDialogue would
                     self.handle_dialogue_event("open_door_event", {"target_room": obj_to_interact.next_room})
                     return # Important: Consume the interaction and return
-                # --- END NEW LOGIC ---
 
                 # Check if the object has dialogue before creating ObjectDialogue ---
                 if obj_to_interact.has_dialogue:
-                    # Only proceed to create ObjectDialogue if no current dialogue is active
-                    # or if the current active dialogue is an ObjectDialogue (allowing sequential object interactions)
                     if self.current_dialogue_ref.current_dialogue is None or not self.current_dialogue_ref.current_dialogue.talking:
-                        # Determine the start node for the dialogue based on various conditions
-                        chosen_start_node = obj_to_interact.start_node
-                        day_specific_node_id = obj_to_interact.day_specific_nodes.get(str(self.current_day))
-                        if day_specific_node_id: chosen_start_node = day_specific_node_id
+                        # --- FIX: Let ObjectDialogue determine its start node ---
+                        temp_obj_dialogue = ObjectDialogue(
+                            obj_to_interact, 
+                            self.current_dialogue_ref, 
+                            self, 
+                            start_node_id="dummy" # Pass a dummy for now, it will be overridden
+                        )
+                        chosen_start_node = temp_obj_dialogue.get_start_node_for_interaction()
                         
-                        # Handle conditional dialogue based on flags
-                        if obj_to_interact.conditional_dialogue_flag:
-                            # Assuming flags are managed as an attribute of Rooms or a global dict
-                            global flags # Explicitly use global if flags is global
-                            condition_met = flags.get(obj_to_interact.conditional_dialogue_flag, False)
-                            if condition_met: 
-                                if obj_to_interact.node_if_unlocked: chosen_start_node = obj_to_interact.node_if_unlocked
-                            else: 
-                                if obj_to_interact.node_if_locked: chosen_start_node = obj_to_interact.node_if_locked
-                        
-                        # Create and start the ObjectDialogue
+                        # Now create the actual ObjectDialogue with the determined start_node
                         self.current_dialogue_ref.current_dialogue = ObjectDialogue(
                             obj_to_interact, 
                             self.current_dialogue_ref, 
@@ -1914,7 +1905,7 @@ class Rooms:    # class Level in tutorial
                     else:
                         print(f"INFO: Object '{obj_to_interact.name}' interaction skipped. Dialogue already active.")
                 else:
-                    print(f"INFO: Object '{obj_to_interact.name}' has no dialogue. Interaction ignored.")
+                    print(f"INFO: Object '{obj_to_interact.name}' has no dialogue and no direct room transition. Interaction ignored.")
 
         # 2. Handle NPC Interaction (Space Key to START new NPC dialogue)
         # This block only triggers if no dialogue is active OR the current dialogue is an ObjectDialogue
