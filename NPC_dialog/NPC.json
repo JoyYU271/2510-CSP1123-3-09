@@ -79,7 +79,7 @@
     ],
 
     "repeat_only":[
-        {"speaker":"npc","text":"She is waiting in your office, you can head over when you are ready","next": "repeat_only"}
+        {"speaker":"npc","text":"Have a nice day ~","next": "repeat_only"}
     ],
 
     "chapter_2":[
@@ -95,7 +95,10 @@
         {"speaker" :"player","text":"I see. Thank you. I'll take my leave then.","shown": false},
         {"speaker" :"npc","text":"Alright~ Bye bye~!","shown": false},
         {"speaker" :"npc","text":"Dean's office is next to yours~"}
+
     ],
+     
+    
 
     "chapter_3":[
         {"speaker" :"npc","text":"Morning~","shown": false},
@@ -377,7 +380,7 @@
         {"speaker" :"npc","text":"......When during that time, my heart was racing, and my hands trembled uncontrollably. I felt an overwhelming tension.","shown": false},
         {"speaker" :"player","text":"Did any specific thoughts cross your mind? Like, 'If I don't make this perfect, then…'?","shown": false},
         {"speaker" :"narrator","text":"(She closes her eyes, brows slightly furrowed, as if resisting an admission. But after a pause, she nods.)","shown": false},
-        {"speaker" :"npc","text":"...…Yes. I thought, “If this proposal isn't perfect and something goes wrong, it could stain my entire career.”","shown": false},
+        {"speaker" :"npc","text":"......Yes. I thought, “If this proposal isn't perfect and something goes wrong, it could stain my entire career.”","shown": false},
         {"speaker" :"npc","text":" Just thinking about that will made me feel awful","shown": false},
         {"speaker" :"player","text":"(Perfectionism-induced anxiety. CBT (Cognitive Behavioral Therapy) might be an appropriate and effective approach here.)","shown": false},
         {"speaker" :"narrator","text":"(Cognitive behavioral therapy (CBT) is a form of psychological treatment","shown": false},
@@ -404,7 +407,7 @@
         {"speaker" :"npc","text":"I've read it. I'm willing to accept the risks. Just need to sign here, right?","shown": false},
         {"speaker" :"player","text":"Right. Once you sign, I'll prepare the treatment.","shown": false},
         {"speaker" :"narrator","text":"(She signs without hesitation and returns the form to you.)","sound": "write_pen","shown": false},
-        {"speaker" :"player","text":"(Alright, let's begin.)","shown": false},
+        {"speaker" :"player","text":"(Alright, let's begin.)"},
 
         {"event":"patient_zheng_talked_to"},
 
@@ -413,10 +416,13 @@
 
 
     ],
+    "repeat_only":[
+        {"speaker":"player","text":"(Alright, let's begin.)","next": "repeat_only"}
+    ],
 
     "chapter_1_common":[
         {"speaker":"npc","text":"......"},
-        {"speaker" :"player","text":"(I've finished speaking with the patient. Time to begin treatment using the machine.)"}
+        {"speaker" :"player","text":"(I've finished speaking with the patient. Time to begin treatment using the machine.)","next":"repeat_only"}
     ],
     "after_puzzle_sequence":[
         {"speaker" :"narrator","text":"(This memory is blurry—snatches of conversations and report writing. Words on the reports catch your eye.)","shown": false},
@@ -440,6 +446,7 @@
     ],
 
      "back_reality_destroy1":[
+       
         {"speaker" :"narrator","text":"(You remove the device from her head.)","shown": false},
         {"speaker" :"player","text":" Treatment is complete. How do you feel? Any discomfort?","shown": false},
         {"speaker" :"npc","text":"......I'm fine","shown": false},
@@ -461,6 +468,7 @@
      ],
 
      "back_reality_keep1":[
+        
         {"speaker" :"narrator","text":"(You remove the device from her head.)","shown": false},
         {"speaker" :"player","text":" Treatment is complete. How do you feel? Any discomfort?","shown": false},
         {"speaker" :"npc","text":"......I'm fine","shown": false},
@@ -470,9 +478,7 @@
      ],
      "sub_end_2":[
         {"cg":"picture/Ending/P1 End2.png"},
-
         {"speaker" :"npc","text":" (That doctor's treatment really worked. I don't get anxious over small things anymore.)","bgm": "bgm/zheng_preserved.mp3","shown": false},
-
         {"speaker" :"npc","text":" (More importantly, I remembered what I truly wanted.)","shown": false},
         {"speaker" :"npc","text":"(How could I have forgotten? My dream of studying psychology deeply (professionally?))","shown": false},
         {"speaker" :"npc","text":"(But it's not too late.)","shown": false},
@@ -536,6 +542,9 @@
         {"speaker" :"narrator","text":"......."},
         {"speaker" :"player","text":"I've finished speaking with the patient. Time to begin treatment using the machine."}
     ],
+    "repeat_only":[
+        {"speaker":"player","text":"(We can start now.)","next": "repeat_only"}
+    ],
 
 
     "after_puzzle":[
@@ -578,6 +587,7 @@
     ],
 
     "back_reality_destroy2":[
+        {"cg":["picture/Ending/black screen.png"]},
         {"speaker" :"narrator","text":"(You take the device off of her head)","shown": false},
         {"speaker" :"player","text":"The treatment is done, how do you feel? Do you feel uncomfortable?","shown": false},
         {"speaker" :"npc","text":"I feel fine.","shown": false},
@@ -602,6 +612,7 @@
     ],
 
     "back_reality_keep2":[
+        {"cg":["picture/Ending/black screen.png"]},
         {"speaker" :"narrator","text":"(You take the device off of her head)","shown": false},
         {"speaker" :"player","text":"The treatment is done, how do you feel? Do you feel uncomfortable?","shown": false},
         {"speaker" :"npc","text":"I feel fine.","shown": false},

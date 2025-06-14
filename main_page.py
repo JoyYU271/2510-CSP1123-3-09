@@ -14,7 +14,7 @@ pygame.init() #initialize all import pygame modules
 pygame.mixer.init()
 
 screen_width = 1280
-screen_height = 720
+screen_height = 720 
 
 screen = pygame.display.set_mode((screen_width, screen_height))#pygame.FULLSCREEN)
 pygame.display.set_caption("main page test")
@@ -101,6 +101,8 @@ def main_menu():
                     intro_game.intro.start("chapter_1", completed_callback=after_intro)
                     intro_game.gameStateManager.set_state('intro')
                     intro_game.run()
+
+                    
 
 
                     # back main page music
