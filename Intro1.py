@@ -1026,7 +1026,9 @@ image_path = {
             "Pill_bottle": "Object_image/E04_Lock.png",
             "Coat": "Object_image/E04_Key.png",
             "Mirror": "Object_image/exit_E05.png",
-            "Medbed": "Object_image/E05_Random.png"
+            "Medbed": "Object_image/E05_Random.png",
+            "Dean_desk": "Object_image/D_Key.png",
+            "Bookshelves": "Object_image/D_Lock.png"
         }
 
 class InteractableObject(pygame.sprite.Sprite):
@@ -1275,12 +1277,15 @@ class ObjectDialogue:
                 print(f"DEBUG ({self.obj_info.name}): Conditional flag '{self.obj_info.conditional_dialogue_flag}' NOT met. Directing to locked node.")
                 return self.obj_info.node_if_locked if self.obj_info.node_if_locked else chosen_node
 
-        # 4. Fallback for object's inherent 'unlocked' status (e.g., Dean's door unlocks on Day 3)
-        # This will rely on the `unlocked` property of the `InteractableObject` itself,
-        # which is dynamically set in `Rooms.load_room` based on `unlocked_day`.
-        elif not self.obj_info.unlocked: # If the object is explicitly marked as locked (and no other conditional flags applied)
-            print(f"DEBUG ({self.obj_info.name}): Object explicitly locked by its 'unlocked' status. Directing to locked node.")
+        # --- FIX: New (or modified) block for inherent 'unlocked' status ---
+        # This specifically checks the 'unlocked' status set by Rooms.load_room (e.g., from unlocked_day)
+        if self.obj_info.unlocked: # If the object is marked as UNLOCKED (e.g., by unlocked_day on current day)
+            print(f"DEBUG ({self.obj_info.name}): Object is currently UNLOCKED by its .unlocked status. Directing to UNLOCKED node.")
+            return self.obj_info.node_if_unlocked if self.obj_info.node_if_unlocked else chosen_node
+        elif not self.obj_info.unlocked: # If the object is currently LOCKED by its .unlocked status (e.g., not yet on unlocked_day)
+            print(f"DEBUG ({self.obj_info.name}): Object is currently LOCKED by its .unlocked status. Directing to LOCKED node.")
             return self.obj_info.node_if_locked if self.obj_info.node_if_locked else chosen_node
+        # --- END FIX ---
 
         print(f"DEBUG ({self.obj_info.name}): No special conditions met. Returning default start_node: {chosen_node}")
         return chosen_node
@@ -1520,7 +1525,7 @@ class Rooms:    # class Level in tutorial
         self.visited_doors = set()  #keep track of doors used
 
         self.current_room = "room01"
-        self.current_day = 1    #Initialize the current day (Chapter 1)
+        self.current_day = 3    #Initialize the current day (Chapter 1)
         
         self.fading = False
         self.fade_alpha = 0

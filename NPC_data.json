@@ -26,8 +26,7 @@
     "position":[840,520],
     "dialogue_id" : "Nuva",
     "rooms":["room01"],
-    "draw_layer":"mid_layer",
-    "days": [1, 2]
+    "draw_layer":"mid_layer"
   },
 
   "emma_npc_id":{
