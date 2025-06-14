@@ -24,7 +24,7 @@ bg_img = pygame.image.load("main page/Menu Page.png").convert() #converts is for
 bg_img = pygame.transform.scale(bg_img, (screen_width, screen_height))
 
 #button image
-start_img = pygame.image.load('main page/start.png').convert_alpha() #alpha is use to keep transparent background
+start_img = pygame.image.load('main page/start.png'). convert_alpha() #alpha is use to keep transparent background
 load_img = pygame.image.load('main page/load.png').convert_alpha()
 collections_img = pygame.image.load('main page/collections.png').convert_alpha()
 settings_img = pygame.image.load('main page/settings.png').convert_alpha()
