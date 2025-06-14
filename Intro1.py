@@ -1762,12 +1762,15 @@ class Rooms:    # class Level in tutorial
         self.space_released = True
         self.q_released = True
         self.enter_released = True  # New: for choice selection confitmation
-        
-        self.cutscene_active = False
 
         self.cutscene_speed = 3
 
+        self.cutscene_active = False
         self.dean_exiting = False
+        self.dean_cutscene_x = 400
+        self.dean_cutscene_y = 520
+
+
         self.patient_zheng_talked_to = False # Flag for machine unlock
         self.visited_doors = set()  #keep track of doors used
 
@@ -1791,6 +1794,9 @@ class Rooms:    # class Level in tutorial
         print(f"DEBUG: Rooms __init__ finished. self.camera_group ID: {id(camera_group)}")
         
         self.load_room(self.current_room)
+
+
+
 
 
     def advance_day(self):
@@ -1961,6 +1967,8 @@ class Rooms:    # class Level in tutorial
 
             zheng_narrative_obj = ZhengNarrativeDummy()
 
+
+
             # # --- DEBUG PRINTS ---
             print(f"DEBUG (Rooms.handle_dialogue_event): Global all_dialogues keys: {list(self.all_dialogues.keys())}")
             zheng_narrative_tree = self.all_dialogues.get(zheng_narrative_obj.dialogue_id)
@@ -2005,6 +2013,20 @@ class Rooms:    # class Level in tutorial
 
             self.start_intro_after_fade = True # New flag to tell the fade logic to start intro
             print(f"Set to fade to {self.next_room_after_transition} and start intro for Day {self.current_day}.")
+
+        elif event_name == "dean_exit_cutscene":
+            self.dean_exiting = True
+            self.cutscene_active = True
+            for npc in self.npc_manager.npcs:
+                if npc.name == "Dean":
+                    self.npc_manager.npcs.remove(npc)
+                    camera_group.remove(npc)
+                    print("Dean removed from scene for cutscene.")
+                    break
+
+
+
+
 
     def run(self, moving_left, moving_right,events):
         entry = {}
