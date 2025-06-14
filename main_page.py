@@ -1,7 +1,9 @@
 import pygame
 import sys
 import Dialogue1
-from Dialogue1 import run_dialogue
+import character_movement
+from Dialogue1 import run_dialogue  
+from Dialogue1 import game_chapter
 from ui_components import Button, get_font
 from save_system import save_checkpoint, load_checkpoint
 import Intro1
@@ -12,7 +14,7 @@ pygame.init() #initialize all import pygame modules
 pygame.mixer.init()
 
 screen_width = 1280
-screen_height = 720
+screen_height = 720 
 
 screen = pygame.display.set_mode((screen_width, screen_height))#pygame.FULLSCREEN)
 pygame.display.set_caption("main page test")
@@ -78,21 +80,29 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if start_button.checkForInput(mouse_pos):
                     click_sound.play()
+                    
                     pygame.mixer.music.stop()
+                    global game_chapter
+                    game_chapter = 1
+                    Dialogue1.player_choices = {}
+                    Dialogue1.flags = {}
+                    Dialogue1.shown_dialogues = {}
 
                     # run intro
                     intro_game = Intro1.Game(language=current_language,text_size=current_font_size,bgm_vol=bgm_vol,sfx_vol=sfx_vol)
+                    
 
                     def after_intro():
                         print("after intro, enter level")
                         intro_game.gameStateManager.set_state('level')
-
-
-
+                       
+                        
                     intro_game.intro.completed_callback = after_intro
                     intro_game.intro.start("chapter_1", completed_callback=after_intro)
                     intro_game.gameStateManager.set_state('intro')
                     intro_game.run()
+
+                    
 
 
                     # back main page music
@@ -349,7 +359,7 @@ def show_cg_gallery(image_paths):
             (start_x, y1), (start_x + thumbnail_size[0] + spacing_x, y1),
             (start_x, y2), (start_x + thumbnail_size[0] + spacing_x, y2),
             (screen_width // 2 - thumbnail_size[0] // 2, y3)
-        ]
+          ]
     else:
         print("Unsupported number of CGs for layout.")
         return
