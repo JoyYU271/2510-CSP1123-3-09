@@ -101,6 +101,10 @@ room_settings = {
         "background_path": "picture/Map Art/Player room.png",
         "player_start_pos": (1100, 420)
     },
+    "Dean_room": {
+        "background_path": "picture/Map Art/Dean room.png",
+        "player_start_pos": (1100, 420)
+    },
     "room01": {
         "background_path": "picture/Map Art/Map clinic.png",
         "player_start_pos": (200, 420) # Default player start pos for room01
@@ -148,6 +152,10 @@ room_settings = {
     "subc.E_05": {
         "background_path": "picture/Map Art/P26.png",
         "player_start_pos": (640, 420)
+    },
+    "basement": {
+        "background_path": "picture/Map Art/Basement.png",
+        "player_start_pos": (100, 420)
     }
 }
 
@@ -1530,6 +1538,7 @@ class Rooms:    # class Level in tutorial
         camera_group.set_background(self.background)
         print(f"DEBUG: Rooms __init__ finished. camera_group ID: {id(camera_group)}")
         
+        npc_manager.npcs.clear()
         self.load_room(self.current_room)
 
 

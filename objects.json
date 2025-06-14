@@ -76,7 +76,7 @@
     "position": [113, 371],
     "image": "Computer",
     "dialogue_id": "exitZ01_dialogue",
-    "start_node": "initial",
+    "start_node": "unlocked_exit",
     "active": true,
     "rooms": ["subc.Z_01"],
     "draw_layer": "background",
@@ -152,13 +152,14 @@
     "position": [1200, 308],
     "image": "Whiteboard",
     "dialogue_id": "exitZ02_dialogue",
-    "start_node": "initial",
+    "start_node": "unlocked_exit",
     "active": true,
     "rooms": ["subc.Z_02"],
     "draw_layer": "background",
     "required_flags": "lock_unlocked",
     "node_if_locked": "initial",
-    "node_if_unlocked": "unlocked_exit"
+    "node_if_unlocked": "unlocked_exit",
+    "next_room": "subc.Z_03"
   },
 
   "office_door": {
@@ -166,13 +167,14 @@
     "position": [1090, 220],
     "image": "Office_door",
     "dialogue_id": "exitZ03_dialogue",
-    "start_node": "initial",
+    "start_node": "unlocked_exit",
     "active": true,
     "rooms": ["subc.Z_03"],
     "draw_layer": "background",
     "required_flags": "lock_unlocked",
     "node_if_locked": "initial",
-    "node_if_unlocked": "unlocked_exit"
+    "node_if_unlocked": "unlocked_exit",
+    "next_room": "subc.Z_04"
   },
 
   "window": {
@@ -221,7 +223,8 @@
     "start_node": "start",
     "active": true,
     "rooms": ["subc.Z_04"],
-    "draw_layer": "background"
+    "draw_layer": "background",
+    "next_room": "room01"
   },
 
   "monitor": {
@@ -252,13 +255,14 @@
     "position": [500, 500],
     "image": "Chest",
     "dialogue_id": "exitE01_dialogue",
-    "start_node": "initial",
+    "start_node": "unlocked_exit",
     "active": true,
     "rooms": ["subc.E_01"],
     "draw_layer": "mid_layer",
     "required_flags": "lock_unlocked",
     "node_if_locked": "initial",
-    "node_if_unlocked": "unlocked_exit"
+    "node_if_unlocked": "unlocked_exit",
+    "next_room": "subc.E_02"
   },
 
   "poster": {
@@ -304,13 +308,14 @@
     "position": [1000, 500],
     "image": "Curtains",
     "dialogue_id": "exitE02_dialogue",
-    "start_node": "initial",
+    "start_node": "unlocked_exit",
     "active": true,
     "rooms": ["subc.E_02"],
     "draw_layer": "background",
     "required_flags": "lock_unlocked",
     "node_if_locked": "initial",
-    "node_if_unlocked": "unlocked_exit"
+    "node_if_unlocked": "unlocked_exit",
+    "next_room": "subc.E_03.1"
   },
 
   "dress": {
@@ -354,13 +359,14 @@
     "position": [1000, 420],
     "image": "Car",
     "dialogue_id": "exitE03.1_dialogue",
-    "start_node": "initial",
+    "start_node": "unlocked_exit",
     "active": true,
     "rooms": ["subc.E_03.1"],
     "draw_layer": "background",
     "required_flags": "lock_unlocked",
     "node_if_locked": "initial",
-    "node_if_unlocked": "unlocked_exit"
+    "node_if_unlocked": "unlocked_exit",
+    "next_room": "subc.E_04"
   },
 
   "welcome_mat": {
@@ -417,13 +423,14 @@
     "position": [400, 500],
     "image": "Dream_door",
     "dialogue_id": "exitE04_dialogue",
-    "start_node": "initial",
+    "start_node": "unlocked_exit",
     "active": true,
     "rooms": ["subc.E_04"],
     "draw_layer": "background",
     "required_flags": "lock_unlocked",
     "node_if_locked": "initial",
-    "node_if_unlocked": "unlocked_exit"
+    "node_if_unlocked": "unlocked_exit",
+    "next_room": "subc.E_05"
   },
 
   "pill_bottle": {
@@ -460,7 +467,8 @@
     "start_node": "start",
     "active": true,
     "rooms": ["subc.E_05"],
-    "draw_layer": "background"
+    "draw_layer": "background",
+    "next_room": "room01"
   },
 
   "medbed": {

@@ -108,7 +108,7 @@
       {"text": "You hear someone talking outside."},
       {"text": "The door is locked."}
     ],
-    "start": [
+    "unlocked_exit": [
       {"speaker": "narrator","text": "(The scene is an office again—but not her workplace.)", "shown": false},
       {"speaker": "player","text": " (Another office? Whose is this?)", "shown": false},
       {"speaker": "narrator","text": "(A male voice is heard.)", "shown": false},
@@ -144,11 +144,11 @@
       ]
     },
 
-    "exitE01_dialogue": {
+  "exitE01_dialogue": {
       "initial": [
       {"text": "It's a chest full of costumes and outfits."}
     ],
-      "start": [
+      "unlocked_exit": [
         {"speaker": "narrator","text": "(The first time had been a weird experience, but you couldn't help marveling at the scenes flashing by.)", "shown": false},
         {"speaker": "narrator","text": "(You were starting to focus when all of a sudden you hear a 'kachak', followed by a bright, blinding white light.)", "shown": false},
         {"speaker": "player","text": " (Ow! My eyes-)", "shown": false},
@@ -159,12 +159,12 @@
       ]
     },
 
-    "exitE02_dialogue": {
+  "exitE02_dialogue": {
       "initial": [
       {"text": "It's pitch black."},
       {"text": "You feel oddly nervous."}
     ],
-      "start": [
+      "unlocked_exit": [
         {"speaker": "narrator","text": "(A scene came into view, and the patient's face appears... Or more precisely, her face in the mirror.)", "shown": false},
         {"speaker": "narrator","text": "(You see someone standing behind her in the mirror whose face you can't see clearly, combing her hair with a curling iron)", "shown": false},
         {"speaker": "narrator","text": "(There's also someone next to her, holding a makeup brush and gently applying blush to her face.)", "shown": false},
@@ -177,12 +177,12 @@
       ]
     },
 
-    "exitE03.1_dialogue": {
+  "exitE03.1_dialogue": {
       "initial": [
       {"text": "A fancy, well-used car."},
       {"text": "(... I feel like I forgot something, like my car keys.)"}
     ],
-      "start": [
+      "unlocked_exit": [
         {"speaker": "narrator","text": "(There was a sudden loud 'crash!!!')", "shown": false},
         {"speaker": "narrator","text": "(You were startled by the loud noise.)", "shown": false},
         {"speaker": "narrator","text": "(Then the scene skewed to the left, and you felt your ribs jerk against the seat belt uncomfortably.)", "shown": false},
@@ -195,12 +195,12 @@
         {"event": "machine_enter"}
       ]
     },
-    "exitE04_dialogue": {
+  "exitE04_dialogue": {
       "initial": [
       {"text": "A door."},
       {"text": "(... Such a foreboding feeling.)"}
     ],
-      "start": [
+      "unlocked_exit": [
         {"speaker": "narrator","text": "(There was a sudden, familiar, loud 'crash!!')", "shown": false},
         {"speaker": "player","text": "(Again!?)", "shown": false},
         {"speaker": "narrator","text": "(But this time, there was no labored breathing or pain. The scene shifts. You hear a scream and then a sudden gasp.)", "shown": false},
@@ -214,7 +214,7 @@
       ]
     },
 
-    "exitE05_dialogue": {
+  "exitE05_dialogue": {
       "start": [
         {"speaker": "narrator","text": "(... What's this?)", "shown": false},
         {"speaker": "narrator","text": "(... Who's there?)", "shown": false},
@@ -230,18 +230,19 @@
       ]
     },
 
-      "student_desk_dialogue": {
+  "student_desk_dialogue": {
     "start": [
       {"text": "There's pencils, and erasers, and books strewn everywhere."},
       {"text": "(...Why do I feel so uneased?)"}
     ]
   },
 
-    "trashb_dialogue": {
+  "trashb_dialogue": {
     "key": [
       {"text": "There's only a crumpled piece of paper in here."},
       {"text": "You open it up."},
-      {"text": "It writes 1636 divided by 4. (... so, 409?)"}
+      {"text": "It writes 1636 divided by 4. (... so, 409?)"},
+      {"event": "set_flag", "event_data": {"flag_name": "key1_found", "flag_value": true}}
     ],
     "already_found": [
       {"text": "The answer seems to be 409."}
@@ -250,7 +251,8 @@
 
   "window_dialogue": {
     "key": [
-      {"text": "(Something's stuck here?)"}
+      {"text": "(Something's stuck here?)"},
+      {"event": "set_flag", "event_data": {"flag_name": "key1_found", "flag_value": true}}
     ],
     "already_found": [
       {"text": "You try not to question the yellow goop."}
@@ -260,7 +262,8 @@
   "trophy_dialogue": {
     "key": [
       {"text": "It's a wall of achievments."},
-      {"text": "(... There's something in the trophy cup!)"}
+      {"text": "(... There's something in the trophy cup!)"},
+      {"event": "set_flag", "event_data": {"flag_name": "key2_found", "flag_value": true}}
     ],
     "already_found": [
       {"text": "The trophies look well taken care of."}
@@ -272,7 +275,8 @@
       {"text": "It's a numbered lock. You didn't know drawers could have them."}
     ],
     "unlocked": [
-      {"text": "You put in the combination on the paper."}
+      {"text": "You put in the combination on the paper."},
+      {"event": "set_flag", "event_data": {"flag_name": "lock_unlocked", "flag_value": true}}
     ]
   },
 
@@ -291,21 +295,30 @@
     ],
     "unlocked": [
       {"text": "You put glue on the paint roller and glued up the poster."},
-      {"text": "... You see something appear near the chest."}
+      {"text": "... You see something appear near the chest."},
+      {"event": "set_flag", "event_data": {"flag_name": "lock_unlocked", "flag_value": true}}
     ]
   },
 
   "dresser_dialogue": {
-    "start": [
+    "key": [
       {"text": "There's scattered makeup items all over."},
-      {"text": "(... Is that a pot of glue??)"}
+      {"text": "(... Is that a pot of glue??)"},
+      {"event": "set_flag", "event_data": {"flag_name": "key1_found", "flag_value": true}}
+    ],
+    "already_found": [
+      {"text": "Lots of makeup items..."}
     ]
   },
 
   "paint_roll_dialogue": {
-    "start": [
+    "key": [
       {"text": "It's a paint roller."},
-      {"text": "(... I could use this.)"}
+      {"text": "(... I could use this.)"},
+      {"event": "set_flag", "event_data": {"flag_name": "key2_found", "flag_value": true}}
+    ],
+    "already_found": [
+      {"text": "There's nothing else here."}
     ]
   },
 
@@ -316,28 +329,37 @@
     ],
     "unlocked": [
       {"text": "Deft hands not quite your own sewed up the dress."},
-      {"text": "(... Wow. I take back my words.)"}
+      {"text": "(... Wow. I take back my words.)"},
+      {"event": "set_flag", "event_data": {"flag_name": "lock_unlocked", "flag_value": true}}
     ]
   },
 
   "vanity01_dialogue": {
-    "start": [
+    "key": [
       {"text": "A profesional vanity."},
       {"text": "There's a lot of makeup kits and tissues scattered around."}
     ]
   },
 
   "vanity02_dialogue": {
-    "start": [
+    "key": [
       {"text": "A professional vanity."},
-      {"text": "(... Is that a roll of thread with a needle?"}
+      {"text": "(... Is that a roll of thread with a needle?"},
+      {"event": "set_flag", "event_data": {"flag_name": "key1_found", "flag_value": true}}
+    ],
+    "already_found": [
+      {"text": "A professional vanity."}
     ]
   },
 
   "clothes_r_dialogue": {
-    "start": [
+    "key": [
       {"text": "A clothes rack. There's a bag on it."},
-      {"text": "(...! Car keys.)"}
+      {"text": "(...! Car keys.)"},
+      {"event": "set_flag", "event_data": {"flag_name": "key1_found", "flag_value": true}}
+    ],
+    "already_found": [
+      {"text": "A clothes rack."}
     ]
   },
 
@@ -354,15 +376,20 @@
       {"text": "(... It's dangerous to take without knowing the dose.)"}
     ],
     "unlocked": [
-      {"text": "Knowing you need this, you take two pills and a glass of water."}
+      {"text": "Knowing you need this, you take two pills and a glass of water."},
+      {"event": "set_flag", "event_data": {"flag_name": "lock_unlocked", "flag_value": true}}
     ]
   },
 
   "coat_dialogue": {
-    "start": [
+    "key": [
       {"text": "A coat. There's something in the pocket."},
       {"text": "It's a prescription."},
-      {"text": "... It's for sleeping pills."}
+      {"text": "... It's for sleeping pills."},
+      {"event": "set_flag", "event_data": {"flag_name": "key1_found", "flag_value": true}}
+    ],
+    "already_found": [
+      {"text": "A coat."}
     ]
   },
 
