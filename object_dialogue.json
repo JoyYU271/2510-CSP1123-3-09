@@ -130,7 +130,15 @@
 
     "exitE03.1_dialogue": {
       "start": [
-        {"text": "(text here.)"},
+        {"speaker": "narrator","text": "(There was a sudden loud 'crash!!!')", "shown": false},
+        {"speaker": "narrator","text": "(You were startled by the loud noise.)", "shown": false},
+        {"speaker": "narrator","text": "(Then the scene skewed to the left, and you felt your ribs jerk against the seat belt uncomfortably.)", "shown": false},
+        {"speaker": "narrator","text": "(The car window shatter into a spider web, hitting your face.)", "shown": false},
+        {"speaker": "narrator","text": "(At the last moment, there was a white something punching out, followed by a pungent smell, like gunpowder and something burning - It was the airbag.)", "shown": false},
+        {"speaker": "narrator","text": "(The scene gradually dims. The distant horn, the buzzing ambulance, the rapid breathing, all of it slowly leaves.)", "shown": false},
+        {"speaker": "narrator","text": "(And then, the world falls silent.)", "shown": false},
+        {"speaker": "player","text": "(...This must be the car accident)", "shown": false},
+         {"speaker": "narrator","text": "(You close your eyes and take a deep breath to try and calm yourself.)", "shown": false},
         {"event": "machine_enter"}
       ]
     },
@@ -142,7 +150,15 @@
     },
     "exitE04_dialogue": {
       "start": [
-        {"text": "(text here.)"},
+        {"speaker": "narrator","text": "(There was a sudden, familiar, loud 'crash!!')", "shown": false},
+        {"speaker": "player","text": "(Again!?)", "shown": false},
+        {"speaker": "narrator","text": "(But this time, there was no labored breathing or pain. The scene shifts. You hear a scream and then a sudden gasp.)", "shown": false},
+        {"speaker": "Emma","text": "Haa... Haa...", "shown": false},
+        {"speaker": "Emma","text": "Why... Why did I dream about this again...", "shown": false},
+        {"speaker": "narrator","text": "(Her voice held a hint of despair)", "shown": false},
+        {"speaker": "Emma","text": "Hasn't it been some time already...", "shown": false},
+        {"speaker": "player","text": "......", "shown": false},
+        {"speaker": "narrator","text": "You feel like comforting her, or giving her a hug, but this was just a memory, you can't do anything here.", "shown": false},
         {"event": "machine_enter"}
       ]
     },
