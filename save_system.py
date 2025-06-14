@@ -48,5 +48,3 @@ def load_checkpoint():
     except json.JSONDecodeError:
         print("WARNING: Save file is corrupted or not valid JSON.")
         return None
-
-

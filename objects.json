@@ -38,7 +38,7 @@
   
   "board":{
     "name": "Notice board",
-    "position": [200, 200],
+    "position": [195, 187],
     "image": "Board",
     "dialogue_id": "board_dialogue",
     "start_node": "start",
@@ -49,14 +49,177 @@
 
   "machine": {
     "name": "Machine",
-    "position": [1000, 300],
+    "position": [945, 220],
     "image": "Machine",
     "dialogue_id": "machine_dialogue",
-    "start_node": "before_patient",
+    "start_node": "initial",
+    "conditional_dialogue_flag": "patient_zheng_talked_to",
+    "node_if_locked": "locked_machine_node",
+    "node_if_unlocked": "unlocked_machine_node",
     "active": true,
     "rooms": ["Player_room"],
     "draw_layer": "background",
 
     "next_room": "subc.Z_01"
+  },
+
+  "computer": {
+    "name":"Zheng's desk",
+    "position": [113, 371],
+    "image": "Computer",
+    "dialogue_id": "exitZ01_dialogue",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["subc.Z_01"],
+    "draw_layer": "background",
+
+    "next_room": "subc.Z_02"
+  },
+
+  "office_computers": {
+    "name": "Office computers",
+    "position": [1000, 371],
+    "image": "Office_comps",
+    "dialogue_id": "offc_comp_dialogue",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["subc.Z_01"],
+    "draw_layer": "background"
+  },
+
+  "printer": {
+    "name": "Office printer",
+    "position": [500, 371],
+    "image": "Printer",
+    "dialogue_id": "printer_dialogue",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["subc.Z_01"],
+    "draw_layer": "background"
+  },
+
+  "Water_cool": {
+    "name": "Office water cooler",
+    "position": [800, 371],
+    "image": "Water_cooler",
+    "dialogue_id": "water_cool_dialogue",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["subc.Z_01"],
+    "draw_layer": "background"
+  },
+
+  "student_desk": {
+    "name": "Student's desk",
+    "position": [200, 400],
+    "image": "Student_desk",
+    "dialogue_id": "student_desk_dialogue",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["subc.Z_02"],
+    "draw_layer": "background"
+  },
+
+  "Trash_bin": {
+    "name": "Class trash bin",
+    "position": [1186, 308],
+    "image": "Trash_bin",
+    "dialogue_id": "trashb_dialogue",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["subc.Z_02"],
+    "draw_layer": "background"
+  },
+
+  "whiteboard": {
+    "name": "Whiteboard",
+    "position": [1200, 308],
+    "image": "Whiteboard",
+    "dialogue_id": "exitZ02_dialogue",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["subc.Z_02"],
+    "draw_layer": "background",
+    "next_room": "subc.Z_03"
+  },
+
+  "office_door": {
+    "name": "Office door",
+    "position": [1090, 220],
+    "image": "Office_door",
+    "dialogue_id": "exitZ03_dialogue",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["subc.Z_03"],
+    "draw_layer": "background",
+    "next_room": "subc.Z_04"
+  },
+
+  "window": {
+    "name": "Window sill",
+    "position": [700, 220],
+    "image": "Window_sill",
+    "dialogue_id": "window_dialogue",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["subc.Z_03"],
+    "draw_layer": "background"
+  },
+
+  "trophy": {
+    "name": "Wall of achievement",
+    "position": [1200, 220],
+    "image": "Trophies",
+    "dialogue_id": "trophy_dialogue",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["subc.Z_03"],
+    "draw_layer": "background"
+  },
+
+  "drawer": {
+    "name": "Locked drawer",
+    "position": [200, 400],
+    "image": "Drawer",
+    "dialogue_id": "drawer_dialogue",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["subc.Z_03"],
+    "draw_layer": "background"
+  },
+
+  "boxes?": {
+    "name": "Boxes?",
+    "position":[1000, 310],
+    "image": "Boxes?",
+    "dialogue_id": "exitZ04_dialogue",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["subc.Z_04"],
+    "draw_layer": "background",
+    "next_room": "Player_room"
+  },
+
+  "monitor": {
+    "name": "Heart monitor",
+    "position": [200, 310],
+    "image": "Monitor",
+    "dialogue_id": "monitor_dialogue",
+    "start_node": "start",   
+    "active": true,
+    "rooms": ["subc.Z_04"],
+    "draw_layer": "background"
+  },
+
+  "to_loop_back": {
+    "name": "Temporary entry from intro",
+    "position": [500, 300],
+    "image": "intro_to_clinic",
+    "dialogue_id": "temp.placement",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["out_clinic"],
+    "draw_layer": "background",
+    "next_room": "room01"
   }
 }

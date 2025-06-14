@@ -1,47 +1,105 @@
 {
   "table_dialogue":{
-    "start":{
-      "text": "The receptionist's counter."
-    }
+    "start":[
+      {"text": "The receptionist's counter."}
+  ]
 
   },
 
   "door01_dialogue":{
-    "start":{
-      "text": "Your office."
-    }
+    "start":[
+      {"text": "Your office."},
+      {"event": "open_door_event"}
+    ]
   },
 
   "door02_dialogue":{
-    "start":{
-      "text": [
-        "The Dean's office.",
-        "It's locked."
+    "start":[
+      {"text": "The Dean's office."},
+      {"text": "It's locked."}
     ]
-    }
   },
 
   "board_dialogue": {
-    "start": {
-      "text": [
-        "(You look at the bulletin board.)",
-        "(Clinic hours, honor certificates, mental health tips, job hiring...)",
-        "(A flyer on Hypnotherapy... This is the therapy Father has been practicing and promoting his whole life.)"
-      ]
-    }
+    "start": [
+      {"text": "(You look at the bulletin board.)"},
+      {"text": "(Clinic hours, honor certificates, mental health tips, job hiring...)"},
+      {"text": "(A flyer on Hypnotherapy... This is the therapy Father has been practicing and promoting his whole life.)"}
+    ]
   },
 
   "machine_dialogue": {
-    "before_patient": {
-      "text": [
-        "(You should talk to the patient first.)"
+    "locked_machine_node": [
+      {"text": "(You should talk to the patient first.)"},
+      {"next_node": "end"}
+    ],
+    "unlocked_machine_node": [
+      {"text": "(After you check that the machine is functinal, you carefully place it on her head.)"}, 
+      {"event": "machine_enter"}
+    ]
+  },
+
+  "exitZ01_dialogue": {
+    "start": [
+    {"speaker": "narrator", "text": "(Upon contact, fragmented images flash before you—an office, a computer screen. ", "shown": false},
+    {"speaker": "narrator", "text": "You witness her endlessly revising the proposal, her earlier account now visceral in first-person. The relentless edits radiate palpable distress. ", "shown": false},
+    {"speaker": "player", "text": "(......Experiencing her perspective is overwhelming.)", "shown": false},
+    {"event": "machine_enter"} 
+    ]
+  },
+
+  "exitZ02_dialogue": {
+    "start": [
+      {"speaker": "narrator","text": "(The scene shifts to a classroom. )", "shown": false},
+      {"speaker": "narrator","text": " (The classroom was abuzz with talk, seizing the moment while the teacher was away.)", "shown" : false},
+      {"speaker": "narrator","text": "(Lowering the gaze reveals impeccably organized notes—neat lines, elegant handwriting, clear highlights. A model of perfection.)", "shown": false},
+      {"speaker": "player","text": "(Her perfectionism traces back to high school......?)", "shown": false},
+      {"speaker": "narrator","text": "(A voice interrupts.)", "shown": false},
+      {"speaker": "narrator","text": "??: Zheng! Can I borrow your notes? ", "shown": false},
+      {"speaker": "narrator","text": "(The views shift left—to her deskmate.)", "shown": false},
+      {"speaker": "narrator","text": "(Zheng moves her hand, which had obscured part of the page, to reveal the pristine notes.)", "shown": false},
+      {"speaker": "narrator","text": "??: As perfect as always! No wonder you're our top student.", "shown": false},
+      {"speaker": "Zheng","text": "......It's just what I should do.", "shown": false},
+      {"speaker": "narrator","text": "??: I'll borrow them, thanks!", "shown": false},
+      {"event": "machine_enter"}
+    ]
+    
+  },
+
+  "exitZ03_dialogue": {
+    "start": [
+      {"speaker": "narrator","text": "(The scene is an office again—but not her workplace.)", "shown": false},
+      {"speaker": "player","text": " (Another office? Whose is this?)", "shown": false},
+      {"speaker": "narrator","text": "(A male voice is heard.)", "shown": false},
+      {"speaker": "narrator","text": "?:  Thanks for waiting.", "shown": false},
+      {"speaker": "player","text": "(This voice......)", "shown": false},
+      {"speaker": "narrator","text": "(Her view turns, revealing a face you know.)", "shown": false},
+      {"speaker": "player","text": "(Father?!)", "shown": false},
+      {"speaker": "player","text": "(Why is he in her memory?)", "shown": false},
+      {"speaker": "Zheng","text": "Good afternoon, Professor.", "shown": false},
+      {"speaker": "Dean","text": "Good afternoon. I called you here to propose something.", "shown": false},
+      {"speaker": "Dean","text": "I'm running a psychology experiment, but I'm short on staff.", "shown": false},
+      {"speaker": "Dean","text": "Your diligence and precision are exactly what this experiment needs.", "shown": false},
+      {"speaker": "Dean","text": " I know your ideal is achieve something in psychology, right? This could be your first step.", "shown": false},
+      {"speaker": "player","text": "(She studied under him? What a coincidence......)", "shown": false},
+      {"speaker": "Zheng","text": "Of course, it would be my honor, Professor.", "shown": false},
+      {"event": "machine_enter"}
+    ]
+  },
+
+  "exitZ04_dialogue": {
+    "start": [
+    {"speaker": "narrator","text": "(You find a portfolio. The patient's picture is on it.)", "shown": false},
+    {"speaker": "player","text": "Everything else is blurred out, except got a few lines.", "shown": false},
+    {"speaker": "narrator","text": "Diagnosis: Work stress)", "shown": false},
+    {"speaker": "narrator","text": "Treatment: Post-hypnotic amnesia", "shown": false},
+    {"next_node": "end"},
+    {"speaker": "narrator","text": "(You find a journal. The patient's name is on it.)", "shown": false},
+    {"speaker": "narrator","text": "(You turn to the latest entry.)", "shown": false},
+    {"speaker": "narrator","text": "('When I was offered this opportunity, I was estatic.')", "shown": false},
+    {"speaker": "narrator","text": "('I'm finally a step closer to achieving my dream...')", "shown": false},
+    {"speaker": "narrator","text": "('But... What is my dream?')", "shown": false},
+    {"event": "puzzle_complete"}
       ]
-    },
-    "after_patient": {
-      "text": [
-        "(After you check that the machine is functinoal, you carefully place it on her head.)"
-      ], 
-      "event": "machine_exit"
     }
   }
-}
