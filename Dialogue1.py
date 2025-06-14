@@ -662,49 +662,7 @@ class dialog:
 
         
 
-    def handle_option_selection(self,keys):
-
-        # only handle if in dialogue with options n text is full displayed
-        if (self.talking and self.options and self.step <len(self.story_data) and self.letter_index >= len(self.story_data[self.step].get("text",""))):
-                  
-                   # move up in options list with W key
-                   if keys[pygame.K_w] and self.key_w_released:
-                      self.option_selected = (self.option_selected - 1) % len(self.options)
-                      self.key_w_released = False
-                   if not keys[pygame.K_w]:
-                       self.key_w_released = True
-                    
-                    #Move down in options list with S key
-                   if keys[pygame.K_s] and self.key_s_released:
-                      self.option_selected = (self.option_selected + 1) % len(self.options)
-                      self.key_s_released = False
-                   if not keys[pygame.K_s]:
-                       self.key_s_released = True
-                       
-                    # comfirm selection with E Key
-                   if keys[pygame.K_e] and self.key_e_released:
-                      selected_option = self.options[self.option_selected]
-                      self.npc.shown_options[self.current_story] = True
-                      next_target = selected_option["next"]
-
-                      #======not really function========
-                      if next_target == "back_reality":
-                          self.load_back_reality()
-                      elif next_target == "check_sub_end":
-                          self.check_sub_end_conditions()
-                      elif next_target.startswith("sub_end_"):
-                          self.load_sub_ending(next_target) #display sub ending
-                      elif next_target.startswith("end_"):
-                          self.load_ending(next_target) #display main ending
-                      else:
-                          self.load_dialogue(self.npc_name,next_target)
-
-                      self.options =[]
-                      self.reset_typing()
-                      self.key_e_released = False
-                   if not keys[pygame.K_e]:
-                       self.key_e_released = True
-
+  
     # not really function , need to combine codes mini games n modify
     def load_back_reality(self):
         self.displayed_text = ""

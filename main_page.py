@@ -103,7 +103,7 @@ def main_menu():
                     intro_game.run()
 
                     
- 
+
 
                     # back main page music
                     pygame.mixer.music.load("bgm/main page.mp3")
