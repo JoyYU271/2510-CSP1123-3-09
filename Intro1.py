@@ -1022,7 +1022,7 @@ image_path = {
         }
 
 class InteractableObject(pygame.sprite.Sprite):
-    def __init__(self, name, position, dialogue_id, start_node, image_path=None, active=True, text=None, next_room=None, unlocked=True, conditional_dialogue_flag=None, node_if_locked=None, node_if_unlocked=None, day_specific_nodes=None, draw_layer="mid_layer", has_dialogue=True):
+    def __init__(self, name, position, dialogue_id, start_node, image_path=None, active=True, text=None, next_room=None, unlocked=True, conditional_dialogue_flag=None, node_if_locked=None, node_if_unlocked=None, day_specific_nodes=None, draw_layer="mid_layer", has_dialogue=True, required_flags=None):
         super().__init__()
 
         self.name = name
@@ -1043,6 +1043,7 @@ class InteractableObject(pygame.sprite.Sprite):
         self.day_specific_nodes = day_specific_nodes if day_specific_nodes is not None else {}
         self.draw_layer = draw_layer
         self.has_dialogue = has_dialogue
+        self.required_flags = required_flags
    
     def interaction(self):
         if self.dialogue_id:
@@ -1229,9 +1230,6 @@ class ObjectDialogue:
 
     def get_start_node_for_interaction(self):
         global flags
-        # Determines the correct starting node for the ObjectDialogue based on current flags,
-        # day-specific nodes, and object's locked/unlocked states.
-        # This method will be called by Rooms.run *before* ObjectDialogue is fully initialized.
         chosen_node = self.obj_info.start_node # Default to the object's initial start_node
 
         # 1. Check for day-specific nodes first (highest priority)
@@ -1244,24 +1242,23 @@ class ObjectDialogue:
             print(f"DEBUG ({self.obj_info.name}): Using day-specific node: {day_specific_node_id}")
             return day_specific_node_id
 
-        # 2. Handle specific composite logic for "Office printer"
-        # This checks if both 'computer_key_found' and 'cooler_key_found' are true
-        if self.obj_info.name == "Office printer": 
-            key1_found = flags.get("key1_found", False)
-            key2_found = flags.get("key2_found", False)
+        # 2. Check for REQUIRED_FLAGS (new, higher priority than single conditional_dialogue_flag)
+        if self.obj_info.required_flags: # If required_flags list is not empty
+            all_required_flags_met = True
+            for flag_name in self.obj_info.required_flags:
+                if not flags.get(flag_name, False): # If any required flag is False or missing
+                    all_required_flags_met = False
+                    break # No need to check further flags
             
-            if key1_found:
-                print(f"DEBUG ({self.obj_info.name}): Printer keys1 found. Directing to unlocked node.")
-                return self.obj_info.node_if_unlocked if self.obj_info.node_if_unlocked else chosen_node
-            elif key2_found:
+            if all_required_flags_met:
+                print(f"DEBUG ({self.obj_info.name}): All required flags {self.obj_info.required_flags} met. Directing to unlocked node.")
                 return self.obj_info.node_if_unlocked if self.obj_info.node_if_unlocked else chosen_node
             else:
-                print(f"DEBUG ({self.obj_info.name}): Printer keys missing. Directing to locked node.")
+                print(f"DEBUG ({self.obj_info.name}): Required flags {self.obj_info.required_flags} NOT all met. Directing to locked node.")
                 return self.obj_info.node_if_locked if self.obj_info.node_if_locked else chosen_node
 
-        # 3. Handle general conditional dialogue flags (e.g., for computer, water cooler, etc.)
-        # This applies if 'conditional_dialogue_flag' is set in obj_info (e.g., "computer_key_found")
-        elif self.obj_info.conditional_dialogue_flag:
+        # 3. Fallback to GENERAL CONDITIONAL_DIALOGUE_FLAG (for objects using the old single flag system)
+        elif self.obj_info.conditional_dialogue_flag: # If required_flags was empty/None, check conditional_dialogue_flag
             condition_met = flags.get(self.obj_info.conditional_dialogue_flag, False)
             if condition_met: 
                 print(f"DEBUG ({self.obj_info.name}): Conditional flag '{self.obj_info.conditional_dialogue_flag}' met. Directing to unlocked node.")
@@ -1270,11 +1267,10 @@ class ObjectDialogue:
                 print(f"DEBUG ({self.obj_info.name}): Conditional flag '{self.obj_info.conditional_dialogue_flag}' NOT met. Directing to locked node.")
                 return self.obj_info.node_if_locked if self.obj_info.node_if_locked else chosen_node
 
-        # 4. Handle object's inherent 'unlocked' status (e.g., Dean's door unlocks on Day 3)
+        # 4. Fallback for object's inherent 'unlocked' status (e.g., Dean's door unlocks on Day 3)
         # This will rely on the `unlocked` property of the `InteractableObject` itself,
         # which is dynamically set in `Rooms.load_room` based on `unlocked_day`.
-        elif not self.obj_info.unlocked: 
-            # If the object is explicitly marked as locked (and no other conditional flags applied)
+        elif not self.obj_info.unlocked: # If the object is explicitly marked as locked (and no other conditional flags applied)
             print(f"DEBUG ({self.obj_info.name}): Object explicitly locked by its 'unlocked' status. Directing to locked node.")
             return self.obj_info.node_if_locked if self.obj_info.node_if_locked else chosen_node
 
@@ -1639,7 +1635,9 @@ class Rooms:    # class Level in tutorial
                 
                 draw_layer = obj_info.get("draw_layer", "mid_layer")
 
-                has_dialogue = obj_info.get("has_dialogue", True) 
+                has_dialogue = obj_info.get("has_dialogue", True)
+
+                required_flags = obj_info.get("required_flags") 
 
                 if image_path_str:
                     obj = InteractableObject(name, pos, dialogue_id, start_node, 
@@ -1652,7 +1650,8 @@ class Rooms:    # class Level in tutorial
                                              node_if_unlocked=node_if_unlocked,
                                              day_specific_nodes=day_specific_nodes,
                                              draw_layer=draw_layer,
-                                             has_dialogue=has_dialogue) 
+                                             has_dialogue=has_dialogue,
+                                             required_flags=None) 
                     interactable_objects.append(obj)
                     
                     if draw_layer == "background":

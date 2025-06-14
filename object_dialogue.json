@@ -75,11 +75,18 @@
     "key": [
       {"text": "Not in use. Don't need the plug for now."},
       {"event": "set_flag", "event_data": {"flag_name": "key1_found", "flag_value": true}}
+    ],
+    "already_found": [
+      {"text": "Old-fashioned computers."}
     ]
   },
 
   "exitZ02_dialogue": {
-    "start": [
+    "initial": [
+      {"text": "The whiteboard reads: What is ///36 divide a drawing of an apple?"},
+      {"text": "(... What kind of question is that?)"}
+    ],
+    "unlocked_exit": [
       {"speaker": "narrator","text": "(The scene shifts to a classroom. )", "shown": false},
       {"speaker": "narrator","text": " (The classroom was abuzz with talk, seizing the moment while the teacher was away.)", "shown" : false},
       {"speaker": "narrator","text": "(Lowering the gaze reveals impeccably organized notes—neat lines, elegant handwriting, clear highlights. A model of perfection.)", "shown": false},
@@ -97,6 +104,10 @@
   },
 
   "exitZ03_dialogue": {
+    "initial": [
+      {"text": "You hear someone talking outside."},
+      {"text": "The door is locked."}
+    ],
     "start": [
       {"speaker": "narrator","text": "(The scene is an office again—but not her workplace.)", "shown": false},
       {"speaker": "player","text": " (Another office? Whose is this?)", "shown": false},
@@ -134,6 +145,9 @@
     },
 
     "exitE01_dialogue": {
+      "initial": [
+      {"text": "It's a chest full of costumes and outfits."}
+    ],
       "start": [
         {"speaker": "narrator","text": "(The first time had been a weird experience, but you couldn't help marveling at the scenes flashing by.)", "shown": false},
         {"speaker": "narrator","text": "(You were starting to focus when all of a sudden you hear a 'kachak', followed by a bright, blinding white light.)", "shown": false},
@@ -146,6 +160,10 @@
     },
 
     "exitE02_dialogue": {
+      "initial": [
+      {"text": "It's pitch black."},
+      {"text": "You feel oddly nervous."}
+    ],
       "start": [
         {"speaker": "narrator","text": "(A scene came into view, and the patient's face appears... Or more precisely, her face in the mirror.)", "shown": false},
         {"speaker": "narrator","text": "(You see someone standing behind her in the mirror whose face you can't see clearly, combing her hair with a curling iron)", "shown": false},
@@ -160,6 +178,10 @@
     },
 
     "exitE03.1_dialogue": {
+      "initial": [
+      {"text": "A fancy, well-used car."},
+      {"text": "(... I feel like I forgot something, like my car keys.)"}
+    ],
       "start": [
         {"speaker": "narrator","text": "(There was a sudden loud 'crash!!!')", "shown": false},
         {"speaker": "narrator","text": "(You were startled by the loud noise.)", "shown": false},
@@ -174,6 +196,10 @@
       ]
     },
     "exitE04_dialogue": {
+      "initial": [
+      {"text": "A door."},
+      {"text": "(... Such a foreboding feeling.)"}
+    ],
       "start": [
         {"speaker": "narrator","text": "(There was a sudden, familiar, loud 'crash!!')", "shown": false},
         {"speaker": "player","text": "(Again!?)", "shown": false},
@@ -202,5 +228,148 @@
         {"speaker": "player","text": "......", "shown": false},
         {"event": "puzzle_complete", "event_data": {"puzzle_owner_dialogue_id": "Emma"}}
       ]
-    }
+    },
+
+      "student_desk_dialogue": {
+    "start": [
+      {"text": "There's pencils, and erasers, and books strewn everywhere."},
+      {"text": "(...Why do I feel so uneased?)"}
+    ]
+  },
+
+    "trashb_dialogue": {
+    "key": [
+      {"text": "There's only a crumpled piece of paper in here."},
+      {"text": "You open it up."},
+      {"text": "It writes 1636 divided by 4. (... so, 409?)"}
+    ],
+    "already_found": [
+      {"text": "The answer seems to be 409."}
+    ]
+  },
+
+  "window_dialogue": {
+    "key": [
+      {"text": "(Something's stuck here?)"}
+    ],
+    "already_found": [
+      {"text": "You try not to question the yellow goop."}
+    ]
+  },
+
+  "trophy_dialogue": {
+    "key": [
+      {"text": "It's a wall of achievments."},
+      {"text": "(... There's something in the trophy cup!)"}
+    ],
+    "already_found": [
+      {"text": "The trophies look well taken care of."}
+    ]
+  },
+
+  "drawer_dialogue": {
+    "locked": [
+      {"text": "It's a numbered lock. You didn't know drawers could have them."}
+    ],
+    "unlocked": [
+      {"text": "You put in the combination on the paper."}
+    ]
+  },
+
+  "monitor_dialogue": {
+    "start": [
+      {"text": "It's some sort of machine"},
+      {"text": "(... Sounds like a heart monitor.)"}
+    ]
+  },
+
+  "poster_dialogue": {
+    "locked": [
+      {"text": "It's a wall advertisement."},
+      {"text": "(... Looks a little torn.)"},
+      {"text": "(... It's all so high up though.)"}
+    ],
+    "unlocked": [
+      {"text": "You put glue on the paint roller and glued up the poster."},
+      {"text": "... You see something appear near the chest."}
+    ]
+  },
+
+  "dresser_dialogue": {
+    "start": [
+      {"text": "There's scattered makeup items all over."},
+      {"text": "(... Is that a pot of glue??)"}
+    ]
+  },
+
+  "paint_roll_dialogue": {
+    "start": [
+      {"text": "It's a paint roller."},
+      {"text": "(... I could use this.)"}
+    ]
+  },
+
+  "dress_dialogue": {
+    "locked": [
+      {"text": "What a bad tear."},
+      {"text": "(... Hey, I'm no tailor)"}
+    ],
+    "unlocked": [
+      {"text": "Deft hands not quite your own sewed up the dress."},
+      {"text": "(... Wow. I take back my words.)"}
+    ]
+  },
+
+  "vanity01_dialogue": {
+    "start": [
+      {"text": "A profesional vanity."},
+      {"text": "There's a lot of makeup kits and tissues scattered around."}
+    ]
+  },
+
+  "vanity02_dialogue": {
+    "start": [
+      {"text": "A professional vanity."},
+      {"text": "(... Is that a roll of thread with a needle?"}
+    ]
+  },
+
+  "clothes_r_dialogue": {
+    "start": [
+      {"text": "A clothes rack. There's a bag on it."},
+      {"text": "(...! Car keys.)"}
+    ]
+  },
+
+  "piano_dialogue": {
+    "start": [
+      {"text": "An upright piano."},
+      {"text": "(... I played the piano once)"}
+    ]
+  },
+
+  "pillb_dialogue": {
+    "locked": [
+      {"text": "A bottle of sleeping pills."},
+      {"text": "(... It's dangerous to take without knowing the dose.)"}
+    ],
+    "unlocked": [
+      {"text": "Knowing you need this, you take two pills and a glass of water."}
+    ]
+  },
+
+  "coat_dialogue": {
+    "start": [
+      {"text": "A coat. There's something in the pocket."},
+      {"text": "It's a prescription."},
+      {"text": "... It's for sleeping pills."}
+    ]
+  },
+
+  "medbed_dialogue": {
+    "start": [
+      {"text": "A stiff bed."},
+      {"text": "(... It's familiar?)"}
+    ]
   }
+}

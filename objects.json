@@ -80,7 +80,7 @@
     "active": true,
     "rooms": ["subc.Z_01"],
     "draw_layer": "background",
-    "conditional_dialogue_flag": "lock_unlocked", 
+    "required_flags": ["lock_unlocked"], 
     "node_if_locked": "initial",
     "node_if_unlocked": "unlocked_exit"
   },
@@ -94,7 +94,8 @@
     "active": true,
     "rooms": ["subc.Z_01"],
     "draw_layer": "background",
-    "conditional_dialogue_flag": "key1_found"
+    "node_if_locked": "key",
+    "node_if_unlocked": "already_found"
   },
 
   "printer": {
@@ -106,7 +107,7 @@
     "active": true,
     "rooms": ["subc.Z_01"],
     "draw_layer": "background",
-    "conditional_dialogue_flag": "composite_printer_check",
+    "required_flags": ["key1_found"],
     "node_if_locked": "locked", 
     "node_if_unlocked": "unlocked"
     
@@ -139,10 +140,11 @@
     "position": [1186, 308],
     "image": "Trash_bin",
     "dialogue_id": "trashb_dialogue",
-    "start_node": "start",
+    "start_node": "key",
     "active": true,
     "rooms": ["subc.Z_02"],
-    "draw_layer": "background"
+    "draw_layer": "background",
+    "required_flags": "key1_found"
   },
 
   "whiteboard": {
@@ -150,11 +152,13 @@
     "position": [1200, 308],
     "image": "Whiteboard",
     "dialogue_id": "exitZ02_dialogue",
-    "start_node": "start",
+    "start_node": "initial",
     "active": true,
     "rooms": ["subc.Z_02"],
     "draw_layer": "background",
-    "next_room": "subc.Z_03"
+    "required_flags": "lock_unlocked",
+    "node_if_locked": "initial",
+    "node_if_unlocked": "unlocked_exit"
   },
 
   "office_door": {
@@ -162,11 +166,13 @@
     "position": [1090, 220],
     "image": "Office_door",
     "dialogue_id": "exitZ03_dialogue",
-    "start_node": "start",
+    "start_node": "initial",
     "active": true,
     "rooms": ["subc.Z_03"],
     "draw_layer": "background",
-    "next_room": "subc.Z_04"
+    "required_flags": "lock_unlocked",
+    "node_if_locked": "initial",
+    "node_if_unlocked": "unlocked_exit"
   },
 
   "window": {
@@ -174,10 +180,11 @@
     "position": [700, 220],
     "image": "Window_sill",
     "dialogue_id": "window_dialogue",
-    "start_node": "start",
+    "start_node": "key",
     "active": true,
     "rooms": ["subc.Z_03"],
-    "draw_layer": "background"
+    "draw_layer": "background",
+    "required_flags": "key1_found"
   },
 
   "trophy": {
@@ -185,10 +192,11 @@
     "position": [1200, 220],
     "image": "Trophies",
     "dialogue_id": "trophy_dialogue",
-    "start_node": "start",
+    "start_node": "key",
     "active": true,
     "rooms": ["subc.Z_03"],
-    "draw_layer": "background"
+    "draw_layer": "background",
+    "required_flags": "key2_found"
   },
 
   "drawer": {
@@ -196,10 +204,13 @@
     "position": [200, 400],
     "image": "Drawer",
     "dialogue_id": "drawer_dialogue",
-    "start_node": "start",
+    "start_node": "locked",
     "active": true,
     "rooms": ["subc.Z_03"],
-    "draw_layer": "background"
+    "draw_layer": "background",
+    "required_flags": ["key1_found", "key2_found"],
+    "node_if_locked": "locked",
+    "node_if_unlocked": "unlocked"
   },
 
   "boxes?": {
@@ -210,8 +221,7 @@
     "start_node": "start",
     "active": true,
     "rooms": ["subc.Z_04"],
-    "draw_layer": "background",
-    "next_room": "Player_room"
+    "draw_layer": "background"
   },
 
   "monitor": {
@@ -242,11 +252,13 @@
     "position": [500, 500],
     "image": "Chest",
     "dialogue_id": "exitE01_dialogue",
-    "start_node": "start",
+    "start_node": "initial",
     "active": true,
     "rooms": ["subc.E_01"],
     "draw_layer": "mid_layer",
-    "next_room": "subc.E_02"
+    "required_flags": "lock_unlocked",
+    "node_if_locked": "initial",
+    "node_if_unlocked": "unlocked_exit"
   },
 
   "poster": {
@@ -254,10 +266,13 @@
     "position": [640, 10],
     "image": "Poster",
     "dialogue_id": "poster_dialogue",
-    "start_node": "start",
+    "start_node": "locked",
     "active": true,
     "rooms": ["subc.E_01"],
-    "draw_layer": "background"
+    "draw_layer": "background",
+    "required_flags": ["key1_found", "key2_found"],
+    "node_if_locked": "locked",
+    "node_if_unlocked": "unlocked"
   },
 
   "dresser": {
@@ -265,10 +280,11 @@
     "position": [1000, 300],
     "image": "Dresser",
     "dialogue_id": "dresser_dialogue",
-    "start_node": "start",
+    "start_node": "key",
     "active": true,
     "rooms": ["subc.E_01"],
-    "draw_layer": "background"
+    "draw_layer": "background",
+    "required_flags": "key1_found"
   },
 
   "paint_roller": {
@@ -276,10 +292,11 @@
     "position": [50, 500],
     "image": "Paint_roller",
     "dialogue_id": "paint_roll_dialogue",
-    "start_node": "start",
+    "start_node": "key",
     "active": true,
     "rooms": ["subc.E_01"],
-    "draw_layer": "background"
+    "draw_layer": "background",
+    "required_flags": "key2_found"
   },
 
   "curtains": {
@@ -287,11 +304,13 @@
     "position": [1000, 500],
     "image": "Curtains",
     "dialogue_id": "exitE02_dialogue",
-    "start_node": "start",
+    "start_node": "initial",
     "active": true,
     "rooms": ["subc.E_02"],
     "draw_layer": "background",
-    "next_room": "subc.E_03.1"
+    "required_flags": "lock_unlocked",
+    "node_if_locked": "initial",
+    "node_if_unlocked": "unlocked_exit"
   },
 
   "dress": {
@@ -299,9 +318,12 @@
     "position": [600, 400],
     "image": "Torn_dress",
     "dialogue_id": "dress_dialogue",
-    "start_node": "start",
+    "start_node": "locked",
     "rooms": ["subc.E_02"],
-    "draw_layer": "background"
+    "draw_layer": "background",
+    "required_flags": ["key1_found"],
+    "node_if_locked": "locked",
+    "node_if_unlocked": "unlocked"
   },
 
   "vanity01": {
@@ -309,17 +331,18 @@
     "position": [200, 400],
     "image": "Vanity01",
     "dialogue_id": "vanity01_dialogue",
-    "start_node": "start",
+    "start_node": "key",
     "active": true,
     "rooms": ["subc.E_02"],
-    "draw_layer": "background"
+    "draw_layer": "background",
+    "required_flags": "key1_found"
   },
 
   "vanity02": {
     "name": "Vanity (Left)",
     "position": [100, 400],
     "image": "Vanity02",
-    "dialogue_id": "vanity)2_dialogue",
+    "dialogue_id": "vanity02_dialogue",
     "start_node": "start",
     "active": true,
     "rooms": ["subc.E_02"],
@@ -331,11 +354,13 @@
     "position": [1000, 420],
     "image": "Car",
     "dialogue_id": "exitE03.1_dialogue",
-    "start_node": "start",
+    "start_node": "initial",
     "active": true,
     "rooms": ["subc.E_03.1"],
     "draw_layer": "background",
-    "next_room": "subc.E_04"
+    "required_flags": "lock_unlocked",
+    "node_if_locked": "initial",
+    "node_if_unlocked": "unlocked_exit"
   },
 
   "welcome_mat": {
@@ -369,10 +394,11 @@
     "position": [600, 500],
     "image": "Clothes_rack",
     "dialogue_id": "clothes_r_dialogue",
-    "start_node": "start",
+    "start_node": "key",
     "active": true,
     "rooms": ["subc.E_03.2"],
-    "draw_layer": "background"
+    "draw_layer": "background",
+    "required_flags": "key1_found"
   },
 
   "piano": {
@@ -391,11 +417,13 @@
     "position": [400, 500],
     "image": "Dream_door",
     "dialogue_id": "exitE04_dialogue",
-    "start_node": "start",
+    "start_node": "initial",
     "active": true,
     "rooms": ["subc.E_04"],
     "draw_layer": "background",
-    "next_room": "subc.E_05"
+    "required_flags": "lock_unlocked",
+    "node_if_locked": "initial",
+    "node_if_unlocked": "unlocked_exit"
   },
 
   "pill_bottle": {
@@ -403,10 +431,13 @@
     "position": [500, 500],
     "image": "Pill_bottle",
     "dialogue_id": "pillb_dialogue",
-    "start_node": "start",
+    "start_node": "locked",
     "active": true,
     "rooms": ["subc.E_04"],
-    "draw_layer": "background"
+    "draw_layer": "background",
+    "required_flags": ["key1_found"],
+    "node_if_locked": "locked",
+    "node_if_unlocked": "unlocked"
   },
 
   "coat": {
@@ -414,10 +445,11 @@
     "position": [100, 400],
     "image": "Coat",
     "dialogue_id": "coat_dialogue",
-    "start_node": "start",
+    "start_node": "key",
     "active": true,
     "rooms": ["subc.E_04"],
-    "draw_layer": "background"
+    "draw_layer": "background",
+    "required_flags": "key1_found"
   },
 
   "mirror": {
@@ -428,8 +460,7 @@
     "start_node": "start",
     "active": true,
     "rooms": ["subc.E_05"],
-    "draw_layer": "background",
-    "next_room": "room01"
+    "draw_layer": "background"
   },
 
   "medbed": {
