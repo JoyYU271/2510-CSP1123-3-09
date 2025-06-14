@@ -1354,14 +1354,14 @@ class Game:
 
         self.states = {'intro':self.intro, 'start':self.start, 'level':self.level}
     
-        nuva = NPC(840,520,"Nuva")
-        dean = NPC(400,520,"Dean")
-        self.npc_manager.add_npc(nuva)
-        self.npc_manager.add_npc(dean)
+        # nuva = NPC(840,520,"Nuva")
+        # dean = NPC(400,520,"Dean")
+        # self.npc_manager.add_npc(nuva)
+        # self.npc_manager.add_npc(dean)
 
         camera_group.add(self.player)
-        camera_group.add(nuva)
-        camera_group.add(dean)
+        # camera_group.add(nuva)
+        # camera_group.add(dean)
 
     def start_fade_to(self, room_name):
         self._pending_room = room_name
@@ -1526,7 +1526,7 @@ class Rooms:    # class Level in tutorial
         self.visited_doors = set()  #keep track of doors used
 
         self.current_room = "room01"
-        self.current_day = 3  #Initialize the current day (Chapter 1)
+        self.current_day = 1  #Initialize the current day (Chapter 1)
         
         self.fading = False
         self.fade_alpha = 0
@@ -1544,7 +1544,7 @@ class Rooms:    # class Level in tutorial
         camera_group.set_background(self.background)
         print(f"DEBUG: Rooms __init__ finished. camera_group ID: {id(camera_group)}")
         
-        npc_manager.npcs.clear()
+        # self.npc_manager.npcs.clear()
         self.load_room(self.current_room)
 
 
