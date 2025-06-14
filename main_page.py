@@ -91,7 +91,7 @@ def main_menu():
                     # run intro
                     intro_game = Intro1.Game(language=current_language,text_size=current_font_size,bgm_vol=bgm_vol,sfx_vol=sfx_vol)
                     
-
+ 
                     def after_intro():
                         print("after intro, enter level")
                         intro_game.gameStateManager.set_state('level')
