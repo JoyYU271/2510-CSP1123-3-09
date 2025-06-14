@@ -101,5 +101,56 @@
     {"speaker": "narrator","text": "('But... What is my dream?')", "shown": false},
     {"event": "puzzle_complete"}
       ]
+    },
+
+  "exitE01_dialogue": {
+      "start": [
+        {"speaker": "narrator","text": "(The first time had been a weird experience, but you couldn't help marveling at the scenes flashing by.)", "shown": false},
+        {"speaker": "narrator","text": "(You were starting to focus when all of a sudden you hear a 'kachak', followed by a bright, blinding white light.)", "shown": false},
+        {"speaker": "player","text": " (Ow! My eyes-)", "shown": false},
+        {"speaker": "?","text": "Miss Emma! Today's shooting is done, you can take a break now!", "shown": false},
+        {"speaker": "Emma","text": "Alright, good work everyone.", "shown": false}, 
+        {"speaker": "player","text": "(A photoshoot? Is Ms. Emma some sort of celebrity?)", "shown": false}
+      ]
+    },
+
+    "exitE02_dialogue": {
+      "start": [
+        {"speaker": "narrator","text": "(A scene came into view, and the patient's face appears... Or more precisely, her face in the mirror.)", "shown": false},
+        {"speaker": "narrator","text": "(You see someone standing behind her in the mirror whose face you can't see clearly, combing her hair with a curling iron)", "shown": false},
+        {"speaker": "narrator","text": "(There's also someone next to her, holding a makeup brush and gently applying blush to her face.)", "shown": false},
+        {"speaker": "narrator","text": "(In the next moment, a stage appears. It's a catwalk.)", "shown": false},
+        {"speaker": "narrator","text": "(You feel the weight of attention, whether from the camera or from people)", "shown": false},
+        {"speaker": "narrator","text": "(The focus of all this attention walked forward, posing at the end of the catwalk with practiced ease.)", "shown": false},
+        {"speaker": "narrator","text": "(The clothes on her body shone with a brilliance.)", "shown": false},
+        {"speaker": "player","text": "(Oh, so she's a model...)", "shown": false},
+        {"event": "machine_enter"}
+      ]
+    },
+
+    "exitE03.1_dialogue": {
+      "start": [
+        {"text": "(text here.)"},
+        {"event": "machine_enter"}
+      ]
+    },
+    "exitE03.2_dialogue": {
+      "start": [
+        {"text": "(text here.)"},
+        {"event": "machine_enter"}
+      ]
+    },
+    "exitE04_dialogue": {
+      "start": [
+        {"text": "(text here.)"},
+        {"event": "machine_enter"}
+      ]
+    },
+
+    "exitE05_dialogue": {
+      "start": [
+        {"text": "(text here.)"},
+        {"event": "puzzle_complete"}
+      ]
     }
   }
