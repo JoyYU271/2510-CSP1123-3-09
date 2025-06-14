@@ -101,5 +101,45 @@
     {"speaker": "narrator","text": "('But... What is my dream?')", "shown": false},
     {"event": "puzzle_complete"}
       ]
+    },
+
+    "exitE01_dialogue": {
+      "start": [
+        {"text": "(text here.)"},
+        {"event": "machine_enter"}
+      ]
+    },
+
+    "exitE02_dialogue": {
+      "start": [
+        {"text": "(text here.)"},
+        {"event": "machine_enter"}
+      ]
+    },
+
+    "exitE03.1_dialogue": {
+      "start": [
+        {"text": "(text here.)"},
+        {"event": "machine_enter"}
+      ]
+    },
+    "exitE03.2_dialogue": {
+      "start": [
+        {"text": "(text here.)"},
+        {"event": "machine_enter"}
+      ]
+    },
+    "exitE04_dialogue": {
+      "start": [
+        {"text": "(text here.)"},
+        {"event": "machine_enter"}
+      ]
+    },
+
+    "exitE05_dialogue": {
+      "start": [
+        {"text": "(text here.)"},
+        {"event": "puzzle_complete"}
+      ]
     }
   }
