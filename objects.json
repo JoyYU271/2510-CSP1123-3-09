@@ -17,6 +17,8 @@
     "dialogue_id": "door01_dialogue",
     "start_node": "start",
     "active": true,
+    "unlocked": false,
+    "unlocked_day": 1,
     "rooms": ["room01"],
     "draw_layer": "background",
 
@@ -480,5 +482,28 @@
     "active": true,
     "rooms": ["subc.E_05"],
     "draw_layer": "background"
+  },
+
+  "dean_desk": {
+    "name": "Dean's desk",
+    "position": [100, 420],
+    "image": "Dean_desk",
+    "dialogue_id": "dean_desk_dialogue",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["Dean_room"],
+    "draw_layer": "background"
+  },
+
+  "bookshelves": {
+    "name": "Dean's bookshelves",
+    "position": [500, 420],
+    "image": "Bookshelves",
+    "dialogue_id": "bookshelves_dialogue",
+    "start_node": "start",
+    "active": true,
+    "rooms": ["Dean_room"],
+    "draw_layer": "background",
+    "next_room": "basement"
   }
 }
