@@ -448,7 +448,7 @@
         {"speaker" :"npc","text":".....Thank you.","shown": false,"next":"sub_end_1"}
      ],
      "sub_end_1":[
-        {"cg":"picture/P1 End1.png"},
+        {"cg":"picture/Ending/P1 End1.png"},
         {"speaker" :"npc","text":"(That doctor's treatment really worked. I don't get anxious over little things anymore.)","bgm": "bgm/zheng_destroyed.mp3","shown": false},
         {"speaker" :"npc","text":"(My boss even said I seem refreshed. Efficiency has improved.)","shown": false},
         {"speaker" :"npc","text":"(This stable routine is all I need...)","shown": false},
@@ -469,7 +469,7 @@
         {"speaker" :"npc","text":".....Thank you.","shown": false,"next":"sub_end_2"}
      ],
      "sub_end_2":[
-        {"cg":"picture/P1 End2.png"},
+        {"cg":"picture/Ending/P1 End2.png"},
 
         {"speaker" :"npc","text":" (That doctor's treatment really worked. I don't get anxious over small things anymore.)","bgm": "bgm/zheng_preserved.mp3","shown": false},
 
@@ -587,7 +587,7 @@
     ],
 
     "sub_end_3":[
-        {"cg":"picture/P2 End1.png"},
+        {"cg":"picture/Ending/P2 End1.png"},
         {"speaker" :"npc","text":" (The nightmares are really gone... and I am no longer afraid of getting into a car.)","bgm": "bgm/emma_destroyed.mp3","shown": false},
         {"speaker" :"npc","text":"(It's great! I feel relieved, and I can work again)","shown": false},
         {"speaker" :"npc","text":" (But... Why do I feel like something's missing?)","shown": false},
@@ -611,7 +611,7 @@
     ],
 
     "sub_end_4":[
-        {"cg":"picture/P2 End2.png"},
+        {"cg":"picture/Ending/P2 End2.png"},
         {"speaker" :"npc","text":"(... I dreamt that nightmare again.)","bgm": "bgm/emma_preserved.mp3","shown": false},
         {"speaker" :"npc","text":" (It was all very clear... but I was unexpectedly calm)","shown": false},
         {"speaker" :"npc","text":"(The treatment had really helped. I'm no longer as scared as before.)","shown": false},
