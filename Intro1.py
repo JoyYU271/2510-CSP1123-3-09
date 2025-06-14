@@ -1028,7 +1028,8 @@ image_path = {
             "Mirror": "Object_image/exit_E05.png",
             "Medbed": "Object_image/E05_Random.png",
             "Dean_desk": "Object_image/D_Key.png",
-            "Bookshelves": "Object_image/D_Lock.png"
+            "Bookshelves": "Object_image/D_Lock.png",
+            "Player_door": "Object_image/P_path.png"
         }
 
 class InteractableObject(pygame.sprite.Sprite):
@@ -1525,7 +1526,7 @@ class Rooms:    # class Level in tutorial
         self.visited_doors = set()  #keep track of doors used
 
         self.current_room = "room01"
-        self.current_day = 3    #Initialize the current day (Chapter 1)
+        self.current_day = 3  #Initialize the current day (Chapter 1)
         
         self.fading = False
         self.fade_alpha = 0
@@ -1703,7 +1704,9 @@ class Rooms:    # class Level in tutorial
                 location_data = day_specific_locations[current_day_str]
                 target_room_for_today = location_data.get("room")
                 effective_position = location_data.get("position")
-
+                print(f"DEBUG ROOM COMPARE: current_room_name='{room_name}', target_room_for_today='{target_room_for_today}'")
+                print(f"DEBUG ROOM COMPARE: types: current_room_name={type(room_name)}, target_room_for_today={type(target_room_for_today)}")
+                
                 if room_name == target_room_for_today:
                     npc_appears_in_current_room_today = True
                     print(f"DEBUG: {name} has day-specific location for Day {self.current_day}: Room={target_room_for_today}, Pos={effective_position}")

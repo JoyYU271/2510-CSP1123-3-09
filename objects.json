@@ -41,6 +41,19 @@
     "next_room": "Dean_room",
     "has_dialogue": true
   },
+
+  "Player_mat": {
+    "name": "Player's room door",
+    "position": [1200, 500],
+    "image": "Player_door",
+    "dialogue_id": "none",
+    "start_node": "none",
+    "has_dialogue": false,
+    "active": true,
+    "rooms": ["Player_room"],
+    "draw_layer": "mid_layer",
+    "next_room": "room01"
+  },
   
   "board":{
     "name": "Notice board",
