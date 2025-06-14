@@ -270,6 +270,7 @@ class dialog:
         if "sound" in current_line_data and not self.sound_played_for_current_step:
             sound_name = current_line_data["sound"]
             if sound_name in self.sounds:
+                self.sounds[sound_name].set_volume(self.sfx_vol)
                 self.sounds[sound_name].play()
                 self.currently_playing_sfx = sound_name
             self.sound_played_for_current_step = True
@@ -470,7 +471,7 @@ class dialog:
             if portrait:
                 screen.blit(portrait, portrait_pos)
 
-            draw_text(screen, name_to_display, 40, (0, 0, 0), dialog_x + 200, dialog_y + 10, center=False)
+            draw_text(screen, name_to_display, self.text_size, (0, 0, 0), dialog_x + 200, dialog_y + 10, center=False)
 
             if self.choices_active:
                 dialog_center_x = dialog_x + self.dialog_box_img.get_width() // 2
@@ -492,9 +493,10 @@ class dialog:
     def change_bgm(self, bgm_path):
         if bgm_path != self.current_bgm:
             self.current_bgm = bgm_path
-            pygame.mixer.music.load(bgm_path)
-            pygame.mixer.music.set_volume(self.bgm_volume)
-            pygame.mixer.music.play(-1)
+            if self.bgm_volume > 0:
+                pygame.mixer.music.load(bgm_path)
+                pygame.mixer.music.set_volume(self.bgm_volume)
+                pygame.mixer.music.play(-1)
 
     def update_bgm_volume(self, new_volume):
         self.bgm_volume = new_volume
@@ -789,13 +791,13 @@ class dialog:
                     
                     # Ensure option is on screen (from your old code)
                     if option_y < screen.get_height() - 40: 
-                        draw_text(screen, option["option"], 30, color, dialog_center_x, option_y, center=True)
+                        draw_text(screen, option["option"], self.text_size, color, dialog_center_x, option_y, center=True)
             else: # --- Draw normal dialogue text ---
                 text_to_display = self.current_text_display
                 print(f"DEBUG (dialog.draw): Drawing normal text: '{text_to_display}', Typing complete: {self.typing_complete}")
 
                 # Draw dialogue text, centered in the dialogue box (from your old code)
-                draw_text(screen, text_to_display, 30, (0, 0, 0), 
+                draw_text(screen, text_to_display, self.text_size, (0, 0, 0), 
                           dialog_x + self.dialog_box_img.get_width() // 2, 
                           dialog_y + self.dialog_box_img.get_height() // 2 - 15, 
                           center=True, max_width=text_max_width)
@@ -1482,7 +1484,7 @@ class ObjectDialogue:  # very confused
 
         # draw_text(screen, self.current_text_display, size=30, color=(0, 0, 0), x=text_x, y=text_y, center=False, max_width=max_text_width)
         # Draw dialogue text
-        draw_text(screen, text_to_display, size=30, color=text_color, 
+        draw_text(screen, text_to_display, self.text_size, color=text_color, 
                     x=text_x, y=text_y, center=True, max_width=max_text_width)
 
         # node = self.current_node    # self.dialogue_data[self.current_node]
@@ -1744,12 +1746,11 @@ class Rooms:    # class Level in tutorial
         
 
         if self.language == "CN":
-            dialogue_file = "NPC_dialog/NPC_CN.json"
+            with open("NPC_dialog/NPC_CN.json", "r", encoding="utf-8") as f:
+                self.all_dialogues = json.load(f)
         else:
-            dialogue_file = "NPC_dialog/NPC.json"
-
-        with open(dialogue_file, 'r', encoding='utf-8') as f:
-            self.all_dialogues = json.load(f)
+            with open("NPC_dialog/NPC.json", "r", encoding="utf-8") as f:
+                self.all_dialogues = json.load(f)
 
         self.shown_dialogues = {}    
 
@@ -1961,8 +1962,8 @@ class Rooms:    # class Level in tutorial
             zheng_narrative_obj = ZhengNarrativeDummy()
 
             # # --- DEBUG PRINTS ---
-            print(f"DEBUG (Rooms.handle_dialogue_event): Global all_dialogues keys: {list(all_dialogues.keys())}")
-            zheng_narrative_tree = all_dialogues.get(zheng_narrative_obj.dialogue_id)
+            print(f"DEBUG (Rooms.handle_dialogue_event): Global all_dialogues keys: {list(self.all_dialogues.keys())}")
+            zheng_narrative_tree = self.all_dialogues.get(zheng_narrative_obj.dialogue_id)
             print(f"DEBUG (Rooms.handle_dialogue_event): Fetched system_narrative_tree type: {type(zheng_narrative_tree)}")
             if isinstance(zheng_narrative_tree, dict):
                 print(f"DEBUG (Rooms.handle_dialogue_event): Keys in zheng_narrative_tree: {list(zheng_narrative_tree.keys())}")
@@ -1980,9 +1981,12 @@ class Rooms:    # class Level in tutorial
                 self.current_dialogue_ref = dialog(
                     zheng_narrative_obj, # Pass the dummy object
                     self.player,
-                    all_dialogues.get(zheng_narrative_obj.dialogue_id), # Pass the whole System_Narrative tree
+                    self.all_dialogues.get(zheng_narrative_obj.dialogue_id), # Pass the whole System_Narrative tree
                     start_node_id="after_puzzle_sequence", # Start the specific sequence
-                    rooms_instance=self
+                    rooms_instance=self,
+                    bgm_vol=self.bgm_vol,
+                    sfx_vol=self.sfx_vol,
+                    text_size=self.text_size
                 )
                 self.current_dialogue_ref.talking = True # Ensure it begins talking
             else:
@@ -2093,7 +2097,7 @@ class Rooms:    # class Level in tutorial
                 self.space_released = False # Debounce
                 
                 # Get the base dialogue data for this NPC (e.g., the entire "Nuva" dictionary)
-                npc_dialogue_tree = all_dialogues.get(nearest_npc.dialogue_id) # self.all_dialogues contains the whole JSON
+                npc_dialogue_tree = self.all_dialogues.get(nearest_npc.dialogue_id) # self.all_dialogues contains the whole JSON
 
                 if npc_dialogue_tree:
                     # Determine NPC's starting story based on current day
@@ -2115,7 +2119,10 @@ class Rooms:    # class Level in tutorial
                         self.player,
                         npc_dialogue_tree, # Pass the entire NPC dialogue tree (e.g., {"Nuva": {...}})
                         start_node_id=chosen_story_id, # Tell the dialog class which chapter/story to start from
-                        rooms_instance=self # Pass Rooms instance for event triggering
+                        rooms_instance=self, # Pass Rooms instance for event triggering
+                        bgm_vol=self.bgm_vol,
+                        sfx_vol=self.sfx_vol,
+                        text_size=self.text_size
                     )
                     self.current_dialogue_ref.talking = True # Ensure it begins talking
                 else:
@@ -2247,14 +2254,17 @@ class Rooms:    # class Level in tutorial
 
                     # Trigger the intro dialogue for the new day/chapter
                     narrator_dummy_obj = NarratorDummy() # Use the same dummy narrator
-                    system_narrative_tree = all_dialogues.get(narrator_dummy_obj.dialogue_id)
+                    system_narrative_tree = self.all_dialogues.get(narrator_dummy_obj.dialogue_id)
                     if system_narrative_tree:
                         self.current_dialogue_ref = dialog(
                             narrator_dummy_obj,
                             self.player,
-                            all_dialogues.get(narrator_dummy_obj.dialogue_id),
+                            self.all_dialogues.get(narrator_dummy_obj.dialogue_id),
                             start_node_id="intro", # This will now select chapter_X based on current_day
-                            rooms_instance=self
+                            rooms_instance=self,
+                            bgm_vol=self.bgm_vol,
+                            sfx_vol=self.sfx_vol,
+                            text_size=self.text_size
                         )
                         self.current_dialogue_ref.talking = True # Ensure it begins talking
                     else:
