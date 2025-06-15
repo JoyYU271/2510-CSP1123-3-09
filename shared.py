@@ -21,8 +21,8 @@ class CameraGroup(pygame.sprite.Group):
         
         # New: Create separate groups for different drawing layers if needed
         # For simple foreground/background objects, just a list of "background" objects
-        self.background_objects = []
-        self.foreground_objects = []
+        # self.background_objects = []
+        # self.foreground_objects = []
 
         # camera offset
         self.offset = pygame.math.Vector2()
@@ -40,6 +40,8 @@ class CameraGroup(pygame.sprite.Group):
         self.background = None
         self.world_width = 2488
         self.world_height = 720
+
+        print(f"DEBUG: CameraGroup instance initialized. ID: {id(self)}")
 
     def set_background(self, background):
         self.background = background
@@ -77,7 +79,7 @@ class CameraGroup(pygame.sprite.Group):
     #         self.offset.x += self.keyboard_speed  
 
     def custom_draw(self,player):
-
+        # print(f"DEBUG: custom_draw called. CameraGroup ID: {id(self)}") # This will spam, use if needed
         #self.keyboard_control() to manually move camera, can be for animation?
 
         #self.center_target_camera(player)
@@ -90,14 +92,14 @@ class CameraGroup(pygame.sprite.Group):
 
         # 2. Draw 'background' objects (objects the player/NPC stands IN FRONT OF)
         #    Sort these by y-coordinate too if they can overlap
-        for sprite in sorted(self.background_objects, key=lambda spr: spr.rect.centery):
+        for sprite in sorted(self.background_layer_sprites.sprites(), key=lambda spr: spr.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             if hasattr(sprite, 'image') and sprite.image and hasattr(sprite, 'rect') and sprite.rect:
                 flipped_image = pygame.transform.flip(sprite.image, sprite.flip, False) if hasattr(sprite, 'flip') else sprite.image
                 self.display_surface.blit(flipped_image, offset_pos)
                 debug_rect = pygame.Rect(offset_pos[0], offset_pos[1], sprite.rect.width, sprite.rect.height)
-                pygame.draw.rect(self.display_surface, (0, 0, 255), debug_rect, 1)
-
+                # pygame.draw.rect(self.display_surface, (0, 0, 255), debug_rect, 1)
+        
         #Draw characters after
         for sprite in sorted(self.sprites(), key=lambda spr: (spr.rect.centery, spr != player)):
             offset_pos = sprite.rect.topleft - self.offset
@@ -105,11 +107,11 @@ class CameraGroup(pygame.sprite.Group):
             self.display_surface.blit(flipped_image, offset_pos)
 
             debug_rect = pygame.Rect(offset_pos[0], offset_pos[1], sprite.rect.width, sprite.rect.height)
-            pygame.draw.rect(self.display_surface, (0, 255, 0), debug_rect, 2)
+            # pygame.draw.rect(self.display_surface, (0, 255, 0), debug_rect, 2)
 
         all_draw_sprites = []
         for sprite in self.sprites():
-            if sprite not in self.background_objects: # Don't draw if already drawn as background_object
+            if sprite not in self.background_layer_sprites: # Don't draw if already drawn as background_object
                 all_draw_sprites.append(sprite)
 
         for sprite in sorted(all_draw_sprites, key=lambda spr: spr.rect.centery): # No special player sorting needed yet
@@ -124,4 +126,4 @@ class CameraGroup(pygame.sprite.Group):
 
                 self.display_surface.blit(flipped_image, offset_pos)
                 debug_rect = pygame.Rect(offset_pos[0], offset_pos[1], sprite.rect.width, sprite.rect.height)
-                pygame.draw.rect(self.display_surface, (0, 255, 0), debug_rect, 2) # Green for regular objects
+                # pygame.draw.rect(self.display_surface, (0, 255, 0), debug_rect, 2) # Green for regular objects
