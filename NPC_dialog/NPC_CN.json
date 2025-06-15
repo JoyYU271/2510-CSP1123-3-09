@@ -423,7 +423,7 @@
         {"speaker" :"player","text":"(已经跟患者交谈完毕了，该使用仪器治疗了。)"}
     ],
 
-    "after_puzzle":[
+    "after_puzzle_sequence":[
         {"speaker" :"narrator","text":"(这段记忆非常朦胧，时而是跟人交谈的画面，时而是写报告的画面，报告上的字眼引起了你的注意。)","shown": false},
         {"speaker" :"player","text":"(催眠疗法结果报告…？这就是所谓的“实验”？)","shown": false},
         {"speaker" :"narrator","text":"(你仔细查看报告上都写了什么，许多专业词汇堆在了一起，令人眼花。)","shown": false},
@@ -549,29 +549,29 @@
         {"speaker":"player","text":"(可以开始了。)","next": "repeat_only"}
     ],
 
-    "after_puzzle":[
+    "after_puzzle_sequence":[
         {"speaker" :"narrator","text":"(她来到了个诊所)","shown": false},
         {"speaker" :"narrator","text":"(很眼熟，你这样想着)","shown": false},
         {"speaker" :"narrator","text":"(熟悉的布告栏，熟悉的前台，熟悉的构造……)","shown": false},
         {"speaker" :"narrator","text":"(除了陈旧些和前台的人不是你认识的护士以外，跟你所在的诊所没两样) ","shown": false},
         {"speaker" :"player","text":"(她之前就来过诊所了？)","shown": false},
         {"speaker" :"narrator","text":"(她走到前台)","shown": false},
-        {"speaker" :"npc","text":"那个……我预约了下午一点的治疗……","shown": false},
+        {"speaker" :"narrator","text":"Emma :那个……我预约了下午一点的治疗……","shown": false},
         {"speaker" :"narrator","text":"?nurse? :啊，好的，你前往尾间的门进去就可以了，医生就在里面。","shown": false},
         {"speaker" :"narrator","text":"(画面切换，是一个骤然陌生的地方)","shown": false},
         {"speaker" :"narrator","text":"(阴深，像是什么地下室，这是你对这个地方的第一想法)","shown": false},
-        {"speaker" :"npc","text":" 医生，这真的能让我不再做那个噩梦吗？我不想……我不想再梦见那辆卡车冲过来，不想再感受到窒息的恐惧，不想再……","shown": false},
+        {"speaker" :"narrator","text":"Emma: 医生，这真的能让我不再做那个噩梦吗？我不想……我不想再梦见那辆卡车冲过来，不想再感受到窒息的恐惧，不想再……","shown": false},
         {"speaker" :"narrator","text":"(对面的人抬手示意暂停)","shown": false},
-        {"speaker" :"narrator","text":"别去回忆它了，现在，看着这个怀表。","shown": false},
+        {"speaker" :"narrator","text":"Dean : 别去回忆它了，现在，看着这个怀表。","shown": false},
         {"speaker" :"player","text":"(父亲……)","shown": false},
-        {"speaker" :"narrator","text":"专注盯着它的摆动...对，就是这样。","shown": false},
+        {"speaker" :"narrator","text":"Dean :专注盯着它的摆动...对，就是这样。","shown": false},
         {"speaker" :"player","text":"(该不会又是跟‘实验’有关吧？)","shown": false},
-        {"speaker" :"narrator","text":"想象你站在一条长长的走廊里……走廊尽头有一扇门，门后是你想忘记的那段记忆。","shown": false},
-        {"speaker" :"narrator","text":"现在，把手放在门把上……慢慢推开。","shown": false},
-        {"speaker" :"npc","text":"不……不行！那辆车……它冲过来了！","shown": false},
-        {"speaker" :"npc","text":"你抵抗得太厉害了。催眠需要配合，而不是对抗。","shown": false},
+        {"speaker" :"narrator","text":"Dean :想象你站在一条长长的走廊里……走廊尽头有一扇门，门后是你想忘记的那段记忆。","shown": false},
+        {"speaker" :"narrator","text":"Dean :现在，把手放在门把上……慢慢推开。","shown": false},
+        {"speaker" :"narrator","text":"Dean: 不……不行！那辆车……它冲过来了！","shown": false},
+        {"speaker" :"narrator","text":"Dean: 你抵抗得太厉害了。催眠需要配合，而不是对抗。","shown": false},
         {"speaker" :"narrator","text":"(他边说着，边在纸上写了些什么，随机把纸笔放到一边)","shown": false},
-        {"speaker" :"npc","text":"今天就到这里，记得按时服药。","shown": false},
+        {"speaker" :"narrator","text":"Dean: 今天就到这里，记得按时服药。","shown": false},
         {"speaker" :"narrator","text":"(Emma点了点头，没去看纸上的内容，但你看见了，清楚的看见了)","shown": false},
         {"speaker" :"narrator","text":"(纸上结果那一栏的字眼让你感到难以呼吸——)","shown": false},
         {"speaker":"narrator","text":"(失败)","shown":false},
