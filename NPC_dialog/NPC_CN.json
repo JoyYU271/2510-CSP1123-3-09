@@ -7,7 +7,7 @@
             {"speaker" :"narrator","text":"(毕业后，你被身为诊所院长的父亲邀请过去他的诊所工作。)","shown": false},
             {"speaker": "narrator","text":"(“Mindscape Chamber”,这是诊所的名字。)","shown":false},
             {"speaker" :"narrator","text":"(今天，是你上班的第一天。)","shown": false},
-            {"speaker" :"narrator","text":"[提示: 按 W / D 键 来移动角色]","shown": false},
+            {"speaker" :"narrator","text":"[提示: 按 W / D 键 来移动角色,按 Space 与角色交互]","shown": false},
             {"speaker" :"narrator","text":"...........","shown": false}
             
         ],
@@ -180,7 +180,7 @@
     ],
 
      "repeat_only":[
-        {"speaker":"npc","text":"(……离开吧)"}
+        {"speaker":"player","text":"(……离开吧)"}
     ],
     
 
@@ -390,7 +390,7 @@
         {"speaker" :"player","text":"(因完美主义而导致的焦虑心理。CBT(Cognitive Behavioural Therapy)会是个适合她且有效的治疗方式。)","shown": false},
         {"speaker" :"npc","text":"我听说你们这里有能治疗各种心理问题的仪器？这能直接解决我的问题吗？","shown": false},
         {"speaker" :"player","text":"(等等，这跟我想的发展不一样。嗯，但我确实忽略了这里有那个仪器能使用。)","shown": false},
-        {"speaker" :"player","text":"的，我桌上的这个“头盔”就是这个仪器的本体。它能进入人的潜意识，查看关于过去的记忆。","shown": false},
+        {"speaker" :"player","text":"是的，我桌上的这个“头盔”就是这个仪器的本体。它能进入人的潜意识，查看关于过去的记忆。","shown": false},
         {"speaker" :"npc","text":"所有记忆？","shown": false},
         {"speaker" :"player","text":"不，只是些会跟你的焦虑问题有关的记忆片段。","shown": false},
         {"speaker" :"npc","text":"查看记忆跟治疗有什么关系？","shown": false},
@@ -460,7 +460,8 @@
         {"speaker" :"npc","text":"(就这样继续在职场打拼吧，稳定的生活就是我的理想……)","shown": false},
         {"speaker" :"npc","text":" (...)","shown": false},
         {"speaker" :"npc","text":"(我的理想真的是这个吗？)","shown": false},
-        {"speaker" :"narrator","text":"?: Zheng, 晚上的庆功宴你来不来, 老板说是奖励我们这次策划做得非常好，要请客哦！","shown": false,"next":"sub_end_1"}
+        {"speaker" :"narrator","text":"?: Zheng, 晚上的庆功宴你来不来, 老板说是奖励我们这次策划做得非常好，要请客哦！","shown": false},
+        {"next":"sub_end_1"}
      ],
      "sub_end_1":[
      
@@ -480,7 +481,8 @@
         {"cg":"picture/Ending/P1_End2.png"},
         {"speaker" :"npc","text":" (那位医生的治疗真是有效，这段时间我已经不会再为一些小事而焦躁了。)","bgm": "bgm/zheng_preserved.mp3","shown": false},
         {"speaker" :"npc","text":" (更重要的是，我想起了自己真正想要的东西——研究。)","shown": false},
-        {"speaker" :"npc","text":"(我怎么能忘了呢，想在心理学埋头研究的理想。)","shown": false,"next":"sub_end_2"}
+        {"speaker" :"npc","text":"(我怎么能忘了呢，想在心理学埋头研究的理想。)","shown": false},
+        {"next":"sub_end_2"}
      ],
      "sub_end_2":[
        
@@ -556,22 +558,22 @@
         {"speaker" :"narrator","text":"(除了陈旧些和前台的人不是你认识的护士以外，跟你所在的诊所没两样) ","shown": false},
         {"speaker" :"player","text":"(她之前就来过诊所了？)","shown": false},
         {"speaker" :"narrator","text":"(她走到前台)","shown": false},
-        {"speaker" :"npc","text":"那个……我预约了下午一点的治疗……","shown": false},
+        {"speaker" :"narrator","text":"Emma :那个……我预约了下午一点的治疗……","shown": false},
         {"speaker" :"narrator","text":"?nurse? :啊，好的，你前往尾间的门进去就可以了，医生就在里面。","shown": false},
         {"speaker" :"narrator","text":"(画面切换，是一个骤然陌生的地方)","shown": false},
         {"speaker" :"narrator","text":"(阴深，像是什么地下室，这是你对这个地方的第一想法)","shown": false},
-        {"speaker" :"npc","text":" 医生，这真的能让我不再做那个噩梦吗？我不想……我不想再梦见那辆卡车冲过来，不想再感受到窒息的恐惧，不想再……","shown": false},
+        {"speaker" :"narrator","text":"Emma: 医生，这真的能让我不再做那个噩梦吗？我不想……我不想再梦见那辆卡车冲过来，不想再感受到窒息的恐惧，不想再……","shown": false},
         {"speaker" :"narrator","text":"(对面的人抬手示意暂停)","shown": false},
-        {"speaker" :"narrator","text":"别去回忆它了，现在，看着这个怀表。","shown": false},
+        {"speaker" :"narrator","text":"Dean : 别去回忆它了，现在，看着这个怀表。","shown": false},
         {"speaker" :"player","text":"(父亲……)","shown": false},
-        {"speaker" :"narrator","text":"专注盯着它的摆动...对，就是这样。","shown": false},
+        {"speaker" :"narrator","text":"Dean :专注盯着它的摆动...对，就是这样。","shown": false},
         {"speaker" :"player","text":"(该不会又是跟‘实验’有关吧？)","shown": false},
-        {"speaker" :"narrator","text":"想象你站在一条长长的走廊里……走廊尽头有一扇门，门后是你想忘记的那段记忆。","shown": false},
-        {"speaker" :"narrator","text":"现在，把手放在门把上……慢慢推开。","shown": false},
-        {"speaker" :"npc","text":"不……不行！那辆车……它冲过来了！","shown": false},
-        {"speaker" :"npc","text":"你抵抗得太厉害了。催眠需要配合，而不是对抗。","shown": false},
+        {"speaker" :"narrator","text":"Dean :想象你站在一条长长的走廊里……走廊尽头有一扇门，门后是你想忘记的那段记忆。","shown": false},
+        {"speaker" :"narrator","text":"Dean :现在，把手放在门把上……慢慢推开。","shown": false},
+        {"speaker" :"narrator","text":"Dean: 不……不行！那辆车……它冲过来了！","shown": false},
+        {"speaker" :"narrator","text":"Dean: 你抵抗得太厉害了。催眠需要配合，而不是对抗。","shown": false},
         {"speaker" :"narrator","text":"(他边说着，边在纸上写了些什么，随机把纸笔放到一边)","shown": false},
-        {"speaker" :"npc","text":"今天就到这里，记得按时服药。","shown": false},
+        {"speaker" :"narrator","text":"Dean: 今天就到这里，记得按时服药。","shown": false},
         {"speaker" :"narrator","text":"(Emma点了点头，没去看纸上的内容，但你看见了，清楚的看见了)","shown": false},
         {"speaker" :"narrator","text":"(纸上结果那一栏的字眼让你感到难以呼吸——)","shown": false},
         {"speaker":"narrator","text":"(失败)","shown":false},
@@ -604,7 +606,8 @@
         {"speaker" :"npc","text":" (那些曾经让我心跳加速的闪光灯，现在只是刺眼的光)","shown": false},
         {"speaker" :"npc","text":"(T台上的步伐像机械程序，精准却空洞)","shown": false},
         {"speaker" :"npc","text":"(我翻开手机相册，看到过去走秀的照片——照片里的女孩笑得自信耀眼，可我却想不起她当时的心情。)","shown": false},
-        {"speaker" :"narrator","text": "?: Emma，有新的发布会需要你出场！","shown": false,"next":"sub_end_3"}
+        {"speaker" :"narrator","text": "?: Emma，有新的发布会需要你出场！","shown": false},
+        {"next":"sub_end_3"}
     ],
 
     "sub_end_3":[
@@ -633,7 +636,8 @@
         {"speaker" :"narrator","text":"(洗漱，更衣，早餐后，我走到了车前)","shown": false},
         {"speaker" :"narrator","text":"(上车后迟迟没有发动)","shown": false},
         {"speaker" :"npc","text":"(……没事的，慢一点。就像第一次走秀时一样)","shown": false},
-        {"speaker" :"narrator","text":"(发动后，车缓缓驶出，阳光照在了方向盘上)","shown": false,"next":"sub_end_4"}
+        {"speaker" :"narrator","text":"(发动后，车缓缓驶出，阳光照在了方向盘上)","shown": false},
+        {"next":"sub_end_4"}
     ],
 
     "sub_end_4":[
