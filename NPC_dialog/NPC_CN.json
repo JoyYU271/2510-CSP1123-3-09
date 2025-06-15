@@ -446,40 +446,47 @@
     ],
 
      "back_reality_destroy1":[
+        {"cg":["picture/Ending/black_screen.png"]},
         {"speaker" :"narrator","text":"(你摘下她头上的仪器)","shown": false},
         {"speaker" :"player","text":"郑小姐，疗程结束了，你现在感觉如何？有没有出现不舒服的感觉？","shown": false},
         {"speaker" :"npc","text":"不……我没事。","shown": false},
         {"speaker" :"player","text":"那就好，我已经通过了解你潜意识内的记忆做出了治疗选择，之后你就能恢复正常生活了。","shown": false},
         {"speaker" :"player","text":"但请同样记得不要给自己造成太大压力，你已经做得很好了郑小姐，无论是作为优等生、白领还是你自己。","shown": false},
-        {"speaker" :"npc","text":"……我知道了，谢谢。","shown": false,"next":"sub_end_1"}
-     ],
-     "sub_end_1":[
+        {"speaker" :"npc","text":"……我知道了，谢谢。","shown": false},
+
         {"cg":"picture/P1 End1.png"},
         {"speaker" :"npc","text":"(那位医生的治疗真是有效，这段时间我已经不会再为一些小事而焦躁了。)","bgm": "bgm/zheng_destroyed.mp3","shown": false},
         {"speaker" :"npc","text":"(老板也说我最近精神了许多，工作效率可见的变好。)","shown": false},
         {"speaker" :"npc","text":"(就这样继续在职场打拼吧，稳定的生活就是我的理想……)","shown": false},
         {"speaker" :"npc","text":" (...)","shown": false},
         {"speaker" :"npc","text":"(我的理想真的是这个吗？)","shown": false},
-        {"speaker" :"narrator","text":"?: Zheng, 晚上的庆功宴你来不来, 老板说是奖励我们这次策划做得非常好，要请客哦！","shown": false},
+        {"speaker" :"narrator","text":"?: Zheng, 晚上的庆功宴你来不来, 老板说是奖励我们这次策划做得非常好，要请客哦！","shown": false,"next":"sub_end_1"}
+     ],
+     "sub_end_1":[
+     
         {"speaker" :"npc","text":"嗯，我会去的。","shown": false},
-        {"speaker" :"npc","text":"(算了, 这样也好不是吗？)","shown": false}
+        {"speaker" :"npc","text":"(算了, 这样也好不是吗？)","shown": false},
+        {"event": "day_end_and_intro_next_day"}
      ],
 
      "back_reality_keep1":[
+        {"cg":["picture/Ending/black_screen.png"]},
          {"speaker" :"narrator","text":"(你摘下她头上的仪器)","shown": false},
         {"speaker" :"player","text":"郑小姐，疗程结束了，你现在感觉如何？有没有出现不舒服的感觉？","shown": false},
         {"speaker" :"npc","text":"不……我没事。","shown": false},
         {"speaker" :"player","text":"那就好，我已经通过了解你潜意识内的记忆做出了治疗选择，之后你就能恢复正常生活了。","shown": false},
         {"speaker" :"player","text":"但请同样记得不要给自己造成太大压力，你已经做得很好了郑小姐，无论是作为优等生、白领还是你自己。","shown": false},
-        {"speaker" :"npc","text":"……我知道了，谢谢。","shown": false,"next":"sub_end_2"}
-     ],
-     "sub_end_2":[
+        {"speaker" :"npc","text":"……我知道了，谢谢。","shown": false},
         {"cg":"picture/P1 End2.png"},
         {"speaker" :"npc","text":" (那位医生的治疗真是有效，这段时间我已经不会再为一些小事而焦躁了。)","bgm": "bgm/zheng_preserved.mp3","shown": false},
         {"speaker" :"npc","text":" (更重要的是，我想起了自己真正想要的东西——研究。)","shown": false},
-        {"speaker" :"npc","text":"(我怎么能忘了呢，想在心理学埋头研究的理想。)","shown": false},
+        {"speaker" :"npc","text":"(我怎么能忘了呢，想在心理学埋头研究的理想。)","shown": false,"next":"sub_end_2"}
+     ],
+     "sub_end_2":[
+       
         {"speaker" :"npc","text":"(但还好，一切都不算晚。)","shown": false},
-        {"speaker" :"npc","text":"(这会是新开始。)","shown": false}
+        {"speaker" :"npc","text":"(这会是新开始。)","shown": false},
+        {"event": "day_end_and_intro_next_day"}
      ]
   },
 
@@ -582,15 +589,14 @@
     ],
 
     "back_reality_destroy2":[
+        {"cg":["picture/Ending/black_screen.png"]},
         {"speaker" :"narrator","text":"(你摘下她头上的仪器)","shown": false},
         {"speaker" :"player","text":"疗程结束了，感觉如何？有不舒服吗？","shown": false},
         {"speaker" :"npc","text":"我没事哦。","shown": false},
         {"speaker" :"player","text":"嗯，那好。我已经为你选好了治疗选择，之后你想必就不会再做噩梦了。","shown": false},
         {"speaker" :"npc","text":"好，真是谢谢你了，医生。","shown": false},
-        {"speaker" :"narrator","text":".......","shown": false,"next":"sub_end_3"}
-    ],
+        {"speaker" :"narrator","text":".......","shown": false},
 
-    "sub_end_3":[
         {"cg":"picture/P2 End1.png"},
         {"speaker" :"npc","text":" (噩梦已离我远去，坐车时也不再害怕了)","bgm": "bgm/emma_destroyed.mp3","shown": false},
         {"speaker" :"npc","text":"(真好啊，感觉自己一身轻松，也可以重新接工作了)","shown": false},
@@ -598,23 +604,27 @@
         {"speaker" :"npc","text":" (那些曾经让我心跳加速的闪光灯，现在只是刺眼的光)","shown": false},
         {"speaker" :"npc","text":"(T台上的步伐像机械程序，精准却空洞)","shown": false},
         {"speaker" :"npc","text":"(我翻开手机相册，看到过去走秀的照片——照片里的女孩笑得自信耀眼，可我却想不起她当时的心情。)","shown": false},
-        {"speaker" :"narrator","text": "?: Emma，有新的发布会需要你出场！","shown": false},
+        {"speaker" :"narrator","text": "?: Emma，有新的发布会需要你出场！","shown": false,"next":"sub_end_3"}
+    ],
+
+    "sub_end_3":[
+   
         {"speaker" :"npc","text":"好，我会去的。","shown": false},
         {"speaker" :"npc","text":" (这样就好)","shown": false},
-        {"speaker" :"npc","text":"(至少，我不会再尖叫着从噩梦中惊醒了)","shown": false}
+        {"speaker" :"npc","text":"(至少，我不会再尖叫着从噩梦中惊醒了)","shown": false},
+        {"event": "day_end_and_intro_next_day"}
 
     ],
 
     "back_reality_keep2":[
+        {"cg":["picture/Ending/black_screen.png"]},
         {"speaker" :"narrator","text":"(你摘下她头上的仪器)","shown": false},
         {"speaker" :"player","text":"疗程结束了，感觉如何？有不舒服吗？","shown": false},
         {"speaker" :"npc","text":"我没事哦。","shown": false},
         {"speaker" :"player","text":"嗯，那好。我已经为你选好了治疗选择，之后你想必就不会再做噩梦了。","shown": false},
         {"speaker" :"npc","text":"好，真是谢谢你了，医生。","shown": false},
-        {"speaker" :"narrator","text":".......","shown": false,"next":"sub_end_4"}
-    ],
+        {"speaker" :"narrator","text":".......","shown": false},
 
-    "sub_end_4":[
         {"cg":"picture/P2 End2.png"},
         {"speaker" :"npc","text":"(……又梦见那场车祸了)","bgm": "bgm/emma_preserved.mp3","shown": false},
         {"speaker" :"npc","text":"  (一切都如此清晰，但是我的呼吸却平静得出奇)","shown": false},
@@ -623,9 +633,14 @@
         {"speaker" :"narrator","text":"(洗漱，更衣，早餐后，我走到了车前)","shown": false},
         {"speaker" :"narrator","text":"(上车后迟迟没有发动)","shown": false},
         {"speaker" :"npc","text":"(……没事的，慢一点。就像第一次走秀时一样)","shown": false},
-        {"speaker" :"narrator","text":"(发动后，车缓缓驶出，阳光照在了方向盘上)","shown": false},
+        {"speaker" :"narrator","text":"(发动后，车缓缓驶出，阳光照在了方向盘上)","shown": false,"next":"sub_end_4"}
+    ],
+
+    "sub_end_4":[
+       
         {"speaker" :"npc","text":"(噩梦还没消失)","shown": false},
-        {"speaker" :"npc","text":"(但今天，我赢了他一次)","shown": false}
+        {"speaker" :"npc","text":"(但今天，我赢了他一次)","shown": false},
+        {"event": "day_end_and_intro_next_day"}
      
     ]
   }

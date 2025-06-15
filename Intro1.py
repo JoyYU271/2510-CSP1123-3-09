@@ -165,7 +165,7 @@ class Dialog:
         super().__init__()
         
         self.screen = screen_surface
-        self.current_day = 3 
+        self.current_day =3 
        
 
         self.sounds = {
@@ -248,6 +248,9 @@ class Dialog:
         self.showing_cg = False
         self.cg_images = []
         self.cg_index = 0
+
+        self.fade_in_cg_pending = False
+        self.next_cg_index = None
        # self.story_data = npc_data.get(f"chapter_{game_chapter}", []) # Assuming npc_data is accessible and contains story data
        # self.current_story = f"chapter_{game_chapter}"
         self.shown_dialogues = shown_dialogues if shown_dialogues is not None else {}
@@ -329,6 +332,7 @@ class Dialog:
         if not self.talking or self.choices_active:
             return
         
+       
         if events is None:
             events = []
         
@@ -401,8 +405,8 @@ class Dialog:
         if self.showing_cg:
             # If a CG is showing, space advances the CG
             if self.cg_index < len(self.cg_images) - 1:
-                self.cg_index += 1
-                self.fade(screen, cg_list=[self.cg_images[self.cg_index]], fade_in=True)
+                self.next_cg_index = self.cg_index + 1
+                self.fade_in_cg_pending = True
                 return        # 等玩家再按 SPACE
 
         if not self.talking or self.choices_active:
@@ -443,7 +447,7 @@ class Dialog:
                 self.cg_images = [pygame.image.load(path).convert_alpha() for path in cg_paths]
                 self.cg_index = 0
                 self.showing_cg = True
-                self.fade(screen, cg_list=[self.cg_images[self.cg_index]], fade_in=True)
+                self.fade(screen, fade_in=True,cg_list=[self.cg_images[self.cg_index]])
                 self.reset_typing() # Reset typing for the next potential dialogue after CG
                 return # Consume space, CG will be handled
 
@@ -486,6 +490,7 @@ class Dialog:
 
                 if self.current_day >= 3:   
                     self.ready_to_quit = True
+                    fade_to_main(screen)
                     print(f"Main ending reached! ready_to_quit set to True") 
                 else:
                     self.fade(screen , fade_in=True,cg_list=None) # Assuming 'screen' is accessible here
@@ -529,7 +534,7 @@ class Dialog:
 
     
 
-    def select_choice(self, choice_index):
+    def select_choice(self, choice_index,screen):
         if self.choices_active and 0 <= choice_index < len(self.current_choices):
 
             if self.current_line_data and isinstance(self.current_line_data, dict):
@@ -554,6 +559,14 @@ class Dialog:
                 self.talking = False
             else:
                 self._transition_to_node(next_node_id)
+
+                if self.current_line_data and "cg" in self.current_line_data:
+                   cg_paths = self.current_line_data["cg"] if isinstance(self.current_line_data["cg"], list) else [self.current_line_data["cg"]]
+                   self.cg_images = [pygame.image.load(path).convert_alpha() for path in cg_paths]
+                   self.cg_index = 0
+                   self.showing_cg = True
+                   self.fade(screen, fade_in=True, cg_list=[self.cg_images[self.cg_index]])
+                   self.reset_typing()
             
         else:
             print("Invalid choice selection or no choices active.")
@@ -696,9 +709,9 @@ class Dialog:
 
         if fade_in:
             #fade in
-           for alpha in range (0,255,10):
+           for alpha in range (255, -1, -10):
                 fade.set_alpha(alpha)
-                screen.fill((0,0,0))
+                
                 if cg_image_scaled:
                     screen.blit(cg_image_scaled, (0,0))
                 screen.blit(fade,(0,0))
@@ -706,8 +719,8 @@ class Dialog:
                 pygame.time.delay(30)
         else:
             #fade out
-            for alpha in range (255,-1,-10):
-                screen.fill((0,0,0))
+            for alpha in range (0,255,10):
+                
                 fade.set_alpha(alpha)
                 if cg_image_scaled:
                     screen.blit(cg_image_scaled, (0,0))
@@ -727,6 +740,12 @@ class Dialog:
             # print("DEBUG (dialog.draw): Not talking, returning early.")
             return
         
+        if self.showing_cg:
+           current_cg = self.get_current_cg()
+           if current_cg:
+              cg_scaled = pygame.transform.scale(current_cg, (screen.get_width(), screen.get_height()))
+              screen.blit(cg_scaled, (0, 0))
+        
         if hasattr(self, 'showing_cg') and self.showing_cg:
             cg_surface = self.get_current_cg()
             if cg_surface:
@@ -740,8 +759,6 @@ class Dialog:
         #calculate text width with limit for wrapping
         text_max_width = self.dialog_box_img.get_width() - 300 #pixel padding each side
 
-        
-        
         # print(f"DEBUG (dialog.draw): Drawing at dialog_x={dialog_x}, dialog_y={dialog_y}. Screen size: {screen.get_size()}")
 
         current_line_data = self.get_current_line_data()
@@ -786,9 +803,9 @@ class Dialog:
                 dialog_center_x = dialog_x + self.dialog_box_img.get_width() // 2
 
                 key_hint_font = pygame.font.SysFont('Comic Sans MS', 20)
-                key_hint_text1 = key_hint_font.render("Press Up/Down to select,",True,(0,0,0))
+                key_hint_text1 = key_hint_font.render("Press W/S to select,",True,(0,0,0))
                 key_hint_rect1 = key_hint_text1.get_rect(bottomright=(dialog_x + self.dialog_box_img.get_width() - 90,  dialog_y + self.dialog_box_img.get_height() - 40))
-                key_hint_text2 = key_hint_font.render(" Enter key to comfirm",True,(0,0,0))
+                key_hint_text2 = key_hint_font.render("  E to comfirm",True,(0,0,0))
                 key_hint_rect2 = key_hint_text2.get_rect(bottomright=(dialog_x + self.dialog_box_img.get_width() - 90,  dialog_y + self.dialog_box_img.get_height() - 20))
 
                 screen.blit(key_hint_text1,key_hint_rect1)
@@ -1595,6 +1612,12 @@ class ObjectDialogue:
         max_text_width = self.dialogue_box_img.get_width() - 200 # Padding on each side
         text_color = (0, 0, 0) # Black text
 
+        hint_font = pygame.font.SysFont('Comic Sans MS', 20)
+        hint_text = hint_font.render("Press Q to continue", True, (0,0,0))
+        hint_rect = hint_text.get_rect(bottomright=(dialog_x + dialog_box_img.get_width() - 90,  dialog_y + dialog_box_img.get_height() - 20))
+
+        screen.blit(hint_text, hint_rect)
+
         # Draw dialogue text
         draw_text(screen, self.current_text_display, size=self.text_size, color=text_color, 
                     x=text_x, y=text_y, center=True, max_width=max_text_width)
@@ -1812,7 +1835,7 @@ class Rooms:    # class Level in tutorial
         self.visited_doors = set()  #keep track of doors used
 
         self.current_room = "room01"
-        self.current_day = 2  #Initialize the current day (Chapter 1)
+        self.current_day = 1  #Initialize the current day (Chapter 1)
         
         self.fading = False
         self.fade_alpha = 0
@@ -2312,7 +2335,7 @@ class Rooms:    # class Level in tutorial
                     dialogue_instance_at_frame_start.selected_choice_index = min(len(dialogue_instance_at_frame_start.current_choices) - 1, dialogue_instance_at_frame_start.selected_choice_index + 1)
                 elif keys[pygame.K_e] and self.e_released: 
                     self.e_released = False
-                    dialogue_instance_at_frame_start.select_choice(dialogue_instance_at_frame_start.selected_choice_index)
+                    dialogue_instance_at_frame_start.select_choice(dialogue_instance_at_frame_start.selected_choice_index,screen)
             else: # Handle SPACE key for advancing regular dialogue (when choices are NOT active)
                if keys[pygame.K_SPACE] and self.space_released:
                     self.space_released = False
