@@ -540,7 +540,8 @@
         {"speaker" :"narrator","text":"(After she signs, she hands the contract and pen back to you.)","sound": "write_pen","shown": false},
         {"speaker" :"player","text":"(We can start now.)","shown": false},
         {"speaker" :"narrator","text":"......."},
-        {"speaker" :"player","text":"I've finished speaking with the patient. Time to begin treatment using the machine."}
+        {"speaker" :"player","text":"I've finished speaking with the patient. Time to begin treatment using the machine."},
+        {"event":"patient_zheng_talked_to"}
     ],
     "repeat_only":[
         {"speaker":"player","text":"(We can start now.)","next": "repeat_only"}
@@ -618,7 +619,7 @@
         {"speaker" :"npc","text":"I feel fine.","shown": false},
         {"speaker" :"player","text":"That's good. I had made a treatment decision, so you should not have a problem with the nightmares anymore.","shown": false},
         {"speaker" :"npc","text":"Alright. Thank you very much, doctor.","shown": false},
-        {"speaker" :"narrator","text":".......","shown": false,"next":"sub_end_3"}
+        {"speaker" :"narrator","text":".......","shown": false,"next":"sub_end_4"}
     ],
 
     "sub_end_4":[

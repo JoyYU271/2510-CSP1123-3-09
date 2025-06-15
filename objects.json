@@ -35,7 +35,7 @@
     "draw_layer": "background",
     "active": true,
     "unlocked": false,
-    "unlocked_day": 3,
+    "unlocked_day": 2,
     "node_if_locked": "door02_locked_dialogue",
     "node_if_unlocked": "door02_unlocked_dialogue",
     "next_room": "Dean_room",
