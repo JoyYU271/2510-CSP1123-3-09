@@ -60,27 +60,26 @@ shared.screen = screen
 clock = pygame.time.Clock()
 FPS = 60
 
-# Load JSON data
-with open('NPC_dialog/NPC.json', 'r', encoding='utf-8') as f:
-        all_dialogues = json.load(f)
+#with open('NPC_dialog/NPC.json', 'r', encoding='utf-8') as f:
+ #   all_dialogues = json.load(f)
+
 
 # print("\n--- DEBUG: After loading all_dialogues ---")
 # print(f"Type of all_dialogues: {type(all_dialogues)}")
 # print(f"Keys in all_dialogues: {list(all_dialogues.keys())}") # See what top-level keys actually exist
 
-if "Zheng" in all_dialogues:
-    print("SUCCESS: 'Zheng' key found in all_dialogues.")
+#if "Zheng" in all_dialogues:
+#    print("SUCCESS: 'Zheng' key found in all_dialogues.")
     # Print a snippet of Zheng's dialogue to confirm it's not empty/malformed
-    print(f"Zheng dialogue structure (first 200 chars): {str(all_dialogues['Zheng'])[:200]}...")
-else:
-    print("ERROR: 'Zheng' key NOT found in all_dialogues. Please check NPC_dialog/NPC.json for exact key name and casing.")
-print("-------------------------------------------\n")
+#    print(f"Zheng dialogue structure (first 200 chars): {str(all_dialogues['Zheng'])[:200]}...")
+#else:
+#    print("ERROR: 'Zheng' key NOT found in all_dialogues. Please check NPC_dialog/NPC.json for exact key name and casing.")
+#print("-------------------------------------------\n")
 
 with open("objects.json", "r") as f:
     object_data = json.load(f)
 
-with open("object_dialogue.json", "r", encoding="utf-8") as f:
-    object_dialogue = json.load(f)
+
 
 with open("NPC_data.json") as f:
     npc_data = json.load(f)
@@ -162,7 +161,7 @@ room_settings = {
 #============ Dialogue System =============
 class dialog:
     def __init__(self, npc, player, full_dialogue_tree, start_node_id, rooms_instance,
-                 bgm_vol=0.5, sfx_vol=0.5, text_size=30, shown_dialogues=None, npc_manager=None,
+                 bgm_vol=0.5, sfx_vol=0.5,language="EN", text_size=30, shown_dialogues=None, npc_manager=None,
                  screen_surface=None): # Added screen_surface parameter
         
         # Sound Management
@@ -190,6 +189,8 @@ class dialog:
 
         self.current_bgm = None
         self.bgm_volume = bgm_vol
+
+        self.language = language
 
         # Core Game References
         self.player = player
@@ -527,7 +528,7 @@ class dialog:
 
             # Draw speaker name for choice prompt (e.g., "You Decide")
             name_to_display = "" 
-            draw_text(screen_surface, name_to_display, 40, (0, 0, 0), dialog_x + 200, dialog_y + 10, center=False)
+            draw_text(screen_surface, name_to_display, self.text_size, (0, 0, 0), dialog_x + 200, dialog_y + 10, center=False)
 
             max_options_display = 3 
             dialog_center_x = dialog_x + self.dialog_box_img.get_width() // 2
@@ -537,7 +538,7 @@ class dialog:
                 option_y = dialog_y + 60 + i * 60 
 
                 if option_y < screen_surface.get_height() - 40: 
-                    draw_text(screen_surface, option["option"], 30, color, dialog_center_x, option_y, center=True)
+                    draw_text(screen_surface, option["option"], self.text_size, color, dialog_center_x, option_y, center=True)
         else: # This is the branch for NORMAL TEXT DIALOGUE
             # print(f"DEBUG (dialog.draw): Choices are NOT active. (Inside normal text branch)")
             current_line_data = self.current_line_data # Use the pre-fetched current_line_data
@@ -570,7 +571,7 @@ class dialog:
 
                 # --- Draw dialogue text ---
                 text_to_display = self.current_text_display
-                draw_text(screen_surface, text_to_display, 30, (0, 0, 0),
+                draw_text(screen_surface, text_to_display,self.text_size, (0, 0, 0),
                           dialog_x + self.dialog_box_img.get_width() // 2,
                           dialog_y + self.dialog_box_img.get_height() // 2 - 15,
                           center=True, max_width=text_max_width)
@@ -1082,14 +1083,17 @@ def check_object_interaction(player_rect, interactable_objects):
     return [obj for obj in interactable_objects if obj.active and player_rect.colliderect(obj.rect)]
 
 class ObjectDialogue: 
-    def __init__(self, obj_info, current_dialogue_ref, rooms_instance, start_node_id="start", text_size=30, language="EN"):
+    def __init__(self, obj_info, current_dialogue_ref, rooms_instance,dialogue_data, start_node_id="start", text_size=30, language="EN"):
         self.obj_info = obj_info # The InteractableObject instance
         self.current_dialogue_ref = current_dialogue_ref # Reference to Rooms' current_dialogue_ref
         self.rooms_instance = rooms_instance # Reference to the Rooms instance
         self.dialogue_id = obj_info.dialogue_id # ID to fetch dialogue data from object_dialogue.json
 
+        self.text_size = text_size
+        self.language = language
+
         # Load all dialogue data for this object
-        self.dialogue_data = object_dialogue.get(self.dialogue_id, {})
+        self.dialogue_data = dialogue_data.get(self.dialogue_id, {})
         
         # The actual starting node for THIS instance of dialogue (determined by Rooms or get_start_node_for_interaction)
         self.current_node_id = start_node_id 
@@ -1104,9 +1108,6 @@ class ObjectDialogue:
         self.typing_speed = 3 # Characters per frame, adjust as needed
         self.text_display_timer = 0
         self.typing_complete = False # Flag indicating if the current line has finished typing
-
-        self.text_size = text_size
-        self.language = language
 
         # For dialogue box rendering
         try:
@@ -1340,18 +1341,41 @@ class Game:
         self.gameStateManager = GameStateManager('start')
 
         self.gameStateManager.game_instance = self
+
+        if self.language == "CN":
+            with open('NPC_dialog/NPC_CN.json', 'r', encoding='utf-8') as f:
+                self.all_dialogues = json.load(f)
+        else:
+            with open('NPC_dialog/NPC.json', 'r', encoding='utf-8') as f:
+                self.all_dialogues = json.load(f)
+
+        if self.language == "CN":
+            with open("object_dialogue_cn.json", "r", encoding="utf-8") as f:
+                self.object_dialogue = json.load(f)
+        else:
+            with open("object_dialogue.json", "r", encoding="utf-8") as f:
+                self.object_dialogue = json.load(f)
         
-        self.intro = SimpleChapterIntro(self.screen, self.gameStateManager,language=language,
-                                        text_size=text_size,
-                                        bgm_vol=bgm_vol,
-                                        sfx_vol=sfx_vol)
+
+        
+        self.intro = SimpleChapterIntro(self.screen, self.gameStateManager,language=self.language,
+                                        text_size=self.text_size,
+                                        bgm_vol=self.bgm_vol,
+                                        sfx_vol=self.sfx_vol)
         self.start = Start(self.screen, self.gameStateManager, self.intro,language = language,text_size = text_size,bgm_vol = bgm_vol,sfx_vol = sfx_vol)
-        self.level = Rooms(self.screen, self.gameStateManager, self.player, self.npc_manager, self, self.screen, self.current_dialogue_ref,
-                           language=self.language,
-                           text_size=self.text_size,
-                           bgm_vol=self.bgm_vol,
-                           sfx_vol=self.sfx_vol
-                           )
+        self.level = Rooms(self.screen,                 
+                            self.gameStateManager,      
+                            self.player,              
+                            self.npc_manager,            
+                            self,    
+                            self,                   
+                            self.screen,                  
+                            self.current_dialogue_ref,  
+                            language=self.language,
+                            text_size=self.text_size,
+                            bgm_vol=self.bgm_vol,
+                            sfx_vol=self.sfx_vol
+                            )
         
         
         #self.intro.completed_callback = lambda: self.gameStateManager.set_state('level')
@@ -1483,12 +1507,15 @@ class Start:    #try to call back SimpleChapterIntro
 #make plan to change by colliderect/position of player.rect
 
 class Rooms:    # class Level in tutorial
-    def __init__(self, display, gameStateManager, player, npc_manager, game_ref,screen, current_dialogue_ref, language="EN", text_size=None, bgm_vol=0.5, sfx_vol=0.5):
+    def __init__(self, display, gameStateManager, player, npc_manager, game_instance, game_ref,screen, current_dialogue_ref, language="EN", text_size=None, bgm_vol=0.5, sfx_vol=0.5):
         self.display = display
         self.gameStateManager = gameStateManager
 
         self.player = player
         self.npc_manager = npc_manager
+ 
+        self.game_ref = game_instance
+
         self.screen = screen
         
         self.current_dialogue_ref = current_dialogue_ref
@@ -1502,13 +1529,8 @@ class Rooms:    # class Level in tutorial
         self.backmain_button = Button(image=self.backmain_img, pos=(1100, 80), scale=0.2)
         
 
-        if self.language == "CN":
-            dialogue_file = "NPC_dialog/NPC_CN.json"
-        else:
-            dialogue_file = "NPC_dialog/NPC.json"
+        self.all_dialogues = game_ref.all_dialogues 
 
-        with open(dialogue_file, 'r', encoding='utf-8') as f:
-            self.all_dialogues = json.load(f)
 
         self.shown_dialogues = {}    
 
@@ -1795,7 +1817,11 @@ class Rooms:    # class Level in tutorial
                     dialogue_tree_to_load, 
                     start_node_id="after_puzzle_sequence", 
                     rooms_instance=self,
-                    screen_surface=pygame.display.get_surface() 
+                    screen_surface=pygame.display.get_surface(),
+                    language=self.language,
+                    text_size=self.text_size,
+                    bgm_vol=self.bgm_vol,
+                    sfx_vol=self.sfx_vol
                 )
                 self.current_dialogue_ref.current_dialogue.talking = True 
                 print(f"DEBUG: Initiated '{target_npc_dialogue_id}' 'after_puzzle_sequence' dialogue.")
@@ -1828,7 +1854,12 @@ class Rooms:    # class Level in tutorial
                     system_narrative_tree,
                     start_node_id="intro", 
                     rooms_instance=self,
-                    screen_surface=pygame.display.get_surface() 
+                    screen_surface=pygame.display.get_surface(),
+                    language=self.language,
+                    text_size=self.text_size,
+                    bgm_vol=self.bgm_vol,
+                    sfx_vol=self.sfx_vol
+
                 )
                 self.current_dialogue_ref.current_dialogue.talking = True 
             else:
@@ -1914,6 +1945,9 @@ class Rooms:    # class Level in tutorial
                             obj_to_interact, 
                             self.current_dialogue_ref, 
                             self, 
+                            self.game_ref.object_dialogue,
+                            text_size=self.text_size,
+                            language=self.language,
                             start_node_id="dummy" # Pass a dummy for now, it will be overridden
                         )
                         chosen_start_node = temp_obj_dialogue.get_start_node_for_interaction()
@@ -1923,6 +1957,9 @@ class Rooms:    # class Level in tutorial
                             obj_to_interact, 
                             self.current_dialogue_ref, 
                             self, 
+                            self.game_ref.object_dialogue,
+                            text_size=self.text_size,
+                            language=self.language,
                             start_node_id=chosen_start_node 
                         )
                         print(f"Interacting with {obj_to_interact.name}. Dialogue started from node: {chosen_start_node}")
@@ -1950,7 +1987,7 @@ class Rooms:    # class Level in tutorial
             elif not dialogue_instance_at_frame_start or not dialogue_instance_at_frame_start.talking:
                 if nearest_npc:
                     global all_dialogues # Ensure all_dialogues is accessible
-                    npc_dialogue_tree = all_dialogues.get(nearest_npc.dialogue_id)
+                    npc_dialogue_tree = self.all_dialogues.get(nearest_npc.dialogue_id)
 
                     if npc_dialogue_tree: # Check if the NPC's dialogue content exists
                         # --- FIX: Refined NPC Dialogue Start Node Selection Logic ---
@@ -1993,7 +2030,11 @@ class Rooms:    # class Level in tutorial
                             npc_dialogue_tree,
                             start_node_id=chosen_story_id,
                             rooms_instance=self,
-                            screen_surface=self.display # Pass the screen surface
+                            screen_surface=self.display, # Pass the screen surface
+                            language=self.language,
+                            text_size=self.text_size,
+                            bgm_vol=self.bgm_vol,
+                            sfx_vol=self.sfx_vol
                         )
                         self.current_dialogue_ref.current_dialogue.talking = True
                         print(f"DEBUG: Started dialogue with NPC: {nearest_npc.name} from node: {chosen_story_id}")
@@ -2107,9 +2148,13 @@ class Rooms:    # class Level in tutorial
                         self.current_dialogue_ref.current_dialogue = dialog(
                             narrator_dummy_obj,
                             self.player,
-                            all_dialogues.get(narrator_dummy_obj.dialogue_id),
+                            self.all_dialogues.get(narrator_dummy_obj.dialogue_id),
                             start_node_id="intro", # This will now select chapter_X based on current_day
-                            rooms_instance=self
+                            rooms_instance=self,
+                            language=self.language,
+                            text_size=self.text_size,
+                            bgm_vol=self.bgm_vol,
+                            sfx_vol=self.sfx_vol
                         )
                         self.current_dialogue_ref.current_dialogue.talking = True # Ensure it begins talking
                     else:
