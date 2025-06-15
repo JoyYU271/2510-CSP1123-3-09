@@ -215,7 +215,7 @@
     ],
 
     "Ship_of_Theseus":[
-        {"cg":["picture/Ending/black screen.png"]},
+        {"cg":["picture/Ending/black_screen.png"]},
         {"speaker" :"player","text":"...If I must choose, I'll pull the lever","bgm": "bgm/ship.mp3"},
         {"speaker" :"narrator","text":"(He smiles, pleased.)"},
         {"speaker" :"npc","text":"Good. You understand."},
@@ -248,7 +248,7 @@
     ],
 
     "Justice_Served":[
-        {"cg":["picture/Ending/black screen.png"]},
+        {"cg":["picture/Ending/black_screen.png"]},
         {"speaker" :"player","text":" I won't pull the lever... Every life deserves an equal chance.","bgm": "bgm/justice.mp3"},
         {"speaker" :"npc","text":"Naïve. Still clinging to morals"},
         {"speaker" :"player","text":"...I can't accept your ideals, Father."},
@@ -285,7 +285,7 @@
     ],
 
     "Rebirth_of_the_Dual_Soul":[
-        {"cg":["picture/Ending/black screen.png"]},
+        {"cg":["picture/Ending/black_screen.png"]},
         {"speaker" :"player","text":" Don't give me that philosophical nonsense. Stop trying to justify yourself!","bgm": "bgm/rebirth.mp3"},
         {"speaker" :"npc","text":"Too emotional. Like your mother."},
         {"speaker" :"player","text":"Don't bring her up now. If you hadn't fought her so much, she wouldn't have left home—"},
@@ -342,7 +342,7 @@
         {"speaker" :"player","text":"Save your excuses for the police."},
         {"speaker" :"npc","text":"……"},
         {"speaker" :"narrator","text":"(He says nothing more. He closes his eyes, like a criminal awaiting judgment.)"},
-        {"cg":["picture/Ending/black screen.png"]},
+        {"cg":["picture/Ending/black_screen.png"]},
         {"speaker":"narrator","text":"(after a few weeks..."},
         {"speaker" :"narrator","text":"???: [Are you alright?] "},
         {"speaker" :"player","text":"Shouldn't I be asking you? You're the original personality."},
@@ -364,7 +364,6 @@
     "chapter_1":[
 
         {"speaker" :"player","text":"Sorry for the wait. I'm your scheduled psychologist. You're Ms. Zheng, right?","bgm": "bgm/talk_with_patient.mp3","shown": false},
-
         {"speaker" :"narrator","text":"(You see she sitting upright and nod.)","shown": false},
         {"speaker" :"npc","text":"Yes, hello.","shown": false},
         {"speaker" :"player","text":"Alright, Ms. Zheng. First, we will start with getting to know you and understanding your situation.","shown": false},
@@ -407,12 +406,8 @@
         {"speaker" :"npc","text":"I've read it. I'm willing to accept the risks. Just need to sign here, right?","shown": false},
         {"speaker" :"player","text":"Right. Once you sign, I'll prepare the treatment.","shown": false},
         {"speaker" :"narrator","text":"(She signs without hesitation and returns the form to you.)","sound": "write_pen","shown": false},
-        {"speaker" :"player","text":"(Alright, let's begin.)"},
-
-        {"event":"patient_zheng_talked_to"},
-
-        {"next":"chapter_1_common"}
-
+        {"speaker" :"player","text":"(Alright, let's begin.)","next":"repeat_only"},
+        {"event":"patient_zheng_talked_to"}
 
 
     ],
@@ -446,42 +441,45 @@
     ],
 
      "back_reality_destroy1":[
-        
+        {"cg":["picture/Ending/black_screen.png"]},
         {"speaker" :"narrator","text":"(You remove the device from her head.)","shown": false},
         {"speaker" :"player","text":" Treatment is complete. How do you feel? Any discomfort?","shown": false},
         {"speaker" :"npc","text":"......I'm fine","shown": false},
         {"speaker" :"player","text":"Great. Based on your subconscious, I made a treatment decision. You will recover soon.","shown": false},
         {"speaker" :"player","text":"But please remember—don't push yourself too hard. You've done very well, whether as a top student, an employee, or simply as yourself","shown": false},
-        {"speaker" :"npc","text":".....Thank you.","shown": false,"next":"sub_end_1"}
-     ],
-     "sub_end_1":[
-        {"cg":"picture/Ending/P1 End1.png"},
+        {"speaker" :"npc","text":".....Thank you.","shown": false},
+
+        {"cg":["picture/Ending/P1_End1.png"]},
         {"speaker" :"npc","text":"(That doctor's treatment really worked. I don't get anxious over little things anymore.)","bgm": "bgm/zheng_destroyed.mp3","shown": false},
         {"speaker" :"npc","text":"(My boss even said I seem refreshed. Efficiency has improved.)","shown": false},
         {"speaker" :"npc","text":"(This stable routine is all I need...)","shown": false},
         {"speaker" :"npc","text":"(...)","shown": false},
         {"speaker" :"npc","text":"(Is it, though?)","shown": false},
-        {"speaker" :"npc","text":"?: Zheng! Are you coming to the celebration party tonight? Boss is treating us for the successful proposal!","shown": false},
-        {"speaker" :"npc","text":"Yeah, I'll be there.","shown": false},
+        {"speaker" :"narrator","text":"?: Zheng! Are you coming to the celebration party tonight? Boss is treating us for the successful proposal!","shown": false},
+        {"speaker" :"npc","text":"Yeah, I'll be there.","shown": false,"next":"sub_end_1"}
+     
+       
+     ],
+     "sub_end_1":[
         {"speaker" :"npc","text":"(......Well. Maybe this is enough.)","shown": false},
         {"event": "day_end_and_intro_next_day"}
      ],
 
      "back_reality_keep1":[
-        
+        {"cg":["picture/Ending/black_screen.png"]},
         {"speaker" :"narrator","text":"(You remove the device from her head.)","shown": false},
         {"speaker" :"player","text":" Treatment is complete. How do you feel? Any discomfort?","shown": false},
         {"speaker" :"npc","text":"......I'm fine","shown": false},
         {"speaker" :"player","text":"Great. Based on your subconscious, I made a treatment decision. You will recover soon.","shown": false},
         {"speaker" :"player","text":"But please remember—don't push yourself too hard. You've done very well, whether as a top student, an employee, or simply as yourself","shown": false},
-        {"speaker" :"npc","text":".....Thank you.","shown": false,"next":"sub_end_2"}
-     ],
-     "sub_end_2":[
-        {"cg":"picture/Ending/P1 End2.png"},
+        {"cg":["picture/Ending/P1_End2.png"]},
         {"speaker" :"npc","text":" (That doctor's treatment really worked. I don't get anxious over small things anymore.)","bgm": "bgm/zheng_preserved.mp3","shown": false},
         {"speaker" :"npc","text":" (More importantly, I remembered what I truly wanted.)","shown": false},
         {"speaker" :"npc","text":"(How could I have forgotten? My dream of studying psychology deeply (professionally?))","shown": false},
         {"speaker" :"npc","text":"(But it's not too late.)","shown": false},
+        {"speaker" :"npc","text":".....Thank you.","shown": false,"next":"sub_end_2"}
+     ],
+     "sub_end_2":[
         {"speaker" :"npc","text":"(This is a new beginning.)","shown": false},
         {"event": "day_end_and_intro_next_day"}
      ]
@@ -540,7 +538,8 @@
         {"speaker" :"narrator","text":"(After she signs, she hands the contract and pen back to you.)","sound": "write_pen","shown": false},
         {"speaker" :"player","text":"(We can start now.)","shown": false},
         {"speaker" :"narrator","text":"......."},
-        {"speaker" :"player","text":"I've finished speaking with the patient. Time to begin treatment using the machine."}
+        {"speaker" :"player","text":"I've finished speaking with the patient. Time to begin treatment using the machine."},
+        {"event":"patient_zheng_talked_to"}
     ],
     "repeat_only":[
         {"speaker":"player","text":"(We can start now.)","next": "repeat_only"}
@@ -587,17 +586,15 @@
     ],
 
     "back_reality_destroy2":[
-        {"cg":["picture/Ending/black screen.png"]},
+        {"cg":["picture/Ending/black_screen.png"]},
         {"speaker" :"narrator","text":"(You take the device off of her head)","shown": false},
         {"speaker" :"player","text":"The treatment is done, how do you feel? Do you feel uncomfortable?","shown": false},
         {"speaker" :"npc","text":"I feel fine.","shown": false},
         {"speaker" :"player","text":"That's good. I had made a treatment decision, so you should not have a problem with the nightmares anymore.","shown": false},
         {"speaker" :"npc","text":"Alright. Thank you very much, doctor.","shown": false},
-        {"speaker" :"narrator","text":".......","shown": false,"next":"sub_end_3"}
-    ],
+        {"speaker" :"narrator","text":".......","shown": false},
 
-    "sub_end_3":[
-        {"cg":"picture/Ending/P2 End1.png"},
+        {"cg":["picture/Ending/P2_End1.png"]},
         {"speaker" :"npc","text":" (The nightmares are really gone... and I am no longer afraid of getting into a car.)","bgm": "bgm/emma_destroyed.mp3","shown": false},
         {"speaker" :"npc","text":"(It's great! I feel relieved, and I can work again)","shown": false},
         {"speaker" :"npc","text":" (But... Why do I feel like something's missing?)","shown": false},
@@ -606,23 +603,24 @@
         {"speaker" :"npc","text":"(When I look back at old photos of previous shows, the girl in them smiled, so confident and dazzling, but now, I no longer remember how she felt at that time.)","shown": false},
         {"speaker" :"narrator","text":"?: Emma, there's an upcoming press conference that you'll be attending.","shown": false},
         {"speaker" :"npc","text":"Alright, tell me the details.","shown": false},
-        {"speaker" :"npc","text":" (This is fine.)","shown": false},
+        {"speaker" :"npc","text":" (This is fine.)","shown": false,"next":"sub_end_3"}
+    ],
+
+    "sub_end_3":[
+    
         {"speaker" :"npc","text":"(It was worth it to no longer wake up screaming at night.)","shown": false},
         {"event": "day_end_and_intro_next_day"}
     ],
 
     "back_reality_keep2":[
-        {"cg":["picture/Ending/black screen.png"]},
+        {"cg":["picture/Ending/black_screen.png"]},
         {"speaker" :"narrator","text":"(You take the device off of her head)","shown": false},
         {"speaker" :"player","text":"The treatment is done, how do you feel? Do you feel uncomfortable?","shown": false},
         {"speaker" :"npc","text":"I feel fine.","shown": false},
         {"speaker" :"player","text":"That's good. I had made a treatment decision, so you should not have a problem with the nightmares anymore.","shown": false},
         {"speaker" :"npc","text":"Alright. Thank you very much, doctor.","shown": false},
-        {"speaker" :"narrator","text":".......","shown": false,"next":"sub_end_3"}
-    ],
-
-    "sub_end_4":[
-        {"cg":"picture/Ending/P2 End2.png"},
+        {"speaker" :"narrator","text":".......","shown": false},
+        {"cg":["picture/Ending/P2_End2.png"]},
         {"speaker" :"npc","text":"(... I dreamt that nightmare again.)","bgm": "bgm/emma_preserved.mp3","shown": false},
         {"speaker" :"npc","text":" (It was all very clear... but I was unexpectedly calm)","shown": false},
         {"speaker" :"npc","text":"(The treatment had really helped. I'm no longer as scared as before.)","shown": false},
@@ -630,8 +628,11 @@
         {"speaker" :"narrator","text":"(After a shower, a change of clothes, some breakfast, I walked up to my car.)","shown": false},
         {"speaker" :"narrator","text":"(It did not start even after I got in.)","shown": false},
         {"speaker" :"npc","text":"(... It's okay, take it easy. Just like the first time I walked the runway.)","shown": false},
-        {"speaker" :"narrator","text":"(The car started up and drove out. The sunlight shone its comforting warmth on the steering wheel.)","shown": false},
-        {"speaker" :"npc","text":"(The nightmares may not be gone)","shown": false},
+        {"speaker" :"narrator","text":"(The car started up and drove out. The sunlight shone its comforting warmth on the steering wheel.)","shown": false}
+    ],
+
+    "sub_end_4":[
+       
         {"speaker" :"npc","text":"(But for today, I have overcome it.)","shown": false},
         {"event": "day_end_and_intro_next_day"}
     ]
