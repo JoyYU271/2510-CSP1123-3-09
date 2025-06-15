@@ -15,15 +15,14 @@
     "position": [1389, 263],
     "image": "Door01",
     "dialogue_id": "door01_dialogue",
-    "start_node": "start",
+    "start_node": "unlocked_door_node",
     "active": true,
-    "unlocked": false,
-    "unlocked_day": 1,
+
     "rooms": ["room01"],
     "draw_layer": "background",
-
     "next_room": "Player_room"
-  },
+    
+},
 
   "door02": {
     "name": "Dean's room",
@@ -36,10 +35,14 @@
     "active": true,
     "unlocked": false,
     "unlocked_day": 2,
-    "node_if_locked": "door02_locked_dialogue",
-    "node_if_unlocked": "door02_unlocked_dialogue",
+    "conditional_dialogue_flag": "patient_zheng_talked_to",
+    "node_if_locked": "locked_door2_node",
+    "node_if_unlocked": "unlocked_door2_node",
     "next_room": "Dean_room",
-    "has_dialogue": true
+    "has_dialogue": true,
+    "day_specific_nodes": {
+      "3": "door02_locked_dialogue"
+    }
   },
 
   "Player_mat": {
@@ -63,7 +66,12 @@
     "start_node": "start",
     "active": true,
     "rooms": ["room01"],
-    "draw_layer": "background"
+    "draw_layer": "background",
+    "day_specific_nodes": {
+      "1": "board_chp1",
+      "2": "board_chp2",
+      "3": "board_chp3"
+    }
   },
 
   "machine": {
@@ -499,7 +507,7 @@
 
   "dean_desk": {
     "name": "Dean's desk",
-    "position": [100, 420],
+    "position": [245, 408],
     "image": "Dean_desk",
     "dialogue_id": "dean_desk_dialogue",
     "start_node": "start",
@@ -510,7 +518,7 @@
 
   "bookshelves": {
     "name": "Dean's bookshelves",
-    "position": [500, 420],
+    "position": [744, 281],
     "image": "Bookshelves",
     "dialogue_id": "bookshelves_dialogue",
     "start_node": "start",
@@ -518,5 +526,18 @@
     "rooms": ["Dean_room"],
     "draw_layer": "background",
     "next_room": "basement"
+  },
+
+  "dean_mat": {
+    "name": "Dean's mat",
+    "position": [1179, 477],
+    "image": "Dean_mat",
+    "dialogue_id": "none",
+    "start_node": "none",
+    "has_dialogue": false,
+    "active": true,
+    "rooms": ["Dean_room"],
+    "draw_layer":"background",
+    "next_room": "room01"
   }
 }

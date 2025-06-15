@@ -2,43 +2,66 @@
   "table_dialogue":{
     "start":[
       {"text": "The receptionist's counter."}
-  ]
-
+    ]
   },
 
   "door01_dialogue":{
-    "start":[
+    "start": [
       {"text": "Your office."},
       {"event": "open_door_event"}
+    ],
+    "unlocked_door_node":[
+      {"text": "Your office."},
+      {"event": "open_door_event"}
+    ],
+    "locked_door_node":[
+      {"text": "There are no patients right now."}
+    ],
+    "locked_door": [
+      {"text": "There are no patients right now."}
     ]
   },
 
   "door02_dialogue":{
-    "door02_locked_dialogue":[
+    "door_locked":[
       {"text": "It's locked."}
+    ],
+    "locked_door2_node":[
+      {"text": "You stop just before the door."},
+      {"text": "There's something holding you back."},
+      {"text": "[Go to the nurse first. Or did you forget all about yesterday?]"},
+      {"text": "You startle. Were you hearing things?"}
+    ],
+    "unlocked_door2_node": [
+      {"text": "You knocked on the door."},
+      {"text": "Come in."},
+      {"event": "open_door_event"}
     ],
     "door02_unlocked_dialogue": [
       {"text": "(You gave a light knock and the door moved open.)"},
       {"speaker": "player", "text": "You :(It's not closed?!)"},
       {"text": "There's no one inside."},
-      {"text": "It was a bit intrusive to enter someone's room without permission,"},
-      {"text": "but the higher-dimensional existence wanted you to step in and advance the plot,"},
-      {"text": "so you went in."},
+      {"text": "It was a bit intrusive to enter someone's room without permission."},
+      {"text": "But the higher-dimensional existence wanted you to step in and advance the plot."},
+      {"text": "So you went in."},
       {"event": "open_door_event"}
     ]
   },
 
   "board_dialogue": {
-    "start": [
+    "board_chp1": [
       {"text": "You look at the bulletin board."},
       {"text": "Clinic hours, honor certificates, mental health tips, job hiring..."},
-      {"text": "(A flyer on Hypnotherapy... This is the therapy Father has been practicing and promoting his whole life.)"}
+      {"text": "A flyer on Hypnotherapy... This is the therapy your Father has been practicing and promoting his whole life."}
+    ],
+    "board_chp2": [
+      {"text": "There's nothing new on here."}
     ]
   },
 
   "machine_dialogue": {
     "locked_machine_node": [
-      {"text": "(I should talk to the patient first.)"}
+      {"text": "You should talk to the patient first."}
     ],
     "unlocked_machine_node": [
       {"text": "After you check that the machine is functinal, you carefully place it on the patient's head."}, 
@@ -142,13 +165,11 @@
     {"speaker": "player","text": "(Everything else is blurred out, except got a few lines.)", "shown": false},
     {"speaker": "narrator","text": "(Diagnosis: Work stress)", "shown": false},
     {"speaker": "narrator","text": "(Treatment: Post-hypnotic amnesia)", "shown": false},
-    {"next_node": "end"},
     {"speaker": "narrator","text": "(You find a journal. The patient's name is on it.)", "shown": false},
     {"speaker": "narrator","text": "(You turn to the latest entry.)", "shown": false},
     {"speaker": "narrator","text": "('When I was offered this opportunity, I was estatic.')", "shown": false},
     {"speaker": "narrator","text": "('I'm finally a step closer to achieving my dream...')", "shown": false},
-    {"speaker": "narrator","text": "('But... What is my dream?')", "shown": false},
-    {"event": "puzzle_complete", "event_data": {"puzzle_owner_dialogue_id": "Zheng"}}
+    {"speaker": "narrator","text": "('But... What is my dream?')", "event": "puzzle_complete", "event_data": {"puzzle_owner_dialogue_id": "Zheng"}, "shown": false}
       ]
     },
 

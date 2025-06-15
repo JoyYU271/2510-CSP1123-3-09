@@ -456,7 +456,6 @@ class Dialog:
                 self.reset_typing() # Reset typing for the next potential dialogue after CG
                 return # Consume space, CG will be handled
 
-
             if "choice" in self.current_line_data:
                 self.current_choices = self.current_line_data["choice"]
                 self.choices_active = True
@@ -1351,7 +1350,8 @@ image_path = {
             "Medbed": "Object_image/E05_Random.png",
             "Dean_desk": "Object_image/D_Key.png",
             "Bookshelves": "Object_image/D_Lock.png",
-            "Player_door": "Object_image/P_path.png"
+            "Player_door": "Object_image/P_path.png",
+            "Dean_mat": "Object_image/D_path.png"
         }
 
 class InteractableObject(pygame.sprite.Sprite):
@@ -1572,7 +1572,7 @@ class ObjectDialogue:
         else: # End of current dialogue list for this node (natural end of dialogue)
             self.talking = False
             print("ObjectDialogue ended (natural end of node).")
-       
+    
     def get_start_node_for_interaction(self):
         global flags
         chosen_node = self.obj_info.start_node # Default to the object's initial start_node
@@ -1612,7 +1612,7 @@ class ObjectDialogue:
                 print(f"DEBUG ({self.obj_info.name}): Conditional flag '{self.obj_info.conditional_dialogue_flag}' NOT met. Directing to locked node.")
                 return self.obj_info.node_if_locked if self.obj_info.node_if_locked else chosen_node
 
-        # --- FIX: New (or modified) block for inherent 'unlocked' status ---
+        # --- New (or modified) block for inherent 'unlocked' status ---
         # This specifically checks the 'unlocked' status set by Rooms.load_room (e.g., from unlocked_day)
         if self.obj_info.unlocked: # If the object is marked as UNLOCKED (e.g., by unlocked_day on current day)
             print(f"DEBUG ({self.obj_info.name}): Object is currently UNLOCKED by its .unlocked status. Directing to UNLOCKED node.")
@@ -1633,6 +1633,7 @@ class ObjectDialogue:
         dialog_y = screen.get_height() - self.dialogue_box_img.get_height() - 20
         screen.blit(self.dialogue_box_img, (dialog_x, dialog_y))
 
+        
         # Padding and text positioning
         text_x = dialog_x + self.dialogue_box_img.get_width() // 2
         text_y = dialog_y + self.dialogue_box_img.get_height() // 2 - 15
@@ -1648,7 +1649,6 @@ class ObjectDialogue:
         # Draw dialogue text
         draw_text(screen, self.current_text_display, size=self.text_size, color=text_color, 
                     x=text_x, y=text_y, center=True, max_width=max_text_width)
-
 
 class Game:
     def __init__(self,text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_from=None):
@@ -1801,8 +1801,8 @@ class Game:
             # for obj in interactable_objects:
             #     obj.draw(self.screen, camera_group.offset)
 
-            screen_pos = player.rect.move(-camera_group.offset.x, -camera_group.offset.y)
-            pygame.draw.rect(self.screen, (255, 0, 0), screen_pos, 2)  # red box = player
+            # screen_pos = player.rect.move(-camera_group.offset.x, -camera_group.offset.y)
+            # pygame.draw.rect(self.screen, (255, 0, 0), screen_pos, 2)  # red box = player
 
             if self.current_dialogue_ref.current_dialogue:
                 # Update the current dialogue
@@ -1888,8 +1888,22 @@ class Rooms:    # class Level in tutorial
         self.fading = False
         self.fade_alpha = 0
         self.next_room_after_transition = None    # Store the target room for fading transitions
-        self.start_intro_after_fade = False # Flag to trigger intro after a fade transition
         
+        # Manage intro sequence
+        self.start_intro_after_fade = False # Flag to trigger intro after a fade transition
+        self.load_room_after_fade = None
+
+        # --- New attributes for Intro Sequence Management ---
+        self.intro_sequence = SimpleChapterIntro(
+            display=self.display, 
+            gameStateManager=self, # Rooms itself acts as the game state manager for the intro
+            text_size=30, # Example text size for intro
+            language="EN", 
+            bgm_vol=0.5, 
+            sfx_vol=0.5
+        )
+        self.intro_active = False # Flag to indicate if intro is currently playing
+
         # Initial background load in __init__ (using room_settings for consistency)
         initial_room_data = room_settings.get(self.current_room)
         if initial_room_data:
@@ -1904,6 +1918,23 @@ class Rooms:    # class Level in tutorial
         # self.npc_manager.npcs.clear()
         self.load_room(self.current_room)
 
+    # --- New callback method for SimpleChapterIntro completion ---
+    def _intro_completed_callback(self):
+        print("DEBUG (Rooms._intro_completed_callback): Intro sequence completed. Preparing to load next room.")
+        self.intro_active = False # Deactivate intro state
+        
+        # Now trigger the actual room transition after the intro has finished fading out
+        if self.load_room_after_fade:
+            self.fading = True # Re-activate fading for the transition FROM intro TO game room
+            self.fade_alpha = 0
+            self.next_room_after_transition = self.load_room_after_fade["room_name"]
+            self.player_pos_after_intro = self.load_room_after_fade["player_start_pos"]
+            self.player_facing_after_intro = self.load_room_after_fade["facing"]
+            print(f"DEBUG (Rooms._intro_completed_callback): Initiating fade FROM intro TO {self.next_room_after_transition}.")
+            # Clear stored intro transition data (as it's now handled by next_room_after_transition)
+            self.load_room_after_fade = None
+        else:
+            print("ERROR (Rooms._intro_completed_callback): next_room_after_intro was None. Cannot load room.")
 
     def advance_day(self):
         # Increments the current day and performs day-change actions
@@ -2168,37 +2199,73 @@ class Rooms:    # class Level in tutorial
             if not self.fading:
                 self.fading = True
                 self.fade_alpha = 0
+                self.start_intro_after_fade = True
 
-            self.advance_day()
-            self.next_room_after_transition = "room01"
-            self.start_intro_after_fade = True 
-            print(f"Set to fade to {self.next_room_after_transition} and start intro for Day {self.current_day}.")
+                target_room_name = "room01"
+                if target_room_name in room_settings:
+                    self.load_room_after_fade = {
+                        "room_name": target_room_name,
+                        "player_start_pos": room_settings[target_room_name]["player_start_pos"],
+                        "facing": (0, -1) # You'll need to define facing for each room in room_settings too.
+                                        # Or handle default facing if not specified per room.
+                    }
+                print(f"Set to fade out current screen. Intro will play, then fade to {self.load_room_after_fade['room_name']}.")
+                
+            # self.advance_day()
+            # Store the intended target room and player position AFTER the intro
+            # self.next_room_after_intro = "Player_room" # Or whatever your default start room after intro is
+            # self.player_pos_after_intro = room_settings["Player_room"]["player_start_pos"] # Get default pos for Player_room
+            # self.player_facing_after_intro = "right" # Default facing after intro
+            # print(f"Set next room after intro to {self.next_room_after_intro} (Day {self.current_day}).")
 
-            class NarratorDummy: 
-                def __init__(self, name="narrator", dialogue_id="System_Narrative"):
-                    self.name = name
-                    self.dialogue_id = dialogue_id
-                    self.rect = pygame.Rect(0,0,1,1)
+            # # Start the intro sequence with a callback
+            # # Pass the next chapter as the 'chapter' argument for intro content loading
+            # self.intro_sequence.start(
+            #     chapter=f"chapter_{self.current_day}", # Pass the NEW current_day as chapter
+            #     completed_callback=self._intro_completed_callback
+            # )
+            # # self.next_room_after_transition = "room01"
+            # self.start_intro_after_fade = True 
+            # print(f"Set to fade to {self.next_room_after_transition} and start intro for Day {self.current_day}.")
 
-            narrator_dummy_obj = NarratorDummy()
-            system_narrative_tree = self.all_dialogues.get(narrator_dummy_obj.dialogue_id)
-            if system_narrative_tree:
-                self.current_dialogue_ref.current_dialogue = Dialog(
-                    narrator_dummy_obj,
-                    self.player,
-                    system_narrative_tree,
-                    start_node_id="intro", 
-                    rooms_instance=self,
-                    screen_surface=pygame.display.get_surface(),
-                    language=self.language,
-                    text_size=self.text_size,
-                    bgm_vol=self.bgm_vol,
-                    sfx_vol=self.sfx_vol
+            #narrator_dummy_obj = NarratorDummy()
+            #system_narrative_tree = self.all_dialogues.get(narrator_dummy_obj.dialogue_id)
+            #if system_narrative_tree:
+            #    self.current_dialogue_ref.current_dialogue = Dialog(
+           #         narrator_dummy_obj,
+            #        self.player,
+            #        system_narrative_tree,
+            #        start_node_id="intro", 
+            #        rooms_instance=self,
+            #        screen_surface=pygame.display.get_surface(),
+            #       text_size=self.text_size,
+             #       bgm_vol=self.bgm_vol,
+             #       sfx_vol=self.sfx_vol
 
-                )
-                self.current_dialogue_ref.current_dialogue.talking = True 
-            else:
-                print("Error: 'System_Narrative' dialogue data not found for intro after fade.")
+             #   )
+             #   self.current_dialogue_ref.current_dialogue.talking = True 
+         #   else:
+           #     print("Error: 'System_Narrative' dialogue data not found for intro after fade.")
+            # class NarratorDummy: 
+            #     def __init__(self, name="narrator", dialogue_id="System_Narrative"):
+            #         self.name = name
+            #         self.dialogue_id = dialogue_id
+            #         self.rect = pygame.Rect(0,0,1,1)
+
+            # narrator_dummy_obj = NarratorDummy()
+            # system_narrative_tree = all_dialogues.get(narrator_dummy_obj.dialogue_id)
+            # if system_narrative_tree:
+            #     self.current_dialogue_ref.current_dialogue = Dialog(
+            #         narrator_dummy_obj,
+            #         self.player,
+            #         system_narrative_tree,
+            #         start_node_id="intro", 
+            #         rooms_instance=self,
+            #         screen_surface=pygame.display.get_surface() 
+            #     )
+            #     self.current_dialogue_ref.current_dialogue.talking = True 
+            # else:
+            #     print("Error: 'System_Narrative' dialogue data not found for intro after fade.")
             
         elif event_name == "set_flag": # Handle the "set_flag" event
             flag_name = event_data.get("flag_name")
@@ -2233,6 +2300,12 @@ class Rooms:    # class Level in tutorial
                     #self.gameStateManager.set_state('start')
            #         return False  # This will exit the level loop
 
+        # --- Intro Sequence Check (Highest Priority) ---
+        if self.intro_active:
+            self.intro_sequence.update(keys)
+            self.intro_sequence.draw(self.display)
+            return # IMPORTANT: Do not run any other game logic or drawing while intro is active
+
         if not keys[pygame.K_SPACE]:
             self.space_released = True
         if not keys[pygame.K_q]:
@@ -2245,9 +2318,31 @@ class Rooms:    # class Level in tutorial
         if not keys[pygame.K_s]: # For navigating choices
             self.s_released = True
 
-        # --- Movement ---
+        # --- Intro Sequence Check (Highest Priority) ---
+        if self.intro_active:
+            self.intro_sequence.update(keys)
+            self.intro_sequence.draw(self.display)
+            # Apply fade *during* intro for its own fade-in/out
+            # The SimpleChapterIntro now handles its own internal fading
+            # A semi-transparent overlay for the fade is handled within SimpleChapterIntro.draw
+            return # IMPORTANT: Do not run any other game logic or drawing while intro is active
+
+        # If not fading and not intro_active, proceed with regular game logic
+        # Apply fade overlay if fading is active (for fade-out/fade-in transitions)
+        if self.fading:
+            if self.fade_alpha > 0: # Only draw overlay if not fully transparent
+                fade_surface = pygame.Surface(self.display.get_size(), pygame.SRCALPHA)
+                fade_surface.fill((0, 0, 0, self.fade_alpha))
+                self.display.blit(fade_surface, (0, 0))
+            # Continue updating logic below for the current room
+        
+        # Only process player movement and interaction if no dialogue or cutscene is active
+        # and not in a fade-out phase of the game (before intro starts)
         if not self.current_dialogue_ref.current_dialogue or not self.current_dialogue_ref.current_dialogue.talking:
-            is_moving = self.player.move(moving_left,moving_right)
+            if not self.fading or self.fade_alpha == 0: # Allow movement only if not actively fading OR fade is fully in
+                is_moving = self.player.move(moving_left,moving_right)
+            else:
+                is_moving = False # Prevent movement during fade transitions
         else:
             is_moving = False
         self.player.update_animation(is_moving)
@@ -2298,23 +2393,17 @@ class Rooms:    # class Level in tutorial
                             start_node_id=chosen_start_node 
                         )
                         print(f"Interacting with {obj_to_interact.name}. Dialogue started from node: {chosen_start_node}")
-                    else:
-                        print(f"INFO: Object interaction (Q) ignored: Not near an object with dialogue/transition.")
+                else:
+                    print(f"INFO: Object interaction (Q) ignored: Not near an object with dialogue/transition.")
 
-            # Handle NPC Interaction (Space Key to START new NPC dialogue)
-            # Handle NPC Interaction (SPACE key for both STARTING and ADVANCING)
-        # This block now handles both starting a new NPC dialogue AND advancing an existing one.
+            
+        # Handle NPC Interaction (SPACE key for both STARTING and ADVANCING)
         if keys[pygame.K_SPACE] and self.space_released: # Check space_released for initial press
             self.space_released = False # Debounce 'SPACE' for initial interaction/first advance
             
             # If an NPC Dialogue is already active, advance it (or handle choices).
             if isinstance(dialogue_instance_at_frame_start, Dialog) and dialogue_instance_at_frame_start.talking:
                 if dialogue_instance_at_frame_start.choices_active:
-                    # Choice navigation (W/S) and selection (E) are handled in separate elifs
-                    # but should typically be outside this main SPACE handler or in a nested if.
-                    # Given the request, we assume SPACE is only for *advancing* text,
-                    # and W/S/E are still for choices.
-                    # So, if choices are active, SPACE does nothing here, W/S/E handle it.
                     pass # SPACE does nothing if choices are active
                 else: # NPC Dialogue (not choices) advances with SPACE
                     dialogue_instance_at_frame_start.handle_space(self.display, keys) # Call handle_space
@@ -2331,10 +2420,6 @@ class Rooms:    # class Level in tutorial
                         # 1. Prioritize day-specific nodes if the NPC has them defined (from npc_data.json)
                         # This covers the "Dean" example with `day_specific_nodes`
                         if hasattr(nearest_npc, 'day_specific_nodes') and nearest_npc.day_specific_nodes:
-                            # Note: npc_data.json has "day_specific_locations", not "day_specific_nodes" for NPCs generally.
-                            # Re-checking your JSON, 'day_specific_locations' defines where an NPC IS, not what dialogue they SAY.
-                            # So, we should *not* use day_specific_nodes from NPC here unless you intend to add that.
-                            # For now, let's assume chapter_X is the main way to branch NPC dialogue by day.
                             pass # Removing this block to simplify based on current JSON.
 
                         # 2. Check for chapter-specific nodes (e.g., "chapter_1", "chapter_2") directly in the NPC's dialogue content.
@@ -2375,8 +2460,7 @@ class Rooms:    # class Level in tutorial
                         print(f"DEBUG: Started dialogue with NPC: {nearest_npc.name} from node: {chosen_story_id}")
                     else:
                         print(f"Warning: No dialogue tree found for NPC: {nearest_npc.name} (dialogue_id: {nearest_npc.dialogue_id})")
-                else:
-                    print(f"INFO: NPC interaction (SPACE) ignored: Not near an NPC.")
+
 
         # --- Dialogue State Update and Input Handling (Unified) ---
         # This is the dialogue instance that will be updated and have its input handled.
@@ -2409,9 +2493,6 @@ class Rooms:    # class Level in tutorial
                     dialogue_instance_at_frame_start.handle_space(self.display, keys) # Call handle_space (SPACE is used for NPC dialogue)
         
             # --- Dialogue Reference Management ---
-            # if not dialogue_instance_at_frame_start.talking:
-            #     if self.current_dialogue_ref.current_dialogue is dialogue_instance_at_frame_start:
-            #         self.current_dialogue_ref.current_dialogue = None 
             if dialogue_instance_at_frame_start and not dialogue_instance_at_frame_start.talking:
                 if self.current_dialogue_ref.current_dialogue is dialogue_instance_at_frame_start:
                     self.current_dialogue_ref.current_dialogue = None
@@ -2440,7 +2521,7 @@ class Rooms:    # class Level in tutorial
             for obj in near_obj:
                 # Calculate screen position based on camera offset
                 screen_pos = obj.rect.topleft - camera_group.offset # Use camera_group.offset
-                self.display.blit(text_surf, (screen_pos.x + text_surf.get_width() // 2, screen_pos.y - 20))
+                self.display.blit(text_surf, (screen_pos.x - text_surf.get_width() // 2, screen_pos.y - 20))
         
         # --- Draw dialogue if active ---
         if self.current_dialogue_ref.current_dialogue:
@@ -2458,15 +2539,27 @@ class Rooms:    # class Level in tutorial
             self.display.blit(fade_surface, (0, 0))
 
             if self.fade_alpha >= 255:
-                # Transition complete — change room state
+                if self.start_intro_after_fade:
+                    self.intro_active = True
+                    self.advance_day()
+                    self.intro_sequence.start(
+                        chapter=f"chapter_{self.current_day}",
+                        completed_callback=self._intro_completed_callback
+                    )
+                    self.start_intro_after_fade = False
+                    print(f"DEBUG (Rooms.run): Started intro for chapter_{self.current_day}.")
                 if self.next_room_after_transition:
-                    target_room = self.next_room_after_transition
+                    self.load_room(
+                        self.next_room_after_transition,
+                        facing=getattr(self, 'player_facing_after_intro', "right") # Use if set by intro
+                    )
                     self.next_room_after_transition = None # Reset after use
-                else:
-                    print("Warning: Fading complete but next_room_after_transition was not set.")
-                    target_room = "room01" 
-
-                self.load_room(target_room)       # call a method to load new map/positions
+                    self.player_pos_after_intro = None
+                    self.player_facing_after_intro = "right"
+                    self.fade_alpha = 255
+                elif self.fade_alpha <= 0:
+                    self.fade_alpha = 0
+                    self.fading = False       # call a method to load new map/positions
                 
                 # If the 'day_end_and_intro_next_day' event set this flag
                 if hasattr(self, 'start_intro_after_fade') and self.start_intro_after_fade:
