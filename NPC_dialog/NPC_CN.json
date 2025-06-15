@@ -7,7 +7,7 @@
             {"speaker" :"narrator","text":"(毕业后，你被身为诊所院长的父亲邀请过去他的诊所工作。)","shown": false},
             {"speaker": "narrator","text":"(“Mindscape Chamber”,这是诊所的名字。)","shown":false},
             {"speaker" :"narrator","text":"(今天，是你上班的第一天。)","shown": false},
-            {"speaker" :"narrator","text":"[提示: 按 W / D 键 来移动角色]","shown": false},
+            {"speaker" :"narrator","text":"[提示: 按 W / D 键 来移动角色,按 Space 与角色交互]","shown": false},
             {"speaker" :"narrator","text":"...........","shown": false}
             
         ],
@@ -180,7 +180,7 @@
     ],
 
      "repeat_only":[
-        {"speaker":"npc","text":"(……离开吧)"}
+        {"speaker":"player","text":"(……离开吧)"}
     ],
     
 
@@ -217,7 +217,7 @@
     ],
 
     "Ship_of_Theseus":[
-        {"cg":["picture/Ending/black screen.png"]},
+        {"cg":["picture/Ending/black_screen.png"]},
         {"speaker" :"player","text":"……如果必须选择，我会拉下拉杆。","bgm": "bgm/ship.mp3"},
         {"speaker" :"narrator","text":"(你见他露出欣慰的微笑)"},
         {"speaker" :"npc","text":"很好，你也能理解我的逻辑不是吗？"},
@@ -251,7 +251,7 @@
     ],
 
     "Justice_Served":[
-        {"cg":["picture/Ending/black screen.png"]},
+        {"cg":["picture/Ending/black_screen.png"]},
         {"speaker" :"player","text":" 我不会碰拉杆…...每个生命都该有平等存续的机会。","bgm": "bgm/justice.mp3"},
         {"speaker" :"npc","text":"真天真，你还是选择了道义主义。"},
         {"speaker" :"player","text":"……我无法认同你的观念，父亲。"},
@@ -287,7 +287,7 @@
 
     "Rebirth_of_the_Dual_Soul":[
 
-        {"cg":["picture/Ending/black screen.png"]},
+        {"cg":["picture/Ending/black_screen.png"]},
         {"speaker" :"player","text":"少扯什么哲学问题，也别用那种比喻来洗白自己！!","bgm": "bgm/rebirth.mp3"},
         {"speaker" :"npc","text":"呵，你情绪太容易激动了.......就像你母亲一样。"},
         {"speaker" :"player","text":" 别在这种时候提起母亲，如果当年不是因为你一直与她争吵，她也不会离家出走…… "},
@@ -344,7 +344,7 @@
         {"speaker" :"player","text":"你还有什么话，就留着跟警察说吧。"},
         {"speaker" :"npc","text":"……"},
         {"speaker" :"narrator","text":"(他不再说话，只是闭上了眼，犹如等待审判的罪犯)"},
-        {"cg":["picture/Ending/black screen.png"]},
+        {"cg":["picture/Ending/black_screen.png"]},
         {"speaker":"narrator","text":"(几个星期后)"},
         {"speaker" :"narrator","text":"???: [你还好吗？] "},
         {"speaker" :"player","text":"该难受的人是你吧，你才是主人格，怎么还关心起我了。"},
@@ -390,7 +390,7 @@
         {"speaker" :"player","text":"(因完美主义而导致的焦虑心理。CBT(Cognitive Behavioural Therapy)会是个适合她且有效的治疗方式。)","shown": false},
         {"speaker" :"npc","text":"我听说你们这里有能治疗各种心理问题的仪器？这能直接解决我的问题吗？","shown": false},
         {"speaker" :"player","text":"(等等，这跟我想的发展不一样。嗯，但我确实忽略了这里有那个仪器能使用。)","shown": false},
-        {"speaker" :"player","text":"的，我桌上的这个“头盔”就是这个仪器的本体。它能进入人的潜意识，查看关于过去的记忆。","shown": false},
+        {"speaker" :"player","text":"是的，我桌上的这个“头盔”就是这个仪器的本体。它能进入人的潜意识，查看关于过去的记忆。","shown": false},
         {"speaker" :"npc","text":"所有记忆？","shown": false},
         {"speaker" :"player","text":"不，只是些会跟你的焦虑问题有关的记忆片段。","shown": false},
         {"speaker" :"npc","text":"查看记忆跟治疗有什么关系？","shown": false},
@@ -454,13 +454,14 @@
         {"speaker" :"player","text":"但请同样记得不要给自己造成太大压力，你已经做得很好了郑小姐，无论是作为优等生、白领还是你自己。","shown": false},
         {"speaker" :"npc","text":"……我知道了，谢谢。","shown": false},
 
-        {"cg":"picture/P1 End1.png"},
+        {"cg":"picture/Ending/P1_End1.png"},
         {"speaker" :"npc","text":"(那位医生的治疗真是有效，这段时间我已经不会再为一些小事而焦躁了。)","bgm": "bgm/zheng_destroyed.mp3","shown": false},
         {"speaker" :"npc","text":"(老板也说我最近精神了许多，工作效率可见的变好。)","shown": false},
         {"speaker" :"npc","text":"(就这样继续在职场打拼吧，稳定的生活就是我的理想……)","shown": false},
         {"speaker" :"npc","text":" (...)","shown": false},
         {"speaker" :"npc","text":"(我的理想真的是这个吗？)","shown": false},
-        {"speaker" :"narrator","text":"?: Zheng, 晚上的庆功宴你来不来, 老板说是奖励我们这次策划做得非常好，要请客哦！","shown": false,"next":"sub_end_1"}
+        {"speaker" :"narrator","text":"?: Zheng, 晚上的庆功宴你来不来, 老板说是奖励我们这次策划做得非常好，要请客哦！","shown": false},
+        {"next":"sub_end_1"}
      ],
      "sub_end_1":[
      
@@ -477,10 +478,11 @@
         {"speaker" :"player","text":"那就好，我已经通过了解你潜意识内的记忆做出了治疗选择，之后你就能恢复正常生活了。","shown": false},
         {"speaker" :"player","text":"但请同样记得不要给自己造成太大压力，你已经做得很好了郑小姐，无论是作为优等生、白领还是你自己。","shown": false},
         {"speaker" :"npc","text":"……我知道了，谢谢。","shown": false},
-        {"cg":"picture/P1 End2.png"},
+        {"cg":"picture/Ending/P1_End2.png"},
         {"speaker" :"npc","text":" (那位医生的治疗真是有效，这段时间我已经不会再为一些小事而焦躁了。)","bgm": "bgm/zheng_preserved.mp3","shown": false},
         {"speaker" :"npc","text":" (更重要的是，我想起了自己真正想要的东西——研究。)","shown": false},
-        {"speaker" :"npc","text":"(我怎么能忘了呢，想在心理学埋头研究的理想。)","shown": false,"next":"sub_end_2"}
+        {"speaker" :"npc","text":"(我怎么能忘了呢，想在心理学埋头研究的理想。)","shown": false},
+        {"next":"sub_end_2"}
      ],
      "sub_end_2":[
        
@@ -597,14 +599,15 @@
         {"speaker" :"npc","text":"好，真是谢谢你了，医生。","shown": false},
         {"speaker" :"narrator","text":".......","shown": false},
 
-        {"cg":"picture/P2 End1.png"},
+        {"cg":"picture/Ending/P2_End1.png"},
         {"speaker" :"npc","text":" (噩梦已离我远去，坐车时也不再害怕了)","bgm": "bgm/emma_destroyed.mp3","shown": false},
         {"speaker" :"npc","text":"(真好啊，感觉自己一身轻松，也可以重新接工作了)","shown": false},
         {"speaker" :"npc","text":"(可是……为什么当我站在镜头前时，总觉得少了什么？)","shown": false},
         {"speaker" :"npc","text":" (那些曾经让我心跳加速的闪光灯，现在只是刺眼的光)","shown": false},
         {"speaker" :"npc","text":"(T台上的步伐像机械程序，精准却空洞)","shown": false},
         {"speaker" :"npc","text":"(我翻开手机相册，看到过去走秀的照片——照片里的女孩笑得自信耀眼，可我却想不起她当时的心情。)","shown": false},
-        {"speaker" :"narrator","text": "?: Emma，有新的发布会需要你出场！","shown": false,"next":"sub_end_3"}
+        {"speaker" :"narrator","text": "?: Emma，有新的发布会需要你出场！","shown": false},
+        {"next":"sub_end_3"}
     ],
 
     "sub_end_3":[
@@ -625,7 +628,7 @@
         {"speaker" :"npc","text":"好，真是谢谢你了，医生。","shown": false},
         {"speaker" :"narrator","text":".......","shown": false},
 
-        {"cg":"picture/P2 End2.png"},
+        {"cg":"picture/Ending/P2_End2.png"},
         {"speaker" :"npc","text":"(……又梦见那场车祸了)","bgm": "bgm/emma_preserved.mp3","shown": false},
         {"speaker" :"npc","text":"  (一切都如此清晰，但是我的呼吸却平静得出奇)","shown": false},
         {"speaker" :"npc","text":"(治疗还是有效果的，我没再像之前一样那么恐惧了)","shown": false},
@@ -633,7 +636,8 @@
         {"speaker" :"narrator","text":"(洗漱，更衣，早餐后，我走到了车前)","shown": false},
         {"speaker" :"narrator","text":"(上车后迟迟没有发动)","shown": false},
         {"speaker" :"npc","text":"(……没事的，慢一点。就像第一次走秀时一样)","shown": false},
-        {"speaker" :"narrator","text":"(发动后，车缓缓驶出，阳光照在了方向盘上)","shown": false,"next":"sub_end_4"}
+        {"speaker" :"narrator","text":"(发动后，车缓缓驶出，阳光照在了方向盘上)","shown": false},
+        {"next":"sub_end_4"}
     ],
 
     "sub_end_4":[
