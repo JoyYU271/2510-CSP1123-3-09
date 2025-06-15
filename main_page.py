@@ -26,7 +26,7 @@ bg_img = pygame.transform.scale(bg_img, (screen_width, screen_height))
 #button image
 start_img = pygame.image.load('main page/start.png').convert_alpha() #alpha is use to keep transparent background
 load_img = pygame.image.load('main page/load.png').convert_alpha()
-collections_img = pygame.image.load('main page/collections.png').convert_alpha()
+collections_img = pygame.image.load('main page/library.png').convert_alpha()
 settings_img = pygame.image.load('main page/settings.png').convert_alpha()
 exit_img = pygame.image.load('main page/exit.png').convert_alpha()
 
@@ -56,7 +56,7 @@ def main_menu():
 
     start_button = Button(image=start_img, pos=(300, 120), scale=0.24)
     load_button = Button(image=load_img, pos=(300, 280), scale=0.24)
-    collections_button = Button(image=collections_img, pos=(300, 440), scale=0.24)
+    library_button = Button(image=collections_img, pos=(300, 440), scale=0.24)
     settings_button = Button(image=settings_img, pos=(300, 600), scale=0.24)
     #exit_button = Button(image=exit_img, pos=(300, 640), scale=0.24)
 
@@ -66,7 +66,7 @@ def main_menu():
    
         start_button.draw(screen)
         load_button.draw(screen)
-        collections_button.draw(screen)
+        library_button.draw(screen)
         settings_button.draw(screen)
         #exit_button.draw(screen)
 
@@ -114,7 +114,7 @@ def main_menu():
                 elif load_button.checkForInput(mouse_pos):
                     click_sound.play()
                     load_screen()
-                elif collections_button.checkForInput(mouse_pos):
+                elif library_button.checkForInput(mouse_pos):
                     click_sound.play()
                     collections_screen()
                 elif settings_button.checkForInput(mouse_pos):
@@ -206,7 +206,7 @@ def collections_screen():
     #group endings follow character
     grouped_endings = [
         ("Zheng's Endings", [
-            ("The Routine Life", show_zheng_routine_life),
+            ("The Routine Life", show_zheng_routine_life ),
             ("Rediscovered Dreams", show_zheng_dreams)
         ]),
         ("Emma's Endings", [
@@ -214,9 +214,9 @@ def collections_screen():
             ("Living Despite Fear", show_emma_fear)
         ]),
         ("Player's Endings", [
-            ("Ship of Theseus", show_player_ship if unlocked_endings.get("ending_unlocked_Ship_of_Theseus") else None),
-            ("Justice Served", show_player_justice if unlocked_endings.get("ending_unlocked_Justice_Served") else None),
-            ("Rebirth of the Dual Soul", show_player_rebirth if unlocked_endings.get("ending_unlocked_Rebirth_of_the_Dual_Soul") else None)
+            ("Ship of Theseus", show_player_ship ),
+            ("Justice Served", show_player_justice ),
+            ("Rebirth of the Dual Soul", show_player_rebirth )
         ])
     ]
 

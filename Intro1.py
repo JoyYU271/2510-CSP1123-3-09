@@ -963,8 +963,11 @@ def draw_text(surface, text, size=None, color=(0,0,0), x=0, y=0, center=False, m
     font_size = size if size is not None else current_text_size
     font = pygame.font.Font('fonts/NotoSansSC-Regular.ttf', font_size)
 
+    line_y = y
+    line_height = font.size('Tg')[1]#height of a typical line
+
     # If no max width is specified or text is short, render it normally
-    if max_width is None or font.size(text)[0] <= max_width:
+    if max_width is None :
         text_surface = font.render(text,True,color)
         text_rect = text_surface.get_rect()# set the words location (in center)
         if center:
@@ -974,28 +977,28 @@ def draw_text(surface, text, size=None, color=(0,0,0), x=0, y=0, center=False, m
         surface.blit(text_surface, text_rect)
         return y + text_rect.height #return the y position after the text
     
-    #word wrap implementation
-    words = text.split(' ')
+    
+  
     current_line = ""
-    line_y = y
-    line_height = font.size('Tg')[1]#height of a typical line
+    
 
-    for word in words:
-        test_line = current_line + word + " "
+    for char in text:
+        test_line = current_line + char 
         # test if this line woy=uld be too wide
         if font.size(test_line)[0] <= max_width:
             current_line = test_line
         else:
             #render the current line
-            if current_line:
-                line_surface = font.render(current_line,True,color)
-                line_rect = line_surface.get_rect()
-                if center:
+            line_surface = font.render(current_line, True, color)
+            line_rect = line_surface.get_rect()
+            if center:
                     line_rect.midtop = (x,line_y)
-                    surface.blit(line_surface,line_rect)
-                    line_y += line_height
+            else:
+                    line_rect.topleft = (x,line_y)
+            surface.blit(line_surface,line_rect)
+            line_y += line_height
                 #start a new line with the current word
-                current_line = word + " "
+            current_line = char
 
     if current_line:
         line_surface = font.render(current_line,True,color)
@@ -1005,8 +1008,9 @@ def draw_text(surface, text, size=None, color=(0,0,0), x=0, y=0, center=False, m
         else:
             line_rect.topleft = (x,line_y)
         surface.blit(line_surface, line_rect)
+        line_y += line_height
 
-    return line_y + line_height#return the y position after all text
+    return line_y #return the y position after all text
     
 
 #===========NPCs==============
