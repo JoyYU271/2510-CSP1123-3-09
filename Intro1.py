@@ -276,9 +276,9 @@ class dialog:
         
         # Check if the node is a dictionary (like "System_Narrative")
         if isinstance(current_data, dict):
-            # For nodes that branch by chapter (e.g., "intro" in System_Narrative)
+            # For nodes that branch by chapter (e.g., "chapter_1" in System_Narrative)
             chapter_key = f"chapter_{self.rooms_instance.current_day}"
-            dialogue_list = current_data[node_id].get(chapter_key)
+            dialogue_list = current_data.get(chapter_key)
             if dialogue_list is None:
                 dialogue_list = current_data.get("start")
             if dialogue_list:
@@ -367,18 +367,25 @@ class dialog:
         # Declare global variables at the very top of the function if they are modified here
         global game_chapter, flags, player_choices, save_checkpoint 
 
-        # If showing CG, space advances the CG
-        if self.showing_cg:
-            self.cg_index += 1
-            if self.cg_index >= len(self.cg_images):
-                # All CGs displayed, stop showing CGs
-                self.showing_cg = False
-                self.cg_images = [] 
-                self.cg_index = 0
-            else:
-                self.fade(screen_surface, cg_list=[self.cg_images[self.cg_index]], fade_in=True) 
-                return # Consume space and don't advance dialogue yet
+        # # If showing CG, space advances the CG
+        # if self.showing_cg:
+        #     self.cg_index += 1
+        #     if self.cg_index >= len(self.cg_images):
+        #         # All CGs displayed, stop showing CGs
+        #         self.showing_cg = False
+        #         self.cg_images = [] 
+        #         self.cg_index = 0
+        #     else:
+        #         self.fade(screen_surface, cg_list=[self.cg_images[self.cg_index]], fade_in=True) 
+        #         return # Consume space and don't advance dialogue yet
         
+        if self.showing_cg:
+            # If a CG is showing, space advances the CG
+            if self.cg_index < len(self.cg_images) - 1:
+                self.cg_index += 1
+                self.fade(screen, cg_list=[self.cg_images[self.cg_index]], fade_in=True)
+                return        # 等玩家再按 SPACE
+
         # If not talking or choices are active, spacebar won't advance dialogue (unless for CGs)
         if not self.talking or self.choices_active:
             return
@@ -389,6 +396,22 @@ class dialog:
                 self.current_text_display = self.current_line_data.get("text", "")
             self.typing_complete = True
             return # Consume this space press; actual line advancement happens on the *next* space press
+
+        # Mark current line as shown before advancing
+        if self.current_line_data and isinstance(self.current_line_data, dict):
+           self.current_line_data["shown"] = True
+           print(f"Marked as shown: {self.current_line_data.get('text', 'No text')[:50]}...")
+
+        if self.current_line_data and "cg" in self.current_line_data and not self.showing_cg:
+            cg_paths = (self.current_line_data["cg"]
+                        if isinstance(self.current_line_data["cg"], list)
+                        else [self.current_line_data["cg"]])
+            self.cg_images = [pygame.image.load(p).convert_alpha()
+                            for p in cg_paths]
+            self.cg_index = 0
+            self.showing_cg = True
+            self.fade(screen, cg_list=[self.cg_images[0]], fade_in=True)
+            return
 
         # Typing is complete, so advance to the next line of dialogue
         self.current_line_index += 1
@@ -441,11 +464,13 @@ class dialog:
             # Handle "ending" type directly in handle_space
             if self.current_line_data.get("type") == "ending":
                 self.chapter_end = True
+
                 if game_chapter >= 3: 
                     self.ready_to_quit = True
                     print(f"Main ending reached! ready_to_quit set to True")
                 else:
                     self.fade(screen_surface , fade_in=True, cg_list=[]) # Fade to black
+                    
                     game_chapter += 1 # Modify global game_chapter
                     self.current_line_index = 0
                     self.talking = False # End current dialogue
@@ -610,26 +635,31 @@ class dialog:
         fade_surface = pygame.Surface((screen_surface.get_width(), screen_surface.get_height()))
         fade_surface.fill((0, 0, 0)) # Black for fade effect
         
-        cg_image_to_display = None
-        if cg_list and len(cg_list) > 0 and isinstance(cg_list[0], pygame.Surface):
-            cg_image_to_display = pygame.transform.scale(cg_list[0], (screen_surface.get_width(), screen_surface.get_height())).convert_alpha()
+        if cg_list:
+            original_image =  cg_list[0]
+        #for original_image in cg_list:
+            cg_image_scaled = pygame.transform.scale(original_image ,(screen.get_width(),screen.get_height())).convert_alpha()
+        else:
+            cg_image_scaled = None
 
         if fade_in:
-            for alpha in range(0, 256, 10): 
-                fade_surface.set_alpha(255 - alpha) 
-                screen_surface.fill((0,0,0)) 
-                if cg_image_to_display:
-                    screen_surface.blit(cg_image_to_display, (0,0))
-                screen_surface.blit(fade_surface,(0,0)) 
+            #fade in
+           for alpha in range (0,255,10):
+                fade_surface.set_alpha(alpha)
+                screen.fill((0,0,0))
+                if cg_image_scaled:
+                    screen.blit(cg_image_scaled, (0,0))
+                screen.blit(fade_surface,(0,0))
                 pygame.display.update()
                 pygame.time.delay(30)
         else:
-            for alpha in range(255, -1, -10): 
-                fade_surface.set_alpha(alpha) 
-                screen_surface.fill((0,0,0)) 
-                if cg_image_to_display:
-                    screen_surface.blit(cg_image_to_display, (0,0))
-                screen_surface.blit(fade_surface,(0,0)) 
+            #fade out
+            for alpha in range (255,-1,-10):
+                screen.fill((0,0,0))
+                fade_surface.set_alpha(alpha)
+                if cg_image_scaled:
+                    screen.blit(cg_image_scaled, (0,0))
+                screen.blit(fade_surface,(0,0))
                 pygame.display.update()
                 pygame.time.delay(30)
 
@@ -1230,13 +1260,11 @@ class ObjectDialogue:
                 # Add target_room if present in obj_info (this is specific to the ObjectDialogue's object)
                 if hasattr(self.obj_info, 'next_room') and self.obj_info.next_room:
                     event_data_to_pass["target_room"] = self.obj_info.next_room
-                
                 print(f"ObjectDialogue: Triggering event: {event_name} with data: {event_data_to_pass}")
                 self.rooms_instance.handle_dialogue_event(event_name, event_data_to_pass) 
                 self.talking = False # End this dialogue instance
                 print("ObjectDialogue: Event handled, this dialogue instance is stopping.")
                 return
-            
             # If it's a regular text line (and no next/event), reset typing for it
             self.reset_typing() 
         else: # End of current dialogue list for this node (natural end of dialogue)
@@ -2037,8 +2065,12 @@ class Rooms:    # class Level in tutorial
             #     if self.current_dialogue_ref.current_dialogue is dialogue_instance_at_frame_start:
             #         self.current_dialogue_ref.current_dialogue = None 
             if dialogue_instance_at_frame_start and not dialogue_instance_at_frame_start.talking:
-                self.current_dialogue_ref.current_dialogue = None
-                print("Rooms: Current dialogue reference cleared (original dialogue finished and no new one set).")
+                if self.current_dialogue_ref.current_dialogue is dialogue_instance_at_frame_start:
+                    self.current_dialogue_ref.current_dialogue = None
+                    print("Rooms: Current dialogue reference cleared (original dialogue finished and no new one set).")
+                else:
+                    # This case means a new dialogue was started by an event, so we don't clear it.
+                    print("Rooms: Current dialogue reference NOT cleared because a new dialogue was initiated by an event.")
                 
             # --- Drawing and Update Loop (Unified) ---
             # Update and draw current dialogue if active
