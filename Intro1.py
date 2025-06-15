@@ -435,7 +435,8 @@ class dialog:
                             shown_dialogues=self.shown_dialogues
                         )
                 # Pass event to rooms_instance for higher-level game state changes
-                self.rooms_instance.handle_dialogue_event(event_name)
+                self.rooms_instance.handle_dialogue_event(event_name, self.current_line_data.get("event_data"))
+
                 self.talking = False # This dialogue instance finishes its job after triggering event
                 return 
 
@@ -1800,10 +1801,10 @@ class Rooms:    # class Level in tutorial
             dummy_obj = DynamicNarrativeDummy()
             dialogue_tree_to_load = None
 
-            if target_npc_dialogue_id in all_dialogues:
+            if target_npc_dialogue_id in self.game_ref.all_dialogues:
                 dummy_obj.name = target_npc_dialogue_id 
                 dummy_obj.dialogue_id = target_npc_dialogue_id 
-                dialogue_tree_to_load = all_dialogues.get(target_npc_dialogue_id)
+                dialogue_tree_to_load = self.game_ref.all_dialogues.get(target_npc_dialogue_id)
             else:
                 print(f"Warning: Target NPC dialogue ID '{target_npc_dialogue_id}' not found in all_dialogues. Falling back to 'System_Narrative'.")
                 dummy_obj.name = "narrator"

@@ -388,9 +388,6 @@
         {"speaker" :"narrator","text":"包括抑郁症、焦虑症、酒精和药物使用问题、婚姻问题、饮食失调和严重的精神疾病。)","shown": false},
         {"speaker" :"narrator","text":"(CBT治疗通常涉及改变思维模式的努力。)","shown": false},
         {"speaker" :"player","text":"(因完美主义而导致的焦虑心理。CBT(Cognitive Behavioural Therapy)会是个适合她且有效的治疗方式。)","shown": false},
-        {"speaker" :"narrator","text":"(Cognitive behavioral therapy (CBT) is a form of psychological treatment that has been demonstrated to be effective for a range of problems","shown": false},
-        {"speaker" :"narrator","text":" including depression, anxiety disorders, alcohol and drug use problems, marital problems, eating disorders, and severe mental illness. )","shown": false},
-        {"speaker" :"narrator","text":"(CBT treatment usually involves efforts to change thinking patterns. )","shown": false},
         {"speaker" :"npc","text":"我听说你们这里有能治疗各种心理问题的仪器？这能直接解决我的问题吗？","shown": false},
         {"speaker" :"player","text":"(等等，这跟我想的发展不一样。嗯，但我确实忽略了这里有那个仪器能使用。)","shown": false},
         {"speaker" :"player","text":"的，我桌上的这个“头盔”就是这个仪器的本体。它能进入人的潜意识，查看关于过去的记忆。","shown": false},
@@ -411,6 +408,9 @@
         {"speaker" :"player","text":"嗯，签字后我就会开始准备用仪器为你治疗。","shown": false},
         {"speaker" :"narrator","text":"(她毫不犹豫的签下，然后把合同递回给你)","sound": "write_pen","shown": false},
         {"speaker" :"player","text":"(好了，那现在开始吧。)","shown": false},
+
+        {"event":"patient_zheng_talked_to"},
+
         {"next":"chapter_1_common"}
 
     ],
@@ -462,7 +462,8 @@
         {"speaker" :"npc","text":"(我的理想真的是这个吗？)","shown": false},
         {"speaker" :"npc","text":"?: Zheng, 晚上的庆功宴你来不来, 老板说是奖励我们这次策划做得非常好，要请客哦！","shown": false},
         {"speaker" :"npc","text":"嗯，我会去的。","shown": false},
-        {"speaker" :"npc","text":"(算了, 这样也好不是吗？)","shown": false}
+        {"speaker" :"npc","text":"(算了, 这样也好不是吗？)","shown": false},
+        {"event": "day_end_and_intro_next_day"}
      ],
 
      "back_reality_keep1":[
@@ -479,7 +480,8 @@
         {"speaker" :"npc","text":" (更重要的是，我想起了自己真正想要的东西——研究。)","shown": false},
         {"speaker" :"npc","text":"(我怎么能忘了呢，想在心理学埋头研究的理想。)","shown": false},
         {"speaker" :"npc","text":"(但还好，一切都不算晚。)","shown": false},
-        {"speaker" :"npc","text":"(这会是新开始。)","shown": false}
+        {"speaker" :"npc","text":"(这会是新开始。)","shown": false},
+        {"event": "day_end_and_intro_next_day"}
      ]
   },
 
@@ -601,7 +603,9 @@
         {"speaker" :"narrator","text": "?: Emma，有新的发布会需要你出场！","shown": false},
         {"speaker" :"npc","text":"好，我会去的。","shown": false},
         {"speaker" :"npc","text":" (这样就好)","shown": false},
-        {"speaker" :"npc","text":"(至少，我不会再尖叫着从噩梦中惊醒了)","shown": false}
+        {"speaker" :"npc","text":"(至少，我不会再尖叫着从噩梦中惊醒了)","shown": false},
+
+        {"event": "day_end_and_intro_next_day"}
 
     ],
 
@@ -625,7 +629,9 @@
         {"speaker" :"npc","text":"(……没事的，慢一点。就像第一次走秀时一样)","shown": false},
         {"speaker" :"narrator","text":"(发动后，车缓缓驶出，阳光照在了方向盘上)","shown": false},
         {"speaker" :"npc","text":"(噩梦还没消失)","shown": false},
-        {"speaker" :"npc","text":"(但今天，我赢了他一次)","shown": false}
+        {"speaker" :"npc","text":"(但今天，我赢了他一次)","shown": false},
+
+        {"event": "day_end_and_intro_next_day"}
      
     ]
   }
