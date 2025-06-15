@@ -1,0 +1,375 @@
+{
+  "table_dialogue":{
+    "start":[
+      {"text": "柜台"}
+  ]
+
+  },
+
+  "door01_dialogue":{
+    "start":[
+      {"text": "你的办公室"},
+      {"event": "open_door_event"}
+    ]
+  },
+
+  "door02_dialogue":{
+    "locked":[
+      {"text": "院长办公室"},
+      {"text": "锁着了"}
+    ]
+  },
+
+  "board_dialogue": {
+    "start": [
+      {"text": "你看向了布告栏"},
+      {"text": "门诊时间、荣誉证书、心理健康科普、招聘资讯……"},
+      {"text": "(催眠疗法说明……这是父亲一直致力于推广的疗法。)"}
+    ]
+  },
+
+  "machine_dialogue": {
+    "locked_machine_node": [
+      {"text": "(我应该先和患者对话)"}
+    ],
+    "unlocked_machine_node": [
+      {"text": "你检查仪器能正常使用后仔细的给对方戴上"}, 
+      {"event": "machine_enter"}
+    ]
+  },
+
+  "exitZ01_dialogue": {
+    "initial": [
+      {"text": "它显示一个打印机图标"},
+      {"text": "我要不要复印点什么？"}
+    ],
+    "unlocked_exit": [
+      {"speaker": "narrator", "text": "触碰的瞬间，你看见了画面闪过", "shown": false},
+      {"speaker": "narrator", "text": "你看见了办公室，面前摆着一个电脑而她坐在电脑前一直改动方案，她说过这件事。但当你跟随她的视角频繁的更改时似乎也让你体会到她的焦灼感", "shown": false},
+      {"speaker": "narrator", "text": "(...第一视角真令人犹如亲身体会。)", "shown": false},
+      {"event": "machine_enter", "event_data": {"target_room": "subc.Z_02"}} 
+    ]
+  },
+
+  "printer_dialogue": {
+    "locked": [
+      {"text": "(打不开？)"},
+      {"text": "你望下桌子"},
+      {"text": "插头倒悬在打印机正下方。"}
+    ],
+    "unlocked": [
+      {"text": "你将线头插入延长线。"},
+      {"text": "打印机发出清脆的咔哒声并启动了。"},
+      {"event": "set_flag", "event_data": {"flag_name": "lock_unlocked", "flag_value": true}}
+    ]
+  },
+
+  "water_cool_dialogue": {
+    "start": [
+      {"text": "这个洗过吗？"},
+      {"text": "(...有关系吗？"}
+    ]
+  },
+
+  "offc_comp_dialogue": {
+    "key": [
+      {"text": "未使用。暂时不需要插头。"},
+      {"event": "set_flag", "event_data": {"flag_name": "key1_found", "flag_value": true}}
+    ],
+    "already_found": [
+      {"text": "老式电脑"}
+    ]
+  },
+
+  "exitZ02_dialogue": {
+    "initial": [
+      {"text": "白板上写着: 36除以一个苹果的画是什么? "},
+      {"text": "(... 这是什么问题? )"}
+    ],
+    "unlocked_exit": [
+      {"speaker": "narrator","text": "(这一次你看见了另一个画面，场景变换到一个教室中 )", "shown": false},
+      {"speaker": "narrator","text": " (教室叽叽喳喳的，很显然是老师不在的空挡)", "shown" : false},
+      {"speaker": "narrator","text": "(当视角向下时，你看见了密密麻麻的笔记)", "shown": false},
+      {"speaker": "player","text": "(线条流畅，字体优美，高亮清晰，绝对是标准的完美笔记)", "shown": false},
+      {"speaker": "narrator","text": "(这时一个声音在耳边响起)", "shown": false},
+      {"speaker": "narrator","text": "??: Zheng!借我看看你的笔记！ ", "shown": false},
+      {"speaker": "narrator","text": "(视角向左，是她的同桌)", "shown": false},
+      {"speaker": "narrator","text": "(她把挡到一些字的左手移开，展示出笔记的全部面貌)", "shown": false},
+      {"speaker": "narrator","text": "??: 一如既往的完整！不愧是我们的优等生！", "shown": false},
+      {"speaker": "Zheng","text": "……这只是我该做的。", "shown": false},
+      {"speaker": "narrator","text": "??:  我就先借走啦！", "shown": false},
+      {"event": "machine_enter"}
+    ]
+    
+  },
+
+  "exitZ03_dialogue": {
+    "initial": [
+      {"text": "You hear someone talking outside."},
+      {"text": "The door is locked."}
+    ],
+    "start": [
+      {"speaker": "narrator","text": "(画面不再是教室，是个办公室。但你看出这并不是她公司的办公室)", "shown": false},
+      {"speaker": "player","text": " (又是个办公室？但这是谁的？)", "shown": false},
+      {"speaker": "narrator","text": "(一个男声传来.)", "shown": false},
+      {"speaker": "narrator","text": "?: 久等了。", "shown": false},
+      {"speaker": "player","text": "(这个声音……)", "shown": false},
+      {"speaker": "narrator","text": "(视角随着她转头)", "shown": false},
+      {"speaker": "player","text": "(父亲？！)", "shown": false},
+      {"speaker": "player","text": "(为什么郑小姐的回忆会出现父亲？)", "shown": false},
+      {"speaker": "Zheng","text": "下午好，教授。", "shown": false},
+      {"speaker": "Dean","text": "下午好。这次把你叫来，是有一个提议要给你。", "shown": false},
+      {"speaker": "Dean","text": " 我现在正在进行一种心理实验，但目前遇到了人手不足的问题。", "shown": false},
+      {"speaker": "Dean","text": "你的细心和严谨我都看在眼里，这正是我们实验需要的精神。", "shown": false},
+      {"speaker": "Dean","text": " 你的梦想是想在心理学有一番成就对吧？所以，你有兴趣成为我的助手吗，这会是你实现理想的第一步。", "shown": false},
+      {"speaker": "player","text": "(郑小姐和父亲是师生？真巧啊。)", "shown": false},
+      {"speaker": "Zheng","text": "当然，这是我的荣幸，教授", "shown": false},
+      {"event": "machine_enter"}
+    ]
+  },
+
+  "exitZ04_dialogue": {
+    "start": [
+    {"speaker": "narrator","text": "(你找到一个文件夹。上面有病人的照片。)", "shown": false},
+    {"speaker": "player","text": "(除了几行字，其他都模糊了。)", "shown": false},
+    {"speaker": "narrator","text": "(诊断：工作压力)", "shown": false},
+    {"speaker": "narrator","text": "(治疗：催眠后遗忘症)", "shown": false},
+    {"next_node": "end"},
+    {"speaker": "narrator","text": "(你找到一本日记。上面有病人的名字。)", "shown": false},
+    {"speaker": "narrator","text": "(你翻到最新的一篇日记。)", "shown": false},
+    {"speaker": "narrator","text": "('当我得到这个机会时，我欣喜若狂。')", "shown": false},
+    {"speaker": "narrator","text": "('我终于离实现我的梦想更近了一步……')", "shown": false},
+    {"speaker": "narrator","text": "('但是……我的梦想是什么？')", "shown": false},
+    {"event": "puzzle_complete", "event_data": {"puzzle_owner_dialogue_id": "Zheng"}}
+      ]
+    },
+
+    "exitE01_dialogue": {
+      "initial": [
+      {"text": "这是一个装满服装和服饰的箱子。"}
+    ],
+      "start": [
+        {"speaker": "narrator","text": "(一回生二回熟，但再度看到画面闪过时你还是忍不住感到惊叹)", "shown": false},
+        {"speaker": "narrator","text": "(你刚定睛一看，就听到‘咔嚓’一声，接着被一阵刺眼的白光照得眼睛发昏)", "shown": false},
+        {"speaker": "player","text": " (我的眼睛——)", "shown": false},
+        {"speaker": "?","text": "艾玛小姐！今天的拍摄结束了，你可以休息一下了！", "shown": false},
+        {"speaker": "Emma","text": "好的，大家都辛苦了。", "shown": false}, 
+        {"speaker": "player","text": "(拍摄？Emma小姐难道是什么明星吗？)", "shown": false},
+        {"event": "machine_enter"}
+      ]
+    },
+
+    "exitE02_dialogue": {
+      "initial": [
+      {"text": "一片漆黑。"},
+      {"text": "你感到莫名其妙的紧张。"}
+    ],
+      "start": [
+        {"speaker": "narrator","text": "(新的画面袭来，入眼帘的是她的面貌…准确来说是她镜子里的面貌)", "shown": false},
+        {"speaker": "narrator","text": "(你从镜子的反射看见她背后站着个看不清面貌的人，拿着卷发棒给她梳理发型)", "shown": false},
+        {"speaker": "narrator","text": "(旁边也有个人，举着化妆刷轻柔的为她打上腮红)", "shown": false},
+        {"speaker": "narrator","text": "(这时画面一转,来到了舞台,准确来说是个T台)", "shown": false},
+        {"speaker": "narrator","text": "(你感受到许多的注视，无论是来自摄像头还是人们)", "shown": false},
+        {"speaker": "narrator","text": "(但聚焦视线的主人依然笔直的前进着.)", "shown": false},
+        {"speaker": "narrator","text": "(她在舞台末尾游刃有余的摆造型，为身上的衣裳增添它的光彩)", "shown": false},
+        {"speaker": "player","text": "(原来是模特……)", "shown": false},
+        {"event": "machine_enter"}
+      ]
+    },
+
+    "exitE03.1_dialogue": {
+      "initial": [
+      {"text": "一辆时尚且使用频繁的汽车。"},
+      {"text": "(... 感觉自己好像忘了什么，比如我的车钥匙。)"}
+    ],
+      "start": [
+        {"speaker": "narrator","text": "(轰！！！)", "shown": false},
+        {"speaker": "narrator","text": "(你刚触碰这片碎片，就被剧烈的声响吓了一跳)", "shown": false},
+        {"speaker": "narrator","text": "(接着身体被猛地向左甩去，肋骨被安全带勒紧，紧得难以呼吸)", "shown": false},
+        {"speaker": "narrator","text": "(车窗碎片成了蛛网，溅到你的脸上)", "shown": false},
+        {"speaker": "narrator","text": "(最后看到的是一股白色重拳砸来，带有一股刺鼻的气味，闻起来像是火药，又像是什么东西烧焦了——是安全气囊)", "shown": false},
+        {"speaker": "narrator","text": "(视野逐渐暗淡，模糊的喇叭声、嗡鸣的救护车，急促的呼吸，全都慢慢离你而去)", "shown": false},
+        {"speaker": "narrator","text": "(自此，世界被按下了静音键。)", "shown": false},
+        {"speaker": "player","text": "(……这就是车祸时的记忆了吧)", "shown": false},
+         {"speaker": "narrator","text": "(你闭上双眼，深呼吸，尝试平复自己的心情)", "shown": false},
+        {"event": "machine_enter"}
+      ]
+    },
+    "exitE04_dialogue": {
+      "initial": [
+      {"text": "一扇门"},
+      {"text": "(... 一种不祥的预感。）)"}
+    ],
+      "start": [
+        {"speaker": "narrator","text": "(轰！！！耳熟的碰撞声再次响起)", "shown": false},
+        {"speaker": "player","text": "(又来！？)", "shown": false},
+        {"speaker": "narrator","text": "(没有出现预想中的窒息感和疼痛，画面中断，耳边传来尖叫和大口喘气的声音)", "shown": false},
+        {"speaker": "Emma","text": "哈……哈……", "shown": false},
+        {"speaker": "Emma","text": "为什么……为什么又梦到了这个……", "shown": false},
+        {"speaker": "narrator","text": "(她的声音带有一丝绝望)", "shown": false},
+        {"speaker": "Emma","text": "明明已经过去了……", "shown": false},
+        {"speaker": "player","text": "......", "shown": false},
+        {"speaker": "narrator","text": "你想安慰她，或给她个拥抱，但这只是潜意识的画面，你做不到这些", "shown": false},
+        {"event": "machine_enter"}
+      ]
+    },
+
+    "exitE05_dialogue": {
+      "start": [
+        {"speaker": "narrator","text": "(... 这是什么？)", "shown": false},
+        {"speaker": "narrator","text": "(...那里是谁？)", "shown": false},
+        {"speaker": "narrator","text": "一位美丽的模特挺拔而自豪地站立着。", "shown": false},
+        {"speaker": "narrator","text": "你感到自信，并且真的热爱你的工作。", "shown": false},
+        {"next_node": "end"},
+        {"speaker": "narrator","text": "倒影泛起涟漪。", "shown": false},
+        {"speaker": "narrator","text": "一个佝偻着身子、疲惫不堪的女人站在你面前。", "shown": false},
+        {"speaker": "narrator","text": "你以前并不这样感觉……", "shown": false},
+        {"speaker": "narrator","text": "但你不知道如何解决它。", "shown": false},
+        {"speaker": "player","text": "......", "shown": false},
+        {"event": "puzzle_complete", "event_data": {"puzzle_owner_dialogue_id": "Emma"}}
+      ]
+    },
+
+      "student_desk_dialogue": {
+    "start": [
+      {"text": "这里到处都是铅笔、橡皮和书籍。"},
+      {"text": "(...为什么我感到如此不安？)"}
+    ]
+  },
+
+    "trashb_dialogue": {
+    "key": [
+      {"text": "这里只有一张皱巴巴的纸。"},
+      {"text": "你把它打开。"},
+      {"text": "上面写着1636除以4。(...所以是409?)"}
+    ],
+    "already_found": [
+      {"text": "答案似乎是409。"}
+    ]
+  },
+
+  "window_dialogue": {
+    "key": [
+      {"text": "(这里卡住了？)"}
+    ],
+    "already_found": [
+      {"text": "你尽量不去质疑那团黄色粘液。"}
+    ]
+  },
+
+  "trophy_dialogue": {
+    "key": [
+      {"text": "是一面成就墙。"},
+      {"text": "(...奖杯里有东西！）"}
+    ],
+    "already_found": [
+      {"text": "奖杯看起来保养得很好。"}
+    ]
+  },
+
+  "drawer_dialogue": {
+    "locked": [
+      {"text": "这是一把数字锁。你不知道抽屉里会有这些东西。"}
+    ],
+    "unlocked": [
+      {"text": "把密码写在纸上。"}
+    ]
+  },
+
+  "monitor_dialogue": {
+    "start": [
+      {"text": "这是某种机器。"},
+      {"text": "(... 听起来像心脏监护仪。)"}
+    ]
+  },
+
+  "poster_dialogue": {
+    "locked": [
+      {"text": "这是墙贴广告。"},
+      {"text": "(... 看起来有点破了。)"},
+      {"text": "(... 不过都挂在那么高的地方。)"}
+    ],
+    "unlocked": [
+      {"text": "你把胶水涂在油漆滚筒上，然后把海报粘了起来。"},
+      {"text": "...你看到箱子附近出现了一些东西。"}
+    ]
+  },
+
+  "dresser_dialogue": {
+    "start": [
+      {"text": "到处都是散落的化妆品。"},
+      {"text": "(...那是一罐胶水吗？？)"}
+    ]
+  },
+
+  "paint_roll_dialogue": {
+    "start": [
+      {"text": "这是一个油漆滚筒。"},
+      {"text": "(...我可以用这个。)"}
+    ]
+  },
+
+  "dress_dialogue": {
+    "locked": [
+      {"text": "撕得太厉害了。"},
+      {"text": "(... 嘿，我不是裁缝。)"}
+    ],
+    "unlocked": [
+      {"text": "灵巧的手（虽然不是你自己的）把裙子缝好了。"},
+      {"text": "(... 哇。我收回我的话。)"}
+    ]
+  },
+
+  "vanity01_dialogue": {
+    "start": [
+      {"text": "专业的梳妆台。"},
+      {"text": "周围散落着很多化妆品和纸巾。"}
+    ]
+  },
+
+  "vanity02_dialogue": {
+    "start": [
+      {"text": "专业的梳妆台。"},
+      {"text": "(... 那是一卷带针的线吗？"}
+    ]
+  },
+
+  "clothes_r_dialogue": {
+    "start": [
+      {"text": "一个衣架。上面有一个包。"},
+      {"text": "(...!车钥匙)"}
+    ]
+  },
+
+  "piano_dialogue": {
+    "start": [
+      {"text": "一架立式钢琴。"},
+      {"text": "(... 我弹过一次钢琴。)"}
+    ]
+  },
+
+  "pillb_dialogue": {
+    "locked": [
+      {"text": "一瓶安眠药。"},
+      {"text": "(... 不知道剂量就服用很危险。)"}
+    ],
+    "unlocked": [
+      {"text": "知道你需要这个，你就吃两片药，喝一杯水。"}
+    ]
+  },
+
+  "coat_dialogue": {
+    "start": [
+      {"text": "一件外套。口袋里有东西。"},
+      {"text": "这是处方。"},
+      {"text": "... 是安眠药的。"}
+    ]
+  },
+
+  "medbed_dialogue": {
+    "start": [
+      {"text": "一张硬邦邦的床。"},
+      {"text": "(... 熟悉吗？)"}
+    ]
+  }
+}
