@@ -14,9 +14,17 @@
   },
 
   "door02_dialogue":{
-    "locked":[
-      {"text": "院长办公室"},
+    "door02_locked_dialogue":[
       {"text": "锁着了"}
+    ],
+    "door02_unlocked_dialogue": [
+      {"text": "(你轻轻敲了敲门，然后就开了。)"},
+      {"speaker": "player", "text": "(门没关？)"},
+      {"text": "里面空无一人。"},
+      {"text": "虽然擅自进入他人房间不道德，"},
+      {"text": "但高维的存在希望你踏入其中推剧情，"},
+      {"text": "所以你还是进去了。"},
+      {"event": "open_door_event"}
     ]
   },
 
@@ -30,10 +38,10 @@
 
   "machine_dialogue": {
     "locked_machine_node": [
-      {"text": "(我应该先和患者对话)"}
+      {"text": "(我应该先和患者对话。)"}
     ],
     "unlocked_machine_node": [
-      {"text": "你检查仪器能正常使用后仔细的给对方戴上"}, 
+      {"text": "你检查仪器能正常使用后仔细的给对方戴上。"}, 
       {"event": "machine_enter"}
     ]
   },
@@ -66,7 +74,7 @@
 
   "water_cool_dialogue": {
     "start": [
-      {"text": "这个洗过吗？"},
+            {"text": "这个洗过吗？"},
       {"text": "(...有关系吗？"}
     ]
   },
@@ -83,7 +91,7 @@
 
   "exitZ02_dialogue": {
     "initial": [
-      {"text": "白板上写着: 36除以一个苹果的画是什么? "},
+      {"text": "白板上写着: 36除以一个苹果的画作是什么? "},
       {"text": "(... 这是什么问题? )"}
     ],
     "unlocked_exit": [
@@ -105,10 +113,10 @@
 
   "exitZ03_dialogue": {
     "initial": [
-      {"text": "You hear someone talking outside."},
-      {"text": "The door is locked."}
+      {"text": "你听见外面有人说话。"},
+      {"text": "门正锁着。"}
     ],
-    "start": [
+    "unlocked_exit": [
       {"speaker": "narrator","text": "(画面不再是教室，是个办公室。但你看出这并不是她公司的办公室)", "shown": false},
       {"speaker": "player","text": " (又是个办公室？但这是谁的？)", "shown": false},
       {"speaker": "narrator","text": "(一个男声传来.)", "shown": false},
@@ -144,11 +152,11 @@
       ]
     },
 
-    "exitE01_dialogue": {
+  "exitE01_dialogue": {
       "initial": [
       {"text": "这是一个装满服装和服饰的箱子。"}
     ],
-      "start": [
+      "unlocked_exit": [
         {"speaker": "narrator","text": "(一回生二回熟，但再度看到画面闪过时你还是忍不住感到惊叹)", "shown": false},
         {"speaker": "narrator","text": "(你刚定睛一看，就听到‘咔嚓’一声，接着被一阵刺眼的白光照得眼睛发昏)", "shown": false},
         {"speaker": "player","text": " (我的眼睛——)", "shown": false},
@@ -159,12 +167,12 @@
       ]
     },
 
-    "exitE02_dialogue": {
+  "exitE02_dialogue": {
       "initial": [
       {"text": "一片漆黑。"},
       {"text": "你感到莫名其妙的紧张。"}
     ],
-      "start": [
+      "unlocked_exit": [
         {"speaker": "narrator","text": "(新的画面袭来，入眼帘的是她的面貌…准确来说是她镜子里的面貌)", "shown": false},
         {"speaker": "narrator","text": "(你从镜子的反射看见她背后站着个看不清面貌的人，拿着卷发棒给她梳理发型)", "shown": false},
         {"speaker": "narrator","text": "(旁边也有个人，举着化妆刷轻柔的为她打上腮红)", "shown": false},
@@ -177,12 +185,12 @@
       ]
     },
 
-    "exitE03.1_dialogue": {
+  "exitE03.1_dialogue": {
       "initial": [
       {"text": "一辆时尚且使用频繁的汽车。"},
       {"text": "(... 感觉自己好像忘了什么，比如我的车钥匙。)"}
     ],
-      "start": [
+      "unlocked_exit": [
         {"speaker": "narrator","text": "(轰！！！)", "shown": false},
         {"speaker": "narrator","text": "(你刚触碰这片碎片，就被剧烈的声响吓了一跳)", "shown": false},
         {"speaker": "narrator","text": "(接着身体被猛地向左甩去，肋骨被安全带勒紧，紧得难以呼吸)", "shown": false},
@@ -195,12 +203,12 @@
         {"event": "machine_enter"}
       ]
     },
-    "exitE04_dialogue": {
+  "exitE04_dialogue": {
       "initial": [
       {"text": "一扇门"},
       {"text": "(... 一种不祥的预感。）)"}
     ],
-      "start": [
+      "unlocked_exit": [
         {"speaker": "narrator","text": "(轰！！！耳熟的碰撞声再次响起)", "shown": false},
         {"speaker": "player","text": "(又来！？)", "shown": false},
         {"speaker": "narrator","text": "(没有出现预想中的窒息感和疼痛，画面中断，耳边传来尖叫和大口喘气的声音)", "shown": false},
@@ -214,7 +222,7 @@
       ]
     },
 
-    "exitE05_dialogue": {
+  "exitE05_dialogue": {
       "start": [
         {"speaker": "narrator","text": "(... 这是什么？)", "shown": false},
         {"speaker": "narrator","text": "(...那里是谁？)", "shown": false},
@@ -230,18 +238,19 @@
       ]
     },
 
-      "student_desk_dialogue": {
+  "student_desk_dialogue": {
     "start": [
       {"text": "这里到处都是铅笔、橡皮和书籍。"},
       {"text": "(...为什么我感到如此不安？)"}
     ]
   },
 
-    "trashb_dialogue": {
+  "trashb_dialogue": {
     "key": [
       {"text": "这里只有一张皱巴巴的纸。"},
       {"text": "你把它打开。"},
-      {"text": "上面写着1636除以4。(...所以是409?)"}
+      {"text": "上面写着1636除以4。(...所以是409?)"},
+      {"event": "set_flag", "event_data": {"flag_name": "key1_found", "flag_value": true}}
     ],
     "already_found": [
       {"text": "答案似乎是409。"}
@@ -250,7 +259,8 @@
 
   "window_dialogue": {
     "key": [
-      {"text": "(这里卡住了？)"}
+      {"text": "(这里卡住了？)"},
+      {"event": "set_flag", "event_data": {"flag_name": "key1_found", "flag_value": true}}
     ],
     "already_found": [
       {"text": "你尽量不去质疑那团黄色粘液。"}
@@ -260,7 +270,8 @@
   "trophy_dialogue": {
     "key": [
       {"text": "是一面成就墙。"},
-      {"text": "(...奖杯里有东西！）"}
+      {"text": "(...奖杯里有东西！）"},
+      {"event": "set_flag", "event_data": {"flag_name": "key2_found", "flag_value": true}}
     ],
     "already_found": [
       {"text": "奖杯看起来保养得很好。"}
@@ -272,7 +283,8 @@
       {"text": "这是一把数字锁。你不知道抽屉里会有这些东西。"}
     ],
     "unlocked": [
-      {"text": "把密码写在纸上。"}
+      {"text": "你把密码写在纸上。"},
+      {"event": "set_flag", "event_data": {"flag_name": "lock_unlocked", "flag_value": true}}
     ]
   },
 
@@ -291,21 +303,30 @@
     ],
     "unlocked": [
       {"text": "你把胶水涂在油漆滚筒上，然后把海报粘了起来。"},
-      {"text": "...你看到箱子附近出现了一些东西。"}
+      {"text": "...你看到箱子附近出现了一些东西。"},
+      {"event": "set_flag", "event_data": {"flag_name": "lock_unlocked", "flag_value": true}}
     ]
   },
 
   "dresser_dialogue": {
-    "start": [
+    "key": [
       {"text": "到处都是散落的化妆品。"},
-      {"text": "(...那是一罐胶水吗？？)"}
+      {"text": "(...那是一罐胶水吗？？)"},
+      {"event": "set_flag", "event_data": {"flag_name": "key1_found", "flag_value": true}}
+    ],
+    "already_found": [
+      {"text": "好多化妆品..."}
     ]
   },
 
   "paint_roll_dialogue": {
-    "start": [
+    "key": [
       {"text": "这是一个油漆滚筒。"},
-      {"text": "(...我可以用这个。)"}
+      {"text": "(...我可以用这个。)"},
+      {"event": "set_flag", "event_data": {"flag_name": "key2_found", "flag_value": true}}
+    ],
+    "already_found": [
+      {"text": "这里什么都没有了。"}
     ]
   },
 
@@ -316,28 +337,37 @@
     ],
     "unlocked": [
       {"text": "灵巧的手（虽然不是你自己的）把裙子缝好了。"},
-      {"text": "(... 哇。我收回我的话。)"}
+      {"text": "(... 哇。我收回我的话。)"},
+      {"event": "set_flag", "event_data": {"flag_name": "lock_unlocked", "flag_value": true}}
     ]
   },
 
   "vanity01_dialogue": {
-    "start": [
+    "key": [
       {"text": "专业的梳妆台。"},
       {"text": "周围散落着很多化妆品和纸巾。"}
     ]
   },
 
   "vanity02_dialogue": {
-    "start": [
+    "key": [
       {"text": "专业的梳妆台。"},
-      {"text": "(... 那是一卷带针的线吗？"}
+      {"text": "(... 那是一卷带针的线吗？"},
+      {"event": "set_flag", "event_data": {"flag_name": "key1_found", "flag_value": true}}
+    ],
+    "already_found": [
+      {"text": "专业的梳妆台。"}
     ]
   },
 
   "clothes_r_dialogue": {
-    "start": [
+    "key": [
       {"text": "一个衣架。上面有一个包。"},
-      {"text": "(...!车钥匙)"}
+      {"text": "(...!车钥匙)"},
+      {"event": "set_flag", "event_data": {"flag_name": "key1_found", "flag_value": true}}
+    ],
+    "already_found": [
+      {"text": "A clothes rack."}
     ]
   },
 
@@ -354,22 +384,56 @@
       {"text": "(... 不知道剂量就服用很危险。)"}
     ],
     "unlocked": [
-      {"text": "知道你需要这个，你就吃两片药，喝一杯水。"}
+      {"text": "知道你需要这个，你就吃两片药，喝一杯水。"},
+      {"event": "set_flag", "event_data": {"flag_name": "lock_unlocked", "flag_value": true}}
     ]
   },
 
   "coat_dialogue": {
-    "start": [
+    "key": [
       {"text": "一件外套。口袋里有东西。"},
       {"text": "这是处方。"},
-      {"text": "... 是安眠药的。"}
+      {"text": "... 是安眠药的。"},
+      {"event": "set_flag", "event_data": {"flag_name": "key1_found", "flag_value": true}}
+    ],
+    "already_found": [
+      {"text": "一件外套。"}
     ]
   },
 
   "medbed_dialogue": {
     "start": [
-      {"text": "一张硬邦邦的床。"},
+            {"text": "一张硬邦邦的床。"},
       {"text": "(... 熟悉吗？)"}
+    ]
+  },
+
+  "dean_desk_dialogue": {
+    "start": [
+      {"text": "桌上的一叠纸引起了你的注意"},
+      {"text": "很快你就认出了这是什么——"},
+      {"speaker": "player", "text": "(郑小姐记忆里出现过的报告！)"},
+      {"text": "大多数内容你看过了，都是过往的催眠疗法结果报告记录。"},
+      {"text": "但其中一份是你熟悉的名字——郑小姐。"},
+      {"text": "与结果上都是印着失败的其他报告不同，她的结果显示成功。"},
+      {"speaker": "player", "text": "(郑小姐不是助手而已吗？她也涉及了？)"},
+      {"text": "你往后翻了翻，出现了日期都在最近的报告。"},
+      {"speaker": "player", "text": "(这个‘实验’到现在都还在进行……)"},
+      {"text": "这些最近的报告结果比之前的好些，不全是失败，但是描写的失败后果仍然令人心悸。"},
+      {"speaker": "player", "text": "(伤害到他人的疗法还能称之为‘疗法’吗？）"},
+      {"text": "你移开视线，揉了揉眉心"},
+      {"text": "视线转移到房间内的书架"},
+      {"speaker": "player", "text": "(...书架间有缝隙？不会后面是什么老套的密室吧)"}
+    ]
+  },
+
+  "bookshelves_dialogue": {
+    "start": [
+      {"text": "你推了推，又拉了拉书架，缝隙慢慢变大"},
+      {"text": "展现出来的，是一段向下的阶梯"},
+      {"speaker": "player", "text": "..."},
+      {"text": "(...)"},
+      {"event": "open_door_event"}
     ]
   }
 }

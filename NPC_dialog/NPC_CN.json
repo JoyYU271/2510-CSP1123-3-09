@@ -460,7 +460,7 @@
         {"speaker" :"npc","text":"(就这样继续在职场打拼吧，稳定的生活就是我的理想……)","shown": false},
         {"speaker" :"npc","text":" (...)","shown": false},
         {"speaker" :"npc","text":"(我的理想真的是这个吗？)","shown": false},
-        {"speaker" :"narrator","text":"?: Zheng, 晚上的庆功宴你来不来, 老板说是奖励我们这次策划做得非常好，要请客哦！","shown": false},
+        {"speaker" :"npc","text":"?: Zheng, 晚上的庆功宴你来不来, 老板说是奖励我们这次策划做得非常好，要请客哦！","shown": false},
         {"speaker" :"npc","text":"嗯，我会去的。","shown": false},
         {"speaker" :"npc","text":"(算了, 这样也好不是吗？)","shown": false}
      ],
