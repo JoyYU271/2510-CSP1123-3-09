@@ -55,20 +55,20 @@ def main_menu():
         main_menu_bgm_played = True
 
     start_button = Button(image=start_img, pos=(300, 120), scale=0.24)
-    load_button = Button(image=load_img, pos=(300, 280), scale=0.24)
-    library_button = Button(image=collections_img, pos=(300, 440), scale=0.24)
-    settings_button = Button(image=settings_img, pos=(300, 600), scale=0.24)
-    #exit_button = Button(image=exit_img, pos=(300, 640), scale=0.24)
+    #load_button = Button(image=load_img, pos=(300, 280), scale=0.24)
+    library_button = Button(image=collections_img, pos=(300, 280), scale=0.24)
+    settings_button = Button(image=settings_img, pos=(300, 440), scale=0.24)
+    exit_button = Button(image=exit_img, pos=(300, 600), scale=0.24)
 
     while True: #keep window running
 
         screen.blit(bg_img, (0, 0)) #draw backgound from (0,0)
    
         start_button.draw(screen)
-        load_button.draw(screen)
+      #  load_button.draw(screen)
         library_button.draw(screen)
         settings_button.draw(screen)
-        #exit_button.draw(screen)
+        exit_button.draw(screen)
 
         mouse_pos = pygame.mouse.get_pos()
 
@@ -111,18 +111,18 @@ def main_menu():
                     pygame.mixer.music.play(-1)
 
                     
-                elif load_button.checkForInput(mouse_pos):
-                    click_sound.play()
-                    load_screen()
+             #   elif load_button.checkForInput(mouse_pos):
+               #     click_sound.play()
+              #      load_screen()
                 elif library_button.checkForInput(mouse_pos):
                     click_sound.play()
                     collections_screen()
                 elif settings_button.checkForInput(mouse_pos):
                     click_sound.play()
                     settings_screen()
-                #elif exit_button.checkForInput(mouse_pos):
-                    #pygame.quit()
-                    #sys.exit()
+                elif exit_button.checkForInput(mouse_pos):
+                    pygame.quit()
+                    sys.exit()
 
         pygame.display.flip()
 
@@ -552,15 +552,15 @@ def settings_screen():
 
                 if small_button.checkForInput(mouse_pos):
                     text_size = "Small"
-                    current_font_size = 25
+                    current_font_size = 24
                     click_sound.play()
                 if medium_button.checkForInput(mouse_pos):
                     text_size = "Medium"
-                    current_font_size = 30
+                    current_font_size = 27
                     click_sound.play()
                 if large_button.checkForInput(mouse_pos):
                     text_size = "Large"
-                    current_font_size = 35
+                    current_font_size = 30
                     click_sound.play()
                     
 

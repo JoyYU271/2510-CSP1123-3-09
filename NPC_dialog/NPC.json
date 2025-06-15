@@ -18,7 +18,7 @@
 
       ],
       "chapter_3":[
-          {"speaker" :"player","text":"(I should really talk to my father. There's clearly something wrong with this ‘experiment’)","bgm":"bgm/chapter3","shown": false},
+          {"speaker" :"player","text":"(I should really talk to my father. There's clearly something wrong with this ‘experiment’)","bgm":"bgm/chapter3.mp3","shown": false},
           {"speaker" :"player","text":"(Ever since treating Ms. Emma, I've been hearing things occasionally...)","shown": false},
           {"speaker" :"player","text":"(And having strange nightmares...)","shown": false},
           {"speaker" :"player","text":"(In the dreams, dad and mom argue again, but then the scene shifts—mother lies in a pool of blood...)","shown": false},
@@ -324,7 +324,7 @@
         {"speaker" :"narrator","text":"(Her pupils are dilated, eyes still toward the door—as if even in death, she was worried her child would see this.)"},
         {"speaker" :"narrator","text":"(At the top of the stairs stands Father. His lab coat hem drips with dark red.)"},
         {"speaker" :"player","text":"DON'T LOOK!!!"},
-        {"speaker" :"narrator","text":"(Too late. He retreats, leaving you in control—just as pain explodes in your skull.)"},
+        {"speaker" :"narrator","text":"(Too late. He retreats, leaving you in control—just as pain explodes in your skull.)","sound_stop": true},
         {"speaker" :"narrator","text":"(You're knocked out cold.)"},
         {"speaker" :"narrator","text":"(When you wake, a cold glint of a pocket watch is in your face.)"},
         {"speaker" :"npc","text":" From today on, your mother just left home."},
@@ -628,7 +628,7 @@
         {"speaker" :"narrator","text":"(After a shower, a change of clothes, some breakfast, I walked up to my car.)","shown": false},
         {"speaker" :"narrator","text":"(It did not start even after I got in.)","shown": false},
         {"speaker" :"npc","text":"(... It's okay, take it easy. Just like the first time I walked the runway.)","shown": false},
-        {"speaker" :"narrator","text":"(The car started up and drove out. The sunlight shone its comforting warmth on the steering wheel.)","shown": false}
+        {"speaker" :"narrator","text":"(The car started up and drove out. The sunlight shone its comforting warmth on the steering wheel.)","shown": false,"next":"sub_end_3"}
     ],
 
     "sub_end_4":[
