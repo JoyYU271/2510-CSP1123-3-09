@@ -12,13 +12,13 @@
             
         ],
         "chapter_2":[
-            {"speaker" :"narrator","text":"(今天也是新一天。)","shown": false},
+            {"speaker" :"narrator","text":"(今天也是新一天。)","bgm": "bgm/intro.mp3","shown": false},
             {"speaker" :"narrator","text":"(今天你也选择了早到，诊所内几乎没什么人)","shown": false},
             {"speaker" :"narrator","text":"......","shown": false}
 
         ],
         "chapter_3":[
-            {"speaker" :"player","text":"(我该找父亲谈谈，这个‘实验’显然有问题。)","shown": false},
+            {"speaker" :"player","text":"(我该找父亲谈谈，这个‘实验’显然有问题。)","bgm":"bgm/chapter3","shown": false},
             {"speaker" :"player","text":"(话说自从治疗Emma小姐之后，我就偶尔会出现幻听的症状。)","shown": false},
             {"speaker" :"player","text":"(还有一直梦见奇怪的噩梦……)","shown": false},
             {"speaker" :"player","text":"(梦里，父母亲又再次争吵，但画面一转母亲就倒在血泊里……)","shown": false},
@@ -545,7 +545,8 @@
         {"speaker" :"narrator","text":"(她签完后，把合同和笔递回给你)","shown": false},
         {"speaker" :"player","text":"(可以开始了。)","shown": false},
         {"speaker" :"player","text":".......","shown": false},
-        {"speaker" :"player","text":"已经跟患者交谈完毕了，该使用仪器治疗了。"}
+        {"speaker" :"player","text":"已经跟患者交谈完毕了，该使用仪器治疗了。"},       
+        {"event":"patient_zheng_talked_to"}
     ],
     "repeat_only":[
         {"speaker":"player","text":"(可以开始了。)","next": "repeat_only"}
@@ -570,7 +571,7 @@
         {"speaker" :"player","text":"(该不会又是跟‘实验’有关吧？)","shown": false},
         {"speaker" :"narrator","text":"Dean :想象你站在一条长长的走廊里……走廊尽头有一扇门，门后是你想忘记的那段记忆。","shown": false},
         {"speaker" :"narrator","text":"Dean :现在，把手放在门把上……慢慢推开。","shown": false},
-        {"speaker" :"narrator","text":"Dean: 不……不行！那辆车……它冲过来了！","shown": false},
+        {"speaker" :"narrator","text":"Emma: 不……不行！那辆车……它冲过来了！","shown": false},
         {"speaker" :"narrator","text":"Dean: 你抵抗得太厉害了。催眠需要配合，而不是对抗。","shown": false},
         {"speaker" :"narrator","text":"(他边说着，边在纸上写了些什么，随机把纸笔放到一边)","shown": false},
         {"speaker" :"narrator","text":"Dean: 今天就到这里，记得按时服药。","shown": false},
