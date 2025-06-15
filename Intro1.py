@@ -1838,8 +1838,8 @@ class Rooms:    # class Level in tutorial
         self.bgm_vol = bgm_vol
         self.sfx_vol = sfx_vol
         
-        self.backmain_img = pygame.image.load("backmain.png").convert_alpha()
-        self.backmain_button = Button(image=self.backmain_img, pos=(1100, 80), scale=0.2)
+        #self.backmain_img = pygame.image.load("backmain.png").convert_alpha()
+        #self.backmain_button = Button(image=self.backmain_img, pos=(1100, 80), scale=0.2)
         
 
         self.all_dialogues = game_ref.all_dialogues 
@@ -1890,9 +1890,9 @@ class Rooms:    # class Level in tutorial
         # Reset NPC position and quest flags? here 
         # self.load_room(self.current_room) # To reload the room to refresh objects/NPC
 
-        self.backmain_img = pygame.image.load("backmain.png").convert_alpha()
+        #self.backmain_img = pygame.image.load("backmain.png").convert_alpha()
 
-        self.backmain_button = Button(image=self.backmain_img, pos=(1100, 80), scale=0.2)
+        #self.backmain_button = Button(image=self.backmain_img, pos=(1100, 80), scale=0.2)
 
     def load_room(self, room_name, facing="left"):
         print(f"\n--- Entering load_room for {room_name} ---")
@@ -2203,13 +2203,13 @@ class Rooms:    # class Level in tutorial
                 pygame.quit()
                 sys.exit()
 
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left mouse button
-                if self.backmain_button.checkForInput(mouse_pos):
-                    print("Back to main menu clicked!")
-                    click_sound.play()
-                    pygame.mixer.music.stop()
+           # if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left mouse button
+           #     if self.backmain_button.checkForInput(mouse_pos):
+           #         print("Back to main menu clicked!")
+           #         click_sound.play()
+           #         pygame.mixer.music.stop()
                     #self.gameStateManager.set_state('start')
-                    return False  # This will exit the level loop
+           #         return False  # This will exit the level loop
 
         if not keys[pygame.K_SPACE]:
             self.space_released = True
@@ -2409,7 +2409,7 @@ class Rooms:    # class Level in tutorial
 
         camera_group.custom_draw(self.player)
 
-        self.backmain_button.draw(self.display)
+       # self.backmain_button.draw(self.display)
         
         # --- Display "Press Q to interact" text ---
         if near_obj:
