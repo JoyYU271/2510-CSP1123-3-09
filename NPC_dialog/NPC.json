@@ -297,7 +297,7 @@
         {"speaker" :"npc","text":"……"},
         {"speaker" :"narrator","text":"(His silence is a blade, slicing through years of lies.)"},
         {"speaker" :"narrator","text":"(A sound—glass shattering. Not in the room, but your mind.)"},
-        {"speaker" :"narrator","text":"('Crack')"},
+        {"speaker" :"narrator","text":"('Crack')","sound":"crack"},
         {"speaker" :"narrator","text":"(Memory floods in.)"},
         {"cg":["picture/Ending/End3.2.png"]},
         {"speaker" :"narrator","text":"(Flashback)"},

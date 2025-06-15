@@ -174,7 +174,7 @@ class Dialog:
             "car_crash": pygame.mixer.Sound("sfx/car_crash.wav"),
             "claps": pygame.mixer.Sound("sfx/claps.wav"),
             "crash": pygame.mixer.Sound("sfx/crash.wav"),
-            "crowd": pygame.mixer.Sound("sfx/crowd.wav"),
+            #"crowd": pygame.mixer.Sound("sfx/crowd.wav"),
             "gavel": pygame.mixer.Sound("sfx/gavel.wav"),
             "horror": pygame.mixer.Sound("sfx/horror.wav"),
             "people_talking": pygame.mixer.Sound("sfx/people_talking.wav"),
@@ -1477,6 +1477,24 @@ class ObjectDialogue:
             self.typing_complete = True
             self.current_text_display = ""
             return
+        
+        #stop all sounds if sound_stop is requested
+        if "sound_stop" in self.current_line_data:
+            pygame.mixer.stop()
+            print("DEBUG: sound_stop triggered in ObjectDialogue.")
+
+
+        if "sound" in self.current_line_data and not hasattr(self, 'sound_played_for_current_step'):
+            self.sound_played_for_current_step = False
+        if "sound" in self.current_line_data and not self.sound_played_for_current_step:
+            sound_name = self.current_line_data["sound"]
+            try:
+                sfx = pygame.mixer.Sound(f"sfx/{sound_name}.wav")
+                sfx.set_volume(self.rooms_instance.sfx_vol)
+                sfx.play()
+                self.sound_played_for_current_step = True
+            except Exception as e:
+                print(f"[SFX Error] Could not play sound '{sound_name}': {e}")
 
         text_to_type = self.current_line_data.get("text", "")
         

@@ -96,7 +96,7 @@
     ],
     "unlocked_exit": [
       {"speaker": "narrator","text": "(The scene shifts to a classroom. )", "shown": false},
-      {"speaker": "narrator","text": " (The classroom was abuzz with talk, seizing the moment while the teacher was away.)", "shown" : false},
+      {"speaker": "narrator","text": " (The classroom was abuzz with talk, seizing the moment while the teacher was away.)","sound":"people_talking","shown" : false},
       {"speaker": "narrator","text": "(Lowering the gaze reveals impeccably organized notes—neat lines, elegant handwriting, clear highlights. A model of perfection.)", "shown": false},
       {"speaker": "player","text": "(Her perfectionism traces back to high school......?)", "shown": false},
       {"speaker": "narrator","text": "(A voice interrupts.)", "shown": false},
@@ -105,7 +105,7 @@
       {"speaker": "narrator","text": "(Zheng moves her hand, which had obscured part of the page, to reveal the pristine notes.)", "shown": false},
       {"speaker": "narrator","text": "??: As perfect as always! No wonder you're our top student.", "shown": false},
       {"speaker": "Zheng","text": "......It's just what I should do.", "shown": false},
-      {"speaker": "narrator","text": "??: I'll borrow them, thanks!", "shown": false},
+      {"speaker": "narrator","text": "??: I'll borrow them, thanks!","sound_stop": true, "shown": false},
       {"event": "machine_enter"}
     ]
     
@@ -157,7 +157,7 @@
       {"text": "It's a chest full of costumes and outfits."}
     ],
       "unlocked_exit": [
-        {"speaker": "narrator","text": "(The first time had been a weird experience, but you couldn't help marveling at the scenes flashing by.)", "shown": false},
+        {"speaker": "narrator","text": "(The first time had been a weird experience, but you couldn't help marveling at the scenes flashing by.)", "sound":"camera","shown": false},
         {"speaker": "narrator","text": "(You were starting to focus when all of a sudden you hear a 'kachak', followed by a bright, blinding white light.)", "shown": false},
         {"speaker": "player","text": " (Ow! My eyes-)", "shown": false},
         {"speaker": "?","text": "Miss Emma! Today's shooting is done, you can take a break now!", "shown": false},
@@ -191,7 +191,7 @@
       {"text": "(... I feel like I forgot something, like my car keys.)"}
     ],
       "unlocked_exit": [
-        {"speaker": "narrator","text": "(There was a sudden loud 'crash!!!')", "shown": false},
+        {"speaker": "narrator","text": "(There was a sudden loud 'crash!!!')","sound":"car_crash", "shown": false},
         {"speaker": "narrator","text": "(You were startled by the loud noise.)", "shown": false},
         {"speaker": "narrator","text": "(Then the scene skewed to the left, and you felt your ribs jerk against the seat belt uncomfortably.)", "shown": false},
         {"speaker": "narrator","text": "(The car window shatter into a spider web, hitting your face.)", "shown": false},
@@ -209,7 +209,7 @@
       {"text": "(... Such a foreboding feeling.)"}
     ],
       "unlocked_exit": [
-        {"speaker": "narrator","text": "(There was a sudden, familiar, loud 'crash!!')", "shown": false},
+        {"speaker": "narrator","text": "(There was a sudden, familiar, loud 'crash!!')","sound":"crash", "shown": false},
         {"speaker": "player","text": "(Again!?)", "shown": false},
         {"speaker": "narrator","text": "(But this time, there was no labored breathing or pain. The scene shifts. You hear a scream and then a sudden gasp.)", "shown": false},
         {"speaker": "Emma","text": "Haa... Haa...", "shown": false},

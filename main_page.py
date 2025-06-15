@@ -214,9 +214,9 @@ def collections_screen():
             ("Living Despite Fear", show_emma_fear)
         ]),
         ("Player's Endings", [
-            ("Ship of Theseus", show_player_ship if unlocked_endings.get("ending_unlocked_Ship_of_Theseus") else None),
-            ("Justice Served", show_player_justice if unlocked_endings.get("ending_unlocked_Justice_Served") else None),
-            ("Rebirth of the Dual Soul", show_player_rebirth if unlocked_endings.get("ending_unlocked_Rebirth_of_the_Dual_Soul") else None)
+            ("Ship of Theseus", show_player_ship),
+            ("Justice Served", show_player_justice),
+            ("Rebirth of the Dual Soul", show_player_rebirth)
         ])
     ]
 
@@ -245,15 +245,7 @@ def collections_screen():
                     base_color="White",
                     hovering_color="Green"
                 )
-            else:
-                button = Button(
-                    image=None,
-                    pos=(640, y),
-                    text_input=f"{text} (Locked)",
-                    font=get_font(30),
-                    base_color="Grey",
-                    hovering_color="Grey"
-                )
+
             all_buttons.append(("button", button, action))
             y += button_spacing
 
@@ -418,22 +410,22 @@ def show_cg_gallery(image_paths):
 
 def show_zheng_routine_life():
     show_cg_gallery([
-        "picture/Ending/P1 End1.png",
+        "picture/Ending/P1_End1.png",
     ])
 
 def show_zheng_dreams():
     show_cg_gallery([
-        "picture/Ending/P1 End2.png",
+        "picture/Ending/P1_End2.png",
     ])
 
 def show_emma_bliss():
     show_cg_gallery([
-        "picture/Ending/P2 End1.png",
+        "picture/Ending/P2_End1.png",
     ])
 
 def show_emma_fear():
     show_cg_gallery([
-        "picture/Ending/P2 End2.png",
+        "picture/Ending/P2_End2.png",
     ])
 
 def show_player_ship():
