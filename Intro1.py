@@ -491,6 +491,10 @@ class Dialog:
             
             # Handle "ending" type directly in handle_space
             if self.current_line_data.get("type") == "ending":
+                self.ending_triggered = True
+
+            if getattr(self, 'ending_triggered', False):
+                self.ending_triggered = False 
                 self.chapter_end = True   
 
                 if self.current_day >= 3:   
@@ -1883,7 +1887,7 @@ class Rooms:    # class Level in tutorial
         self.visited_doors = set()  #keep track of doors used
 
         self.current_room = "room01"
-        self.current_day = 1  #Initialize the current day (Chapter 1)
+        self.current_day = 3 #Initialize the current day (Chapter 1)
         
         self.fading = False
         self.fade_alpha = 0

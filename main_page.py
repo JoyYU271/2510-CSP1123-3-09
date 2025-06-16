@@ -552,15 +552,15 @@ def settings_screen():
 
                 if small_button.checkForInput(mouse_pos):
                     text_size = "Small"
-                    current_font_size = 25
+                    current_font_size = 24
                     click_sound.play()
                 if medium_button.checkForInput(mouse_pos):
                     text_size = "Medium"
-                    current_font_size = 30
+                    current_font_size = 27
                     click_sound.play()
                 if large_button.checkForInput(mouse_pos):
                     text_size = "Large"
-                    current_font_size = 35
+                    current_font_size = 30    
                     click_sound.play()
                     
 

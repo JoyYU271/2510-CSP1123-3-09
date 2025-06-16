@@ -18,7 +18,7 @@
 
       ],
       "chapter_3":[
-          {"speaker" :"player","text":"(I should really talk to my father. There's clearly something wrong with this ‘experiment’)","shown": false},
+          {"speaker" :"player","text":"(I should really talk to my father. There's clearly something wrong with this ‘experiment’)","bgm":"bgm/chapter3.mp3","shown": false},
           {"speaker" :"player","text":"(Ever since treating Ms. Emma, I've been hearing things occasionally...)","shown": false},
           {"speaker" :"player","text":"(And having strange nightmares...)","shown": false},
           {"speaker" :"player","text":"(In the dreams, dad and mom argue again, but then the scene shifts—mother lies in a pool of blood...)","shown": false},
@@ -243,7 +243,8 @@
         {"speaker" :"narrator","text":"(Glasses clink, crisp and icy.)","sound": "wine_glass"},
         {"speaker" :"player","text":"To the future."},
         {"speaker" :"narrator","text":"???: [You gradually inherited his will, like a ship with its planks replaced one by one.] "},
-        {"speaker" :"narrator","text":"???: [Do you still think you're the same person you once were?] ","type":"ending"}
+        {"speaker" :"narrator","text":"???: [Do you still think you're the same person you once were?] "},
+        {"speaker" :"narrator","text":" ...","type":"ending"}
 
     ],
 
@@ -279,7 +280,8 @@
         {"speaker" :"narrator","text":"(Your father stands in the defendant’s box. His gaze sweeps across the courtroom and lands on you.)"},
         {"cg":["picture/Ending/End2.3.png"]},
         {"speaker" :"npc","text":"My only regret is failing to teach my son..."},
-        {"speaker" :"npc","text":"That science has no room for mercy.","type":"ending"}
+        {"speaker" :"npc","text":"That science has no room for mercy."},
+        {"speaker" :"narrator","text":" ...","type":"ending"}
     
 
     ],
@@ -343,7 +345,7 @@
         {"speaker" :"npc","text":"……"},
         {"speaker" :"narrator","text":"(He says nothing more. He closes his eyes, like a criminal awaiting judgment.)"},
         {"cg":["picture/Ending/black_screen.png"]},
-        {"speaker":"narrator","text":"(after a few weeks..."},
+        {"speaker":"narrator","text":"(after a few weeks...)"},
         {"speaker" :"narrator","text":"???: [Are you alright?] "},
         {"speaker" :"player","text":"Shouldn't I be asking you? You're the original personality."},
         {"speaker" :"narrator","text":"???: [Because I accepted the truth long ago. You haven't.] "},
@@ -353,7 +355,8 @@
         {"speaker" :"player","text":"...By the way, don't you want to take body control again?"},
         {"speaker" :"narrator","text":"???: [ No. This is fine.] "},
         {"cg":["picture/Ending/End3.5.png"]},
-        {"speaker" :"narrator","text":"???: [ This time, let me protect you.] ","type":"ending"}
+        {"speaker" :"narrator","text":"???: [ This time, let me protect you.] "},
+        {"speaker" :"narrator","text":" ...","type":"ending"}
      
     ]
 
@@ -628,7 +631,7 @@
         {"speaker" :"narrator","text":"(After a shower, a change of clothes, some breakfast, I walked up to my car.)","shown": false},
         {"speaker" :"narrator","text":"(It did not start even after I got in.)","shown": false},
         {"speaker" :"npc","text":"(... It's okay, take it easy. Just like the first time I walked the runway.)","shown": false},
-        {"speaker" :"narrator","text":"(The car started up and drove out. The sunlight shone its comforting warmth on the steering wheel.)","shown": false}
+        {"speaker" :"narrator","text":"(The car started up and drove out. The sunlight shone its comforting warmth on the steering wheel.)","shown": false,"next":"sub_end_4"}
     ],
 
     "sub_end_4":[
