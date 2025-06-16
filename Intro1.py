@@ -1357,7 +1357,9 @@ image_path = {
             "Medbed": "Object_image/E05_Random.png",
             "Dean_desk": "Object_image/D_Key.png",
             "Bookshelves": "Object_image/D_Lock.png",
-            "Player_door": "Object_image/P_path.png"
+            "Player_door": "Object_image/P_path.png",
+            "base_path": "Object_image/base_path.png",
+            "Dean_door": "Object_image/D_path.png"
         }
 
 class InteractableObject(pygame.sprite.Sprite):
@@ -1748,6 +1750,12 @@ class Game:
             self.level.load_room(self._pending_room)
             self._fading = False
             self._pending_room = None
+
+    # def advance_day(self):
+    #     # Increments the current day and performs day-change actions
+    #     self.rooms_instance.current_day += 1
+    #     self.patient_zheng_talked_to = False
+    #     print(f"--- Advancing to Day {self.rooms_instance.current_day} (Chapter {self.rooms_instance.current_day})---")
             
     def run(self):
         running = True
@@ -1893,7 +1901,7 @@ class Rooms:    # class Level in tutorial
         self.visited_doors = set()  #keep track of doors used
 
         self.current_room = "room01"
-        self.current_day = 3 #Initialize the current day (Chapter 1)
+        self.current_day = 1 #Initialize the current day (Chapter 1)
         
         self.fading = False
         self.fade_alpha = 0
@@ -1918,7 +1926,8 @@ class Rooms:    # class Level in tutorial
     def advance_day(self):
         # Increments the current day and performs day-change actions
         self.current_day += 1
-        print(f"--- Advancing to Day {self.current_day} (Chapter {self.current_day})---")
+        self.patient_zheng_talked_to = False
+    #     print(f"--- Advancing to Day {self.current_day} (Chapter {self.current_day})---")
         # Reset NPC position and quest flags? here 
         # self.load_room(self.current_room) # To reload the room to refresh objects/NPC
 
@@ -2179,7 +2188,7 @@ class Rooms:    # class Level in tutorial
                 self.fading = True
                 self.fade_alpha = 0
 
-            self.advance_day()
+            self.game_ref.advance_day()
             self.next_room_after_transition = "room01"
             self.start_intro_after_fade = True 
             print(f"Set to fade to {self.next_room_after_transition} and start intro for Day {self.current_day}.")

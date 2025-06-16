@@ -12,13 +12,14 @@
         
       ],
       "chapter_2":[
+          {"cg":["picture/Map Art/outside.png"]},
           {"speaker" :"narrator","text":"Today is a new day.","bgm": "bgm/intro.mp3","shown": false},
           {"speaker" :"narrator","text":"(You arrived early today again, so there is almost no one in the clinic.)","shown": false},
           {"speaker" :"narrator","text":"......","shown": false}
 
       ],
       "chapter_3":[
-          {"speaker" :"player","text":"(I should really talk to my father. There's clearly something wrong with this ‘experiment’)","bgm":"bgm/chapter3.mp3","shown": false},
+          {"cg":["picture/Map Art/outside.png"]},
           {"speaker" :"player","text":"(I should really talk to my father. There's clearly something wrong with this ‘experiment’)","bgm":"bgm/chapter3.mp3","shown": false},
           {"speaker" :"player","text":"(Ever since treating Ms. Emma, I've been hearing things occasionally...)","shown": false},
           {"speaker" :"player","text":"(And having strange nightmares...)","shown": false},
@@ -83,23 +84,46 @@
         {"speaker":"npc","text":"Have a nice day ~","next": "repeat_only"}
     ],
 
-    "chapter_2":[
+        "chapter_2":[
         {"speaker" :"npc","text":"Good morning! You're very early today!","shown": false},
         {"speaker" :"player","text":"Yes. Good morning.","shown": false},
         {"speaker" :"player","text":"(Ms. Zheng and Father's relation... I'm still concerned about it.)","shown": false},
         {"speaker" :"player","text":" (Just what is the 'experiment' all about?)","shown": false},
-        {"speaker" :"npc","text":"Of course~ He's in his office right now.","shown": false},
+        {"speaker" :"player","text":"Is the Dean here today?","shown": false},
+        {"speaker" :"npc","text":"Dean is not here~~","shown": false},
         {"speaker" :"npc","text":"Are you looking for him?","shown": false},
-        {"speaker" :"player","text":"Yes. There's something I need to discuss with him. Where is his office?","shown": false},
-        {"speaker" :"npc","text":"It's right next to yours~","shown": false},
-        {"speaker" :"player","text":"(So the locked room was actually his office...)","shown": false},
-        {"speaker" :"player","text":"I see. Thank you. I'll take my leave then.","shown": false},
-        {"speaker" :"npc","text":"Alright~ Bye bye~!","shown": false},
-        {"speaker" :"npc","text":"Dean's office is next to yours~"}
+        {"speaker" :"player","text":"Yes. There's something I need to ask with him.","shown": false},
+        {"speaker" :"npc","text":"Hey~ Actually, you can ask me anything~","shown": false},
+        {"speaker" :"player","text":"(Should I ask Nuva?)","shown": false},
+        {"choice":[
+            {"option":"Do you know Miss Zheng?","next":"ask"},
+            {"option":"Nothing, don't worry about it.","next":"not_ask"}
+        ],"shown":false
+        }
+    ],
+
+
+    "ask":[
+        {"speaker" :"player","text":"Do you know Miss Zheng?","bgm": "bgm/dean_chapter_2.mp3","shown": false},
+        {"speaker" :"narrator","text":"(You saw her stunned for a moment, then thinking.)","shown": false},
+        {"speaker" :"npc","text":"If it's the lady with glasses, I think I know~","shown": false},
+        {"speaker" :"npc","text":"What's wrong?","shown": false},
+        {"speaker" :"player","text":"So do you know what happened between Miss Zheng and dean?","shown": false},
+        {"speaker" :"npc","text":"Eh? Although I don't know why you're asking this...","shown": false},
+        {"speaker" :"npc","text":"But I've seen that lady following the dean for a while.","shown": false},
+        {"speaker" :"npc","text":"And that's all i know.","shown": false},
+        {"speaker" :"player","text":"...Alright, thanks.","shown": false},
+        {"speaker" :"npc","text":"You are welcome~","bgm": "bgm/intro.mp3","shown": false}
 
     ],
-     
-    
+
+    "not_ask":[
+        {"speaker" :"player","text":"Nothing, don't worry about it.","shown": false},
+        {"speaker" :"narrator","text":"(You saw that she seemed a little regretful, but she soon smiled again.)","shown": false},
+        {"speaker" :"npc","text":"Alright~Have a nice day~","shown": false},
+        {"speaker" :"player","text":"You too.","shown": false}
+    ],
+
 
     "chapter_3":[
         {"speaker" :"npc","text":"Morning~","shown": false},
@@ -366,7 +390,6 @@
   },
   "Zheng":{
     "chapter_1":[
-
         {"speaker" :"player","text":"Sorry for the wait. I'm your scheduled psychologist. You're Ms. Zheng, right?","bgm": "bgm/talk_with_patient.mp3","shown": false},
         {"speaker" :"narrator","text":"(You see she sitting upright and nod.)","shown": false},
         {"speaker" :"npc","text":"Yes, hello.","shown": false},
@@ -410,13 +433,11 @@
         {"speaker" :"npc","text":"I've read it. I'm willing to accept the risks. Just need to sign here, right?","shown": false},
         {"speaker" :"player","text":"Right. Once you sign, I'll prepare the treatment.","shown": false},
         {"speaker" :"narrator","text":"(She signs without hesitation and returns the form to you.)","sound": "write_pen","shown": false},
-        {"speaker" :"player","text":"(Alright, let's begin.)","next":"repeat_only"},
-        {"event":"patient_zheng_talked_to"}
-
+        {"speaker" :"player","text":"(Alright, let's begin.)", "event":"patient_zheng_talked_to"}
 
     ],
     "repeat_only":[
-        {"speaker":"player","text":"(Alright, let's begin.)","next": "repeat_only"}
+        {"speaker":"player","text":"(Alright, let's begin.)"}
     ],
 
     "chapter_1_common":[
@@ -542,8 +563,7 @@
         {"speaker" :"narrator","text":"(After she signs, she hands the contract and pen back to you.)","sound": "write_pen","shown": false},
         {"speaker" :"player","text":"(We can start now.)","shown": false},
         {"speaker" :"narrator","text":"......."},
-        {"speaker" :"player","text":"I've finished speaking with the patient. Time to begin treatment using the machine."},
-        {"event":"patient_zheng_talked_to"}
+        {"speaker" :"player","text":"I've finished speaking with the patient. Time to begin treatment using the machine.", "event":"patient_zheng_talked_to", "next": "repeat_only"}
     ],
     "repeat_only":[
         {"speaker":"player","text":"(We can start now.)","next": "repeat_only"}

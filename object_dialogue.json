@@ -7,9 +7,19 @@
   },
 
   "door01_dialogue":{
-    "start":[
+    "start": [
       {"text": "Your office."},
       {"event": "open_door_event"}
+    ],
+    "unlocked_door_node":[
+      {"text": "Your office."},
+      {"event": "open_door_event"}
+    ],
+    "locked_door_node":[
+      {"text": "There are no patients right now."}
+    ],
+    "locked_door": [
+      {"text": "There are no patients right now."}
     ]
   },
 

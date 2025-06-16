@@ -10,6 +10,16 @@
     "start":[
       {"text": "你的办公室"},
       {"event": "open_door_event"}
+    ],
+    "unlocked_door_node":[
+      {"text": "你的办公室"},
+      {"event": "open_door_event"}
+    ],
+    "locked_door_node":[
+      {"text": "目前没有病人"}
+    ],
+    "locked_door": [
+      {"text": "目前没有病人"}
     ]
   },
 
