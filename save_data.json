@@ -1,60 +1,13 @@
 {
     "npc_state": {
         "Dean": {
-            "chapter": "Ship_of_Theseus",
-            "step": 29
+            "chapter": "chapter_1",
+            "step": 6
         }
     },
     "player_choices": {},
     "flags": {
-        "ending_unlocked_Ship_of_Theseus": true
+        "dean_cutscene_played": true
     },
-    "shown_dialogues": {
-        "Dean_chapter_3_0": true,
-        "Dean_chapter_3_1": true,
-        "Dean_chapter_3_2": true,
-        "Dean_chapter_3_3": true,
-        "Dean_chapter_3_4": true,
-        "Dean_chapter_3_5": true,
-        "Dean_chapter_3_6": true,
-        "Dean_chapter_3_7": true,
-        "Dean_chapter_3_8": true,
-        "Dean_chapter_3_9": true,
-        "Dean_chapter_3_10": true,
-        "Dean_chapter_3_11": true,
-        "Dean_chapter_3_12": true,
-        "Dean_chapter_3_13": true,
-        "Dean_chapter_3_14": true,
-        "Dean_chapter_3_15": true,
-        "Dean_chapter_3_16": true,
-        "Dean_chapter_3_17": true,
-        "Dean_chapter_3_18": true,
-        "Dean_chapter_3_19": true,
-        "Dean_chapter_3_20": true,
-        "Dean_chapter_3_21": true,
-        "Dean_Ship_of_Theseus_1": true,
-        "Dean_Ship_of_Theseus_2": true,
-        "Dean_Ship_of_Theseus_3": true,
-        "Dean_Ship_of_Theseus_4": true,
-        "Dean_Ship_of_Theseus_5": true,
-        "Dean_Ship_of_Theseus_7": true,
-        "Dean_Ship_of_Theseus_8": true,
-        "Dean_Ship_of_Theseus_9": true,
-        "Dean_Ship_of_Theseus_10": true,
-        "Dean_Ship_of_Theseus_11": true,
-        "Dean_Ship_of_Theseus_13": true,
-        "Dean_Ship_of_Theseus_14": true,
-        "Dean_Ship_of_Theseus_16": true,
-        "Dean_Ship_of_Theseus_17": true,
-        "Dean_Ship_of_Theseus_18": true,
-        "Dean_Ship_of_Theseus_19": true,
-        "Dean_Ship_of_Theseus_20": true,
-        "Dean_Ship_of_Theseus_21": true,
-        "Dean_Ship_of_Theseus_23": true,
-        "Dean_Ship_of_Theseus_24": true,
-        "Dean_Ship_of_Theseus_25": true,
-        "Dean_Ship_of_Theseus_26": true,
-        "Dean_Ship_of_Theseus_27": true,
-        "Dean_Ship_of_Theseus_28": true
-    }
+    "shown_dialogues": {}
 }
