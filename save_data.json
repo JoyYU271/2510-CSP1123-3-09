@@ -2,12 +2,15 @@
     "npc_state": {
         "Dean": {
             "chapter": "chapter_1",
-            "step": 6
+            "step": 31
         }
     },
     "player_choices": {},
     "flags": {
-        "dean_cutscene_played": true
+        "dean_cutscene_played": true,
+        "patient_zheng_talked_to": true,
+        "lock_unlocked": true,
+        "ending_unlocked_chapter_1": true
     },
     "shown_dialogues": {}
 }

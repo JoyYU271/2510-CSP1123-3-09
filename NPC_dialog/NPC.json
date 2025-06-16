@@ -19,7 +19,6 @@
       ],
       "chapter_3":[
           {"speaker" :"player","text":"(I should really talk to my father. There's clearly something wrong with this ‘experiment’)","bgm":"bgm/chapter3.mp3","shown": false},
-          {"speaker" :"player","text":"(I should really talk to my father. There's clearly something wrong with this ‘experiment’)","bgm":"bgm/chapter3.mp3","shown": false},
           {"speaker" :"player","text":"(Ever since treating Ms. Emma, I've been hearing things occasionally...)","shown": false},
           {"speaker" :"player","text":"(And having strange nightmares...)","shown": false},
           {"speaker" :"player","text":"(In the dreams, dad and mom argue again, but then the scene shifts—mother lies in a pool of blood...)","shown": false},
@@ -88,15 +87,39 @@
         {"speaker" :"player","text":"Yes. Good morning.","shown": false},
         {"speaker" :"player","text":"(Ms. Zheng and Father's relation... I'm still concerned about it.)","shown": false},
         {"speaker" :"player","text":" (Just what is the 'experiment' all about?)","shown": false},
-        {"speaker" :"npc","text":"Of course~ He's in his office right now.","shown": false},
+        {"speaker" :"player","text":"Is the Dean here today?","shown": false},
+        {"speaker" :"npc","text":"Dean is not here~~","shown": false},
         {"speaker" :"npc","text":"Are you looking for him?","shown": false},
-        {"speaker" :"player","text":"Yes. There's something I need to discuss with him. Where is his office?","shown": false},
-        {"speaker" :"npc","text":"It's right next to yours~","shown": false},
-        {"speaker" :"player","text":"(So the locked room was actually his office...)","shown": false},
-        {"speaker" :"player","text":"I see. Thank you. I'll take my leave then.","shown": false},
-        {"speaker" :"npc","text":"Alright~ Bye bye~!","shown": false},
-        {"speaker" :"npc","text":"Dean's office is next to yours~"}
+        {"speaker" :"player","text":"Yes. There's something I need to ask with him.","shown": false},
+        {"speaker" :"npc","text":"Hey~ Actually, you can ask me anything~","shown": false},
+        {"speaker" :"player","text":"(Should I ask Nuva?)","shown": false},
+        {"choice":[
+            {"option":"Do you know Miss Zheng?","next":"ask"},
+            {"option":"Nothing, don't worry about it.","next":"not_ask"}
+        ],"shown":false
+        }
+    ],
 
+
+    "ask":[
+        {"speaker" :"player","text":"Do you know Miss Zheng?","bgm": "bgm/dean_chapter_2.mp3","shown": false},
+        {"speaker" :"narrator","text":"(You saw her stunned for a moment, then thinking.)","shown": false},
+        {"speaker" :"npc","text":"If it's the lady with glasses, I think I know~","shown": false},
+        {"speaker" :"npc","text":"What's wrong?","shown": false},
+        {"speaker" :"player","text":"So do you know what happened between Miss Zheng and dean?","shown": false},
+        {"speaker" :"npc","text":"Eh? Although I don't know why you're asking this...","shown": false},
+        {"speaker" :"npc","text":"But I've seen that lady following the dean for a while.","shown": false},
+        {"speaker" :"npc","text":"And that's all i know.","shown": false},
+        {"speaker" :"player","text":"...Alright, thanks.","shown": false},
+        {"speaker" :"npc","text":"You are welcome~","bgm": "bgm/intro.mp3","shown": false}
+
+    ],
+
+    "not_ask":[
+        {"speaker" :"player","text":"Nothing, don't worry about it.","shown": false},
+        {"speaker" :"narrator","text":"(You saw that she seemed a little regretful, but she soon smiled again.)","shown": false},
+        {"speaker" :"npc","text":"Alright~Have a nice day~","shown": false},
+        {"speaker" :"player","text":"You too.","shown": false}
     ],
      
     

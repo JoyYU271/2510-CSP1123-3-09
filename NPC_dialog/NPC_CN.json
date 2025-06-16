@@ -77,7 +77,6 @@
 
 
 
-
     ],
 
     "repeat_only":[
@@ -86,20 +85,45 @@
 
     "chapter_2":[
         {"speaker" :"npc","text":"早上好！今天你也来得这么早啊！","shown": false},
-        {"speaker" :"player","text":"早上好！今天你也来得这么早啊！","shown": false},
+        {"speaker" :"player","text":"早。","shown": false},
         {"speaker" :"player","text":"(郑小姐和父亲的关系，果然还是有些在意。)","shown": false},
         {"speaker" :"player","text":" (......那个“实验”到底是怎么回事？)","shown": false},
         {"speaker" :"player","text":"请问院长在诊所吗？","shown": false},
-        {"speaker" :"npc","text":"院长在的哦～就在他的办公室里。","shown": false},
+        {"speaker" :"npc","text":"院长不在呢~","shown": false},
         {"speaker" :"npc","text":"你要找他吗？","shown": false},
-        {"speaker" :"player","text":"嗯，有些事情要找他询问。他的办公室在哪？","shown": false},
-        {"speaker" :"npc","text":"就在你的办公室隔壁而已～","shown": false},
-        {"speaker" :"player","text":"(原来上次锁着的房间就是他的办公室)","shown": false},
-        {"speaker" :"player","text":"谢谢，那我先走了。","shown": false},
-        {"speaker" :"npc","text":"好～拜拜～","shown": false},
-        {"speaker" :"npc","text":"院长办公室就在你工作室隔壁哦~"}
+        {"speaker" :"player","text":"嗯，有些事情要找他询问。","shown": false},
+        {"speaker" :"npc","text":"诶~其实有什么东西你也可以问我哦~","shown": false},
+        {"speaker" :"player","text":"(该问看吗？)","shown": false},
+        {"choice":[
+            {"option":"你知道郑小姐这个人吗？","next":"ask"},
+            {"option":"没什么，别在意。","next":"not_ask"}
+        ],"shown":false
+        }
     ],
 
+
+    "ask":[
+        {"speaker" :"player","text":"你知道郑小姐这个人吗？","bgm": "bgm/dean_chapter_2.mp3","shown": false},
+        {"speaker" :"narrator","text":"(你见她愣了愣，然后思考状。)","shown": false},
+        {"speaker" :"npc","text":"如果是那位戴眼镜的小姐的话，我想我知道哦~","shown": false},
+        {"speaker" :"npc","text":"怎么了吗？","shown": false},
+        {"speaker" :"player","text":"那么你知道郑小姐跟院长有发生什么事吗？","shown": false},
+        {"speaker" :"npc","text":"诶？虽然不知道你为什么这么问...","shown": false},
+        {"speaker" :"npc","text":"但是之前有一段时间我一直看见那位小姐跟在院长身边。","shown": false},
+        {"speaker" :"npc","text":"只是更多详细我就不清楚了。","shown": false},
+        {"speaker" :"player","text":"...好，谢谢。","shown": false},
+        {"speaker" :"npc","text":"不客气~","bgm": "bgm/intro.mp3","shown": false}
+
+    ],
+
+    "not_ask":[
+        {"speaker" :"player","text":"没什么，别在意。","shown": false},
+        {"speaker" :"narrator","text":"(你见她似乎有些遗憾,但很快还是恢复了笑容。)","shown": false},
+        {"speaker" :"npc","text":"好~祝你有个愉快的一天~","shown": false},
+        {"speaker" :"player","text":"你也是。","shown": false}
+    ],
+
+   
     "chapter_3":[
         {"speaker" :"npc","text":"早～","shown": false},
         {"speaker" :"player","text":"(这位护士似乎每一天都活力满满。)","shown": false},
