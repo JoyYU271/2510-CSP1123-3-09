@@ -116,7 +116,6 @@
         {"speaker" :"npc","text":"只是更多详细我就不清楚了。","shown": false},
         {"speaker" :"player","text":"...好，谢谢。","shown": false},
         {"speaker" :"npc","text":"不客气~","bgm": "bgm/intro.mp3","shown": false}
-
     ],
 
     "not_ask":[

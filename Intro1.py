@@ -2188,7 +2188,7 @@ class Rooms:    # class Level in tutorial
                 self.fading = True
                 self.fade_alpha = 0
 
-            self.game_ref.advance_day()
+            self.advance_day()
             self.next_room_after_transition = "room01"
             self.start_intro_after_fade = True 
             print(f"Set to fade to {self.next_room_after_transition} and start intro for Day {self.current_day}.")
@@ -2279,7 +2279,7 @@ class Rooms:    # class Level in tutorial
         dialogue_instance_at_frame_start = self.current_dialogue_ref.current_dialogue
 
         # 1. Handle Object Interaction (Q key)
-        if keys[pygame.K_q] and self.q_interact_released:
+        if keys[pygame.K_q] and self.q_interact_released and not self.fading:
             self.q_interact_released = False # Debounce the 'Q' key
             if near_obj:
                 obj_to_interact = near_obj[0] # Interact with the first detected object
