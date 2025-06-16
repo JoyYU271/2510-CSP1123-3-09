@@ -17,12 +17,13 @@
     "dialogue_id": "door01_dialogue",
     "start_node": "start",
     "active": true,
-    "unlocked": false,
-    "unlocked_day": 1,
     "rooms": ["room01"],
     "draw_layer": "background",
-
-    "next_room": "Player_room"
+    "next_room": "Player_room",
+    "day_specific_nodes": {
+      "1": "start",
+      "3": "locked_door"
+  }
   },
 
   "door02": {
@@ -35,7 +36,7 @@
     "draw_layer": "background",
     "active": true,
     "unlocked": false,
-    "unlocked_day": 2,
+    "unlocked_day": 3,
     "node_if_locked": "door02_locked_dialogue",
     "node_if_unlocked": "door02_unlocked_dialogue",
     "next_room": "Dean_room",
@@ -499,7 +500,7 @@
 
   "dean_desk": {
     "name": "Dean's desk",
-    "position": [100, 420],
+    "position": [245, 408],
     "image": "Dean_desk",
     "dialogue_id": "dean_desk_dialogue",
     "start_node": "start",
@@ -510,7 +511,7 @@
 
   "bookshelves": {
     "name": "Dean's bookshelves",
-    "position": [500, 420],
+    "position": [744, 281],
     "image": "Bookshelves",
     "dialogue_id": "bookshelves_dialogue",
     "start_node": "start",
@@ -518,5 +519,18 @@
     "rooms": ["Dean_room"],
     "draw_layer": "background",
     "next_room": "basement"
+  },
+
+  "base_path": {
+    "name": "Basement path",
+    "position": [0, 416],
+    "image": "base_path",
+    "dialogue_id": "none",
+    "start_node": "none",
+    "has_dialogue": false,
+    "active": true,
+    "rooms": ["basement"],
+    "draw_layer": "background",
+    "next_room": "room01"
   }
 }

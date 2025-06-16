@@ -1351,7 +1351,8 @@ image_path = {
             "Medbed": "Object_image/E05_Random.png",
             "Dean_desk": "Object_image/D_Key.png",
             "Bookshelves": "Object_image/D_Lock.png",
-            "Player_door": "Object_image/P_path.png"
+            "Player_door": "Object_image/P_path.png",
+            "base_path": "Object_image/base_P.png"
         }
 
 class InteractableObject(pygame.sprite.Sprite):
@@ -1882,8 +1883,8 @@ class Rooms:    # class Level in tutorial
         self.patient_zheng_talked_to = False # Flag for machine unlock
         self.visited_doors = set()  #keep track of doors used
 
-        self.current_room = "room01"
-        self.current_day = 1  #Initialize the current day (Chapter 1)
+        self.current_room = "basement"
+        self.current_day = 3  #Initialize the current day (Chapter 1)
         
         self.fading = False
         self.fade_alpha = 0
