@@ -58,7 +58,7 @@
         {"speaker":"npc","text":"你是来找院长的吗？他刚刚离开去参加会议了哦。","shown": false},
         {"speaker" :"player","text":"……抱歉，我开玩笑的。看来我的幽默还有待进步。 ","shown": false},
         {"speaker" :"narrator","text":"( 你见她愣了愣，接着不小心笑出了两声。) ","shown": false},
-        {"speaker" :"npc","text":"哈哈，你真有趣啊！","shown": false},
+        {"speaker" :"npc","text":"哈哈，你真有趣啊！","bgm": "bgm/intro.mp3","shown": false},
         {"next":"chapter_1_common","shown": false}
     ],
 
@@ -67,7 +67,7 @@
         {"speaker" :"narrator","text":"(你见她笑意更明显了。)","shown": false},
         {"speaker" :"npc","text":"院长跟我提及过今天会有个新来的心理医生，没想到还是个帅哥！","shown": false},
         {"speaker" :"narrator","text":"( 直白的话语让你耳尖泛红）","shown": false},
-        {"speaker" :"player","text":"……谢谢。","bgm": "bgm/intro.mp3","shown": false},
+        {"speaker" :"player","text":"……谢谢。","shown": false},
         {"next":"chapter_1_common"}
     ],
 
