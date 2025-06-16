@@ -1883,8 +1883,8 @@ class Rooms:    # class Level in tutorial
         self.patient_zheng_talked_to = False # Flag for machine unlock
         self.visited_doors = set()  #keep track of doors used
 
-        self.current_room = "basement"
-        self.current_day = 3  #Initialize the current day (Chapter 1)
+        self.current_room = "room01"
+        self.current_day = 1  #Initialize the current day (Chapter 1)
         
         self.fading = False
         self.fade_alpha = 0
