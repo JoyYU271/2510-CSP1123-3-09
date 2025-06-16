@@ -1,0 +1,13 @@
+{
+    "npc_state": {
+        "Dean": {
+            "chapter": "chapter_1",
+            "step": 6
+        }
+    },
+    "player_choices": {},
+    "flags": {
+        "dean_cutscene_played": true
+    },
+    "shown_dialogues": {}
+}
