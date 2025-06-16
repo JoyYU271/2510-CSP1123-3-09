@@ -1816,7 +1816,7 @@ class Game:
             #     obj.draw(self.screen, camera_group.offset)
 
             screen_pos = player.rect.move(-camera_group.offset.x, -camera_group.offset.y)
-            pygame.draw.rect(self.screen, (255, 0, 0), screen_pos, 2)  # red box = player
+            #pygame.draw.rect(self.screen, (255, 0, 0), screen_pos, 2)  # red box = player
 
             if self.current_dialogue_ref.current_dialogue:
                 # Update the current dialogue

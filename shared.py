@@ -98,7 +98,7 @@ class CameraGroup(pygame.sprite.Group):
                 flipped_image = pygame.transform.flip(sprite.image, sprite.flip, False) if hasattr(sprite, 'flip') else sprite.image
                 self.display_surface.blit(flipped_image, offset_pos)
                 debug_rect = pygame.Rect(offset_pos[0], offset_pos[1], sprite.rect.width, sprite.rect.height)
-                pygame.draw.rect(self.display_surface, (0, 0, 255), debug_rect, 1)
+                #pygame.draw.rect(self.display_surface, (0, 0, 255), debug_rect, 1)
         
         #Draw characters after
         for sprite in sorted(self.sprites(), key=lambda spr: (spr.rect.centery, spr != player)):
@@ -107,7 +107,7 @@ class CameraGroup(pygame.sprite.Group):
             self.display_surface.blit(flipped_image, offset_pos)
 
             debug_rect = pygame.Rect(offset_pos[0], offset_pos[1], sprite.rect.width, sprite.rect.height)
-            pygame.draw.rect(self.display_surface, (0, 255, 0), debug_rect, 2)
+            #pygame.draw.rect(self.display_surface, (0, 255, 0), debug_rect, 2)
 
         all_draw_sprites = []
         for sprite in self.sprites():
@@ -126,4 +126,4 @@ class CameraGroup(pygame.sprite.Group):
 
                 self.display_surface.blit(flipped_image, offset_pos)
                 debug_rect = pygame.Rect(offset_pos[0], offset_pos[1], sprite.rect.width, sprite.rect.height)
-                pygame.draw.rect(self.display_surface, (0, 255, 0), debug_rect, 2) # Green for regular objects
+                #pygame.draw.rect(self.display_surface, (0, 255, 0), debug_rect, 2) # Green for regular objects
