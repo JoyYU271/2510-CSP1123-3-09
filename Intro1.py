@@ -491,9 +491,11 @@ class Dialog:
             
             # Handle "ending" type directly in handle_space
             if self.current_line_data.get("type") == "ending":
+                print("DEBUG: Ending type detected!")
                 self.ending_triggered = True
 
             if getattr(self, 'ending_triggered', False):
+                print(f"DEBUG: Ending triggered! current_day = {self.current_day}") 
                 self.ending_triggered = False 
                 self.chapter_end = True   
 
@@ -1847,6 +1849,10 @@ class Start:    #try to call back SimpleChapterIntro
 
 class Rooms:    # class Level in tutorial
     def __init__(self, display, gameStateManager, player, npc_manager, game_instance, game_ref,screen, current_dialogue_ref, language="EN", text_size=None, bgm_vol=0.5, sfx_vol=0.5):
+        
+        self.space_released = True
+
+        
         self.display = display
         self.gameStateManager = gameStateManager
 
