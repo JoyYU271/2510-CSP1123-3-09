@@ -160,13 +160,13 @@ room_settings = {
 
 #============ Dialogue System =============
 class Dialog:
-    def __init__(self,npc,player,full_dialogue_tree, start_node_id, rooms_instance,bgm_vol=0.5,sfx_vol=0.5, language="EN",text_size=30, shown_dialogues=None, npc_manager=None,screen_surface=None):
+    def __init__(self,npc,player,dialogue_data_source, start_node_id, rooms_instance,bgm_vol=0.5,sfx_vol=0.5, language="EN",text_size=30, shown_dialogues=None, npc_manager=None,screen_surface=None, game_instance=None):
         super().__init__()
         
         self.screen = screen_surface
-        self.current_day =3 
+        # self.current_day =3 
+        self.game_ref = game_instance
        
-
         self.sounds = {
             "phone_typing": pygame.mixer.Sound("sfx/phone_typing.wav"),
             "footsteps": pygame.mixer.Sound("sfx/footsteps.wav"),
@@ -196,7 +196,7 @@ class Dialog:
         self.player = player
         self.npc_name = npc.name
         self.npc = npc
-        self.full_dialogue_tree = full_dialogue_tree 
+        self.full_dialogue_tree = dialogue_data_source 
         self.rooms_instance = rooms_instance
         self.shown_dialogues = shown_dialogues if shown_dialogues is not None else {}
         self.npc_manager = npc_manager
@@ -256,11 +256,14 @@ class Dialog:
 
         self.fade_in_cg_pending = False
         self.next_cg_index = None
-       # self.story_data = npc_data.get(f"chapter_{game_chapter}", []) # Assuming npc_data is accessible and contains story data
-       # self.current_story = f"chapter_{game_chapter}"
+        # self.story_data = self.game_ref.npc_data.get(f"chapter_{self.game_ref.game_chapter}", []) # Assuming npc_data is accessible and contains story data
+        self.current_story = f"chapter_{self.game_ref.current_day}"
+        
         self.shown_dialogues = shown_dialogues if shown_dialogues is not None else {}
         self.npc_manager = npc_manager
-
+        
+        self.current_dialogue_list = self._get_dialogue_list_from_node_id(self.current_node_id)
+        
         self.reset_typing()
 
         if not self.current_dialogue_list:
@@ -273,23 +276,69 @@ class Dialog:
         current_data = self.full_dialogue_tree
         raw_dialogue_list = []
 
-        if  node_id in current_data and isinstance(current_data[node_id], dict):
-            chapter_key = f"chapter_{self.rooms_instance.current_day}" if hasattr(self.rooms_instance, "current_day") else "default_chapter"
-            raw_dialogue_list = current_data[node_id].get(chapter_key, [])
-            print(f"DEBUG: Found {len(raw_dialogue_list)} lines in {chapter_key}")
-        else:
-            raw_dialogue_list = current_data.get(node_id, [])
-            print(f"DEBUG: Found {len(raw_dialogue_list)} lines in direct node")
+        print(f"DEBUG: _get_dialogue_list_from_node_id called for node_id: '{node_id}'")
+        print(f"DEBUG: full_dialogue_tree keys: {current_data.keys() if isinstance(current_data, dict) else 'Not a dict'}")
 
-        # Debug: Print the raw dialogue and their shown status
-        print(f"DEBUG: Raw dialogue list for {node_id}:")
-        for i, line in enumerate(raw_dialogue_list):
-            if isinstance(line, dict):
-               shown_status = line.get("shown", False)
-               text_preview = line.get("text", "No text")[:30] + "..." if len(line.get("text", "")) > 30 else line.get("text", "No text")
-               print(f"  Line {i}: shown={shown_status}, text='{text_preview}'")
+        if node_id in current_data:
+            print(f"ERROR: Node ID '{node_id}' not found in full_dialogue_tree keys: {current_data.keys()}")
+            return [] 
+        
+        # Assuming the structure is: {"NPC_Name": {"chapter_X": [...]}}
+        # The data for the specific NPC (e.g., {"chapter_1": [...]})
+        npc_data_for_node = current_data[node_id]
+
+        if not isinstance(npc_data_for_node, dict):
+            print(f"ERROR: Data for node ID '{node_id}' is not a dictionary. Type: {type(npc_data_for_node)}")
+            # Handle cases where a top-level key might directly lead to a list if that's a valid structure elsewhere.
+            if isinstance(npc_data_for_node, list):
+                print("DEBUG: Treating as a direct list of dialogue.")
+                raw_dialogue_list = npc_data_for_node
             else:
-               print(f"  Line {i}: Not a dict - {line}")
+                return []
+
+        chapter_key = f"chapter_{self.game_ref.current_day}" if hasattr(self.game_ref, "current_day") else "chapter_1" # Default to chapter_1 if current_day not found
+        # Now, try to get the specific chapter's dialogue from within the NPC's data
+        if isinstance(npc_data_for_node, dict): # Make sure it's a dict before trying .get()
+            raw_dialogue_list = npc_data_for_node.get(chapter_key, [])
+            if not raw_dialogue_list:
+                print(f"WARNING: No dialogue found for chapter '{chapter_key}' under node ID '{node_id}'.")
+                print(f"Available chapter keys for '{node_id}': {npc_data_for_node.keys()}")
+        
+        print(f"DEBUG: Raw dialogue list for '{node_id}' under '{chapter_key}': {len(raw_dialogue_list)} lines.")
+        # print(f"DEBUG: Raw dialogue content preview: {raw_dialogue_list[:2]}") # For checking content
+
+        
+        # if chapter_key not in current_data[node_id]:
+        #         print(f"WARNING: Chapter key '{chapter_key}' not found for node ID '{node_id}'. Available chapters: {current_data[node_id].keys()}")
+        #         # Fallback: maybe just get the first chapter or a default?
+        #         # For now, return empty if specific chapter not found
+        #         return [] 
+            
+        #     raw_dialogue_list = current_data[node_id].get(chapter_key, [])
+        #     print(f"DEBUG: Found {len(raw_dialogue_list)} lines in {chapter_key}")
+        # else:
+        #     # raw_dialogue_list = current_data.get(node_id, [])
+        #     # print(f"DEBUG: Found {len(raw_dialogue_list)} lines in direct node")
+        #     print(f"ERROR: Unexpected data type for node ID '{node_id}': {type(current_data[node_id])}. Expected list or dict.")
+        #     return []
+        
+        # Debug: Print the raw dialogue and their shown status
+        # # print(f"DEBUG: Raw dialogue list for {node_id}:")
+        # filtered_dialogue_list = []
+        # for i, line in enumerate(raw_dialogue_list):
+        #     if isinstance(line, dict):
+        #        shown_status = line.get("shown", False)
+        #        if not shown_status:
+        #         filtered_dialogue_list.append(line_data)
+        #         # print(f"DEBUG: Including line {i} (shown={shown_status})")
+        #     # else:
+        #         # print(f"DEBUG: Skipping line {i} (shown={shown_status}): '{line_data.get('text', '...')[:50]}'")
+        # else:
+        #     filtered_dialogue_list.append(line_data)
+        #     #    text_preview = line.get("text", "No text")[:30] + "..." if len(line.get("text", "")) > 30 else line.get("text", "No text")
+        #     #    print(f"  Line {i}: shown={shown_status}, text='{text_preview}'")
+        #     # else:
+        #     #    print(f"  Line {i}: Not a dict - {line}")
 
             # Filter out dialogue lines that have "shown": true
         filtered_dialogue_list = []
@@ -299,23 +348,33 @@ class Dialog:
                if not shown_status:
                   filtered_dialogue_list.append(line_data)
                   print(f"DEBUG: Including line {i} (shown={shown_status})")
-               else:
-                  text_preview = line_data.get("text", "No text")[:50]
-                  print(f"DEBUG: Skipping line {i} (shown={shown_status}): {text_preview}")
+            #    else:
+                #   text_preview = line_data.get("text", "No text")[:50]
+                #   print(f"DEBUG: Skipping line {i} (shown={shown_status}): {text_preview}")
             else:
               filtered_dialogue_list.append(line_data)
-              print(f"DEBUG: Including non-dict line {i}")
+            #   print(f"DEBUG: Including non-dict line {i}")
+            #   print(f"DEBUG: After filtering, {len(filtered_dialogue_list)} lines remain")
+        print(f"DEBUG: After filtering, {len(filtered_dialogue_list)} lines remain for node '{node_id}' / chapter '{chapter_key}'")
 
-              print(f"DEBUG: After filtering, {len(filtered_dialogue_list)} lines remain")
-    
         if not filtered_dialogue_list and raw_dialogue_list:
             print(f"WARNING: All dialogue in node '{node_id}' has been shown already.")
         # Return the repeat_only dialogue if it exists
             repeat_node = f"{node_id}_repeat" if f"{node_id}_repeat" in current_data else "repeat_only"
             if repeat_node in current_data:
-               print(f"DEBUG: Using repeat dialogue from {repeat_node}")
-               return current_data.get(repeat_node, [])
-    
+                print(f"DEBUG: Using repeat dialogue from {repeat_node}")
+                if isinstance(current_data[repeat_node], dict) and chapter_key in current_data[repeat_node]:
+                    return current_data[repeat_node].get(chapter_key, [])
+                else:
+                    # Fallback for simple repeat node or if repeat node doesn't use chapter
+                    return current_data.get(repeat_node, [])
+            elif "repeat_only" in current_data: # Fallback to a general "repeat_only" node
+                print(f"DEBUG: No specific repeat node. Using 'repeat_only' node if it exists.")
+                return current_data.get("repeat_only", [])
+            else:
+                print(f"DEBUG: No repeat node found for '{node_id}'. Returning empty list.")
+                return [] # No repeat node, return empty list
+            
         return filtered_dialogue_list
 
     def reset_typing(self):
@@ -387,9 +446,9 @@ class Dialog:
 
 
     def handle_space(self, screen, keys=None):
-        global game_chapter
-        global flags # Assuming 'flags' is also a global variable modified here
-        global player_choices # Assuming 'player_choices' is also a global variable modified here
+        # global game_chapter
+        # global flags # Assuming 'flags' is also a global variable modified here
+        # global player_choices # Assuming 'player_choices' is also a global variable modified here
         
       #  if self.showing_cg:
 
@@ -468,21 +527,30 @@ class Dialog:
                 next_node_id = self.current_line_data["next"]
                 self._transition_to_node(next_node_id)
                 return
+            # Check for specific "repeat_only" logic if no "next" is present
+            # This is a conceptual addition, adapt to your game logic
+            if self.current_node_id == "repeat_only" and self.current_line_index >= len(self.current_dialogue_list):
+                # If you're at the end of a 'repeat_only' sequence, loop back
+                self.current_line_index = 0 # Reset to the beginning of this node
+                self.current_line_data = self.get_current_line_data()
+                self.reset_typing()
+                return
             
             if "event" in self.current_line_data:
                 event_name = self.current_line_data["event"]
                 # Handle specific events
                 if event_name == "dean_exit_cutscene":
                     flags["dean_cutscene_played"] = True
+                    self.game_ref.flags["dean_exit_cutscene"] = True
                     self.dean_cutscene_triggered = True 
 
                     # Save checkpoint
                     save_checkpoint(
                         npc_name=self.npc_name,
-                        chapter=f"chapter_{game_chapter}", # Use current global game_chapter
+                        chapter=f"chapter_{self.game_ref.game_chapter}", # Use current global game_chapter
                         step=self.current_line_index,
-                        player_choices=player_choices,
-                        flags=flags,
+                        player_choices=self.game_ref.player_choices,
+                        flags=self.game_ref.flags,
                         shown_dialogues=self.shown_dialogues
                     )
                 self.rooms_instance.handle_dialogue_event(event_name)
@@ -493,7 +561,7 @@ class Dialog:
             if self.current_line_data.get("type") == "ending":
                 self.chapter_end = True   
 
-                if self.current_day >= 3:   
+                if self.game_ref.current_day >= 3:   
                     self.ready_to_quit = True
                     fade_to_main(screen)
                     print(f"Main ending reached! ready_to_quit set to True") 
@@ -504,28 +572,27 @@ class Dialog:
                     self.talking = False # End current dialogue
                     self.chapter_end = False
 
-                    self.current_story = f"chapter_{self.current_day}"
+                    #  Advance game day via game_ref
+                    self.game_ref.advance_day()
+                    self.current_story = f"chapter_{self.game_ref.current_day}"
                     # Update story_data to reflect the new chapter's dialogue
-                    self.story_data = npc_data.get(self.current_story,[]) 
+                    self.story_data = self.game_ref.npc_data.get(self.game_ref.current_story,[]) 
                     # Re-initialize current_dialogue_list based on the new chapter's start node
                     # You might need a new mechanism to get the start_node_id for the next chapter
                     # For now, assuming it will be handled by the Rooms class transitioning to a new room/dialogue
-                    self.current_day +=1
-                    print(f"Moving to chapter {self.current_day}") 
+                    self.self.game_ref.current_day +=1
+                    print(f"Moving to chapter {self.game_ref.current_day}") 
 
-                    
-
-                    
-                ending_key = f"chapter_{game_chapter}" # This ensures it's updated for saving
-                flags[f"ending_unlocked_{ending_key}"] = True
+                ending_key = f"chapter_{self.game_ref.game_chapter}" # This ensures it's updated for saving
+                self.game_ref.flags[f"ending_unlocked_{ending_key}"] = True
 
                 # save unlocked state
                 save_checkpoint(
                     npc_name=self.npc_name,
-                    chapter=f"chapter_{game_chapter}", # Use updated global chapter
+                    chapter=f"chapter_{self.game_ref.game_chapter}", # Use updated global chapter
                     step=self.current_line_index,
-                    player_choices=player_choices,
-                    flags=flags,
+                    player_choices=self.game_ref.player_choices,
+                    flags=self.game_ref.flags,
                     shown_dialogues=self.shown_dialogues
                 )
                 return # Consume space after handling ending
@@ -906,14 +973,7 @@ class Dialog:
            print(f"Warning: All dialogue in node '{node_id}' has been shown already.")
     
         return filtered_dialogue_list
-    
 
-
-     
-
-
-    
-        
     #     for i, entry in enumerate(raw_story_data):
     #         dialogue_id = f"{self.npc_name}_{self.current_story}_{i}"
             
@@ -1396,7 +1456,7 @@ def check_object_interaction(player_rect, interactable_objects):
     return [obj for obj in interactable_objects if obj.active and player_rect.colliderect(obj.rect)]
 
 class ObjectDialogue: 
-    def __init__(self, obj_info, current_dialogue_ref, rooms_instance,dialogue_data, start_node_id="start", text_size=30, language="EN"):
+    def __init__(self, obj_info, current_dialogue_ref, rooms_instance,dialogue_data, start_node_id="start", text_size=30, language="EN", game_instance=None):
         self.obj_info = obj_info # The InteractableObject instance
         self.current_dialogue_ref = current_dialogue_ref # Reference to Rooms' current_dialogue_ref
         self.rooms_instance = rooms_instance # Reference to the Rooms instance
@@ -1404,6 +1464,8 @@ class ObjectDialogue:
 
         self.text_size = text_size
         self.language = language
+
+        self.game_ref = game_instance
 
         # Load all dialogue data for this object
         self.dialogue_data = dialogue_data.get(self.dialogue_id, {})
@@ -1575,13 +1637,14 @@ class ObjectDialogue:
        
     def get_start_node_for_interaction(self):
         global flags
+        flags = self.game_ref.flags #Assume flags are stored in self.game_ref.flags
         chosen_node = self.obj_info.start_node # Default to the object's initial start_node
 
         # 1. Check for day-specific nodes first (highest priority)
         # Assumes day_specific_nodes is a dict like {"1": "node_id_day1", "2": "node_id_day2"}
         day_specific_node_id = None
-        if self.obj_info.day_specific_nodes and isinstance(self.rooms_instance.current_day, (int, str)):
-            day_specific_node_id = self.obj_info.day_specific_nodes.get(str(self.rooms_instance.current_day))
+        if self.obj_info.day_specific_nodes and isinstance(self.game_ref.current_day, (int, str)):
+            day_specific_node_id = self.obj_info.day_specific_nodes.get(str(self.game_ref.current_day))
         
         if day_specific_node_id:
             print(f"DEBUG ({self.obj_info.name}): Using day-specific node: {day_specific_node_id}")
@@ -1591,7 +1654,7 @@ class ObjectDialogue:
         if self.obj_info.required_flags: # If required_flags list is not empty
             all_required_flags_met = True
             for flag_name in self.obj_info.required_flags:
-                if not flags.get(flag_name, False): # If any required flag is False or missing
+                if not self.game_ref.flags.get(flag_name, False): # If any required flag is False or missing
                     all_required_flags_met = False
                     break # No need to check further flags
             
@@ -1604,15 +1667,14 @@ class ObjectDialogue:
 
         # 3. Fallback to GENERAL CONDITIONAL_DIALOGUE_FLAG (for objects using the old single flag system)
         elif self.obj_info.conditional_dialogue_flag: # If required_flags was empty/None, check conditional_dialogue_flag
-            condition_met = flags.get(self.obj_info.conditional_dialogue_flag, False)
+            condition_met = self.game_ref.flags.get(self.obj_info.conditional_dialogue_flag, False)
             if condition_met: 
                 print(f"DEBUG ({self.obj_info.name}): Conditional flag '{self.obj_info.conditional_dialogue_flag}' met. Directing to unlocked node.")
                 return self.obj_info.node_if_unlocked if self.obj_info.node_if_unlocked else chosen_node
             else: 
                 print(f"DEBUG ({self.obj_info.name}): Conditional flag '{self.obj_info.conditional_dialogue_flag}' NOT met. Directing to locked node.")
                 return self.obj_info.node_if_locked if self.obj_info.node_if_locked else chosen_node
-
-        # --- FIX: New (or modified) block for inherent 'unlocked' status ---
+        # --- New (or modified) block for inherent 'unlocked' status ---
         # This specifically checks the 'unlocked' status set by Rooms.load_room (e.g., from unlocked_day)
         if self.obj_info.unlocked: # If the object is marked as UNLOCKED (e.g., by unlocked_day on current day)
             print(f"DEBUG ({self.obj_info.name}): Object is currently UNLOCKED by its .unlocked status. Directing to UNLOCKED node.")
@@ -1620,15 +1682,12 @@ class ObjectDialogue:
         elif not self.obj_info.unlocked: # If the object is currently LOCKED by its .unlocked status (e.g., not yet on unlocked_day)
             print(f"DEBUG ({self.obj_info.name}): Object is currently LOCKED by its .unlocked status. Directing to LOCKED node.")
             return self.obj_info.node_if_locked if self.obj_info.node_if_locked else chosen_node
-        # --- END FIX ---
-
         print(f"DEBUG ({self.obj_info.name}): No special conditions met. Returning default start_node: {chosen_node}")
         return chosen_node
 
     def draw(self, screen):
         # Draws the dialogue box and text for the ObjectDialogue."""
         if not self.talking: return
-
         dialog_x = screen.get_width() // 2 - self.dialogue_box_img.get_width() // 2
         dialog_y = screen.get_height() - self.dialogue_box_img.get_height() - 20
         screen.blit(self.dialogue_box_img, (dialog_x, dialog_y))
@@ -1648,7 +1707,6 @@ class ObjectDialogue:
         # Draw dialogue text
         draw_text(screen, self.current_text_display, size=self.text_size, color=text_color, 
                     x=text_x, y=text_y, center=True, max_width=max_text_width)
-
 
 class Game:
     def __init__(self,text_size=None,language="EN",bgm_vol=0.5,sfx_vol=0.5,resume_from=None):
@@ -1670,6 +1728,11 @@ class Game:
 
         self.current_dialogue_ref = self  # or an empty helper class if preferred
         self.current_dialogue = None
+
+        self.current_day = 1
+
+        # self.player_choices = {}
+        self.flags = {}
 
         # self.all_dialogues_data = all_dialogues
 
@@ -1703,7 +1766,6 @@ class Game:
                             self.player,              
                             self.npc_manager,            
                             self,    
-                            self,                   
                             self.screen,                  
                             self.current_dialogue_ref,  
                             language=self.language,
@@ -1842,7 +1904,7 @@ class Start:    #try to call back SimpleChapterIntro
 #make plan to change by colliderect/position of player.rect
 
 class Rooms:    # class Level in tutorial
-    def __init__(self, display, gameStateManager, player, npc_manager, game_instance, game_ref,screen, current_dialogue_ref, language="EN", text_size=None, bgm_vol=0.5, sfx_vol=0.5):
+    def __init__(self, display, gameStateManager, player, npc_manager, game_instance, screen, current_dialogue_ref, language="EN", text_size=None, bgm_vol=0.5, sfx_vol=0.5):
         self.display = display
         self.gameStateManager = gameStateManager
 
@@ -1851,9 +1913,11 @@ class Rooms:    # class Level in tutorial
  
         self.game_ref = game_instance
 
+        game = Game()
+        game_instance = game
         self.screen = screen
         
-        self.current_dialogue_ref = current_dialogue_ref
+        # self.current_dialogue_ref = current_dialogue_ref
 
         self.language = language
         self.text_size = text_size
@@ -1864,7 +1928,7 @@ class Rooms:    # class Level in tutorial
         #self.backmain_button = Button(image=self.backmain_img, pos=(1100, 80), scale=0.2)
         
 
-        self.all_dialogues = game_ref.all_dialogues 
+        self.all_dialogues = game_instance.all_dialogues 
 
 
         self.shown_dialogues = {}    
@@ -1872,7 +1936,7 @@ class Rooms:    # class Level in tutorial
         camera_group = CameraGroup(self.player, self.npc_manager, display)
         camera_group.add(self.player)
         
-        self.current_dialogue_ref = game_ref
+        self.current_dialogue_ref = game_instance
 
         self.cutscene_active = False
 
@@ -1883,7 +1947,7 @@ class Rooms:    # class Level in tutorial
         self.visited_doors = set()  #keep track of doors used
 
         self.current_room = "room01"
-        self.current_day = 1  #Initialize the current day (Chapter 1)
+        self.current_day = self.game_ref.current_day  #Initialize the current day (Chapter 1)
         
         self.fading = False
         self.fade_alpha = 0
@@ -1907,8 +1971,9 @@ class Rooms:    # class Level in tutorial
 
     def advance_day(self):
         # Increments the current day and performs day-change actions
-        self.current_day += 1
-        print(f"--- Advancing to Day {self.current_day} (Chapter {self.current_day})---")
+        self.game_ref.current_day += 1
+        self.current_day = self.game_ref.current_day
+        print(f"--- Advancing to Day {self.game_ref.current_day} (Chapter {self.game_ref.current_day})---")
         # Reset NPC position and quest flags? here 
         # self.load_room(self.current_room) # To reload the room to refresh objects/NPC
 
@@ -2135,10 +2200,10 @@ class Rooms:    # class Level in tutorial
             dummy_obj = DynamicNarrativeDummy()
             dialogue_tree_to_load = None
 
-            if target_npc_dialogue_id in self.game_ref.all_dialogues:
+            if target_npc_dialogue_id in self.all_dialogues:
                 dummy_obj.name = target_npc_dialogue_id 
                 dummy_obj.dialogue_id = target_npc_dialogue_id 
-                dialogue_tree_to_load = self.game_ref.all_dialogues.get(target_npc_dialogue_id)
+                dialogue_tree_to_load = self.all_dialogues.get(target_npc_dialogue_id)
             else:
                 print(f"Warning: Target NPC dialogue ID '{target_npc_dialogue_id}' not found in all_dialogues. Falling back to 'System_Narrative'.")
                 dummy_obj.name = "narrator"
@@ -2279,11 +2344,12 @@ class Rooms:    # class Level in tutorial
                         temp_obj_dialogue = ObjectDialogue(
                             obj_to_interact, 
                             self.current_dialogue_ref, 
-                            self, 
-                            self.game_ref.object_dialogue,
+                            self, # For rooms_instance
+                            self.game_ref.object_dialogue, 
                             text_size=self.text_size,
                             language=self.language,
-                            start_node_id="dummy" # Pass a dummy for now, it will be overridden
+                            start_node_id="dummy", # Pass a dummy for now, it will be overridden
+                            game_instance=game
                         )
                         chosen_start_node = temp_obj_dialogue.get_start_node_for_interaction()
                         
@@ -2295,7 +2361,7 @@ class Rooms:    # class Level in tutorial
                             self.game_ref.object_dialogue,
                             text_size=self.text_size,
                             language=self.language,
-                            start_node_id=chosen_start_node 
+                            start_node_id=chosen_start_node
                         )
                         print(f"Interacting with {obj_to_interact.name}. Dialogue started from node: {chosen_start_node}")
                     else:
@@ -2362,14 +2428,18 @@ class Rooms:    # class Level in tutorial
                         self.current_dialogue_ref.current_dialogue = Dialog(
                             nearest_npc,
                             self.player,
-                            npc_dialogue_tree,
+                            dialogue_data_source=self.all_dialogues,
                             start_node_id=chosen_story_id,
                             rooms_instance=self,
-                            screen_surface=self.display, # Pass the screen surface
+                            # screen_surface=self.display, # Pass the screen surface
+                            bgm_vol=self.bgm_vol,
+                            sfx_vol=self.sfx_vol,
                             language=self.language,
                             text_size=self.text_size,
-                            bgm_vol=self.bgm_vol,
-                            sfx_vol=self.sfx_vol
+                            shown_dialogues=self.all_dialogues,
+                            npc_manager=self.npc_manager,
+                            screen_surface=self.screen,
+                            game_instance=self.game_ref
                         )
                         self.current_dialogue_ref.current_dialogue.talking = True
                         print(f"DEBUG: Started dialogue with NPC: {nearest_npc.name} from node: {chosen_story_id}")

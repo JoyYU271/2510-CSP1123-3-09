@@ -79,7 +79,7 @@
     ],
 
     "repeat_only":[
-        {"speaker":"npc","text":"Have a nice day ~","next": "repeat_only"}
+        {"speaker":"npc","text":"Have a nice day ~"}
     ],
 
     "chapter_2":[
@@ -406,18 +406,15 @@
         {"speaker" :"npc","text":"I've read it. I'm willing to accept the risks. Just need to sign here, right?","shown": false},
         {"speaker" :"player","text":"Right. Once you sign, I'll prepare the treatment.","shown": false},
         {"speaker" :"narrator","text":"(She signs without hesitation and returns the form to you.)","sound": "write_pen","shown": false},
-        {"speaker" :"player","text":"(Alright, let's begin.)","next":"repeat_only"},
-        {"event":"patient_zheng_talked_to"}
-
-
+        {"speaker" :"player","text":"(Alright, let's begin.)","next":"repeat_only", "event":"patient_zheng_talked_to"}
     ],
     "repeat_only":[
-        {"speaker":"player","text":"(Alright, let's begin.)","next": "repeat_only"}
+        {"speaker":"player","text":"(Alright, let's begin.)"}
     ],
 
     "chapter_1_common":[
         {"speaker":"npc","text":"......"},
-        {"speaker" :"player","text":"(I've finished speaking with the patient. Time to begin treatment using the machine.)","next":"repeat_only"}
+        {"speaker" :"player","text":"(I've finished speaking with the patient. Time to begin treatment using the machine.)"}
     ],
     "after_puzzle_sequence":[
         {"speaker" :"narrator","text":"(This memory is blurry—snatches of conversations and report writing. Words on the reports catch your eye.)","shown": false},
@@ -440,7 +437,7 @@
         }
     ],
 
-     "back_reality_destroy1":[
+    "back_reality_destroy1":[
         {"cg":["picture/Ending/black_screen.png"]},
         {"speaker" :"narrator","text":"(You remove the device from her head.)","shown": false},
         {"speaker" :"player","text":" Treatment is complete. How do you feel? Any discomfort?","shown": false},
@@ -461,8 +458,7 @@
        
      ],
      "sub_end_1":[
-        {"speaker" :"npc","text":"(......Well. Maybe this is enough.)","shown": false},
-        {"event": "day_end_and_intro_next_day"}
+        {"speaker" :"npc","text":"(......Well. Maybe this is enough.)", "event": "day_end_and_intro_next_day", "shown": false}
      ],
 
      "back_reality_keep1":[
@@ -480,8 +476,7 @@
         {"speaker" :"npc","text":".....Thank you.","shown": false,"next":"sub_end_2"}
      ],
      "sub_end_2":[
-        {"speaker" :"npc","text":"(This is a new beginning.)","shown": false},
-        {"event": "day_end_and_intro_next_day"}
+        {"speaker" :"npc","text":"(This is a new beginning.)", "event": "day_end_and_intro_next_day", "shown": false}
      ]
   },
 
@@ -536,15 +531,11 @@
         {"speaker" :"narrator","text":"(You choose to ignore the voice for now.)","shown": false},
         {"speaker" :"player","text":"Here's a pen.","shown": false},
         {"speaker" :"narrator","text":"(After she signs, she hands the contract and pen back to you.)","sound": "write_pen","shown": false},
-        {"speaker" :"player","text":"(We can start now.)","shown": false},
-        {"speaker" :"narrator","text":"......."},
-        {"speaker" :"player","text":"I've finished speaking with the patient. Time to begin treatment using the machine."},
-        {"event":"patient_zheng_talked_to"}
+        {"speaker" :"player","text":"(We can start now.)", "event": "patient_zheng_talked_to", "next": "repeat_only", "shown": false}
     ],
     "repeat_only":[
-        {"speaker":"player","text":"(We can start now.)","next": "repeat_only"}
+        {"speaker":"player","text":"I've finished speaking with the patient. Time to begin treatment using the machine."}
     ],
-
 
     "after_puzzle_sequence":[
         {"speaker" :"narrator","text":"(She entered a clinic)","shown": false},
@@ -608,8 +599,7 @@
 
     "sub_end_3":[
     
-        {"speaker" :"npc","text":"(It was worth it to no longer wake up screaming at night.)","shown": false},
-        {"event": "day_end_and_intro_next_day"}
+        {"speaker" :"npc","text":"(It was worth it to no longer wake up screaming at night.)", "event": "day_end_and_intro_next_day", "shown": false}
     ],
 
     "back_reality_keep2":[
@@ -633,8 +623,7 @@
 
     "sub_end_4":[
        
-        {"speaker" :"npc","text":"(But for today, I have overcome it.)","shown": false},
-        {"event": "day_end_and_intro_next_day"}
+        {"speaker" :"npc","text":"(But for today, I have overcome it.)", "event": "day_end_and_intro_next_day", "shown": false}
     ]
   }
 }
